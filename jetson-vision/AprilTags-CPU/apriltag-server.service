@@ -1,0 +1,11 @@
+[Unit]
+Description=April Tag Detection Server
+
+[Service]
+User=iron-maple
+Group=iron-maple
+ExecStart=/usr/bin/python3 /home/iron-maple/Documents/jetson-vision/AprilTags-CPU/apriltag-server.py > /home/iron-maple/logs/apriltag-server.log
+Restart=no
+
+[Install]
+WantedBy=multi-user.target

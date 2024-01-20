@@ -1,118 +1,217 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
-import edu.wpi.first.wpilibj.TimesliceRobot;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.sensors.CANCoder;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Drivers.Encoders.CanCoder;
+import frc.robot.Drivers.IMUs.PigeonsIMU;
+import frc.robot.Drivers.IMUs.SimpleGyro;
+import frc.robot.Drivers.Motors.TalonFXMotor;
+import frc.robot.Modules.PositionReader.SwerveWheelPositionEstimator;
+import frc.robot.Modules.PositionReader.SwerveWheelPositionEstimatorCurveOptimized;
+import frc.robot.Modules.RobotModuleBase;
+import frc.robot.Modules.SwerveBasedChassis;
+import frc.robot.Modules.SwerveWheel;
+import frc.robot.Services.RobotServiceBase;
+import frc.robot.Utils.*;
+import frc.robot.Utils.MathUtils.Vector2D;
 
-/**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimesliceRobot documentation. If you change the name of this class
- * or the package after creating this project, you must also update the build.gradle file in the
- * project.
- */
-public class Robot extends TimesliceRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+public class Robot {
+        RobotConfigReader robotConfig;
+        protected final SwerveWheel frontLeftWheel, backLeftWheel, frontRightWheel, backRightWheel;
+        protected final SimpleGyro gyro;
+        public final SwerveWheelPositionEstimator positionReader;
+        public final SwerveBasedChassis chassisModule;
+        protected final List<String> configsToTune = new ArrayList<>(1);
+        protected final Timer programDelay = new Timer();
+        protected final List<RobotModuleBase> modules;
+        protected final List<RobotServiceBase> services;
+        protected List<Thread> modulesUpdatingThreads;
+        protected final boolean useMultiThreads;
+        protected boolean wasEnabled;
 
-  /** Robot constructor. */
-  public Robot() {
-    // Run robot periodic() functions for 5 ms, and run controllers every 10 ms
-    super(0.005, 0.01);
+        public Robot() {
+                this(true);
+        }
+        public Robot(boolean useMultiThreads) {
+                this.useMultiThreads = useMultiThreads;
+                modules = new ArrayList<>();
+                services = new ArrayList<>();
 
-    // LiveWindow causes drastic overruns in robot periodic functions that will
-    // interfere with controllers
-    LiveWindow.disableAllTelemetry();
+                try {
+                        robotConfig = new RobotConfigReader("fasterChassis");
+                } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new RuntimeException("error while reading robot config");
+                }
 
-    // Runs for 2 ms after robot periodic functions
-    schedule(() -> {}, 0.002);
+                frontLeftWheel = createSwerveWheel("frontLeft", 1, new Vector2D(new double[] { -0.6, 0.6 }));
+                modules.add(frontLeftWheel);
 
-    // Runs for 2 ms after first controller function
-    schedule(() -> {}, 0.002);
+                backLeftWheel = createSwerveWheel("backLeft", 2, new Vector2D(new double[] { -0.6, -0.6 }));
+                modules.add(backLeftWheel);
 
-    // Total usage: 5 ms (robot) + 2 ms (controller 1) + 2 ms (controller 2)
-    // = 9 ms -> 90% allocated
-  }
+                frontRightWheel = createSwerveWheel("frontRight", 3, new Vector2D(new double[] { 0.6, 0.6 }));
+                modules.add(frontRightWheel);
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
-  @Override
-  public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
-  }
+                backRightWheel = createSwerveWheel("backRight", 4, new Vector2D(new double[] { 0.6, -0.6 }));
+                modules.add(backRightWheel);
 
-  /**
-   * This function is called every robot packet, no matter the mode. Use this for items like
-   * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
-   * SmartDashboard integrated updating.
-   */
-  @Override
-  public void robotPeriodic() {}
+                this.gyro = new SimpleGyro(0, false, new PigeonsIMU((int) robotConfig.getConfig("hardware/gyroPort")));
+                // this.gyro = new SimpleGyro(0, true, new NavX2IMU());
 
-  /**
-   * This autonomous (along with the chooser code above) shows how to select between different
-   * autonomous modes using the dashboard. The sendable chooser code works with the Java
-   * SmartDashboard. If you prefer the LabVIEW Dashboard, remove all of the chooser code and
-   * uncomment the getString line to get the auto name from the text box below the Gyro
-   *
-   * <p>You can add additional auto modes by adding additional comparisons to the switch structure
-   * below with additional strings. If using the SendableChooser make sure to add them to the
-   * chooser code above as well.
-   */
-  @Override
-  public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
-  }
+                final SwerveWheel[] swerveWheels = new SwerveWheel[] {frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel};
+                positionReader = new SwerveWheelPositionEstimator(swerveWheels, gyro);
+                modules.add(positionReader);
 
-  /** This function is called periodically during autonomous. */
-  @Override
-  public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }
-  }
+                SwerveWheelPositionEstimatorCurveOptimized testPositionEstimator = new SwerveWheelPositionEstimatorCurveOptimized(swerveWheels, gyro);
+                modules.add(testPositionEstimator);
 
-  /** This function is called once when teleop is enabled. */
-  @Override
-  public void teleopInit() {}
+                this.chassisModule = new SwerveBasedChassis(swerveWheels, gyro, robotConfig, positionReader);
+                modules.add(chassisModule);
+        }
 
-  /** This function is called periodically during operator control. */
-  @Override
-  public void teleopPeriodic() {}
+        private SwerveWheel createSwerveWheel(String name, int id, Vector2D wheelInstallationPosition) {
+                if (robotConfig.getConfig("hardware/chassisOnCanivore") != 0)
+                        return createSwerveWheelOnCanivore(name, id, wheelInstallationPosition);
+                return new SwerveWheel(
+                        new TalonFXMotor(new TalonFX( (int) robotConfig.getConfig("hardware/"+name+"WheelDriveMotor"))),
+                        new TalonFXMotor(new TalonFX( (int) robotConfig.getConfig("hardware/"+name+"WheelSteerMotor")), robotConfig.getConfig("hardware/"+name+"WheelSteerMotorReversed") == 1),
+                        new TalonFXMotor(new TalonFX((int) robotConfig.getConfig("hardware/"+name+"WheelDriveMotor"))),
+                        new CanCoder(new CANCoder((int) robotConfig.getConfig("hardware/"+name+"WheelEncoder")),
+                                robotConfig.getConfig("hardware/"+name+"WheelSteerEncoderReversed") == 1),
+                        wheelInstallationPosition,
+                        robotConfig, 
+                        id, 
+                        robotConfig.getConfig("hardware/"+name+"WheelZeroPosition") 
+                                + (robotConfig.getConfig("hardware/"+name+"WheelSteerEncoderReversed") == 1 ? 
+                                        (Math.PI / 2) : (-Math.PI / 2))
+                );
+        }
 
-  /** This function is called once when the robot is disabled. */
-  @Override
-  public void disabledInit() {}
+        private SwerveWheel createSwerveWheelOnCanivore(String name, int id, Vector2D wheelInstallationPosition) {
+                return new SwerveWheel(
+                        new TalonFXMotor(new TalonFX( (int) robotConfig.getConfig("hardware/"+name+"WheelDriveMotor"), "ChassisCanivore")),
+                        new TalonFXMotor(new TalonFX( (int) robotConfig.getConfig("hardware/"+name+"WheelSteerMotor"), "ChassisCanivore"), robotConfig.getConfig("hardware/"+name+"WheelSteerMotorReversed") == 1),
+                        new TalonFXMotor(new TalonFX((int) robotConfig.getConfig("hardware/"+name+"WheelDriveMotor"), "ChassisCanivore")),
+                        new CanCoder(new CANCoder((int) robotConfig.getConfig("hardware/"+name+"WheelEncoder"), "ChassisCanivore"),
+                                robotConfig.getConfig("hardware/"+name+"WheelSteerEncoderReversed") == 1),
+                        wheelInstallationPosition,
+                        robotConfig,
+                        id,
+                        robotConfig.getConfig("hardware/"+name+"WheelZeroPosition")
+                                + (robotConfig.getConfig("hardware/"+name+"WheelSteerEncoderReversed") == 1 ?
+                                (Math.PI / 2) : (-Math.PI / 2))
+                );
+        }
 
-  /** This function is called periodically when disabled. */
-  @Override
-  public void disabledPeriodic() {}
+        public void initializeRobot() {
+                System.out.println("<-- Robot | initializing robot... -->");
+                /* initialize the modules and services */
+                for (RobotModuleBase module:modules)
+                        module.init();
+                for (RobotServiceBase service:services)
+                        service.init();
 
-  /** This function is called once when test mode is enabled. */
-  @Override
-  public void testInit() {}
+                /* start the config tuning */
+                addConfigsToTune();
+                for (String config:configsToTune)
+                        robotConfig.startTuningConfig(config);
+                restRobot();
+                wasEnabled = false; // when the robot just booted, it was not enabled
+                System.out.println("<-- Robot | robot initialized -->");
+        }
 
-  /** This function is called periodically during test mode. */
-  @Override
-  public void testPeriodic() {}
+
+
+        public void restRobot() {
+                for (RobotModuleBase module: modules)
+                        module.reset();
+                for (RobotServiceBase service: services)
+                        service.reset();
+                programDelay.start();
+                programDelay.reset();
+        }
+
+        /** start or re-start the robot */
+        public void enableRobot() {
+                System.out.println("<-- Robot | enabling robot... -->");
+                for (RobotModuleBase module: modules)
+                        module.enable();
+                if (useMultiThreads) {
+                        scheduleThreads();
+                        runThreads();
+                }
+
+                restRobot();
+
+                wasEnabled = true;
+                System.out.println("<-- Robot | robot enabled -->");
+        }
+
+        public void pauseRobot() {
+                System.out.println("<-- Robot | pausing robot... -->");
+                this.wasEnabled = false;
+                for (RobotModuleBase module: modules)
+                        module.disable();
+                System.out.println("<-- Robot | robot paused... -->");
+        }
+
+        private void scheduleThreads() {
+                modulesUpdatingThreads = new ArrayList<>();
+                for (RobotModuleBase module: modules)
+                        modulesUpdatingThreads.add(module.getPeriodicUpdateThread());
+        }
+        private void runThreads() {
+                for (Thread thread: modulesUpdatingThreads)
+                        thread.start();
+        }
+
+        /**
+         * always called periodically, no mater if the robot is enabled or not
+         * */
+        public void updateRobot(boolean isEnabled) {
+                if (!isEnabled && wasEnabled)
+                        pauseRobot();
+                else if (isEnabled && !wasEnabled)
+                        enableRobot();
+
+                if (isEnabled)
+                        for (RobotServiceBase service: services)
+                                service.periodic();
+
+                if (isEnabled && !useMultiThreads)
+                        for (RobotModuleBase module:modules)
+                                module.periodic();
+
+//                SmartDashboard.putNumber("robot x", positionReader.getRobotPosition2D().getValue()[0]);
+//                SmartDashboard.putNumber("robot y", positionReader.getRobotPosition2D().getValue()[1]);
+//                SmartDashboard.putNumber("velocity x", positionReader.getRobotVelocity2D().getValue()[0]);
+//                SmartDashboard.putNumber("velocity y", positionReader.getRobotVelocity2D().getValue()[1]);
+
+                robotConfig.updateTuningConfigsFromDashboard();
+
+                SmartDashboard.putNumber("program delay(ms)", (programDelay.get() * 1000));
+                programDelay.reset();
+        }
+
+        private void addConfigsToTune() {
+                /* feed forward controller */
+//                configsToTune.add("chassis/driveWheelFeedForwardRate");
+//                configsToTune.add("chassis/driveWheelFrictionDefaultValue");
+//                configsToTune.add("chassis/timeNeededToFullyAccelerate");
+
+                /* steer PID */
+                configsToTune.add("chassis/steerWheelErrorTolerance");
+                configsToTune.add("chassis/steerWheelErrorStartDecelerate");
+                configsToTune.add("chassis/steerWheelMaximumPower");
+                configsToTune.add("chassis/steerWheelMinimumPower");
+                configsToTune.add("chassis/steerWheelFeedForwardTime");
+                configsToTune.add("chassis/steerCorrectionPowerRateAtZeroWheelSpeed");
+                configsToTune.add("chassis/steerCorrectionPowerFullWheelSpeed");
+        }
 }

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AprilTag Detection LiveStream</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8  offset-lg-2">
+                <h3 class="mt-5">Live Streaming</h3>
+                <img src="/video_feed" width="80%">
+                <p id="fps-value"></p> <!-- Add this line for displaying FPS -->
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var fpsElement = document.getElementById('fps-value');
+    
+        function updateFPS() {
+            fetch('/fps')
+                .then(response => response.text())
+                .then(data => {
+                    fpsElement.textContent = data;
+                    setTimeout(updateFPS, 1000);  // Update every 1000 ms (1 second)
+                })
+                .catch(error => {
+                    console.error('Error fetching FPS:', error);
+                    setTimeout(updateFPS, 1000);  // Retry after 1 second
+                });
+        }
+    
+        updateFPS();
+    </script>
+</body>
+</html>
