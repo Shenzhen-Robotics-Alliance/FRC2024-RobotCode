@@ -1,7 +1,7 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -253,7 +253,7 @@ class WheelsCalibration { // calibrate wheel
 
         testCanCoder = new CanCoder(
                 // new CANCoder((int)config.getConfig("hardware", wheelsSendableChooser.getSelected().name() + "WheelEncoder"))
-                new CANCoder((int)config.getConfig("hardware", wheelsSendableChooser.getSelected().name() + "WheelEncoder"), "ChassisCanivore")
+                new CANcoder((int)config.getConfig("hardware", wheelsSendableChooser.getSelected().name() + "WheelEncoder"), "ChassisCanivore")
         );
 
         SmartDashboard.putNumber("raw steer encoder reading", testCanCoder.getRawSensorReading());

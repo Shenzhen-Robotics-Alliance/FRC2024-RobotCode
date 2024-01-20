@@ -1,22 +1,28 @@
 package frc.robot.Drivers.Encoders;
 
-import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.hardware.CANcoder;
 import frc.robot.Drivers.RobotDriverBase;
 import frc.robot.Utils.MathUtils.AngleUtils;
 
 public class CanCoder extends RobotDriverBase implements Encoder {
-    private final CANCoder encoderInstance;
+    private final CANcoder encoderInstance;
+    private final StatusSignal absolutePositionSignal, velocitySignal;
     private double encoderScaleFactor;
     private double encoderZeroPosition;
 
-    public CanCoder(CANCoder encoderInstance) {
+    public CanCoder(CANcoder encoderInstance) {
         this(encoderInstance, false);
     }
 
-    public CanCoder(CANCoder encoderInstance, Boolean reversed) {
+    public CanCoder(CANcoder encoderInstance, Boolean reversed) {
         this.encoderInstance = encoderInstance;
         this.encoderZeroPosition = 0;
         this.encoderScaleFactor = reversed ? -1 : 1;
+        absolutePositionSignal = encoderInstance.getAbsolutePosition();
+        velocitySignal = encoderInstance.getVelocity();
+        absolutePositionSignal.setUpdateFrequency(200);
+        velocitySignal.setUpdateFrequency(200);
     }
 
     @Override
@@ -42,11 +48,11 @@ public class CanCoder extends RobotDriverBase implements Encoder {
 
     /** the raw sensor reading, converted to radian */
     public double getRawSensorReading() {
-        return Math.toRadians(encoderInstance.getAbsolutePosition());
+        return absolutePositionSignal.getValueAsDouble() * Math.PI * 2;
     }
 
     @Override
     public double getEncoderVelocity() {
-        return Math.toRadians(encoderInstance.getVelocity()) * encoderScaleFactor;
+        return velocitySignal.getValueAsDouble() * encoderScaleFactor * Math.PI * 2;
     }
 }

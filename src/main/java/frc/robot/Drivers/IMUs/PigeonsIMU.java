@@ -1,6 +1,6 @@
 package frc.robot.Drivers.IMUs;
 
-import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.wpilibj.Timer;
 
 public class PigeonsIMU implements RawGyro {
@@ -11,7 +11,6 @@ public class PigeonsIMU implements RawGyro {
     private double yawVelocity;
     public PigeonsIMU(int portID) {
         this.pigeonInstance = new Pigeon2(portID);
-        this.pigeonInstance.configFactoryDefault();
         this.dt = new Timer();
         dt.start();
         yawVelocity = 0;
@@ -29,9 +28,9 @@ public class PigeonsIMU implements RawGyro {
     @Override
     public double[] getRawYawPitchRollAngle() {
         return new double[] {
-                Math.toRadians(pigeonInstance.getYaw()),
-                Math.toRadians(pigeonInstance.getPitch()),
-                Math.toRadians(pigeonInstance.getRoll())
+                Math.toRadians(pigeonInstance.getYaw().getValueAsDouble()),
+                Math.toRadians(pigeonInstance.getPitch().getValueAsDouble()),
+                Math.toRadians(pigeonInstance.getRoll().getValueAsDouble())
         };
     }
 

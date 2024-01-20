@@ -1,8 +1,8 @@
 package frc.robot.Drivers.Motors;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.Drivers.Encoders.Encoder;
 import frc.robot.Drivers.RobotDriverBase;
@@ -10,10 +10,10 @@ import frc.robot.Modules.RobotModuleBase;
 
 public class TalonFXMotor extends RobotDriverBase implements Motor, Encoder {
     private final TalonFX talonFXInstance;
+    private final StatusSignal rotorPositionSignal, rotorVelocitySignal;
     private final int portID;
     /** encoder is built-in, so they reverse together */
     private double powerAndEncoderScaleFactor;
-    private double encoderZeroPosition = 0;
     private double currentPower = 0;
     private boolean enabled;
 
@@ -24,7 +24,11 @@ public class TalonFXMotor extends RobotDriverBase implements Motor, Encoder {
     public TalonFXMotor(TalonFX talonFXInstance, boolean reversed) {
         this.powerAndEncoderScaleFactor = reversed ? -1 : 1;
         this.talonFXInstance = talonFXInstance;
-        this.portID = talonFXInstance.getBaseID();
+        this.rotorPositionSignal = talonFXInstance.getRotorPosition();
+        this.rotorVelocitySignal = talonFXInstance.getRotorVelocity();
+        rotorPositionSignal.setUpdateFrequency(200);
+        rotorVelocitySignal.setUpdateFrequency(200);
+        this.portID = talonFXInstance.getDeviceID();
         enabled = true;
     }
 
@@ -38,7 +42,7 @@ public class TalonFXMotor extends RobotDriverBase implements Motor, Encoder {
         // System.out.println("<-- TalonFX | motor id " + portID + " set power by " + operatorModule + " -->");
         if (!isOwner(operatorModule))
             return;
-        talonFXInstance.set(ControlMode.PercentOutput, power * this.powerAndEncoderScaleFactor);
+        talonFXInstance.set(power * this.powerAndEncoderScaleFactor);
         currentPower = power;
         enabled = true;
     }
@@ -52,8 +56,8 @@ public class TalonFXMotor extends RobotDriverBase implements Motor, Encoder {
     public void setTargetedPosition(double targetedPosition, RobotModuleBase operatorModule) {
         if (!isOwner(operatorModule))
             return;
-        talonFXInstance.set(ControlMode.Position, targetedPosition);
-        talonFXInstance.setNeutralMode(NeutralMode.Brake);
+        talonFXInstance.setPosition(targetedPosition);
+        talonFXInstance.setNeutralMode(NeutralModeValue.Brake);
     }
 
     @Override
@@ -67,11 +71,11 @@ public class TalonFXMotor extends RobotDriverBase implements Motor, Encoder {
             return;
         switch (behavior) {
             case BRAKE: {
-                talonFXInstance.setNeutralMode(NeutralMode.Brake);
+                talonFXInstance.setNeutralMode(NeutralModeValue.Brake);
                 break;
             }
             case RELAX: {
-                talonFXInstance.setNeutralMode(NeutralMode.Coast);
+                talonFXInstance.setNeutralMode(NeutralModeValue.Coast);
             }
             default: {
                 // unsupported zero power behavior
@@ -98,23 +102,20 @@ public class TalonFXMotor extends RobotDriverBase implements Motor, Encoder {
         return talonFXInstance;
     }
 
-    // TODO finish the encoder part of talon motors
-    // features: convert the value into radian
-    // two modes, the angle of the motor (0~360deg) and added-up value
     @Override
     public void setZeroPosition(double zeroPosition) {
-        this.encoderZeroPosition = zeroPosition;
+
     }
 
     /** gets the current position, not in radian */
     @Override
     public double getEncoderPosition() {
-        return talonFXInstance.getSelectedSensorPosition();
+        return rotorPositionSignal.getValueAsDouble() * 2048; // TODO just use rotations, convert the units in other parts of the code
     }
 
     /** gets the current velocity, not in radian, but in per second */
     @Override
     public double getEncoderVelocity() {
-        return talonFXInstance.getSelectedSensorVelocity() * 10;
+        return rotorVelocitySignal.getValueAsDouble() * 2048;
     }
 }
