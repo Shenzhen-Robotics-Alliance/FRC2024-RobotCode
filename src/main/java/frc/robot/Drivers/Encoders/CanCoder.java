@@ -48,6 +48,7 @@ public class CanCoder extends RobotDriverBase implements Encoder {
 
     /** the raw sensor reading, converted to radian */
     public double getRawSensorReading() {
+        // TODO this value is probably incorrect
         return absolutePositionSignal.getValueAsDouble() * Math.PI * 2;
     }
 
