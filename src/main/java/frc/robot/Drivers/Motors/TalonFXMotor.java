@@ -10,7 +10,6 @@ import frc.robot.Modules.RobotModuleBase;
 
 public class TalonFXMotor extends RobotDriverBase implements Motor, Encoder {
     private final TalonFX talonFXInstance;
-    private final StatusSignal rotorPositionSignal, rotorVelocitySignal;
     private final int portID;
     /** encoder is built-in, so they reverse together */
     private double powerAndEncoderScaleFactor;
@@ -24,10 +23,8 @@ public class TalonFXMotor extends RobotDriverBase implements Motor, Encoder {
     public TalonFXMotor(TalonFX talonFXInstance, boolean reversed) {
         this.powerAndEncoderScaleFactor = reversed ? -1 : 1;
         this.talonFXInstance = talonFXInstance;
-        this.rotorPositionSignal = talonFXInstance.getRotorPosition();
-        this.rotorVelocitySignal = talonFXInstance.getRotorVelocity();
-        rotorPositionSignal.setUpdateFrequency(200);
-        rotorVelocitySignal.setUpdateFrequency(200);
+        talonFXInstance.getRotorPosition().setUpdateFrequency(100);
+        talonFXInstance.getRotorVelocity().setUpdateFrequency(100);
         this.portID = talonFXInstance.getDeviceID();
         enabled = true;
     }
@@ -110,12 +107,12 @@ public class TalonFXMotor extends RobotDriverBase implements Motor, Encoder {
     /** gets the current position, not in radian */
     @Override
     public double getEncoderPosition() {
-        return rotorPositionSignal.getValueAsDouble() * 2048; // TODO just use rotations, convert the units in other parts of the code
+        return talonFXInstance.getRotorPosition().getValueAsDouble() * 2048; // TODO just use rotations, convert the units in other parts of the code
     }
 
     /** gets the current velocity, not in radian, but in per second */
     @Override
     public double getEncoderVelocity() {
-        return rotorVelocitySignal.getValueAsDouble() * 2048;
+        return talonFXInstance.getRotorVelocity().getValueAsDouble() * 2048;
     }
 }

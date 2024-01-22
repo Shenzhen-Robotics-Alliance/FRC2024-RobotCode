@@ -44,7 +44,7 @@ public class Robot {
                 services = new ArrayList<>();
 
                 try {
-                        robotConfig = new RobotConfigReader("fasterChassis");
+                        robotConfig = new RobotConfigReader("slowerChassis");
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new RuntimeException("error while reading robot config");
@@ -63,7 +63,6 @@ public class Robot {
                 modules.add(backRightWheel);
 
                 this.gyro = new SimpleGyro(0, false, new PigeonsIMU((int) robotConfig.getConfig("hardware/gyroPort")));
-                // this.gyro = new SimpleGyro(0, true, new NavX2IMU());
 
                 final SwerveWheel[] swerveWheels = new SwerveWheel[] {frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel};
                 positionReader = new SwerveWheelPositionEstimator(swerveWheels, gyro);
@@ -124,6 +123,12 @@ public class Robot {
                         robotConfig.startTuningConfig(config);
                 restRobot();
                 wasEnabled = false; // when the robot just booted, it was not enabled
+
+                if (useMultiThreads) {
+                        scheduleThreads();
+                        runThreads();
+                }
+
                 System.out.println("<-- Robot | robot initialized -->");
         }
 
@@ -143,10 +148,6 @@ public class Robot {
                 System.out.println("<-- Robot | enabling robot... -->");
                 for (RobotModuleBase module: modules)
                         module.enable();
-                if (useMultiThreads) {
-                        scheduleThreads();
-                        runThreads();
-                }
 
                 restRobot();
 

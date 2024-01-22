@@ -7,7 +7,6 @@ import frc.robot.Utils.MathUtils.AngleUtils;
 
 public class CanCoder extends RobotDriverBase implements Encoder {
     private final CANcoder encoderInstance;
-    private final StatusSignal absolutePositionSignal, velocitySignal;
     private double encoderScaleFactor;
     private double encoderZeroPosition;
 
@@ -19,10 +18,6 @@ public class CanCoder extends RobotDriverBase implements Encoder {
         this.encoderInstance = encoderInstance;
         this.encoderZeroPosition = 0;
         this.encoderScaleFactor = reversed ? -1 : 1;
-        absolutePositionSignal = encoderInstance.getAbsolutePosition();
-        velocitySignal = encoderInstance.getVelocity();
-        absolutePositionSignal.setUpdateFrequency(200);
-        velocitySignal.setUpdateFrequency(200);
     }
 
     @Override
@@ -48,12 +43,11 @@ public class CanCoder extends RobotDriverBase implements Encoder {
 
     /** the raw sensor reading, converted to radian */
     public double getRawSensorReading() {
-        // TODO this value is probably incorrect
-        return absolutePositionSignal.getValueAsDouble() * Math.PI * 2;
+        return encoderInstance.getAbsolutePosition().getValueAsDouble() * Math.PI * 2;
     }
 
     @Override
     public double getEncoderVelocity() {
-        return velocitySignal.getValueAsDouble() * encoderScaleFactor * Math.PI * 2;
+        return encoderInstance.getVelocity().getValueAsDouble() * encoderScaleFactor * Math.PI * 2;
     }
 }

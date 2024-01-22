@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Drivers.Encoders.CanCoder;
 import frc.robot.Drivers.Encoders.Encoder;
 import frc.robot.Utils.*;
 import frc.robot.Drivers.Motors.Motor;
@@ -124,6 +125,7 @@ public class SwerveWheel extends RobotModuleBase {
 
     @Override
     public void periodic(double dt) {
+        // TODO there is a very significant lagging issue in the program, we need to change the whole logic of the multi-threading
         steerMotor.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE, this);
         drivingMotor.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE, this);
 
@@ -173,8 +175,6 @@ public class SwerveWheel extends RobotModuleBase {
         /* given the power ratio of the steer, pass the PID feedback to the motor */
         final double steerPowerRate = locked ? 1: getSteerPowerRate(targetedSpeed);
         steerMotor.setPower(correctionMotorSpeed * steerPowerRate, this);
-//        if (swerveWheelID == 1)
-//            System.out.println("steer 1 reading:" + getSteerHeading());
 
         /* update the motor power of the driving motor */
         double drivePower = targetedSpeed;

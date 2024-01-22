@@ -51,6 +51,7 @@ class TimedRobotShell extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        System.out.println("<-- teleop init -->");
         robot = new RemoteControlledRobot();
         robot.initializeRobot();
         robotBeenEnabledSinceProgram = true;
@@ -70,9 +71,6 @@ class TimedRobotShell extends TimedRobot {
     }
     @Override
     public void teleopPeriodic() {
-        // TODO use here to update the pilot services
-        //  this function is not called when robot is disabled
-
         if (aprilTagPositionTrackingCamera == null) return;
         aprilTagPositionTrackingCamera.update(new Vector2D(), new Rotation2D(0));
         final int targetID = 4;
@@ -120,8 +118,8 @@ class TimedRobotShell extends TimedRobot {
     TargetFieldPositionTracker aprilTagPositionTrackingCamera;
     @Override
     public void testInit() {
-//        this.calibration = new WheelsCalibration();
-//        calibration.calibrationStart();
+        this.calibration = new WheelsCalibration();
+        calibration.calibrationStart();
 
 //        aprilTagDetectionAppClient = new JetsonDetectionAppClient("AprilTag Detection", "10.99.99.109", 8888);
 //        aprilTagDetectionAppClient.startRecognizing();
@@ -154,23 +152,23 @@ class TimedRobotShell extends TimedRobot {
 //        * result: -0.001307
 //        * */
 
-        aprilTagDetectionAppClient = new JetsonDetectionAppClient("AprilTagDetector", "10.99.99.109", 8888);
-            final double[] targetHeights = new double[] {100, 100, 100, 100, 100, 100};
-        aprilTagPositionTrackingCamera = new FixedAnglePositionTrackingCamera(
-                aprilTagDetectionAppClient,
-                new FixedAngleCameraProfile(
-                        -0.58288,
-                        -0.001342,
-                        -0.002167
-                ),
-                targetHeights
-        );
-        aprilTagDetectionAppClient.startRecognizing();
+//        aprilTagDetectionAppClient = new JetsonDetectionAppClient("AprilTagDetector", "10.99.99.109", 8888);
+//            final double[] targetHeights = new double[] {100, 100, 100, 100, 100, 100};
+//        aprilTagPositionTrackingCamera = new FixedAnglePositionTrackingCamera(
+//                aprilTagDetectionAppClient,
+//                new FixedAngleCameraProfile(
+//                        -0.58288,
+//                        -0.001342,
+//                        -0.002167
+//                ),
+//                targetHeights
+//        );
+//        aprilTagDetectionAppClient.startRecognizing();
     }
 
     @Override
     public void testPeriodic() {
-//        calibration.calibrationPeriodic();
+        calibration.calibrationPeriodic();
 
 //        aprilTagDetectionAppClient.startRecognizing();
 //        aprilTagDetectionAppClient.update();
@@ -184,23 +182,23 @@ class TimedRobotShell extends TimedRobot {
 
 //        horizontalProfileMeasureProcess.measuringPeriodic();
 
-        if (aprilTagPositionTrackingCamera == null) return;
-        aprilTagPositionTrackingCamera.update(new Vector2D(), new Rotation2D(0));
-        final int targetID = 4;
-        final TargetFieldPositionTracker.TargetOnField target;
-        final double x,y,dis,hdg;
-        if ((target = aprilTagPositionTrackingCamera.getTargetByID(targetID)) == null)
-            x = y = dis = hdg = -114514;
-        else {
-            x = target.fieldPosition.getX() * 100;
-            y = target.fieldPosition.getY() * 100;
-            dis = target.fieldPosition.getMagnitude() * 100;
-            hdg = Math.toDegrees(target.fieldPosition.getHeading()) - 90;
-        }
-        SmartDashboard.putNumber("target relative position to camera X (CM)", x);
-        SmartDashboard.putNumber("target relative position to camera Y (CM)", y);
-        SmartDashboard.putNumber("target distance from camera (CM)", dis);
-        SmartDashboard.putNumber("target Ang From Center Line (DEG)", hdg);
+//        if (aprilTagPositionTrackingCamera == null) return;
+//        aprilTagPositionTrackingCamera.update(new Vector2D(), new Rotation2D(0));
+//        final int targetID = 4;
+//        final TargetFieldPositionTracker.TargetOnField target;
+//        final double x,y,dis,hdg;
+//        if ((target = aprilTagPositionTrackingCamera.getTargetByID(targetID)) == null)
+//            x = y = dis = hdg = -114514;
+//        else {
+//            x = target.fieldPosition.getX() * 100;
+//            y = target.fieldPosition.getY() * 100;
+//            dis = target.fieldPosition.getMagnitude() * 100;
+//            hdg = Math.toDegrees(target.fieldPosition.getHeading()) - 90;
+//        }
+//        SmartDashboard.putNumber("target relative position to camera X (CM)", x);
+//        SmartDashboard.putNumber("target relative position to camera Y (CM)", y);
+//        SmartDashboard.putNumber("target distance from camera (CM)", dis);
+//        SmartDashboard.putNumber("target Ang From Center Line (DEG)", hdg);
     }
 
     @Override
