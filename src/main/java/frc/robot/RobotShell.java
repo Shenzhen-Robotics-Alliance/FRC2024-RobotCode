@@ -15,6 +15,7 @@ import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.SequentialCommandSegment;
 import frc.robot.Utils.Tests.BasicIntakeTest;
+import frc.robot.Utils.Tests.ShooterTest;
 import frc.robot.Utils.Tests.SimpleRobotTest;
 
 import java.util.ArrayList;
@@ -124,7 +125,7 @@ public class RobotShell extends TimedRobot {
     public void testInit() {
         // System.out.println("<-- Robot Shell | test init -->");
         if (robotTest == null)
-            this.robotTest = new BasicIntakeTest();
+            this.robotTest = new ShooterTest();
         robotTest.testStart();
     }
 

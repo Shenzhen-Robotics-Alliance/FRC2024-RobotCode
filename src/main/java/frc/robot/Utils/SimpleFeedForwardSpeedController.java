@@ -5,14 +5,14 @@ package frc.robot.Utils;
  */
 public class SimpleFeedForwardSpeedController {
     private static final double nanoToSec = 1_000_000_000.0;
-    private final SpeedControllerProfile profile;
+    private final SimpleFeedForwardControllerProfile profile;
     private double previousSpeed;
     private double previousTimeNano;
     /**
      *  initializes the speed controller with parameters
      * @param profile the profile for the speed controller
      *  */
-    public SimpleFeedForwardSpeedController(SpeedControllerProfile profile) {
+    public SimpleFeedForwardSpeedController(SimpleFeedForwardControllerProfile profile) {
         this.profile = profile;
     }
 
@@ -33,13 +33,13 @@ public class SimpleFeedForwardSpeedController {
         return correctionPower;
     }
 
-    public SpeedControllerProfile getSpeedControllerProfile() {
+    public SimpleFeedForwardControllerProfile getSpeedControllerProfile() {
         return profile;
     }
 
-    public static class SpeedControllerProfile{
+    public static class SimpleFeedForwardControllerProfile {
         public final double proportionGain, feedForwardGain, frictionGain, feedForwardDelay;
-        public SpeedControllerProfile(double proportionGain, double feedForwardGain, double frictionGain, double feedForwardDelay) {
+        public SimpleFeedForwardControllerProfile(double proportionGain, double feedForwardGain, double frictionGain, double feedForwardDelay) {
             this.proportionGain = proportionGain;
             this.feedForwardGain = feedForwardGain;
             this.frictionGain = frictionGain;

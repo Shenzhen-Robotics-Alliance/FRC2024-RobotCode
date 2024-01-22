@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Drivers.Encoders.CanCoder;
 import frc.robot.Drivers.Encoders.Encoder;
 import frc.robot.Utils.*;
 import frc.robot.Drivers.Motors.Motor;
@@ -236,7 +235,7 @@ public class SwerveWheel extends RobotModuleBase {
                 driveWheelVelocityTolerance = robotConfig.getConfig("chassis/driveWheelVelocityTolerance");
 
         this.wheelSpeedController = new SimpleFeedForwardSpeedController(
-                new SimpleFeedForwardSpeedController.SpeedControllerProfile(
+                new SimpleFeedForwardSpeedController.SimpleFeedForwardControllerProfile(
                         driveWheelProportionGain, driveWheelFeedForwardRate, driveWheelFrictionDefaultValue, driveWheelFeedForwardDelay
                 ));
 
