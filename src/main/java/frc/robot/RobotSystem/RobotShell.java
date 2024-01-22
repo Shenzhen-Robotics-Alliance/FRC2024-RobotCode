@@ -1,17 +1,30 @@
 package frc.robot.RobotSystem;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.AutoStagePrograms.AutoStageProgram;
 import frc.robot.AutoStagePrograms.TestAutoStageProgram;
+import frc.robot.Drivers.Visions.FixedAnglePositionTrackingCamera;
+import frc.robot.Drivers.Visions.JetsonDetectionAppClient;
+import frc.robot.Drivers.Visions.TargetFieldPositionTracker;
 import frc.robot.Services.AutoProgramRunner;
 import frc.robot.Services.PilotChassis;
 import frc.robot.Services.RobotServiceBase;
+import frc.robot.Utils.FixedAngleCameraUtils.FixedAngleCameraProfile;
+import frc.robot.Utils.MathUtils.Rotation2D;
+import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.SequentialCommandSegment;
+import frc.robot.Utils.Tests.BasicIntakeTest;
+import frc.robot.Utils.Tests.SimpleRobotTest;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RobotShell extends TimedRobot {
+    /** TODO: put the vision client inside robot core */
+    private JetsonDetectionAppClient aprilTagDetectionAppClient = null;
+    private TargetFieldPositionTracker aprilTagPositionTrackingCamera;
+
     private RobotCore robotCore;
     /** called once when the robot powers on */
     @Override
@@ -50,12 +63,44 @@ public class RobotShell extends TimedRobot {
     public void teleopInit() {
         System.out.println("<-- Robot Shell | teleop init -->");
         startManualStage();
+
+        aprilTagDetectionAppClient = new JetsonDetectionAppClient("AprilTagDetector", "10.99.99.109", 8888);
+        final double[] targetHeights = new double[] {100, 100, 100, 100, 100, 100};
+        aprilTagPositionTrackingCamera = new FixedAnglePositionTrackingCamera(
+                aprilTagDetectionAppClient,
+                new FixedAngleCameraProfile(
+                        -0.58288,
+                        -0.001342,
+                        -0.002167
+                ),
+                targetHeights
+        );
+        aprilTagDetectionAppClient.startRecognizing();
     }
 
     @Override
     public void teleopPeriodic() {
         System.out.println("<-- Robot Shell | teleop periodic -->");
         robotCore.updateRobot();
+
+        // TODO below are here temporarily, move them to robot core
+        if (aprilTagPositionTrackingCamera == null) return;
+        aprilTagPositionTrackingCamera.update(new Vector2D(), new Rotation2D(0));
+        final int targetID = 4;
+        final TargetFieldPositionTracker.TargetOnField target;
+        final double x,y,dis,hdg;
+        if ((target = aprilTagPositionTrackingCamera.getTargetByID(targetID)) == null)
+            x = y = dis = hdg = -114514;
+        else {
+            x = target.fieldPosition.getX() * 100;
+            y = target.fieldPosition.getY() * 100;
+            dis = target.fieldPosition.getMagnitude() * 100;
+            hdg = Math.toDegrees(target.fieldPosition.getHeading()) - 90;
+        }
+        SmartDashboard.putNumber("target relative position to camera X (CM)", x);
+        SmartDashboard.putNumber("target relative position to camera Y (CM)", y);
+        SmartDashboard.putNumber("target distance from camera (CM)", dis);
+        SmartDashboard.putNumber("target Ang From Center Line (DEG)", hdg);
     }
 
     @Override
@@ -67,17 +112,26 @@ public class RobotShell extends TimedRobot {
     @Override
     public void disabledPeriodic() {
         System.out.println("<-- Robot Shell | disabled periodic -->");
+
+        if (aprilTagDetectionAppClient != null)
+            aprilTagDetectionAppClient.stopRecognizing();
+
         // TODO if the robot is left unused for a long time, let the motors sing
     }
 
+    private SimpleRobotTest robotTest = null;
     @Override
     public void testInit() {
         System.out.println("<-- Robot Shell | test init -->");
+        if (robotTest == null)
+            this.robotTest = new BasicIntakeTest();
+        robotTest.testStart();
     }
 
     @Override
     public void testPeriodic() {
         System.out.println("<-- Robot Shell | robot init -->");
+        robotTest.testPeriodic();
     }
 
     private void startAutoStage(AutoStageProgram autoStageProgram) {
