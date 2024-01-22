@@ -1,7 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.robot.RobotSystem.RobotShell;
 
 /**
  * The entry of the robot's program

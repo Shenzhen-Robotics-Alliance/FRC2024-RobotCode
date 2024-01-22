@@ -1,6 +1,6 @@
 package frc.robot.AutoStagePrograms;
 
-import frc.robot.RobotSystem.RobotCore;
+import frc.robot.RobotCore;
 import frc.robot.Utils.SequentialCommandSegment;
 
 import java.util.List;

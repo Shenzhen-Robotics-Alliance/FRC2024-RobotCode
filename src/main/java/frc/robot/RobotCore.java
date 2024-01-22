@@ -1,4 +1,4 @@
-package frc.robot.RobotSystem;
+package frc.robot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,13 +63,13 @@ public class RobotCore {
                 modules.add(frontLeftWheel);
 
                 backLeftWheel = createSwerveWheel("backLeft", 2, new Vector2D(new double[] { -0.6, -0.6 }));
-                // modules.add(backLeftWheel);
+                modules.add(backLeftWheel);
 
                 frontRightWheel = createSwerveWheel("frontRight", 3, new Vector2D(new double[] { 0.6, 0.6 }));
-                // modules.add(frontRightWheel);
+                modules.add(frontRightWheel);
 
                 backRightWheel = createSwerveWheel("backRight", 4, new Vector2D(new double[] { 0.6, -0.6 }));
-                // modules.add(backRightWheel);
+                modules.add(backRightWheel);
 
                 this.gyro = new SimpleGyro(0, false, new PigeonsIMU((int) robotConfig.getConfig("hardware/gyroPort")));
 

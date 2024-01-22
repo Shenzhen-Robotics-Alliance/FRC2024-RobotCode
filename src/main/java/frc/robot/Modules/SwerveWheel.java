@@ -125,11 +125,11 @@ public class SwerveWheel extends RobotModuleBase {
 
     @Override
     public void periodic(double dt) {
-        long t0 = System.currentTimeMillis();
         steerMotor.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE, this);
         drivingMotor.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE, this);
 
-        System.out.println("checkpoint 1: " + (System.currentTimeMillis() - t0));
+        final double steerEncoderCurrentReading = getSteerHeading(),
+                steerEncoderCurrentVelocity = getSteerVelocity();
 
         /** whether the robot is asked to move */
         boolean robotRequiredToMove = Math.abs(targetedSpeed) > lowestUsageSpeed;
@@ -149,8 +149,6 @@ public class SwerveWheel extends RobotModuleBase {
         /* proceed x-formation if required to lock */
         decidedTargetedHeading = locked ? getWheelInstalledLocationVector().getHeading(): decidedTargetedHeading;
 
-        System.out.println("checkpoint 2: " + (System.currentTimeMillis() - t0));
-
         /**
          * update the desired heading of the steer wheel, given control module's
          * instructions
@@ -158,31 +156,27 @@ public class SwerveWheel extends RobotModuleBase {
         double finalTargetedHeading = decidedTargetedHeading;
         reverseWheel = false;
         /* whenever the reversed way is closer to get to, reverse the motor */
-        if (Math.abs(AngleUtils.getActualDifference(getSteerHeading(), decidedTargetedHeading)) > Math
+        if (Math.abs(AngleUtils.getActualDifference(steerEncoderCurrentReading, decidedTargetedHeading)) > Math
                 .abs(AngleUtils.getActualDifference(
-                        getSteerHeading(), AngleUtils.simplifyAngle(decidedTargetedHeading + Math.PI)))
+                        steerEncoderCurrentReading, AngleUtils.simplifyAngle(decidedTargetedHeading + Math.PI)))
         ) {
             reverseWheel = true;
             finalTargetedHeading = AngleUtils.simplifyAngle(finalTargetedHeading + Math.PI);
         }
 
-        System.out.println("checkpoint 3: " + (System.currentTimeMillis() - t0));
-
         /* pass the desired position to pid controller */
         this.steerPIDController.startNewTask(new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, finalTargetedHeading));
 
         /** the correction speed obtained from pid controller */
-        double correctionMotorSpeed = steerPIDController.getMotorPower(getSteerHeading(), getSteerVelocity(), dt);
+        double correctionMotorSpeed = steerPIDController.getMotorPower(steerEncoderCurrentReading, steerEncoderCurrentVelocity, dt);
 
-        SmartDashboard.putNumber("steer " + swerveWheelID + " position", getSteerHeading());
-        SmartDashboard.putNumber("steer " + swerveWheelID + " velocity", getSteerVelocity());
+        SmartDashboard.putNumber("steer " + swerveWheelID + " position", steerEncoderCurrentReading);
+        SmartDashboard.putNumber("steer " + swerveWheelID + " velocity", steerEncoderCurrentVelocity);
         SmartDashboard.putNumber("steer " + swerveWheelID + "target", finalTargetedHeading);
 
         /* given the power ratio of the steer, pass the PID feedback to the motor */
         final double steerPowerRate = locked ? 1: getSteerPowerRate(targetedSpeed);
         steerMotor.setPower(correctionMotorSpeed * steerPowerRate, this);
-
-        System.out.println("checkpoint 4: " + (System.currentTimeMillis() - t0));
 
         /* update the motor power of the driving motor */
         double drivePower = targetedSpeed;
@@ -190,16 +184,11 @@ public class SwerveWheel extends RobotModuleBase {
             drivePower = wheelSpeedController.getSpeedControlPower(getWheelVelocityWithoutDirection() / this.maxDrivingEncoderVelocity, targetedSpeed);
 //            drivePower = getDrivePower(getWheelVelocityWithoutDirection() / this.maxDrivingEncoderVelocity, targetedSpeed);
 
-
-        System.out.println("checkpoint 5: " + (System.currentTimeMillis() - t0));
-
         // if (reverseWheel) drivePower *= -1;
-        drivePower *= Math.cos(AngleUtils.getActualDifference(getSteerHeading(), commandedHeading)); // use cos instead, so that it runs slower when not reached target
+        drivePower *= Math.cos(AngleUtils.getActualDifference(steerEncoderCurrentReading, commandedHeading)); // use cos instead, so that it runs slower when not reached target
         if (locked) drivePower = 0;
 
         drivingMotor.setPower(drivePower, this);
-
-        System.out.println("checkpoint 6: " + (System.currentTimeMillis() - t0));
     }
 
     /**

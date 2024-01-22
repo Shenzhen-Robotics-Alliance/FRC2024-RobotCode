@@ -1,7 +1,7 @@
 <!-- 5516 -->
 <robotConfig>
     <system>
-        <chassisModuleUpdateFrequency>50</chassisModuleUpdateFrequency>
+        <chassisModuleUpdateFrequency>100</chassisModuleUpdateFrequency>
     </system>
     <hardware>
         <chassisOnCanivore>0</chassisOnCanivore>
@@ -139,7 +139,7 @@
         <lockChassisButtonPort type="int">3</lockChassisButtonPort>
         <maintainCurrentRotationButton type="int">4</maintainCurrentRotationButton>
     </control-RM_BOXER>
-    <control-Joystick>
+    <control-JOYSTICK>
         <controllerPort type="int">1</controllerPort>
         <xAxisPort type="int">0</xAxisPort>
         <yAxisPort type="nt">1</yAxisPort>
@@ -157,7 +157,7 @@
         <resetChassisButton type="int">11</resetChassisButton>
         <lockChassisButtonPort type="int">4</lockChassisButtonPort>
         <maintainCurrentRotationButton type="int">3</maintainCurrentRotationButton>
-    </control-Joystick>
+    </control-JOYSTICK>
 
     <control-XBOX>
         <controllerPort type="int">0</controllerPort>
