@@ -94,7 +94,7 @@ public class SwerveWheel extends RobotModuleBase {
             RobotConfigReader robotConfig,
             int swerveWheelID,
             double motorEncoderBias) {
-        super("swerve module", (int)robotConfig.getConfig("system", "chassisModuleUpdateFrequency"));
+        super("swerve module " + swerveWheelID, (int)robotConfig.getConfig("system", "chassisModuleUpdateFrequency"));
         this.swerveWheelID = swerveWheelID;
         this.wheelPositionVector = wheelPositionVector;
         this.drivingMotor = drivingMotor;
@@ -125,9 +125,11 @@ public class SwerveWheel extends RobotModuleBase {
 
     @Override
     public void periodic(double dt) {
-        // TODO there is a very significant lagging issue in the program, we need to change the whole logic of the multi-threading
+        long t0 = System.currentTimeMillis();
         steerMotor.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE, this);
         drivingMotor.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE, this);
+
+        System.out.println("checkpoint 1: " + (System.currentTimeMillis() - t0));
 
         /** whether the robot is asked to move */
         boolean robotRequiredToMove = Math.abs(targetedSpeed) > lowestUsageSpeed;
@@ -147,6 +149,8 @@ public class SwerveWheel extends RobotModuleBase {
         /* proceed x-formation if required to lock */
         decidedTargetedHeading = locked ? getWheelInstalledLocationVector().getHeading(): decidedTargetedHeading;
 
+        System.out.println("checkpoint 2: " + (System.currentTimeMillis() - t0));
+
         /**
          * update the desired heading of the steer wheel, given control module's
          * instructions
@@ -162,6 +166,8 @@ public class SwerveWheel extends RobotModuleBase {
             finalTargetedHeading = AngleUtils.simplifyAngle(finalTargetedHeading + Math.PI);
         }
 
+        System.out.println("checkpoint 3: " + (System.currentTimeMillis() - t0));
+
         /* pass the desired position to pid controller */
         this.steerPIDController.startNewTask(new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, finalTargetedHeading));
 
@@ -176,6 +182,8 @@ public class SwerveWheel extends RobotModuleBase {
         final double steerPowerRate = locked ? 1: getSteerPowerRate(targetedSpeed);
         steerMotor.setPower(correctionMotorSpeed * steerPowerRate, this);
 
+        System.out.println("checkpoint 4: " + (System.currentTimeMillis() - t0));
+
         /* update the motor power of the driving motor */
         double drivePower = targetedSpeed;
         if (driveSpeedControlEnabled)
@@ -183,11 +191,15 @@ public class SwerveWheel extends RobotModuleBase {
 //            drivePower = getDrivePower(getWheelVelocityWithoutDirection() / this.maxDrivingEncoderVelocity, targetedSpeed);
 
 
+        System.out.println("checkpoint 5: " + (System.currentTimeMillis() - t0));
+
         // if (reverseWheel) drivePower *= -1;
         drivePower *= Math.cos(AngleUtils.getActualDifference(getSteerHeading(), commandedHeading)); // use cos instead, so that it runs slower when not reached target
         if (locked) drivePower = 0;
 
         drivingMotor.setPower(drivePower, this);
+
+        System.out.println("checkpoint 6: " + (System.currentTimeMillis() - t0));
     }
 
     /**
@@ -407,8 +419,12 @@ public class SwerveWheel extends RobotModuleBase {
      * @return the velocity, direction is erased using the reversibility of the wheel
      */
     public double getWheelVelocityWithoutDirection() {
-        return drivingEncoder.getEncoderVelocity()
-                * (reverseWheel? -1 : 1);
+//        return drivingEncoder.getEncoderVelocity()
+//                * (reverseWheel? -1 : 1);
+        long t0 = System.currentTimeMillis();
+        double encoderVel = drivingEncoder.getEncoderVelocity();
+        System.out.println("read wheel velocity dt(ms): " + (System.currentTimeMillis() - t0));
+        return encoderVel * (reverseWheel? -1 : 1);
     }
 
 

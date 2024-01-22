@@ -1,6 +1,5 @@
 package frc.robot.Drivers.Motors;
 
-import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -15,6 +14,7 @@ public class TalonFXMotor extends RobotDriverBase implements Motor, Encoder {
     private double powerAndEncoderScaleFactor;
     private double currentPower = 0;
     private boolean enabled;
+    private ZeroPowerBehavior zeroPowerBehavior;
 
     public TalonFXMotor(TalonFX talonFXInstance) {
         this(talonFXInstance, false);
@@ -64,7 +64,7 @@ public class TalonFXMotor extends RobotDriverBase implements Motor, Encoder {
 
     @Override
     public void setMotorZeroPowerBehavior(ZeroPowerBehavior behavior, RobotModuleBase operatorModule) {
-        if (!isOwner(operatorModule))
+        if (!isOwner(operatorModule) || this.zeroPowerBehavior == behavior)
             return;
         switch (behavior) {
             case BRAKE: {
@@ -73,11 +73,13 @@ public class TalonFXMotor extends RobotDriverBase implements Motor, Encoder {
             }
             case RELAX: {
                 talonFXInstance.setNeutralMode(NeutralModeValue.Coast);
+                break;
             }
             default: {
-                // unsupported zero power behavior
+                throw new IllegalArgumentException("unknown zero power behavior: " + behavior);
             }
         }
+        this.zeroPowerBehavior = behavior;
     }
 
     @Override

@@ -52,8 +52,11 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
 
     public void periodic() {
         final long newTimeMillis = System.currentTimeMillis();
-        if (newTimeMillis == previousTimeMillis) // prevent 0 dt bugs
-            return;
+        if (newTimeMillis == previousTimeMillis) {
+            /* in case of dt=0 */
+            Time.sleep(1);
+            periodic();
+        }
         updateConfigs();
         periodic((newTimeMillis - previousTimeMillis) / 1000.0f);
         this.previousTimeMillis = newTimeMillis;
@@ -72,7 +75,9 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
                         Time.sleep(50);
                         continue;
                     }
+
                     periodic();
+
                     while (System.currentTimeMillis() - t< periodMS)
                         Time.sleep(1);
                     // System.out.println("module <" + moduleName + "> update frequency: " + 1000.0f/(System.currentTimeMillis() - t));
