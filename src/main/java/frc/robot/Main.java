@@ -12,6 +12,7 @@ import frc.robot.Utils.FixedAngleCameraUtils.FixedAngleCameraProfile;
 import frc.robot.Utils.FixedAngleCameraUtils.FixedAngleCameraVerticalProfileMeasureProcess;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
+import frc.robot.Utils.Tests.BasicIntakeTest;
 import frc.robot.Utils.Tests.SimpleRobotTest;
 import frc.robot.Utils.Tests.WheelsCalibration;
 
@@ -41,7 +42,7 @@ class TimedRobotShell extends TimedRobot {
             robot.updateRobot(isEnabled());
     }
 
-    private JetsonDetectionAppClient aprilTagDetectionAppClient;
+    private JetsonDetectionAppClient aprilTagDetectionAppClient = null;
     private TargetFieldPositionTracker aprilTagPositionTrackingCamera;
     @Override
     public void teleopInit() {
@@ -106,12 +107,12 @@ class TimedRobotShell extends TimedRobot {
 
     }
 
-    private SimpleRobotTest robotTest;
+    private SimpleRobotTest robotTest = null;
     @Override
     public void testInit() {
-        this.robotTest = new WheelsCalibration();
+        if (robotTest == null)
+            this.robotTest = new BasicIntakeTest();
         robotTest.testStart();
-
     }
 
     @Override
@@ -121,7 +122,8 @@ class TimedRobotShell extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-        aprilTagDetectionAppClient.stopRecognizing();
+        if (aprilTagDetectionAppClient != null)
+            aprilTagDetectionAppClient.stopRecognizing();
         // TODO here, alarm is the robot is unused for too long time
     }
 }
