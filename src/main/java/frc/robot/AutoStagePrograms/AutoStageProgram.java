@@ -1,7 +1,6 @@
 package frc.robot.AutoStagePrograms;
 
-import frc.robot.Modules.SwerveBasedChassis;
-import frc.robot.Robot;
+import frc.robot.RobotSystem.RobotCore;
 import frc.robot.Utils.SequentialCommandSegment;
 
 import java.util.List;
@@ -10,5 +9,5 @@ import java.util.List;
  * write auto stages in subclasses that implements this abstract class
  * */
 public interface AutoStageProgram {
-    List<SequentialCommandSegment> getCommandSegments(Robot robot);
+    List<SequentialCommandSegment> getCommandSegments(RobotCore robotCore);
 }

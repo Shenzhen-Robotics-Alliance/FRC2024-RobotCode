@@ -1,6 +1,6 @@
 package frc.robot.AutoStagePrograms;
 
-import frc.robot.Robot;
+import frc.robot.RobotSystem.RobotCore;
 import frc.robot.Utils.MathUtils.BezierCurve;
 import frc.robot.Utils.SequentialCommandSegment;
 import frc.robot.Utils.MathUtils.Vector2D;
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class TestAutoStageProgram implements AutoStageProgram {
     @Override
-    public List<SequentialCommandSegment> getCommandSegments(Robot robot) {
+    public List<SequentialCommandSegment> getCommandSegments(RobotCore robotCore) {
         final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
 
         BezierCurve path = new BezierCurve(new Vector2D(), new Vector2D(new double[] {0, 3}), new Vector2D(new double[] {2, 3}));

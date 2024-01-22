@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.RobotSystem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,6 @@ import java.util.List;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.CANcoder;
 
-import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.Encoders.CanCoder;
 import frc.robot.Drivers.IMUs.PigeonsIMU;
@@ -21,24 +20,34 @@ import frc.robot.Services.RobotServiceBase;
 import frc.robot.Utils.*;
 import frc.robot.Utils.MathUtils.Vector2D;
 
-public class Robot {
+/**
+ *
+ * the core of the robot, including all the modules that powers the module
+ * note that services are not included in this field
+ * */
+public class RobotCore {
         RobotConfigReader robotConfig;
-        protected final SwerveWheel frontLeftWheel, backLeftWheel, frontRightWheel, backRightWheel;
-        protected final SimpleGyro gyro;
+        public final SwerveWheel frontLeftWheel, backLeftWheel, frontRightWheel, backRightWheel;
+        public final SimpleGyro gyro;
         public final SwerveWheelPositionEstimator positionReader;
         public final SwerveBasedChassis chassisModule;
-        protected final List<String> configsToTune = new ArrayList<>(1);
-        protected final Timer programDelay = new Timer();
-        protected final List<RobotModuleBase> modules;
-        protected final List<RobotServiceBase> services;
-        protected List<Thread> modulesUpdatingThreads;
-        protected final boolean useMultiThreads;
+        private final List<String> configsToTune = new ArrayList<>(1);
+        private final List<RobotModuleBase> modules;
+        private List<RobotServiceBase> services;
+        private List<Thread> modulesUpdatingThreads;
+        private final boolean useMultiThreads;
         protected boolean wasEnabled;
 
-        public Robot() {
+        public RobotCore() {
                 this(true);
         }
-        public Robot(boolean useMultiThreads) {
+        /**
+         * creates a robot core
+         * creates the instances of all the modules, but do not call init functions yet
+         * @param useMultiThreads whether the robot modules should be updated in independent threads
+         * */
+        public RobotCore(boolean useMultiThreads) {
+                System.out.println("<-- Robot Core | creating robot... -->");
                 this.useMultiThreads = useMultiThreads;
                 modules = new ArrayList<>();
                 services = new ArrayList<>();
@@ -109,96 +118,26 @@ public class Robot {
                 );
         }
 
+        /**
+         * initializes the robot
+         * note that this will take a little bit of time as it involves creating threads
+         * it should be called once each competition, when the driver station connects to the robot
+         * */
         public void initializeRobot() {
                 System.out.println("<-- Robot | initializing robot... -->");
                 /* initialize the modules and services */
                 for (RobotModuleBase module:modules)
                         module.init();
-                for (RobotServiceBase service:services)
-                        service.init();
 
                 /* start the config tuning */
                 addConfigsToTune();
                 for (String config:configsToTune)
                         robotConfig.startTuningConfig(config);
-                restRobot();
-                wasEnabled = false; // when the robot just booted, it was not enabled
 
-                if (useMultiThreads) {
-                        scheduleThreads();
-                        runThreads();
-                }
+                if (useMultiThreads)
+                        scheduleThreadsAndRun();
 
                 System.out.println("<-- Robot | robot initialized -->");
-        }
-
-
-
-        public void restRobot() {
-                for (RobotModuleBase module: modules)
-                        module.reset();
-                for (RobotServiceBase service: services)
-                        service.reset();
-                programDelay.start();
-                programDelay.reset();
-        }
-
-        /** start or re-start the robot */
-        public void enableRobot() {
-                System.out.println("<-- Robot | enabling robot... -->");
-                for (RobotModuleBase module: modules)
-                        module.enable();
-
-                restRobot();
-
-                wasEnabled = true;
-                System.out.println("<-- Robot | robot enabled -->");
-        }
-
-        public void pauseRobot() {
-                System.out.println("<-- Robot | pausing robot... -->");
-                this.wasEnabled = false;
-                for (RobotModuleBase module: modules)
-                        module.disable();
-                System.out.println("<-- Robot | robot paused... -->");
-        }
-
-        private void scheduleThreads() {
-                modulesUpdatingThreads = new ArrayList<>();
-                for (RobotModuleBase module: modules)
-                        modulesUpdatingThreads.add(module.getPeriodicUpdateThread());
-        }
-        private void runThreads() {
-                for (Thread thread: modulesUpdatingThreads)
-                        thread.start();
-        }
-
-        /**
-         * always called periodically, no mater if the robot is enabled or not
-         * */
-        public void updateRobot(boolean isEnabled) {
-                if (!isEnabled && wasEnabled)
-                        pauseRobot();
-                else if (isEnabled && !wasEnabled)
-                        enableRobot();
-
-                if (isEnabled)
-                        for (RobotServiceBase service: services)
-                                service.periodic();
-
-                if (isEnabled && !useMultiThreads)
-                        for (RobotModuleBase module:modules)
-                                module.periodic();
-
-//                SmartDashboard.putNumber("robot x", positionReader.getRobotPosition2D().getValue()[0]);
-//                SmartDashboard.putNumber("robot y", positionReader.getRobotPosition2D().getValue()[1]);
-//                SmartDashboard.putNumber("velocity x", positionReader.getRobotVelocity2D().getValue()[0]);
-//                SmartDashboard.putNumber("velocity y", positionReader.getRobotVelocity2D().getValue()[1]);
-
-                robotConfig.updateTuningConfigsFromDashboard();
-
-                SmartDashboard.putNumber("program delay(ms)", (programDelay.get() * 1000));
-                programDelay.reset();
         }
 
         private void addConfigsToTune() {
@@ -215,5 +154,73 @@ public class Robot {
                 configsToTune.add("chassis/steerWheelFeedForwardTime");
                 configsToTune.add("chassis/steerCorrectionPowerRateAtZeroWheelSpeed");
                 configsToTune.add("chassis/steerCorrectionPowerFullWheelSpeed");
+        }
+
+        /**
+         * resets the robot the current stage
+         * this is called once at the start of each stage (auto or teleop)
+         * @param services the robot services that will be used this stage
+         * */
+        public void startStage(List<RobotServiceBase> services) {
+                this.services = services;
+                System.out.println("<-- Robot Core | starting current stage... -->");
+                /* initialize the services */
+                for (RobotServiceBase service:services)
+                        service.init();
+                /* reset the modules and services */
+                for (RobotModuleBase module: modules)
+                        module.reset();
+                for (RobotServiceBase service: services)
+                        service.reset();
+                /* resume the modules that was paused */
+                for (RobotModuleBase module: modules)
+                        module.enable();
+
+                wasEnabled = true;
+                System.out.println("<-- Robot Core | current stage started -->");
+        }
+
+        /**
+         * end the current stage
+         * */
+        public void stopStage() {
+                System.out.println("<-- Robot | pausing robot... -->");
+                this.wasEnabled = false;
+                for (RobotModuleBase module: modules)
+                        module.disable();
+                this.services = new ArrayList<>();
+                System.out.println("<-- Robot | robot paused... -->");
+        }
+
+        private void scheduleThreadsAndRun() {
+                modulesUpdatingThreads = new ArrayList<>();
+                for (RobotModuleBase module: modules)
+                        modulesUpdatingThreads.add(module.getPeriodicUpdateThread());
+                for (Thread thread: modulesUpdatingThreads)
+                        thread.start();
+        }
+
+        /**
+         * called when the robot is enabled
+         * */
+        private long t = System.currentTimeMillis();
+        public void updateRobot() {
+                for (RobotServiceBase service: services)
+                        service.periodic();
+
+                if (!useMultiThreads)
+                        for (RobotModuleBase module:modules)
+                                module.periodic();
+
+//                SmartDashboard.putNumber("robot x", positionReader.getRobotPosition2D().getValue()[0]);
+//                SmartDashboard.putNumber("robot y", positionReader.getRobotPosition2D().getValue()[1]);
+//                SmartDashboard.putNumber("velocity x", positionReader.getRobotVelocity2D().getValue()[0]);
+//                SmartDashboard.putNumber("velocity y", positionReader.getRobotVelocity2D().getValue()[1]);
+
+                robotConfig.updateTuningConfigsFromDashboard();
+
+                /* monitor the program's performance */
+                SmartDashboard.putNumber("program delay (ms)", System.currentTimeMillis() - t);
+                t = System.currentTimeMillis();
         }
 }

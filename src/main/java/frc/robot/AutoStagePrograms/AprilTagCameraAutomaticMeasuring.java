@@ -3,7 +3,7 @@ package frc.robot.AutoStagePrograms;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.Visions.RawObjectDetectionCamera;
 import frc.robot.Modules.PositionReader.PositionEstimator;
-import frc.robot.Robot;
+import frc.robot.RobotSystem.RobotCore;
 import frc.robot.Utils.MathUtils.BezierCurve;
 import frc.robot.Utils.MathUtils.StatisticsUtils;
 import frc.robot.Utils.MathUtils.Vector2D;
@@ -40,7 +40,7 @@ public class AprilTagCameraAutomaticMeasuring implements AutoStageProgram{
         angleYSamples = new ArrayList<>();
     }
     @Override
-    public List<SequentialCommandSegment> getCommandSegments(Robot robot) {
+    public List<SequentialCommandSegment> getCommandSegments(RobotCore robotCore) {
         List<SequentialCommandSegment> commandSegments = new ArrayList<>();
 
         commandSegments.add(new SequentialCommandSegment(
@@ -68,8 +68,8 @@ public class AprilTagCameraAutomaticMeasuring implements AutoStageProgram{
                             System.out.println("initiate of segment...");
                         },
                         this::putDataOnDashBoard,
-                        () -> targetInPlace(robot.positionReader),
-                        robot.chassisModule::isCurrentTranslationalTaskFinished,
+                        () -> targetInPlace(robotCore.positionReader),
+                        robotCore.chassisModule::isCurrentTranslationalTaskFinished,
                         0, 0
                 ));
                 robotPreviousPosition = targetedPosition;
