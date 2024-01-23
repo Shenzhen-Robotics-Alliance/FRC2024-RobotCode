@@ -1,48 +1,64 @@
 package frc.robot.Modules;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.Encoders.Encoder;
 import frc.robot.Drivers.Motors.Motor;
-import frc.robot.Utils.FlyWheelSpeedController;
+import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
+import frc.robot.Utils.MechanismControllers.FlyWheelSpeedController;
+
+import java.util.Arrays;
 
 public class ShooterModule extends RobotModuleBase {
-    private final Motor shooterMotor;
-    private final Encoder shooterEncoder;
-    private final FlyWheelSpeedController speedController;
-    private double desiredSpeed;
-    public ShooterModule(Motor shooterMotor, Encoder shooterEncoder, FlyWheelSpeedController speedController) {
+    private final EncoderMotorMechanism[] shooters;
+    private final FlyWheelSpeedController[] speedControllers;
+    private final double encoderVelocityToRPM;
+    private double desiredRPM;
+    public ShooterModule(EncoderMotorMechanism[] shooters, FlyWheelSpeedController.FlyWheelSpeedControllerProfile flyWheelSpeedControllerProfile) {
+        this(shooters, flyWheelSpeedControllerProfile, 2048);
+    }
+    public ShooterModule(EncoderMotorMechanism[] shooters, FlyWheelSpeedController.FlyWheelSpeedControllerProfile flyWheelSpeedControllerProfile, int encoderTicksPerRevolution) {
         super("Shooter");
-        this.shooterMotor = shooterMotor;
-        super.motors.add(shooterMotor);
-        this.shooterEncoder = shooterEncoder;
-        this.speedController = speedController;
+        this.shooters = shooters;
+        super.motors.addAll(Arrays.asList(shooters));
+        this.speedControllers = new FlyWheelSpeedController[shooters.length];
+        for (int shooterID = 0; shooterID < shooters.length; shooterID++)
+            speedControllers[shooterID] = new FlyWheelSpeedController(flyWheelSpeedControllerProfile);
+        this.encoderVelocityToRPM = 60.0 / encoderTicksPerRevolution;
     }
 
-    /** set the desired speed of the shooter, 0 for stop */
-    public void setDesiredSpeed(double desiredSpeed) {
-        speedController.setDesiredSpeed(desiredSpeed, Math.abs(shooterEncoder.getEncoderVelocity()));
-        this.desiredSpeed = desiredSpeed;
+    /**
+     * set the desired speed of the shooter, 0 for stop
+     * @param desiredSpeedRPM the desired speed of the shooter, in rpm
+     * */
+    public void setDesiredSpeed(double desiredSpeedRPM) {
+        this.desiredRPM = desiredSpeedRPM;
+        final double desiredEncoderVelocity = desiredSpeedRPM / encoderVelocityToRPM;
+        for (int shooterID = 0; shooterID < shooters.length; shooterID++)
+            speedControllers[shooterID].setDesiredSpeed(desiredEncoderVelocity, Math.abs(shooters[shooterID].getEncoderVelocity()));
+
     }
 
     @Override
     public void init() {
-        shooterMotor.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE, this);
-        shooterMotor.gainOwnerShip(this);
+        for (EncoderMotorMechanism shooter:shooters) {
+            shooter.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE, this);
+            shooter.gainOwnerShip(this);
+        }
+        this.resetModule();
     }
 
     @Override
     protected void periodic(double dt) {
-        shooterMotor.setPower(getCorrectionPower(), this);
-    }
-
-    private double getCorrectionPower() {
-        if (desiredSpeed <= speedController.getProfile().maximumSpeed * 0.05)
-            return 0;
-        return speedController.getCorrectionPower(Math.abs(shooterEncoder.getEncoderVelocity()));
+        for (int shooterID = 0; shooterID < shooters.length; shooterID++) {
+            shooters[shooterID].updateWithController(this);
+            SmartDashboard.putNumber("Shooter " + shooterID + " actual RPM", shooters[shooterID].getEncoderVelocity() * encoderVelocityToRPM);
+        }
+        SmartDashboard.putNumber("Shooter Desired RPM", desiredRPM);
     }
 
     @Override
     public void resetModule() {
-        desiredSpeed = 0;
+        setDesiredSpeed(0);
     }
 
     @Override
@@ -57,6 +73,7 @@ public class ShooterModule extends RobotModuleBase {
 
     @Override
     protected void onDisable() {
-        shooterMotor.disableMotor(this);
+        for (EncoderMotorMechanism shooter:shooters)
+            shooter.disableMotor(this);
     }
 }

@@ -1,10 +1,10 @@
-package frc.robot.Utils;
+package frc.robot.Utils.MechanismControllers;
 
 /**
  * controls the speed of fly wheel
  * speed is also positive
  * */
-public class FlyWheelSpeedController {
+public class FlyWheelSpeedController implements MechanismController {
     private final SimpleFeedForwardSpeedController simpleFeedForwardSpeedController;
     private final FlyWheelSpeedControllerProfile profile;
     private static final double nanoToSec = 1_000_000_000.0;
@@ -28,6 +28,8 @@ public class FlyWheelSpeedController {
     }
 
     public double getCorrectionPower(double currentSpeed) {
+        if (desiredSpeed <= profile.maximumSpeed * 0.05) return 0;
+        currentSpeed = Math.abs(currentSpeed);
         final double correctionSpeed = simpleFeedForwardSpeedController.getSpeedControlPower(
                 currentSpeed,
                 getCurrentTargetSpeedWithLERP()
@@ -48,6 +50,11 @@ public class FlyWheelSpeedController {
                 speedDifferenceReached = Math.min(timeSinceTaskStarted * profile.maximumAcceleration,speedDifferenceMaximumMagnitude),
                 currentTargetSpeed = speedWhenTaskStarted + Math.copySign(speedDifferenceReached, speedDifferenceBetweenTaskStartAndEnd);
         return Math.max(Math.min(profile.maximumSpeed, currentTargetSpeed),0);
+    }
+
+    @Override
+    public double getMotorPower(double mechanismVelocity, double mechanismPosition) {
+        return this.getCorrectionPower(mechanismVelocity);
     }
 
     public static class FlyWheelSpeedControllerProfile extends SimpleFeedForwardSpeedController.SimpleFeedForwardControllerProfile {

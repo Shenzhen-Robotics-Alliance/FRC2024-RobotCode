@@ -1,4 +1,4 @@
-package frc.robot.Utils;
+package frc.robot.Utils.MechanismControllers;
 
 import frc.robot.Utils.MathUtils.Vector2D;
 

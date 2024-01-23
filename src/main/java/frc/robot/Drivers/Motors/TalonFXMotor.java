@@ -6,6 +6,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.Drivers.Encoders.Encoder;
 import frc.robot.Drivers.RobotDriverBase;
 import frc.robot.Modules.RobotModuleBase;
+import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 
 public class TalonFXMotor extends RobotDriverBase implements Motor, Encoder {
     private final TalonFX talonFXInstance;
@@ -116,5 +117,9 @@ public class TalonFXMotor extends RobotDriverBase implements Motor, Encoder {
     @Override
     public double getEncoderVelocity() {
         return talonFXInstance.getRotorVelocity().getValueAsDouble() * 2048;
+    }
+
+    public EncoderMotorMechanism toMechanism() {
+        return new EncoderMotorMechanism(this,this);
     }
 }

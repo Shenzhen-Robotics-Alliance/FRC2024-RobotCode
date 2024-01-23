@@ -12,7 +12,7 @@ public interface Encoder {
     int getPortID();
 
     /** get the current value of this encoder, converted to radian */
-    double getEncoderPosition();
+    double getEncoderPosition(); // TODO we can just make all the units in rpm so it does not confuse
 
     /** get the velocity of this encoder, in radian per second */
     double getEncoderVelocity();

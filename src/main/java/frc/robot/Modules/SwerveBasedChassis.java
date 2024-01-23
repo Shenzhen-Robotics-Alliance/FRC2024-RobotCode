@@ -8,6 +8,7 @@ import frc.robot.Utils.*;
 import frc.robot.Utils.MathUtils.AngleUtils;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
+import frc.robot.Utils.MechanismControllers.EnhancedPIDController;
 
 /**
  * the module that controls the chassis with its four swerves
