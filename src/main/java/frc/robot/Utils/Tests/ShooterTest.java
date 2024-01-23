@@ -4,6 +4,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.Motors.TalonFXMotor;
 import frc.robot.Modules.ShooterModule;
@@ -21,14 +22,15 @@ public class ShooterTest implements SimpleRobotTest {
                 new TalonFXMotor(new TalonFX(15), true).toMechanism()
         };
         FlyWheelSpeedController.FlyWheelSpeedControllerProfile speedControllerProfile = new FlyWheelSpeedController.FlyWheelSpeedControllerProfile(
-                0.8,
-                0.4,
-                0.1,
+                0.7,
+                0.6,
+                0.03,
                 0,
                 160000,
-                2
+                1.5
         );
         shooterModule = new ShooterModule(shooters, speedControllerProfile);
+        Shuffleboard.getTab("Shooter").addDouble("Set Shooter RPM (Press A to confirm)", () -> (int)desiredShooterRPM);
     }
     @Override
     public void testStart() {
@@ -44,12 +46,14 @@ public class ShooterTest implements SimpleRobotTest {
         desiredShooterRPM += dt.get() * (-160000.0 / 2048.0 * 60.0) * xboxController.getLeftY();
         desiredShooterRPM = Math.max(0, Math.min(160000.0 / 2048.0 * 60.0, desiredShooterRPM));
         dt.reset();
-        SmartDashboard.putNumber("Set Shooter RPM (Press A to confirm)", (int)desiredShooterRPM);
         if (xboxController.getAButton())
             shooterModule.setDesiredSpeed(desiredShooterRPM);
 
-        if (!xboxController.getLeftBumper()) shooterModule.disable();
-        shooterModule.periodic();
+        if (xboxController.getLeftBumper()) {
+            shooterModule.enable();
+            shooterModule.periodic();
+        }
+        else shooterModule.disable();
 
         if (xboxController.getRightBumper())
             intake.set(-0.5);

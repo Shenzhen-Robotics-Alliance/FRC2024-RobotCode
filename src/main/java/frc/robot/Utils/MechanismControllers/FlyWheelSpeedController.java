@@ -1,5 +1,6 @@
 package frc.robot.Utils.MechanismControllers;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -19,6 +20,8 @@ public class FlyWheelSpeedController implements MechanismController {
         this.profile = profile;
         this.simpleFeedForwardSpeedController = new SimpleFeedForwardSpeedController(profile);
         startNewSpeedControlTask(0, 0);
+
+        Shuffleboard.getTab("Shooter").addDouble("flywheel controller current target speed", this::getCurrentTargetSpeedWithLERP);
     }
 
     public void setDesiredSpeed(double desiredSpeed, double currentSpeed) {
@@ -31,12 +34,11 @@ public class FlyWheelSpeedController implements MechanismController {
 
     public double getCorrectionPower(double currentSpeed) {
         if (desiredSpeed <= profile.maximumSpeed * 0.05) return 0;
-        currentSpeed = Math.abs(currentSpeed) / profile.maximumSpeed; // make it 0~1
+        currentSpeed = Math.abs(currentSpeed);
         final double correctionSpeed = simpleFeedForwardSpeedController.getSpeedControlPower(
-                currentSpeed,
-                getCurrentTargetSpeedWithLERP()
+                currentSpeed / profile.maximumSpeed,
+                getCurrentTargetSpeedWithLERP() / profile.maximumSpeed
         );
-        SmartDashboard.putNumber("flywheel controller current target speed", getCurrentTargetSpeedWithLERP()); // TODO here is the problem
         return Math.max(correctionSpeed, 0); // do not go negative power
     }
 
@@ -50,7 +52,7 @@ public class FlyWheelSpeedController implements MechanismController {
         final double speedDifferenceBetweenTaskStartAndEnd = desiredSpeed - speedWhenTaskStarted,
                 speedDifferenceMaximumMagnitude = Math.abs(speedDifferenceBetweenTaskStartAndEnd),
                 timeSinceTaskStarted = (System.nanoTime() - taskStartTimeNano) / nanoToSec,
-                speedDifferenceReached = Math.min(timeSinceTaskStarted * profile.maximumAcceleration,speedDifferenceMaximumMagnitude),
+                speedDifferenceReached = Math.min(timeSinceTaskStarted * profile.maximumAcceleration, speedDifferenceMaximumMagnitude),
                 currentTargetSpeed = speedWhenTaskStarted + Math.copySign(speedDifferenceReached, speedDifferenceBetweenTaskStartAndEnd);
         return Math.max(Math.min(profile.maximumSpeed, currentTargetSpeed),0);
     }
@@ -65,7 +67,7 @@ public class FlyWheelSpeedController implements MechanismController {
         public FlyWheelSpeedControllerProfile(double proportionGain, double feedForwardGain, double frictionGain, double feedForwardDelay, double maximumSpeed, double timeNeededToAccelerateToMaxSpeed) {
             super(proportionGain, feedForwardGain, frictionGain, feedForwardDelay);
             this.maximumSpeed = maximumSpeed;
-            this.maximumAcceleration = 1.0/timeNeededToAccelerateToMaxSpeed;
+            this.maximumAcceleration = maximumSpeed/timeNeededToAccelerateToMaxSpeed;
         }
     }
 

@@ -2,13 +2,13 @@ package frc.robot.Utils.MechanismControllers;
 
 import frc.robot.Drivers.Encoders.Encoder;
 import frc.robot.Drivers.Motors.Motor;
-import frc.robot.Drivers.Motors.TalonFXMotor;
 import frc.robot.Modules.RobotModuleBase;
 
 public class EncoderMotorMechanism implements Encoder, Motor {
     private final Encoder encoder;
     private final Motor motor;
     private MechanismController controller = null;
+    private static final double ticksPerRevolution = 2048; // TODO make all units the same and not convert it here
 
     public EncoderMotorMechanism(Encoder encoder, Motor motor) {
         this.encoder = encoder;
@@ -78,5 +78,10 @@ public class EncoderMotorMechanism implements Encoder, Motor {
     public void updateWithController(RobotModuleBase operatorModule) {
         if (controller == null) motor.setPower(0, operatorModule);
         else setPower(controller.getMotorPower(encoder.getEncoderVelocity(), encoder.getEncoderPosition()), operatorModule);
+    }
+
+    @Deprecated
+    public double getRotterRPM() {
+        return this.getEncoderVelocity() / ticksPerRevolution * 60;
     }
 }

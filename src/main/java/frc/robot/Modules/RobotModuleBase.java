@@ -51,6 +51,12 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
     protected abstract void periodic(double dt);
 
     public void periodic() {
+        if (!enabled) {
+            for (Motor motor:motors)
+                motor.disableMotor(getMarker());
+            Time.sleep(50);
+            return;
+        }
         final long newTimeMillis = System.currentTimeMillis();
         if (newTimeMillis == previousTimeMillis) {
             /* in case of dt=0 */
@@ -69,13 +75,6 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
             @Override
             public void run() {
                 while (true) {
-                    if (!enabled) {
-                        for (Motor motor:motors)
-                            motor.disableMotor(getMarker());
-                        Time.sleep(50);
-                        continue;
-                    }
-
                     periodic();
 
                     while (System.currentTimeMillis() - t< periodMS)

@@ -1,5 +1,7 @@
 package frc.robot.Utils.MechanismControllers;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  * a simple velocity controller
  */
@@ -25,6 +27,9 @@ public class SimpleFeedForwardSpeedController {
 
         this.previousSpeed = currentSpeed;
         this.previousTimeNano = System.nanoTime();
+
+        SmartDashboard.putNumber("simple feed-forward controller current speed", currentSpeed);
+        SmartDashboard.putNumber("simple feed-forward controller desired speed", desiredSpeed);
 
         final double correctionPower = basePower + feedForwardPower;
         if (desiredSpeed != 0 && Math.abs(correctionPower) < profile.frictionGain)

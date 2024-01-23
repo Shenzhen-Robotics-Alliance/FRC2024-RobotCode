@@ -25,6 +25,7 @@ import frc.robot.Utils.MathUtils.Vector2D;
  * the core of the robot, including all the modules that powers the module
  * note that services are not included in this field
  * */
+// TODO: we have to sort the shuffleboard, it's too messy now
 public class RobotCore {
         RobotConfigReader robotConfig;
         public final SwerveWheel frontLeftWheel, backLeftWheel, frontRightWheel, backRightWheel;
