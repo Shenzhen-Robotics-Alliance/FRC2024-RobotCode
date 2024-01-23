@@ -77,6 +77,6 @@ public class EncoderMotorMechanism implements Encoder, Motor {
 
     public void updateWithController(RobotModuleBase operatorModule) {
         if (controller == null) motor.setPower(0, operatorModule);
-        setPower(controller.getMotorPower(encoder.getEncoderVelocity(), encoder.getEncoderPosition()), operatorModule);
+        else setPower(controller.getMotorPower(encoder.getEncoderVelocity(), encoder.getEncoderPosition()), operatorModule);
     }
 }

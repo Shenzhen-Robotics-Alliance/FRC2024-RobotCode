@@ -1,7 +1,6 @@
 package frc.robot.Modules;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Drivers.Encoders.Encoder;
 import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 import frc.robot.Utils.MechanismControllers.FlyWheelSpeedController;
@@ -20,9 +19,11 @@ public class ShooterModule extends RobotModuleBase {
         super("Shooter");
         this.shooters = shooters;
         super.motors.addAll(Arrays.asList(shooters));
-        this.speedControllers = new FlyWheelSpeedController[shooters.length];
-        for (int shooterID = 0; shooterID < shooters.length; shooterID++)
+        speedControllers = new FlyWheelSpeedController[shooters.length];
+        for (int shooterID = 0; shooterID < shooters.length; shooterID++) {
             speedControllers[shooterID] = new FlyWheelSpeedController(flyWheelSpeedControllerProfile);
+            shooters[shooterID].setController(speedControllers[shooterID]);
+        }
         this.encoderVelocityToRPM = 60.0 / encoderTicksPerRevolution;
     }
 
@@ -35,7 +36,6 @@ public class ShooterModule extends RobotModuleBase {
         final double desiredEncoderVelocity = desiredSpeedRPM / encoderVelocityToRPM;
         for (int shooterID = 0; shooterID < shooters.length; shooterID++)
             speedControllers[shooterID].setDesiredSpeed(desiredEncoderVelocity, Math.abs(shooters[shooterID].getEncoderVelocity()));
-
     }
 
     @Override

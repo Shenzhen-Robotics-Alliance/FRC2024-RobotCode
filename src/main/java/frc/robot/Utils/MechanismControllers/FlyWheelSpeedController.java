@@ -1,5 +1,7 @@
 package frc.robot.Utils.MechanismControllers;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  * controls the speed of fly wheel
  * speed is also positive
@@ -29,11 +31,12 @@ public class FlyWheelSpeedController implements MechanismController {
 
     public double getCorrectionPower(double currentSpeed) {
         if (desiredSpeed <= profile.maximumSpeed * 0.05) return 0;
-        currentSpeed = Math.abs(currentSpeed);
+        currentSpeed = Math.abs(currentSpeed) / profile.maximumSpeed; // make it 0~1
         final double correctionSpeed = simpleFeedForwardSpeedController.getSpeedControlPower(
                 currentSpeed,
                 getCurrentTargetSpeedWithLERP()
         );
+        SmartDashboard.putNumber("flywheel controller current target speed", getCurrentTargetSpeedWithLERP()); // TODO here is the problem
         return Math.max(correctionSpeed, 0); // do not go negative power
     }
 

@@ -11,13 +11,13 @@ import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 import frc.robot.Utils.MechanismControllers.FlyWheelSpeedController;
 
 public class ShooterTest implements SimpleRobotTest {
-    private ShooterModule shooterModule;
+    private final ShooterModule shooterModule;
     private final VictorSP intake = new VictorSP(0);
     private final XboxController xboxController = new XboxController(1);
     private final Timer dt = new Timer();
     public ShooterTest() {
         EncoderMotorMechanism[] shooters = new EncoderMotorMechanism[] {
-                new TalonFXMotor(new TalonFX(14), true).toMechanism(),
+                // new TalonFXMotor(new TalonFX(14), true).toMechanism(),
                 new TalonFXMotor(new TalonFX(15), true).toMechanism()
         };
         FlyWheelSpeedController.FlyWheelSpeedControllerProfile speedControllerProfile = new FlyWheelSpeedController.FlyWheelSpeedControllerProfile(

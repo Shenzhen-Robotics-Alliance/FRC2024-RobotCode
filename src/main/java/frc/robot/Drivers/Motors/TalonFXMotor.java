@@ -110,13 +110,13 @@ public class TalonFXMotor extends RobotDriverBase implements Motor, Encoder {
     /** gets the current position, not in radian */
     @Override
     public double getEncoderPosition() {
-        return talonFXInstance.getRotorPosition().getValueAsDouble() * 2048; // TODO just use rotations, convert the units in other parts of the code
+        return talonFXInstance.getRotorPosition().getValueAsDouble() * powerAndEncoderScaleFactor * 2048; // TODO just use rotations, convert the units in other parts of the code
     }
 
     /** gets the current velocity, not in radian, but in per second */
     @Override
     public double getEncoderVelocity() {
-        return talonFXInstance.getRotorVelocity().getValueAsDouble() * 2048;
+        return talonFXInstance.getRotorVelocity().getValueAsDouble() * 2048 * powerAndEncoderScaleFactor;
     }
 
     public EncoderMotorMechanism toMechanism() {
