@@ -7,7 +7,7 @@ import frc.robot.Utils.MathUtils.AngleUtils;
 
 public class CanCoder extends RobotDriverBase implements Encoder {
     private final CANcoder encoderInstance;
-    private double encoderScaleFactor;
+    private final double encoderScaleFactor;
     private double encoderZeroPosition;
 
     public CanCoder(CANcoder encoderInstance) {

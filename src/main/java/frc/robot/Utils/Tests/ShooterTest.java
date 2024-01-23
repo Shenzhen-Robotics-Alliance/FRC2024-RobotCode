@@ -18,7 +18,7 @@ public class ShooterTest implements SimpleRobotTest {
     private final Timer dt = new Timer();
     public ShooterTest() {
         EncoderMotorMechanism[] shooters = new EncoderMotorMechanism[] {
-                // new TalonFXMotor(new TalonFX(14), true).toMechanism(),
+                new TalonFXMotor(new TalonFX(14), true).toMechanism(),
                 new TalonFXMotor(new TalonFX(15), true).toMechanism()
         };
         FlyWheelSpeedController.FlyWheelSpeedControllerProfile speedControllerProfile = new FlyWheelSpeedController.FlyWheelSpeedControllerProfile(
@@ -27,7 +27,7 @@ public class ShooterTest implements SimpleRobotTest {
                 0.03,
                 0,
                 160000,
-                1.5
+                2
         );
         shooterModule = new ShooterModule(shooters, speedControllerProfile);
         Shuffleboard.getTab("Shooter").addDouble("Set Shooter RPM (Press A to confirm)", () -> (int)desiredShooterRPM);

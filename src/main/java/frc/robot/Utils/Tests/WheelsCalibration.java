@@ -4,6 +4,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.hal.SimEnum;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.Encoders.CanCoder;
@@ -14,7 +15,7 @@ public class WheelsCalibration implements SimpleRobotTest { // calibrate wheel
     private CanCoder testCanCoder;
     private TalonFXMotor testSteerMotor;
     private TalonFXMotor testDriveMotor;
-    private Joystick testController;
+    private XboxController testController;
     private RobotConfigReader config;
 
     private enum Wheel {
@@ -36,7 +37,7 @@ public class WheelsCalibration implements SimpleRobotTest { // calibrate wheel
         wheelsSendableChooser.setDefaultOption(WheelsCalibration.Wheel.frontLeft.name(), WheelsCalibration.Wheel.frontLeft);
         SmartDashboard.putData("select wheel to calibrate", wheelsSendableChooser);
 
-        testController = new Joystick(0);
+        testController = new XboxController(1);
     }
 
     @Override
@@ -61,12 +62,12 @@ public class WheelsCalibration implements SimpleRobotTest { // calibrate wheel
         SmartDashboard.putNumber("raw steer encoder reading", testCanCoder.getRawSensorReading());
         SmartDashboard.putNumber("raw steer encoder velocity", testCanCoder.getEncoderVelocity());
 
-        if (testController.getRawButton(7))
+        if (testController.getAButton())
             testDriveMotor.setPower(0.3, null);
         else
             testDriveMotor.disableMotor(null);
 
-        if (testController.getRawButton(8))
+        if (testController.getBButton())
             testSteerMotor.setPower(0.3, null);
         else
             testSteerMotor.disableMotor(null);
