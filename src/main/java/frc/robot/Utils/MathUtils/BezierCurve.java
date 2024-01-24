@@ -8,8 +8,6 @@ package frc.robot.Utils.MathUtils;
  */
 public class BezierCurve {
     private final Vector2D p0, p1, p2, p3;
-    private static final int samples = 10;
-    public final double maximumSpeed, maximumAcceleration, length;
 
     /**
      * create a bezier curve to be a straight line
@@ -17,8 +15,8 @@ public class BezierCurve {
     public BezierCurve(Vector2D startingPoint, Vector2D endingPoint) {
         this(
                 startingPoint,
-                startingPoint.addBy(Vector2D.displacementToTarget(startingPoint, endingPoint).multiplyBy(1/3)),
-                startingPoint.addBy(Vector2D.displacementToTarget(startingPoint, endingPoint).multiplyBy(2/3)),
+                startingPoint.addBy(Vector2D.displacementToTarget(startingPoint, endingPoint).multiplyBy(1.0/3.0)),
+                startingPoint.addBy(Vector2D.displacementToTarget(startingPoint, endingPoint).multiplyBy(2.0/3.0)),
                 endingPoint);
     }
     public BezierCurve(Vector2D startingPoint, Vector2D midPoint, Vector2D endingPoint) {
@@ -29,10 +27,6 @@ public class BezierCurve {
         this.p1 = startingPointAnotherPoint;
         this.p2 = endingPointAnotherPoint;
         this.p3 = endingPoint;
-
-        this.maximumAcceleration = getMaximumAcceleration();
-        this.maximumSpeed = getMaximumSpeed();
-        this.length = getLength();
     }
 
     public Vector2D getPositionWithLERP(double t) {
@@ -95,19 +89,7 @@ public class BezierCurve {
 
     // TODO get the boundary box
 
-    private double getMaximumAcceleration() {
-        /*
-        * we know that
-        * P''(t) =
-        * (-6P0 + 18P1 - 18P2 + 6P3)t +
-        * 6P0-12P1+6p2
-        * which is a linear function
-        * so the maximum always occur either at t=0 or t=1
-        *  */
-        return Math.max(getAccelerationWithLERP(0).getMagnitude(), getAccelerationWithLERP(1).getMagnitude());
-    }
-
-    private double getLength() {
+    private double getLength(int samples) {
         double length = 0;
         for (double t = 0; t <= 1; t += 1.0d/samples)
             length += getVelocityWithLERP(t).getMagnitude() / samples;

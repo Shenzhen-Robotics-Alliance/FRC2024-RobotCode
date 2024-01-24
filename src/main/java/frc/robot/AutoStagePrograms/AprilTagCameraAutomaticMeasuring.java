@@ -7,6 +7,7 @@ import frc.robot.RobotCore;
 import frc.robot.Utils.MathUtils.BezierCurve;
 import frc.robot.Utils.MathUtils.StatisticsUtils;
 import frc.robot.Utils.MathUtils.Vector2D;
+import frc.robot.Utils.SequentialCommandFactory;
 import frc.robot.Utils.SequentialCommandSegment;
 import frc.robot.Utils.Time;
 
@@ -41,16 +42,10 @@ public class AprilTagCameraAutomaticMeasuring implements AutoStageProgram{
     }
     @Override
     public List<SequentialCommandSegment> getCommandSegments(RobotCore robotCore) {
-        List<SequentialCommandSegment> commandSegments = new ArrayList<>();
+        final SequentialCommandFactory commandFactory = new SequentialCommandFactory(robotCore);
+        final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
 
-        commandSegments.add(new SequentialCommandSegment(
-                null,
-                camera::startRecognizing,
-                () -> {},
-                () -> {},
-                () -> true,
-                0, 0
-        ));
+        commandSegments.add(commandFactory.justDoIt(camera::startRecognizing));
 
         Vector2D robotPreviousPosition = robotInitialPositionToAprilTag;
         final double unitSpace = maxHorizontalDistance / (horizontalDistanceLevelsCount-1);
@@ -62,29 +57,19 @@ public class AprilTagCameraAutomaticMeasuring implements AutoStageProgram{
                         -horizontalDistance / 100, -verticalDistance / 100 // notice here the robot moves in meters, so we need to divide it by 100
                 });
                 System.out.println("segment with ending position" + targetedPosition);
-                commandSegments.add(new SequentialCommandSegment(
-                        new BezierCurve(toFieldPosition(robotPreviousPosition), toFieldPosition(targetedPosition)),
-                        () -> {
-                            System.out.println("initiate of segment...");
-                        },
+                commandSegments.add(commandFactory.moveFromPointToPointAndStop(
+                        robotPreviousPosition,
+                        targetedPosition,
+                        () -> System.out.println("moving to position"),
                         this::putDataOnDashBoard,
-                        () -> targetInPlace(robotCore.positionReader),
-                        robotCore.chassisModule::isCurrentTranslationalTaskFinished,
-                        0, 0
+                        () -> targetInPlace(robotCore.positionReader)
                 ));
                 robotPreviousPosition = targetedPosition;
                 horizontalDistance += unitSpace;
             }
         }
 
-        commandSegments.add(new SequentialCommandSegment(
-                new BezierCurve(toFieldPosition(robotPreviousPosition), toFieldPosition(robotInitialPositionToAprilTag)),
-                this::printResults,
-                () -> {},
-                () -> {},
-                () -> true,
-                0, 0
-        ));
+        commandSegments.add(commandFactory.justDoIt(this::printResults));
 
         return commandSegments;
     }
