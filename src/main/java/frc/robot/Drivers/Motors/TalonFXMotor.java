@@ -119,7 +119,7 @@ public class TalonFXMotor extends RobotDriverBase implements Motor, Encoder {
         return talonFXInstance.getRotorVelocity().getValueAsDouble() * 2048 * powerAndEncoderScaleFactor;
     }
 
-    public EncoderMotorMechanism toMechanism() {
+    public EncoderMotorMechanism toEncoderAndMotorMechanism() {
         return new EncoderMotorMechanism(this,this);
     }
 }

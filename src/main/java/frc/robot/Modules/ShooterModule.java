@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 import frc.robot.Utils.MechanismControllers.FlyWheelSpeedController;
+import frc.robot.Utils.RobotConfigReader;
 
 import java.util.Arrays;
 
@@ -11,20 +12,21 @@ public class ShooterModule extends RobotModuleBase {
     private final EncoderMotorMechanism[] shooters;
     private final FlyWheelSpeedController[] speedControllers;
     private final double encoderVelocityToRPM;
+    private final RobotConfigReader robotConfig;
     private double desiredRPM;
-    public ShooterModule(EncoderMotorMechanism[] shooters, FlyWheelSpeedController.FlyWheelSpeedControllerProfile flyWheelSpeedControllerProfile) {
-        this(shooters, flyWheelSpeedControllerProfile, 2048);
-    }
-    public ShooterModule(EncoderMotorMechanism[] shooters, FlyWheelSpeedController.FlyWheelSpeedControllerProfile flyWheelSpeedControllerProfile, int encoderTicksPerRevolution) {
+    public ShooterModule(EncoderMotorMechanism[] shooters, RobotConfigReader robotConfig) {
         super("Shooter");
         this.shooters = shooters;
+        this.robotConfig = robotConfig;
         super.motors.addAll(Arrays.asList(shooters));
         speedControllers = new FlyWheelSpeedController[shooters.length];
         for (int shooterID = 0; shooterID < shooters.length; shooterID++) {
-            speedControllers[shooterID] = new FlyWheelSpeedController(flyWheelSpeedControllerProfile);
+            speedControllers[shooterID] = new FlyWheelSpeedController(
+                    new FlyWheelSpeedController.FlyWheelSpeedControllerProfile(0,0,0,0,0,0)
+            );
             shooters[shooterID].setController(speedControllers[shooterID]);
         }
-        this.encoderVelocityToRPM = 60.0 / encoderTicksPerRevolution;
+        this.encoderVelocityToRPM = 60.0 / robotConfig.getConfig("shooter", "shooterMotorEncoderTicksPerRevolution");
     }
 
     /**
@@ -60,6 +62,7 @@ public class ShooterModule extends RobotModuleBase {
     @Override
     public void resetModule() {
         setDesiredSpeed(0);
+        updateConfigs();
     }
 
     @Override
@@ -76,5 +79,19 @@ public class ShooterModule extends RobotModuleBase {
     protected void onDisable() {
         for (EncoderMotorMechanism shooter:shooters)
             shooter.disableMotor(this);
+    }
+
+    @Override
+    public void updateConfigs() {
+        final FlyWheelSpeedController.FlyWheelSpeedControllerProfile speedControllerProfile = new FlyWheelSpeedController.FlyWheelSpeedControllerProfile(
+                robotConfig.getConfig("shooter", "speedControllerProportionGain"),
+                robotConfig.getConfig("shooter", "speedControllerFeedForwardGain"),
+                robotConfig.getConfig("shooter", "speedControllerFrictionGain"),
+                robotConfig.getConfig("shooter", "speedControllerFeedForwardDelay"),
+                robotConfig.getConfig("shooter", "speedControllerMaximumSpeed"),
+                robotConfig.getConfig("shooter", "speedControllerTimeNeededToAccelerateToMaxSpeed")
+        );
+        for (FlyWheelSpeedController speedController:speedControllers)
+            speedController.setProfile(speedControllerProfile);
     }
 }

@@ -33,7 +33,7 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
     private long previousTimeMillis;
 
     protected RobotModuleBase(String moduleName) {
-        this(moduleName, 50);
+        this(moduleName, 64);
     }
     /**
      * public RobotModule(HashMap<String, RobotModule> dependenciesModules,

@@ -1,7 +1,7 @@
 <!-- 5516 -->
 <robotConfig>
     <system>
-        <chassisModuleUpdateFrequency>100</chassisModuleUpdateFrequency>
+        <chassisModuleUpdateFrequency>128</chassisModuleUpdateFrequency>
     </system>
     <hardware>
         <chassisOnCanivore>0</chassisOnCanivore>
@@ -96,7 +96,17 @@
 
     <!-- robot module configs goes here -->
     <shooter>
-        
+        <shooterMotorEncoderTicksPerRevolution>2048</shooterMotorEncoderTicksPerRevolution>
+        <speedControllerProportionGain>0.7</speedControllerProportionGain>
+        <speedControllerFeedForwardGain>0.6</speedControllerFeedForwardGain>
+        <speedControllerFrictionGain>0.03</speedControllerFrictionGain>
+        <speedControllerFeedForwardDelay>0</speedControllerFeedForwardDelay>
+        <speedControllerMaximumSpeed>160000</speedControllerMaximumSpeed>
+        <speedControllerTimeNeededToAccelerateToMaxSpeed>2</speedControllerTimeNeededToAccelerateToMaxSpeed>
+        <shooter1Port>14</shooter1Port>
+        <shooter2Port>15</shooter2Port>
+        <shooter1Reversed>1</shooter1Reversed>
+        <shooter2Reversed>1</shooter2Reversed>
     </shooter>
 
     <auto>
