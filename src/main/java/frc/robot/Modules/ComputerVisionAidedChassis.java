@@ -13,7 +13,8 @@ public class ComputerVisionAidedChassis extends RobotModuleBase{
         /** not requested to do auto aim, following pilot's command */
         UNUSED,
         /** moving to the shooting position, following the Bézier curve */
-
+        AIMING,
+        /** moving through the shooting spot,  */
     }
     public ComputerVisionAidedChassis(SwerveBasedChassis chassis, TargetFieldPositionTracker aprilTagTracker, TargetFieldPositionTracker gamePieceTracker) {
         super("Vision-Aided-Chassis", 100);

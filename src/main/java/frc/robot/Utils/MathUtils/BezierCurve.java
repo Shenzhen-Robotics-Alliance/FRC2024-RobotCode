@@ -8,7 +8,7 @@ package frc.robot.Utils.MathUtils;
  */
 public class BezierCurve {
     private final Vector2D p0, p1, p2, p3;
-    private static final int samples = 100;
+    private static final int samples = 10;
     public final double maximumSpeed, maximumAcceleration, length;
 
     /**
@@ -61,7 +61,7 @@ public class BezierCurve {
 
     public Vector2D getVelocityWithLERP(double t) {
         /*
-         * P'(t) = LERP(D,E,t) =
+         * P'(t) = LERP'(D,E,t) =
          *   p0(-3t^2 + 6t - 3) +
          *   p1(9t^2 -12t + 3) +
          *   p2(-9t^2 + 6t) +
@@ -78,7 +78,7 @@ public class BezierCurve {
 
     public Vector2D getAccelerationWithLERP(double t) {
         /*
-         * P''(t) = LERP(D,E,t) =
+         * P''(t) = LERP''(D,E,t) =
          *   p0(-6t + 6) +
          *   p1(18t-12) +
          *   p2(-18t + 6) +
@@ -93,18 +93,18 @@ public class BezierCurve {
         return acceleration;
     }
 
-    private double getMaximumSpeed() {
-        double maximumSpeed = 0;
-        for (double t = 0; t <= 1; t += 1.0d/samples)
-            maximumSpeed = Math.max(getVelocityWithLERP(t).getMagnitude(), maximumSpeed);
-        return maximumSpeed;
-    }
+    // TODO get the boundary box
 
     private double getMaximumAcceleration() {
-        double maximumAcceleration = 0;
-        for (double t = 0; t <= 1; t += 1.0d /samples)
-            maximumAcceleration = Math.max(getAccelerationWithLERP(t).getMagnitude(), maximumAcceleration);
-        return maximumAcceleration;
+        /*
+        * we know that
+        * P''(t) =
+        * (-6P0 + 18P1 - 18P2 + 6P3)t +
+        * 6P0-12P1+6p2
+        * which is a linear function
+        * so the maximum always occur either at t=0 or t=1
+        *  */
+        return Math.max(getAccelerationWithLERP(0).getMagnitude(), getAccelerationWithLERP(1).getMagnitude());
     }
 
     private double getLength() {
