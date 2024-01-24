@@ -11,7 +11,7 @@ from http.server import SimpleHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
 from time import time, sleep
 
-cap = cv2.VideoCapture(1) # camera port
+cap = cv2.VideoCapture(0) # camera port
 cap.set(3, 640) # width
 cap.set(4, 480) # height
 cap.set(cv2.CAP_PROP_FPS, 30) 

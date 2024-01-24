@@ -93,6 +93,12 @@
         <defaultPosition type="double">90</defaultPosition> <!--to straight forward-->
         <minUsageSpeed type="double">0.04</minUsageSpeed>
     </chassis>
+
+    <!-- robot module configs goes here -->
+    <shooter>
+        
+    </shooter>
+
     <auto>
         <autoStageMaxAcceleration type="double">12</autoStageMaxAcceleration>
         <autoStageMaxVelocity type="double">6.5</autoStageMaxVelocity>

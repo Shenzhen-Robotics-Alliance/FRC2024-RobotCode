@@ -25,9 +25,6 @@ public class ShooterModule extends RobotModuleBase {
             shooters[shooterID].setController(speedControllers[shooterID]);
         }
         this.encoderVelocityToRPM = 60.0 / encoderTicksPerRevolution;
-        for (int shooterID = 0; shooterID < shooters.length; shooterID++)
-            Shuffleboard.getTab("Shooter").addDouble("Shooter " + shooterID + " actual speed", shooters[shooterID]::getRotterRPM);
-        Shuffleboard.getTab("Shooter").addDouble("Shooter Desired RPM", () -> desiredRPM);
     }
 
     /**
@@ -54,6 +51,10 @@ public class ShooterModule extends RobotModuleBase {
     protected void periodic(double dt) {
         for (EncoderMotorMechanism shooter : shooters)
             shooter.updateWithController(this);
+
+        for (int shooterID = 0; shooterID < shooters.length; shooterID++)
+            Shuffleboard.getTab("Shooter").add("Shooter " + shooterID + " actual speed", shooters[shooterID].getEncoderVelocity() * encoderVelocityToRPM);
+        Shuffleboard.getTab("Shooter").add("Shooter Desired RPM", desiredRPM);
     }
 
     @Override

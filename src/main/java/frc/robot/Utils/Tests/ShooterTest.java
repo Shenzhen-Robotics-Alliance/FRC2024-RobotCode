@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.Motors.TalonFXMotor;
 import frc.robot.Modules.ShooterModule;
 import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
@@ -30,7 +29,6 @@ public class ShooterTest implements SimpleRobotTest {
                 2
         );
         shooterModule = new ShooterModule(shooters, speedControllerProfile);
-        Shuffleboard.getTab("Shooter").addDouble("Set Shooter RPM (Press A to confirm)", () -> (int)desiredShooterRPM);
     }
     @Override
     public void testStart() {
@@ -59,5 +57,7 @@ public class ShooterTest implements SimpleRobotTest {
             intake.set(-0.5);
         else
             intake.set(xboxController.getRightTriggerAxis());
+
+        Shuffleboard.getTab("Shooter").add("Set Shooter RPM (Press A to confirm)", desiredShooterRPM);
     }
 }

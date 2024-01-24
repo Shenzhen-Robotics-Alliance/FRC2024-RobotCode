@@ -23,6 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RobotShell extends TimedRobot {
+    private static final int updateFreq = 100;
+    public RobotShell() {
+        super(1.0/updateFreq);
+    }
     /** TODO: put the vision client inside robot core */
     private JetsonDetectionAppClient aprilTagDetectionAppClient = null;
     private TargetFieldPositionTracker aprilTagPositionTrackingCamera;
