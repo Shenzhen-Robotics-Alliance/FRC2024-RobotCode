@@ -103,8 +103,8 @@
         <speedControllerFeedForwardDelay>0</speedControllerFeedForwardDelay>
         <speedControllerMaximumSpeed>160000</speedControllerMaximumSpeed>
         <speedControllerTimeNeededToAccelerateToMaxSpeed>2</speedControllerTimeNeededToAccelerateToMaxSpeed>
-        <shooter1Port>14</shooter1Port>
-        <shooter2Port>15</shooter2Port>
+        <shooter1Port>13</shooter1Port>
+        <shooter2Port>16</shooter2Port>
         <shooter1Reversed>1</shooter1Reversed>
         <shooter2Reversed>1</shooter2Reversed>
     </shooter>

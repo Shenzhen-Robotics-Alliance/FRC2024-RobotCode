@@ -14,10 +14,7 @@ import frc.robot.Utils.FixedAngleCameraUtils.FixedAngleCameraProfile;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.SequentialCommandSegment;
-import frc.robot.Utils.Tests.BasicIntakeTest;
-import frc.robot.Utils.Tests.ShooterTest;
-import frc.robot.Utils.Tests.SimpleRobotTest;
-import frc.robot.Utils.Tests.WheelsCalibration;
+import frc.robot.Utils.Tests.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,7 +127,7 @@ public class RobotShell extends TimedRobot {
     public void testInit() {
         // System.out.println("<-- Robot Shell | test init -->");
         if (robotTest == null)
-            this.robotTest = new ShooterTest();
+            this.robotTest = new IntakeAndShooterTest();
         robotTest.testStart();
     }
 

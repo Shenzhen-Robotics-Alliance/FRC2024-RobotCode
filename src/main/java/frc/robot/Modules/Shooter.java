@@ -1,6 +1,5 @@
 package frc.robot.Modules;
 
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
@@ -9,13 +8,13 @@ import frc.robot.Utils.RobotConfigReader;
 
 import java.util.Arrays;
 
-public class ShooterModule extends RobotModuleBase {
+public class Shooter extends RobotModuleBase {
     private final EncoderMotorMechanism[] shooters;
     private final FlyWheelSpeedController[] speedControllers;
     private final double encoderVelocityToRPM;
     private final RobotConfigReader robotConfig;
     private double desiredRPM;
-    public ShooterModule(EncoderMotorMechanism[] shooters, RobotConfigReader robotConfig) {
+    public Shooter(EncoderMotorMechanism[] shooters, RobotConfigReader robotConfig) {
         super("Shooter");
         this.shooters = shooters;
         this.robotConfig = robotConfig;

@@ -1,7 +1,7 @@
 package frc.robot.Modules;
 
-public class TransformableIntakeModule extends RobotModuleBase {
-    protected TransformableIntakeModule() {
+public class TransformableIntakeAndShooter extends RobotModuleBase {
+    protected TransformableIntakeAndShooter() {
         super("Transformable-Intake");
     }
 
