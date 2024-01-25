@@ -30,6 +30,7 @@ public class SimpleFeedForwardSpeedController {
 
         SmartDashboard.putNumber("simple feed-forward controller current speed", currentSpeed);
         SmartDashboard.putNumber("simple feed-forward controller desired speed", desiredSpeed);
+        System.out.println("simple feed-forward controller proportional gain: " + profile.proportionGain);
 
         final double correctionPower = basePower + feedForwardPower;
         if (desiredSpeed != 0 && Math.abs(correctionPower) < profile.frictionGain)

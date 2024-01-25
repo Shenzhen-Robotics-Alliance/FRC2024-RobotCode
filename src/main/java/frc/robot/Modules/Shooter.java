@@ -12,6 +12,7 @@ public class Shooter extends RobotModuleBase {
     private final EncoderMotorMechanism[] shooters;
     private final FlyWheelSpeedController[] speedControllers;
     private final double encoderVelocityToRPM;
+    private final double shooterReadyErrorBound;
     private final RobotConfigReader robotConfig;
     private double desiredRPM;
     public Shooter(EncoderMotorMechanism[] shooters, RobotConfigReader robotConfig) {
@@ -27,6 +28,7 @@ public class Shooter extends RobotModuleBase {
             shooters[shooterID].setController(speedControllers[shooterID]);
         }
         this.encoderVelocityToRPM = 60.0 / robotConfig.getConfig("shooter", "shooterMotorEncoderTicksPerRevolution");
+        this.shooterReadyErrorBound = robotConfig.getConfig("shooter", "flyWheelSpeedErrorTolerance") * robotConfig.getConfig("shooter", "speedControllerMaximumSpeed");
     }
 
     /**
@@ -40,6 +42,15 @@ public class Shooter extends RobotModuleBase {
             speedControllers[shooterID].setDesiredSpeed(desiredEncoderVelocity, Math.abs(shooters[shooterID].getEncoderVelocity()));
     }
 
+    public boolean shooterReady() {
+        if (desiredRPM == 0) return false;
+        double maxError = 0;
+        for (EncoderMotorMechanism shooter:shooters)
+            maxError = Math.max(Math.abs(shooter.getEncoderVelocity() - this.desiredRPM/ encoderVelocityToRPM), maxError);
+        System.out.println("shooter max error (rpm): " + maxError * encoderVelocityToRPM);
+        return maxError < shooterReadyErrorBound;
+    }
+
     @Override
     public void init() {
         for (EncoderMotorMechanism shooter:shooters) {
@@ -47,6 +58,7 @@ public class Shooter extends RobotModuleBase {
             shooter.gainOwnerShip(this);
         }
         this.resetModule();
+        updateConfigs();
     }
 
     @Override
@@ -91,7 +103,9 @@ public class Shooter extends RobotModuleBase {
                 robotConfig.getConfig("shooter", "speedControllerMaximumSpeed"),
                 robotConfig.getConfig("shooter", "speedControllerTimeNeededToAccelerateToMaxSpeed")
         );
-        for (FlyWheelSpeedController speedController:speedControllers)
+        for (FlyWheelSpeedController speedController:speedControllers) {
             speedController.setProfile(speedControllerProfile);
+            System.out.println("speed controller p in shooter module:" + speedController.getProfile().proportionGain);
+        }
     }
 }

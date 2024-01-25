@@ -37,7 +37,6 @@ public class TalonFXMotor extends RobotDriverBase implements Motor, Encoder {
 
     @Override
     public void setPower(double power, RobotModuleBase operatorModule) {
-        // System.out.println("<-- TalonFX | motor id " + portID + " set power by " + operatorModule + " -->");
         if (!isOwner(operatorModule))
             return;
         talonFXInstance.set(power * this.powerAndEncoderScaleFactor);

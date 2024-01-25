@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * speed is also positive
  * */
 public class FlyWheelSpeedController implements MechanismController {
-    private final SimpleFeedForwardSpeedController simpleFeedForwardSpeedController;
+    private SimpleFeedForwardSpeedController simpleFeedForwardSpeedController;
     private FlyWheelSpeedControllerProfile profile;
     private static final double nanoToSec = 1_000_000_000.0;
     /** if the mechanism can reach desired speed within this time, just skip to desired speed */
@@ -24,6 +24,7 @@ public class FlyWheelSpeedController implements MechanismController {
 
     public void setProfile(FlyWheelSpeedControllerProfile profile) {
         this.profile = profile;
+        this.simpleFeedForwardSpeedController = new SimpleFeedForwardSpeedController(profile);
     }
 
     public void setDesiredSpeed(double desiredSpeed, double currentSpeed) {
