@@ -41,7 +41,7 @@ public class FlyWheelSpeedController implements MechanismController {
                 currentSpeed / profile.maximumSpeed,
                 getCurrentTargetSpeedWithLERP() / profile.maximumSpeed
         );
-        Shuffleboard.getTab("Shooter").add("flywheel controller current target speed", getCurrentTargetSpeedWithLERP());
+        SmartDashboard.putNumber("flywheel controller current target speed", getCurrentTargetSpeedWithLERP());
         return Math.max(correctionSpeed, 0); // do not go negative power
     }
 

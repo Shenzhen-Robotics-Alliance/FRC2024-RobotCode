@@ -1,6 +1,7 @@
 package frc.robot.Modules;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 import frc.robot.Utils.MechanismControllers.FlyWheelSpeedController;
@@ -55,8 +56,8 @@ public class ShooterModule extends RobotModuleBase {
             shooter.updateWithController(this);
 
         for (int shooterID = 0; shooterID < shooters.length; shooterID++)
-            Shuffleboard.getTab("Shooter").add("Shooter " + shooterID + " actual speed", shooters[shooterID].getEncoderVelocity() * encoderVelocityToRPM);
-        Shuffleboard.getTab("Shooter").add("Shooter Desired RPM", desiredRPM);
+            SmartDashboard.putNumber("Shooter " + shooterID + " actual speed", shooters[shooterID].getEncoderVelocity() * encoderVelocityToRPM);
+        SmartDashboard.putNumber("Shooter Desired RPM", desiredRPM);
     }
 
     @Override

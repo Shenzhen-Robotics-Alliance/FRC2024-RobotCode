@@ -7,7 +7,6 @@ import frc.robot.Utils.MathUtils.BezierCurveSchedule;
 import frc.robot.Utils.MathUtils.BezierCurveScheduleGenerator;
 import frc.robot.Utils.RobotConfigReader;
 import frc.robot.Utils.SequentialCommandSegment;
-import frc.robot.Utils.MathUtils.Vector2D;
 
 import java.util.List;
 
@@ -21,11 +20,11 @@ public class AutoProgramRunner extends RobotServiceBase {
     private final SwerveBasedChassis robotChassis;
     private final BezierCurveScheduleGenerator scheduleGenerator;
     private final RobotConfigReader robotConfig;
-    private int currentSegment;
+    private int currentSegmentID;
     private SequentialCommandSegment.StaticSequentialCommandSegment currentCommandSegment;
     private BezierCurveSchedule currentPathSchedule;
-    private boolean errorOccurred = false;
     private final Timer dt = new Timer();
+    private double currentSegmentRotationScheduleETA, rotationT;
 
     public AutoProgramRunner(List<SequentialCommandSegment> commandSegments, SwerveBasedChassis chassis, RobotConfigReader robotConfig) {
         super("Auto-Program-Runner");
@@ -46,27 +45,27 @@ public class AutoProgramRunner extends RobotServiceBase {
     public void periodic() {
         updateConfigs();
 
-        final double t = currentPathSchedule.nextCheckPoint(dt.get());
-        if (currentPathSchedule != null)
+
+        if (currentPathSchedule != null) {
+            final double translationalT = currentPathSchedule.nextCheckPoint(dt.get());
             robotChassis.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(
                             SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION,
                             currentPathSchedule.getPositionWithLERP()),
                     this);
+            SmartDashboard.putNumber("translational scaled T", translationalT);
+            SmartDashboard.putNumber("auto command position (x)", currentPathSchedule.getPositionWithLERP().getX());
+            SmartDashboard.putNumber("auto command position (y)", currentPathSchedule.getPositionWithLERP().getY());
+        }
 
 //        System.out.println("current segment:" + currentSegment);
 //        if (this.commandSegments.get(currentSegment).chassisMovementPath != null)
 //            System.out.println("time scale calculation:" + getTimeScaleWithMaximumVelocityAndAcceleration());
         SmartDashboard.putNumber("dt(s)", dt.get());
-        SmartDashboard.putNumber("scaled t", t);
-        if (currentPathSchedule != null) {
-            SmartDashboard.putNumber("auto command position (x)", currentPathSchedule.getPositionWithLERP().getX());
-            SmartDashboard.putNumber("auto command position (y)", currentPathSchedule.getPositionWithLERP().getY());
-        }
-        if (currentCommandSegment.startingRotation != null && currentCommandSegment.endingRotation != null)
+        if (currentSegmentRotationScheduleETA != -1)
             robotChassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(
-                        SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
-                        currentCommandSegment.getCurrentRotationWithLERP(t)),
-                this);
+                            SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
+                            currentCommandSegment.getCurrentRotationWithLERP(rotationT+=dt.get() / currentSegmentRotationScheduleETA)),
+                    this);
         currentCommandSegment.periodic.run();
 
         if (isCurrentSegmentComplete())
@@ -82,18 +81,18 @@ public class AutoProgramRunner extends RobotServiceBase {
 
     @Override
     public void reset() {
-        this.currentSegment = 0;
+        this.currentSegmentID = 0;
         robotChassis.gainOwnerShip(this);
         initiateSegment(0);
         updateConfigs();
     }
 
     private void nextSegment() {
-        this.commandSegments.get(currentSegment).ending.run();
+        this.commandSegments.get(currentSegmentID).ending.run();
 
-        if (currentSegment+1 >= commandSegments.size())
+        if (currentSegmentID +1 >= commandSegments.size())
             return;
-        initiateSegment(++currentSegment);
+        initiateSegment(++currentSegmentID);
     }
 
     private void initiateSegment(int segmentID) {
@@ -101,19 +100,24 @@ public class AutoProgramRunner extends RobotServiceBase {
 
         currentCommandSegment.beginning.run();
 
-        if (currentPathSchedule == null) return;
-        this.currentPathSchedule = scheduleGenerator.generateSchedule(commandSegments.get(segmentID).getChassisMovementPath());
+        final boolean rotationSpecified = currentCommandSegment.startingRotation != null && currentCommandSegment.endingRotation != null;
+        this.currentSegmentRotationScheduleETA = rotationSpecified ?
+                scheduleGenerator.getTimeNeededToFinishRotationalSchedule(currentCommandSegment.startingRotation.getRadian(), currentCommandSegment.endingRotation.getRadian())
+                : -1;
+        rotationT = 0;
+
+        if (currentCommandSegment.chassisMovementPath == null) return;
+        this.currentPathSchedule = scheduleGenerator.generateTranslationalSchedule(currentCommandSegment.chassisMovementPath);
         robotChassis.gainOwnerShip(this);
     }
 
     public boolean isAutoStageComplete() {
-        if (errorOccurred) return true;
-        return this.commandSegments.size() - this.currentSegment == 1
+        return this.commandSegments.size() - this.currentSegmentID == 1
                 && this.isCurrentSegmentComplete();
     }
 
     public boolean isCurrentSegmentComplete() {
-        SequentialCommandSegment currentSegment = this.commandSegments.get(this.currentSegment);
+        SequentialCommandSegment currentSegment = this.commandSegments.get(this.currentSegmentID);
         final boolean chassisMovementFinished = currentPathSchedule == null || currentPathSchedule.isCurrentPathFinished();
         return chassisMovementFinished
                 && currentSegment.isCompleteChecker.isComplete();
