@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.Motors.TalonFXMotor;
+import frc.robot.Modules.UpperStructure.IntakeTransformer;
 import frc.robot.Modules.UpperStructure.Shooter;
 import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 import frc.robot.Utils.RobotConfigReader;
@@ -13,9 +14,8 @@ public class IntakeAndShooterTest implements SimpleRobotTest {
     private final Shooter shooter;
     private final XboxController xboxController = new XboxController(1);
     private final Timer dt = new Timer();
+    private final SimpleRobotTest intakeTest = new IntakeTest();
 
-    private final TalonFXMotor intakeMotor1 = new TalonFXMotor(new TalonFX(14), true);
-    private final TalonFXMotor intakeMotor2 = new TalonFXMotor(new TalonFX(15), true);
     public IntakeAndShooterTest() {
         RobotConfigReader robotConfig;
         try {
@@ -45,8 +45,7 @@ public class IntakeAndShooterTest implements SimpleRobotTest {
         shooter.init();
         shooter.gainOwnerShip(null);
 
-        intakeMotor1.gainOwnerShip(null);
-        intakeMotor2.gainOwnerShip(null);
+        intakeTest.testStart();
     }
 
     double desiredShooterRPM;
@@ -67,13 +66,6 @@ public class IntakeAndShooterTest implements SimpleRobotTest {
 
         SmartDashboard.putNumber("Set Shooter RPM (Press A to confirm)", desiredShooterRPM);
 
-        double power = 0;
-        if (xboxController.getRightBumper())
-            power = -0.45;
-        else if (shooter.shooterReady() && xboxController.getLeftBumper())
-            power = 0;
-        else power = xboxController.getRightTriggerAxis();
-        intakeMotor1.setPower(power, null);
-        intakeMotor2.setPower(power, null);
+        intakeTest.testPeriodic();
     }
 }

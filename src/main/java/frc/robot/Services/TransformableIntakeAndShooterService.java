@@ -57,4 +57,14 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
     public void onDestroy() {
 
     }
+
+
+
+
+    /**
+     * @return whether the current task is satisfied
+     * */
+    public boolean isCurrentTaskComplete() {
+        return currentTaskComplete;
+    }
 }

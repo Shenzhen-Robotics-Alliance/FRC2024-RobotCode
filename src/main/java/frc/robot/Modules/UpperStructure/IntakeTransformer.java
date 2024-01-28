@@ -1,23 +1,23 @@
 package frc.robot.Modules.UpperStructure;
 
 import frc.robot.Modules.RobotModuleBase;
-import frc.robot.RobotShell;
 import frc.robot.Services.RobotServiceBase;
 
 public class IntakeTransformer extends RobotModuleBase {
-    public enum TransformerMode {
+    public enum TransformerPosition {
         INTAKE,
-        INTAKE_STANDBY,
+        STANDBY,
         SHOOT,
         SCORE_AMPLIFIER
     }
-    private TransformerMode currentMode;
-    private static final TransformerMode defaultMode = TransformerMode.INTAKE; // on startup, we are at intake position
+    private TransformerPosition desiredPosition;
+    private static final TransformerPosition defaultMode = TransformerPosition.INTAKE; // on startup, we are at intake position
 
     private boolean transformerInPosition;
 
     /*
     * TODO we do not know yet , what the intake transformer is made of, so we first construct the APIs
+    *  today we have to finish coding it
     * */
     public IntakeTransformer() {
         super("Transformable-Intake");
@@ -35,7 +35,7 @@ public class IntakeTransformer extends RobotModuleBase {
 
     @Override
     public void resetModule() {
-        this.currentMode = defaultMode;
+        this.desiredPosition = defaultMode;
     }
 
     @Override
@@ -53,11 +53,11 @@ public class IntakeTransformer extends RobotModuleBase {
 
     }
 
-    public void setTransformerStatus(TransformerMode desiredMode, RobotServiceBase operatorService) {
+    public void setTransformerDesiredPosition(TransformerPosition desiredMode, RobotServiceBase operatorService) {
         if (!isOwner(operatorService))
             return;
 
-        this.currentMode = desiredMode;
+        this.desiredPosition = desiredMode;
     }
 
     public boolean transformerInPosition() {

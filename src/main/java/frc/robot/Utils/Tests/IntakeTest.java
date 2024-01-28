@@ -2,6 +2,7 @@ package frc.robot.Utils.Tests;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.Drivers.DistanceSensors.Rev2mDistanceSensorEncapsulation;
 import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Drivers.Motors.MotorsSet;
 import frc.robot.Drivers.Motors.TalonFXMotor;
@@ -11,8 +12,8 @@ import frc.robot.Utils.RobotConfigReader;
 public class IntakeTest implements SimpleRobotTest {
     private final MotorsSet intakeMotors = new MotorsSet(
             new Motor[] {
-                    new TalonFXMotor(new TalonFX(0), false),
-                    new TalonFXMotor(new TalonFX(1), false)
+                    new TalonFXMotor(new TalonFX(14), true),
+                    new TalonFXMotor(new TalonFX(15), true)
             });
     private final Intake intake;
     private final XboxController testController = new XboxController(1);
@@ -25,7 +26,7 @@ public class IntakeTest implements SimpleRobotTest {
             throw new RuntimeException(e);
         }
 
-        this.intake = new Intake(intakeMotors, robotConfigReader);
+        this.intake = new Intake(intakeMotors, new Rev2mDistanceSensorEncapsulation(), robotConfigReader);
     }
 
     @Override
@@ -37,10 +38,17 @@ public class IntakeTest implements SimpleRobotTest {
 
     @Override
     public void testPeriodic() {
-        intake.periodic();
+        if (testController.getBButton())
+            intake.startIntake(null);
+        else if (testController.getYButton())
+            intake.startLaunch(null);
+        else if (testController.getXButton())
+            intake.startSplit(null);
 
-        if (testController.getRightBumper()) {
-
+        if (!testController.getLeftBumper()) {
+            intake.turnOffIntake(null);
         }
+
+        intake.periodic();
     }
 }

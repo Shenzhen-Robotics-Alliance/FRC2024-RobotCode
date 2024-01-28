@@ -54,7 +54,7 @@ public class RobotCore {
                 services = new ArrayList<>();
 
                 try {
-                        robotConfig = new RobotConfigReader("fasterChassis");
+                        robotConfig = new RobotConfigReader("5516");
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new RuntimeException("error while reading robot config");
