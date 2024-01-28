@@ -26,19 +26,18 @@ public class IntakeWithDistanceSensor extends Intake {
     private double intakePower, launchPower, revertPower, distanceSensorThreshold, splitTime;
     @Override
     protected void periodic(double dt) {
-        final double intakeMotorPower = decidedIntakeMotorPower(dt);
-        intakeMotor.setPower(intakeMotorPower, this);
+        intakeMotor.setPower(decidedIntakeMotorPower(dt), this);
     }
 
     public double decidedIntakeMotorPower(double dt) {
         switch (currentStatus) {
             case GRABBING -> {
-                if (intakeDistanceSensor.getDistanceCM() <= distanceSensorThreshold)
+                if (isNoteInsideIntake())
                     return updateStatusToDisabled();
                 return intakePower;
             }
             case LAUNCHING -> {
-                if (intakeDistanceSensor.getDistanceCM() >= distanceSensorThreshold)
+                if (!isNoteInsideIntake())
                     return updateStatusToDisabled();
                 return launchPower;
             }
@@ -93,5 +92,10 @@ public class IntakeWithDistanceSensor extends Intake {
             return;
         timeSinceSplitProcessStarted = 0;
         super.startSplit(operatorService);
+    }
+
+    @Override
+    public boolean isNoteInsideIntake() {
+        return intakeDistanceSensor.getDistanceCM() <= distanceSensorThreshold;
     }
 }

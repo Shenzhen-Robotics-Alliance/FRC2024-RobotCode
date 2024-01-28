@@ -61,4 +61,6 @@ public abstract class Intake extends RobotModuleBase {
     public boolean isCurrentTaskComplete() {
         return currentStatus == IntakeModuleStatus.DISABLED;
     }
+
+    public abstract boolean isNoteInsideIntake();
 }

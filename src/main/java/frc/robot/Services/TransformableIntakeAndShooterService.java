@@ -19,6 +19,8 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
     public enum IntakeAndShooterStatus {
         /** the transformer is at standby position */
         AT_DEFAULT_POSITION,
+        /** the transformer is at standby position, and holding a note */
+        AT_DEFAULT_POSITION_HOLDING_NOTE,
         /** the transformer is at intake standby position, which does not hit the floor, waiting for intake command */
         AT_INTAKE_STANDBY_POSITION,
         /** the transformer is at intake active position, the intake wheels spin to grab the note */
@@ -84,42 +86,45 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                 CANCEL_ACTION_BUTTON = copilotController.getXButton();
 
         switch (currentStatus) {
-            // TODO finish this part of the code
+            // TODO finish the code here
             case AT_DEFAULT_POSITION -> {
-                // the transformer is at standby position
-                break;
+                transformerModule.setTransformerDesiredPosition(IntakeTransformer.TransformerPosition.DEFAULT, this);
+                if (START_GRAB_BUTTON)
+                    this.currentStatus = IntakeAndShooterStatus.PROCEEDING_INTAKE;
+                else if (MOVE_TO_GRAB_STANDBY_POSITION_BUTTON)
+                    this.currentStatus = IntakeAndShooterStatus.AT_INTAKE_STANDBY_POSITION;
+            }
+            case AT_DEFAULT_POSITION_HOLDING_NOTE -> {
+                // the transformer is at standby position, and holding a note
+                transformerModule.setTransformerDesiredPosition(IntakeTransformer.TransformerPosition.DEFAULT, this);
+                if (intakeModule.isNoteInsideIntake())
+                    this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION;
+                if (START_SPLIT_BUTTON)
+                    this.currentStatus = IntakeAndShooterStatus.PROCEEDING_SPLIT;
             }
             case AT_INTAKE_STANDBY_POSITION -> {
                 // the transformer is at intake standby position, which does not hit the floor, waiting for intake command
-                break;
             }
             case PROCEEDING_INTAKE -> {
                 // the transformer is at intake active position, the intake wheels spin to grab the note
-                break;
             }
             case PROCEEDING_SPLIT -> {
                 // the transformer is at intake standby position, and the intake is splitting the note out
-                break;
             }
             case AT_SHOOTING_STANDBY_POSITION_HOLDING_NOTE -> {
                 // the transformer is at the shooting position, standing by for further instruction
-                break;
             }
             case LAUNCHING_NOTE -> {
                 // the transformer is at the shooting position and the note is being launched
-                break;
             }
             case AT_AMPLIFIER_POSITION_HOLDING_NOTE -> {
                 // the transformer is at amplifier position and is standing by
-                break;
             }
             case SPLITTING_TO_AMPLIFIER -> {
                 // the transformer is at amplifier position and is splitting the note
-                break;
             }
             default -> {
                 // the current status is unknown
-                break;
             }
         }
     }

@@ -5,8 +5,9 @@ import frc.robot.Services.RobotServiceBase;
 
 public class IntakeTransformer extends RobotModuleBase {
     public enum TransformerPosition {
+        DEFAULT,
+        INTAKE_STANDBY,
         INTAKE,
-        STANDBY,
         SHOOT,
         SCORE_AMPLIFIER
     }
