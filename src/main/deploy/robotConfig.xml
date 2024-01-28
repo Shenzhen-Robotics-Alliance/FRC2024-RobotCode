@@ -109,6 +109,10 @@
         <shooter1Reversed>1</shooter1Reversed>
         <shooter2Reversed>1</shooter2Reversed>
     </shooter>
+    <intake>
+        <intakePower>0.65</intakePower>
+        <revertPower>-0.55</revertPower>
+    </intake>
 
     <auto>
         <autoStageMaxAcceleration type="double">12</autoStageMaxAcceleration>

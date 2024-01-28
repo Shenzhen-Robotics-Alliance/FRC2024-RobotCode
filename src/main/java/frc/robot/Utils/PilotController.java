@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Utils.MathUtils.Transformation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
+import frc.robot.Utils.RobotConfigReader;
 
 public class PilotController {
     private final GenericHID rawController;
