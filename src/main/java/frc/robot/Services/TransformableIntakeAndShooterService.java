@@ -6,6 +6,9 @@ import frc.robot.Modules.UpperStructure.IntakeTransformer;
 import frc.robot.Modules.UpperStructure.Shooter;
 import frc.robot.Utils.RobotConfigReader;
 
+/**
+ * TODO communicate with vision-aided chassis
+ * */
 public class TransformableIntakeAndShooterService extends RobotServiceBase {
     private final Intake intakeModule;
     private final Shooter shooterModule;
@@ -13,13 +16,25 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
     private final RobotConfigReader robotConfig;
     private final XboxController copilotController;
 
-    public enum IntakeAndShooterTask {
-        SET_AWAIT_INTAKE,
-        GRAB_NOTE,
-        SET_AWAIT_SHOOT,
-        SHOOT_NOTE
+    public enum IntakeAndShooterStatus {
+        /** the transformer is at standby position */
+        AT_DEFAULT_POSITION,
+        /** the transformer is at intake standby position, which does not hit the floor, waiting for intake command */
+        AT_INTAKE_STANDBY_POSITION,
+        /** the transformer is at intake active position, the intake wheels spin to grab the note */
+        PROCEEDING_INTAKE,
+        /** the transformer is at intake standby position, and the intake is splitting the note out */
+        PROCEEDING_SPLIT,
+        /** the transformer is at the shooting position, standing by for further instruction */
+        AT_SHOOTING_STANDBY_POSITION_HOLDING_NOTE,
+        /** the transformer is at the shooting position and the note is being launched */
+        LAUNCHING_NOTE,
+        /** the transformer is at amplifier position and is standing by */
+        AT_AMPLIFIER_POSITION_HOLDING_NOTE,
+        /** the transformer is at amplifier position and is splitting the note */
+        SPLITTING_TO_AMPLIFIER
     }
-    private IntakeAndShooterTask currentTask;
+    private IntakeAndShooterStatus currentStatus;
     private boolean currentTaskComplete;
     /**
      * initialization of intake and shooter service
@@ -41,25 +56,78 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
 
     @Override
     public void reset() {
-        this.intakeModule.gainOwnerShip(this);
-        this.shooterModule.gainOwnerShip(this);
-        this.transformerModule.gainOwnerShip(this);
+        this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION;
+    }
 
-        currentTask = IntakeAndShooterTask.SET_AWAIT_INTAKE;
+    private void gainOwnerShips() {
+        this.intakeModule.clearOwners();
+        this.intakeModule.gainOwnerShip(this);
+        this.shooterModule.clearOwners();
+        this.shooterModule.gainOwnerShip(this);
+        this.transformerModule.clearOwners();
+        this.transformerModule.gainOwnerShip(this);
     }
 
     @Override
     public void periodic() {
+        /* read the xbox input */
+        final boolean
+                /** set the current service as the activated  */
+                SET_ACTIVATE_BUTTON = copilotController.getBackButton(), // "back" for manual control, "start" for auto control (in vision aided chassis)
+                MOVE_TO_GRAB_STANDBY_POSITION_BUTTON = copilotController.getAButton(),
+                START_GRAB_BUTTON = copilotController.getRightTriggerAxis() > 0.75,
+                STOP_GRAB_BUTTON = copilotController.getRightTriggerAxis() < 0.25,
+                START_SPLIT_BUTTON = copilotController.getRightBumper(),
+                TOGGLE_AMPLIFIER_BUTTON = copilotController.getLeftBumper(),
+                START_SHOOTER_BUTTON = copilotController.getLeftTriggerAxis() > 0.75,
+                LAUNCH_BUTTON = copilotController.getLeftTriggerAxis() < 0.25,
+                CANCEL_ACTION_BUTTON = copilotController.getXButton();
 
+        switch (currentStatus) {
+            // TODO finish this part of the code
+            case AT_DEFAULT_POSITION -> {
+                // the transformer is at standby position
+                break;
+            }
+            case AT_INTAKE_STANDBY_POSITION -> {
+                // the transformer is at intake standby position, which does not hit the floor, waiting for intake command
+                break;
+            }
+            case PROCEEDING_INTAKE -> {
+                // the transformer is at intake active position, the intake wheels spin to grab the note
+                break;
+            }
+            case PROCEEDING_SPLIT -> {
+                // the transformer is at intake standby position, and the intake is splitting the note out
+                break;
+            }
+            case AT_SHOOTING_STANDBY_POSITION_HOLDING_NOTE -> {
+                // the transformer is at the shooting position, standing by for further instruction
+                break;
+            }
+            case LAUNCHING_NOTE -> {
+                // the transformer is at the shooting position and the note is being launched
+                break;
+            }
+            case AT_AMPLIFIER_POSITION_HOLDING_NOTE -> {
+                // the transformer is at amplifier position and is standing by
+                break;
+            }
+            case SPLITTING_TO_AMPLIFIER -> {
+                // the transformer is at amplifier position and is splitting the note
+                break;
+            }
+            default -> {
+                // the current status is unknown
+                break;
+            }
+        }
     }
 
     @Override
     public void onDestroy() {
 
     }
-
-
-
 
     /**
      * @return whether the current task is satisfied

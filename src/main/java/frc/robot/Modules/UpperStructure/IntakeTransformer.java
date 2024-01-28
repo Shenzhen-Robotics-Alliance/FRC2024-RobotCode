@@ -13,7 +13,6 @@ public class IntakeTransformer extends RobotModuleBase {
     private TransformerPosition desiredPosition;
     private static final TransformerPosition defaultMode = TransformerPosition.INTAKE; // on startup, we are at intake position
 
-    private boolean transformerInPosition;
 
     /*
     * TODO we do not know yet , what the intake transformer is made of, so we first construct the APIs
@@ -61,6 +60,6 @@ public class IntakeTransformer extends RobotModuleBase {
     }
 
     public boolean transformerInPosition() {
-        return this.transformerInPosition;
+        return false;
     }
 }

@@ -110,9 +110,9 @@
         <shooter2Reversed>1</shooter2Reversed>
     </shooter>
     <intake>
-        <launchPower>0.85</launchPower>
+        <launchPower>0.75</launchPower>
         <intakePower>0.65</intakePower>
-        <revertPower>-0.55</revertPower>
+        <revertPower>-0.65</revertPower>
         <distanceSensorThreshold>24</distanceSensorThreshold>
         <splitTime>0.5</splitTime>
     </intake>
