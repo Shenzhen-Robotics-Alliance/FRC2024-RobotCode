@@ -7,6 +7,7 @@ import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Drivers.Motors.MotorsSet;
 import frc.robot.Drivers.Motors.TalonFXMotor;
 import frc.robot.Modules.UpperStructure.Intake;
+import frc.robot.Modules.UpperStructure.IntakeWithDistanceSensor;
 import frc.robot.Utils.RobotConfigReader;
 
 public class IntakeTest implements SimpleRobotTest {
@@ -26,7 +27,7 @@ public class IntakeTest implements SimpleRobotTest {
             throw new RuntimeException(e);
         }
 
-        this.intake = new Intake(intakeMotors, new Rev2mDistanceSensorEncapsulation(), robotConfigReader);
+        this.intake = new IntakeWithDistanceSensor(intakeMotors, new Rev2mDistanceSensorEncapsulation(), robotConfigReader);
     }
 
     @Override
