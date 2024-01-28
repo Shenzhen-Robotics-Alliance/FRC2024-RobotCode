@@ -2,7 +2,7 @@ package frc.robot.Services;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Modules.SwerveBasedChassis;
+import frc.robot.Modules.Chassis.SwerveBasedChassis;
 import frc.robot.Utils.MathUtils.BezierCurveSchedule;
 import frc.robot.Utils.MathUtils.BezierCurveScheduleGenerator;
 import frc.robot.Utils.RobotConfigReader;

@@ -2,7 +2,7 @@ package frc.robot.Modules.PositionReader;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.IMUs.SimpleGyro;
-import frc.robot.Modules.SwerveWheel;
+import frc.robot.Modules.Chassis.SwerveWheel;
 import frc.robot.Utils.MathUtils.AngleUtils;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;

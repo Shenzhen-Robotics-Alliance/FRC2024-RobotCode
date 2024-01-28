@@ -1,7 +1,8 @@
-package frc.robot.Modules;
+package frc.robot.Modules.UpperStructure;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.Motors.Motor;
+import frc.robot.Modules.RobotModuleBase;
 import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 import frc.robot.Utils.MechanismControllers.FlyWheelSpeedController;
 import frc.robot.Utils.RobotConfigReader;

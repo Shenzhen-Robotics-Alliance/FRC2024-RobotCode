@@ -1,3 +1,7 @@
+CAMERA_RESOLUTION = (640, 480)
+STREAMING_RESOLUTION = (640, 480)
+FLIP_IMAGE = 1 # 0 for vertical flip, 1 for horizontal flip, -1 for flip both, None for do not flip
+
 '''
 inspection and detection server running together
 '''
@@ -12,9 +16,9 @@ from socketserver import ThreadingMixIn
 from time import time, sleep
 
 cap = cv2.VideoCapture(0) # camera port
-cap.set(3, 640) # width
-cap.set(4, 480) # height
-cap.set(cv2.CAP_PROP_FPS, 30) 
+cap.set(3, CAMERA_RESOLUTION[0]) # width
+cap.set(4, CAMERA_RESOLUTION[1]) # height
+cap.set(cv2.CAP_PROP_FPS, 90) 
 # detector = apriltag.Detector(apriltag.DetectorOptions(families='tag36h11 tag25h9', nthreads=1))
 detector = apriltag.Detector(families='tag36h11', nthreads=4) # for windows
 
@@ -27,18 +31,24 @@ detection_results_ready = False
 frame_time_total = 0
 frame_time_samplecount = 0
 detection_results = "<no results yet>"
-import threading
+lock = threading.Lock()
 def generate_frames():
-    global frame, new_frame_ready, detection_results_ready, frame_time_total, frame_time_samplecount, detection_results
+    global frame, new_frame_ready, detection_results_ready, frame_time_total, frame_time_samplecount, detection_results, lock
     t = time()
     print("generate frames activated")
     while running:
         dt = time()
+        lock.acquire()
         ret, frame = cap.read()
         print("read camera time: " + str(int((time() - dt)*1000)) + "ms")
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        
+        dt = time()
+        if FLIP_IMAGE is not None:
+            frame = cv2.flip(frame, FLIP_IMAGE)
+        print("flip image time: " + str(int((time() - dt)*1000)) + "ms")
 
         dt = time()
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         tags = detector.detect(gray)
         print("detector time: " + str(int((time() - dt)*1000)) + "ms")
 
@@ -67,6 +77,8 @@ def generate_frames():
             detection_results += f"{tag.tag_id} {center[0]} {center[1]} {area}/"
         if detection_results=="":
             detection_results = "no-rst"
+        
+        lock.release()
         print("process result time: " + str(int((time() - dt)*1000)) + "ms")
 
         detection_results += "\n"
@@ -82,7 +94,7 @@ def generate_frames():
 update_rate = 24
 class StreamingHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
-        global new_frame_ready, detection_results_ready, detection_results, frame_time_samplecount, frame_time_total
+        global new_frame_ready, detection_results_ready, detection_results, frame_time_samplecount, frame_time_total, lock
         print(f"<--client visited {self.path} -->")
         if self.path == "/":
             # Return the main page (index.html)
@@ -107,15 +119,18 @@ class StreamingHandler(SimpleHTTPRequestHandler):
                 # while (not new_frame_ready) and running:
                 #     sleep(0.02)
                 sleep(1/update_rate)
+                lock.acquire()
                 try:
-                    frame_resized = cv2.resize(frame, (160, 120))
+                    frame_resized = cv2.resize(frame, STREAMING_RESOLUTION)
                     ret, buffer = cv2.imencode('.jpg', frame_resized)
                     frame_bytes = buffer.tobytes()
                     self.send_frame(frame_bytes)
                 except ConnectionResetError:
                     print("client disconnected")
+                    lock.release()
                     return
                 new_frame_ready = True
+                lock.release()
         elif self.path == '/results':
             self.send_response(200)
             self.send_header('Content-type', 'text/plain')
@@ -153,6 +168,7 @@ print("<-- inspector server started -->")
 try:
     generate_frames()
 except KeyboardInterrupt:
+    lock.release()
     pass
 running = False
 print("shutdown by user")

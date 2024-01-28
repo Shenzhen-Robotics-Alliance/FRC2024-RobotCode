@@ -1,9 +1,10 @@
-package frc.robot.Modules;
+package frc.robot.Modules.UpperStructure;
 
 import frc.robot.Drivers.Motors.Motor;
+import frc.robot.Modules.RobotModuleBase;
 import frc.robot.Utils.RobotConfigReader;
 
-public class Intake extends RobotModuleBase{
+public class Intake extends RobotModuleBase {
     private final Motor intakeMotor;
     private final RobotConfigReader robotConfig;
     public enum IntakeModuleTask {

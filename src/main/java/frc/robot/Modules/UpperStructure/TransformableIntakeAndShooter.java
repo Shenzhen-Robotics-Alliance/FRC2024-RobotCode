@@ -1,4 +1,6 @@
-package frc.robot.Modules;
+package frc.robot.Modules.UpperStructure;
+
+import frc.robot.Modules.RobotModuleBase;
 
 public class TransformableIntakeAndShooter extends RobotModuleBase {
     protected TransformableIntakeAndShooter() {

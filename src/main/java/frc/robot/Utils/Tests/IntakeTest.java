@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Drivers.Motors.MotorsSet;
 import frc.robot.Drivers.Motors.TalonFXMotor;
-import frc.robot.Modules.Intake;
+import frc.robot.Modules.UpperStructure.Intake;
 import frc.robot.Utils.RobotConfigReader;
 
 public class IntakeTest implements SimpleRobotTest {
