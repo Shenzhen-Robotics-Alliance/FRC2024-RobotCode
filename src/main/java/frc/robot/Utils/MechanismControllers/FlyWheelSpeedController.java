@@ -11,8 +11,11 @@ public class FlyWheelSpeedController implements MechanismController {
     private SimpleFeedForwardSpeedController simpleFeedForwardSpeedController;
     private FlyWheelSpeedControllerProfile profile;
     private static final double nanoToSec = 1_000_000_000.0;
-    /** if the mechanism can reach desired speed within this time, just skip to desired speed */
-    private static final double jumpToDesiredSpeedTimeInterval = 0.2;
+    /**
+     * if the difference between the current desired velocity and the new desired velocity is within this range, we just skip to new desired velocity right away
+     * notice that this value is represented in the percentage of maximum speed
+     * */
+    private static final double jumpToDesiredSpeedMarginInMaximumSpeed = 0.1;
 
     private double speedWhenTaskStarted, desiredSpeed;
     private long taskStartTimeNano;
@@ -30,8 +33,8 @@ public class FlyWheelSpeedController implements MechanismController {
 
     public void setDesiredSpeed(double newDesiredSpeed) {
         // v = at, t = v / a
-        System.out.println("jmp to tgt: " + (Math.abs(newDesiredSpeed - desiredSpeed) / profile.maximumAcceleration < jumpToDesiredSpeedTimeInterval));
-        if (Math.abs(newDesiredSpeed - desiredSpeed) / profile.maximumAcceleration < jumpToDesiredSpeedTimeInterval)
+        System.out.println("jmp to tgt: " + (Math.abs(newDesiredSpeed - desiredSpeed) < jumpToDesiredSpeedMarginInMaximumSpeed * profile.maximumSpeed));
+        if (Math.abs(newDesiredSpeed - desiredSpeed) < jumpToDesiredSpeedMarginInMaximumSpeed * profile.maximumSpeed)
             this.desiredSpeed = newDesiredSpeed;
         else
             startNewSpeedControlTask(newDesiredSpeed);
