@@ -1,4 +1,4 @@
-<!-- 5516 -->
+<!-- 9999 -->
 <robotConfig>
     <hardware>
         <chassisOnCanivore>1</chassisOnCanivore>
@@ -28,10 +28,10 @@
 
         <gyroPort type="int">0</gyroPort>
         <!-- the zero position of encoders, to measure this value, turn the wheel to the direct front, and see the value of encoder.getRawSensorReading() -->
-        <frontLeftWheelZeroPosition type = "double">2.36</frontLeftWheelZeroPosition>
-        <frontRightWheelZeroPosition type = "double">1.175</frontRightWheelZeroPosition>
-        <backLeftWheelZeroPosition type = "double">3.29</backLeftWheelZeroPosition>
-        <backRightWheelZeroPosition type = "double">5.401</backRightWheelZeroPosition>
+        <frontLeftWheelZeroPosition type = "double">0.870</frontLeftWheelZeroPosition>
+        <frontRightWheelZeroPosition type = "double">1.179</frontRightWheelZeroPosition>
+        <backLeftWheelZeroPosition type = "double">1.694</backLeftWheelZeroPosition>
+        <backRightWheelZeroPosition type = "double">-2.329</backRightWheelZeroPosition>
     </hardware>
     <chassis>
         <!-- override existing -->

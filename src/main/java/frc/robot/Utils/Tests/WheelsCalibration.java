@@ -27,7 +27,7 @@ public class WheelsCalibration implements SimpleRobotTest { // calibrate wheel
     @Override
     public void testStart() {
         try {
-            config = new RobotConfigReader("slowerChassis");
+            config = new RobotConfigReader("fasterChassis");
         } catch (Exception e) {
             throw new RuntimeException();
         }
