@@ -39,22 +39,22 @@ public class RobotCore {
         private final boolean useMultiThreads;
         protected boolean wasEnabled;
 
-        public RobotCore() {
-                this(true);
+        public RobotCore(String configNme) {
+                this(configNme, true);
         }
         /**
          * creates a robot core
          * creates the instances of all the modules, but do not call init functions yet
          * @param useMultiThreads whether the robot modules should be updated in independent threads
          * */
-        public RobotCore(boolean useMultiThreads) {
+        public RobotCore(String configName, boolean useMultiThreads) {
                 System.out.println("<-- Robot Core | creating robot... -->");
                 this.useMultiThreads = useMultiThreads;
                 modules = new ArrayList<>();
                 services = new ArrayList<>();
 
                 try {
-                        robotConfig = new RobotConfigReader("5516");
+                        robotConfig = new RobotConfigReader(configName);
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new RuntimeException("error while reading robot config");

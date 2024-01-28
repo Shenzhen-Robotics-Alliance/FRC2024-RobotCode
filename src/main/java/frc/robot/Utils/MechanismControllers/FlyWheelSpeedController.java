@@ -19,7 +19,8 @@ public class FlyWheelSpeedController implements MechanismController {
     public FlyWheelSpeedController(FlyWheelSpeedControllerProfile profile) {
         this.profile = profile;
         this.simpleFeedForwardSpeedController = new SimpleFeedForwardSpeedController(profile);
-        startNewSpeedControlTask(0, 0);
+        this.desiredSpeed = 0;
+        startNewSpeedControlTask( 0);
     }
 
     public void setProfile(FlyWheelSpeedControllerProfile profile) {
@@ -27,12 +28,13 @@ public class FlyWheelSpeedController implements MechanismController {
         this.simpleFeedForwardSpeedController = new SimpleFeedForwardSpeedController(profile);
     }
 
-    public void setDesiredSpeed(double desiredSpeed, double currentSpeed) {
+    public void setDesiredSpeed(double newDesiredSpeed) {
         // v = at, t = v / a
-        if (Math.abs(desiredSpeed - currentSpeed) / profile.maximumAcceleration < jumpToDesiredSpeedTimeInterval)
-            this.desiredSpeed = currentSpeed;
+        System.out.println("jmp to tgt: " + (Math.abs(newDesiredSpeed - desiredSpeed) / profile.maximumAcceleration < jumpToDesiredSpeedTimeInterval));
+        if (Math.abs(newDesiredSpeed - desiredSpeed) / profile.maximumAcceleration < jumpToDesiredSpeedTimeInterval)
+            this.desiredSpeed = newDesiredSpeed;
         else
-            startNewSpeedControlTask(desiredSpeed, currentSpeed);
+            startNewSpeedControlTask(newDesiredSpeed);
     }
 
     public double getCorrectionPower(double currentSpeed) {
@@ -46,9 +48,9 @@ public class FlyWheelSpeedController implements MechanismController {
         return Math.max(correctionSpeed, 0); // do not go negative power
     }
 
-    private void startNewSpeedControlTask(double desiredSpeed, double currentSpeed) {
-        this.desiredSpeed = desiredSpeed;
-        this.speedWhenTaskStarted = currentSpeed;
+    private void startNewSpeedControlTask(double newDesiredSpeed) {
+        this.speedWhenTaskStarted = desiredSpeed;
+        this.desiredSpeed = newDesiredSpeed;
         this.taskStartTimeNano = System.nanoTime();
     }
 

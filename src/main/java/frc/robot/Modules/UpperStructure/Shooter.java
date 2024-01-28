@@ -40,7 +40,7 @@ public class Shooter extends RobotModuleBase {
         this.desiredRPM = desiredSpeedRPM;
         final double desiredEncoderVelocity = desiredSpeedRPM / encoderVelocityToRPM;
         for (int shooterID = 0; shooterID < shooters.length; shooterID++)
-            speedControllers[shooterID].setDesiredSpeed(desiredEncoderVelocity, Math.abs(shooters[shooterID].getEncoderVelocity()));
+            speedControllers[shooterID].setDesiredSpeed(desiredEncoderVelocity);
     }
 
     public boolean shooterReady() {
@@ -104,9 +104,7 @@ public class Shooter extends RobotModuleBase {
                 robotConfig.getConfig("shooter", "speedControllerMaximumSpeed"),
                 robotConfig.getConfig("shooter", "speedControllerTimeNeededToAccelerateToMaxSpeed")
         );
-        for (FlyWheelSpeedController speedController:speedControllers) {
+        for (FlyWheelSpeedController speedController:speedControllers)
             speedController.setProfile(speedControllerProfile);
-            System.out.println("speed controller p in shooter module:" + speedController.getProfile().proportionGain);
-        }
     }
 }

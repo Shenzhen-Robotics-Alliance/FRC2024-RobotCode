@@ -19,7 +19,7 @@ public class IntakeAndShooterTest implements SimpleRobotTest {
     public IntakeAndShooterTest() {
         RobotConfigReader robotConfig;
         try {
-            robotConfig = new RobotConfigReader("slowerChassis");
+            robotConfig = new RobotConfigReader();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("error while reading robot config");
