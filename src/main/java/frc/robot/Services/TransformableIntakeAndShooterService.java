@@ -5,7 +5,6 @@ import frc.robot.Modules.UpperStructure.Intake;
 import frc.robot.Modules.UpperStructure.IntakeTransformer;
 import frc.robot.Modules.UpperStructure.Shooter;
 import frc.robot.Utils.RobotConfigReader;
-import org.cef.network.CefURLRequest;
 
 public class TransformableIntakeAndShooterService extends RobotServiceBase {
     private final Intake intakeModule;
