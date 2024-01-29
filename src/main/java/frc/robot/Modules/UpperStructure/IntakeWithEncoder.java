@@ -50,4 +50,9 @@ public class IntakeWithEncoder extends Intake {
     protected void onDisable() {
 
     }
+
+    @Override
+    public boolean isNoteInsideIntake() {
+        return false;
+    }
 }

@@ -17,7 +17,7 @@ package frc.robot.Utils.MechanismControllers;
  */
 public class EnhancedPIDController {
     /** the settings of the PID */
-    private final PIDProfile pidProfile;
+    private PIDProfile pidProfile;
     /** the current mission of the controller */
     private Task task;
     /** the current schedule for the movement */
@@ -40,6 +40,10 @@ public class EnhancedPIDController {
         this.task = new Task(Task.TaskType.MAINTAIN_SPEED, 0);
         this.pidProfile = config;
         reset(0);
+    }
+
+    public void setPidProfile(PIDProfile newPIDProfile) {
+        this.pidProfile = newPIDProfile;
     }
 
     /**
@@ -550,7 +554,7 @@ public class EnhancedPIDController {
     /**
      * stores the plan of going to a position using trapezoid algorithm
      * */
-    static class TrapezoidPathSchedule {
+    public static final class TrapezoidPathSchedule {
         private DynamicalPIDProfile profile;
         private Task task;
         private double startingPosition;
@@ -612,7 +616,7 @@ public class EnhancedPIDController {
         }
 
 
-        public double getCurrentPathPosition() { // TODO
+        public double getCurrentPathPosition() {
             final double timeToFullyAccelerate = profile.maxVelocity / profile.maxAcceleration;
             final double distanceTravelledDuringAccelerating = timeToFullyAccelerate * profile.maxVelocity / 2;
             final double totalDistance = Math.abs(task.value - startingPosition);

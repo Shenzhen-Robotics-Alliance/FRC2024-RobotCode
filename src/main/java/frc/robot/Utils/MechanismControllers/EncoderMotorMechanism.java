@@ -55,6 +55,11 @@ public class EncoderMotorMechanism implements Encoder, Motor {
     }
 
     @Override
+    public double getRawEncoderReading() {
+        return encoder.getRawEncoderReading();
+    }
+
+    @Override
     public void gainOwnerShip(RobotModuleBase ownerModule) {
         motor.gainOwnerShip(ownerModule);
         encoder.gainOwnerShip(ownerModule);

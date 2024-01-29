@@ -50,8 +50,8 @@ public class SwerveWheelPositionEstimator extends RobotModuleBase implements Pos
             wheelVelocities[wheelID] = wheelVelocity; // keep a copy of the velocity
         }
 
-        SmartDashboard.putNumber("old position estimator (x)", getRobotPosition2D().getX());
-        SmartDashboard.putNumber("old position estimator (y)", getRobotPosition2D().getY());
+//        SmartDashboard.putNumber("old position estimator (x)", getRobotPosition2D().getX());
+//        SmartDashboard.putNumber("old position estimator (y)", getRobotPosition2D().getY());
     }
 
     @Override

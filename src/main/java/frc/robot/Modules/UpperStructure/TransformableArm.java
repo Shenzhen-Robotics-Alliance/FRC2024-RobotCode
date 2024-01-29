@@ -1,5 +1,6 @@
 package frc.robot.Modules.UpperStructure;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.Encoders.Encoder;
 import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Modules.RobotModuleBase;
@@ -20,6 +21,7 @@ public class TransformableArm extends RobotModuleBase {
     private final Encoder armEncoder;
     private final ArmGravityController armController;
     private double errorAsArmReady;
+    private final double radianPerEncoderTick;
     private final RobotConfigReader robotConfig;
     public enum TransformerPosition {
         /** the position of the arm such that the robot is balanced */
@@ -47,9 +49,11 @@ public class TransformableArm extends RobotModuleBase {
         super.motors.add(armLifterMotor);
         this.armEncoder = armEncoder;
         this.armLifterMechanism = new EncoderMotorMechanism(armEncoder, armLifterMotor);
-        this.armController = new ArmGravityController(new ArmGravityController.ArmProfile(0,0,0,0,0,null));
+        this.armController = new ArmGravityController(new ArmGravityController.ArmProfile(0,0,0,0,0 ,null));
         this.armLifterMechanism.setController(armController);
         this.robotConfig = robotConfig;
+
+        this.radianPerEncoderTick = Math.PI * 2 / robotConfig.getConfig("arm", "overallGearRatio") / robotConfig.getConfig("arm", "encoderTicksPerRevolution");
     }
 
     @Override
@@ -66,22 +70,18 @@ public class TransformableArm extends RobotModuleBase {
 
     @Override
     public void updateConfigs() {
-        this.armController.setProfile(new ArmGravityController.ArmProfile(
-                robotConfig.getConfig("arm", "maximumPower"),
-                robotConfig.getConfig("arm", "errorStartDecelerate"),
-                robotConfig.getConfig("arm", "errorTolerance"),
-                robotConfig.getConfig("arm", "feedForwardTime"),
-                robotConfig.getConfig("arm", "errorAccumulationProportion"),
-                robotConfig.getConfig("arm", "gravityTorqueAtArmHorizontalState")
-        ));
-        // this.radianPerEncoderTick = Math.PI * 2 / overallGearRatio / encoderTicksPerRevolution;
-        this.errorAsArmReady = // we think that the arm is ready if error is within 2 times the error tolerance
+//        List<Double> encoderPositions =
+//        ArmGravityController.ArmProfile armProfile = new ArmGravityController.ArmProfile(
+//
+//        )
+//        this.armController.updateArmProfile();
+//        this.errorAsArmReady = // we think that the arm is ready if error is within 2 times the error tolerance
     }
 
     @Override
     public void resetModule() {
         this.desiredPosition = TransformerPosition.DEFAULT;
-        this.armController.resetErrorAccumulation();
+        this.armController.reset(armEncoder.getEncoderPosition());
         this.armLifterMechanism.gainOwnerShip(this);
     }
 
@@ -107,6 +107,6 @@ public class TransformableArm extends RobotModuleBase {
     }
 
     public boolean transformerInPosition() {
-        return Math.abs();
+        return false;
     }
 }

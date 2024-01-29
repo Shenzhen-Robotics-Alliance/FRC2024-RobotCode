@@ -76,7 +76,7 @@ public class SwerveBasedChassis extends RobotModuleBase {
     @Override
     protected void periodic(double dt) {
         Vector2D processedTranslationalSpeed = processTranslationalMotion(dt);
-        SmartDashboard.putNumber("decided vel(x)", processedTranslationalSpeed.getValue()[0]);
+        // SmartDashboard.putNumber("decided vel(x)", processedTranslationalSpeed.getValue()[0]);
         double rotationalSpeed = processRotationalMotion(dt);
 
 
@@ -226,7 +226,7 @@ public class SwerveBasedChassis extends RobotModuleBase {
                 decidedVelocity.multiplyBy(-1)
         );
 
-        SmartDashboard.putNumber("vel ctrl decided", decidedVelocity.getMagnitude());
+        // SmartDashboard.putNumber("vel ctrl decided", decidedVelocity.getMagnitude());
         Vector2D step = new Vector2D(velocityDifference.getHeading(),
                 Math.min(dt * maxAcceleration, velocityDifference.getMagnitude())
         );
@@ -366,8 +366,6 @@ public class SwerveBasedChassis extends RobotModuleBase {
     }
 
     public boolean isCurrentTranslationalTaskFinished() {
-        if (translationalTask.taskType == ChassisTaskTranslation.TaskType.GO_TO_POSITION)
-            SmartDashboard.putNumber("chassis deviation from task: ", Vector2D.displacementToTarget(positionEstimator.getRobotPosition2D(), translationalTask.translationValue).getMagnitude());
         switch (translationalTask.taskType) {
             case SET_VELOCITY:
                 return translationalTask.translationValue.getMagnitude() == 0;

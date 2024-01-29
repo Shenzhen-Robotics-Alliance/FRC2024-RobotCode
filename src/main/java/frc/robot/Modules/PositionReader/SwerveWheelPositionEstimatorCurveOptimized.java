@@ -57,8 +57,8 @@ public class SwerveWheelPositionEstimatorCurveOptimized extends SwerveWheelPosit
             wheelVelocities[wheelID] = wheelVelocity; // keep a copy of the velocity
         }
 
-        SmartDashboard.putNumber("new position estimator (x)", getRobotPosition2D().getX());
-        SmartDashboard.putNumber("new position estimator (y)", getRobotPosition2D().getY());
+//        SmartDashboard.putNumber("new position estimator (x)", getRobotPosition2D().getX());
+//        SmartDashboard.putNumber("new position estimator (y)", getRobotPosition2D().getY());
     }
 
 

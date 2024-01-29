@@ -121,6 +121,8 @@
         <!-- positive should be towards lower point -->
         <armMotorReversed>1</armMotorReversed>
         <armEncoderReversed>1</armEncoderReversed>
+        <overallGearRatio>80</overallGearRatio>
+        <encoderTicksPerRevolution>2048</encoderTicksPerRevolution>
 
         <!-- arm PID -->
         <maximumPower>0.8</maximumPower>

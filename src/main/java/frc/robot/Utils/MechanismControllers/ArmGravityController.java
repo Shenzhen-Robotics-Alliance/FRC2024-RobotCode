@@ -2,67 +2,65 @@ package frc.robot.Utils.MechanismControllers;
 
 import frc.robot.Utils.MathUtils.LookUpTable;
 
-public class ArmGravityController {
+public class ArmGravityController implements MechanismController {
+    private final EnhancedPIDController enhancedPIDController;
     private double desiredPosition;
-    private boolean activated;
-    private ArmProfile profile;
-    private double accumulatedError;
+    private boolean alive;
+    public ArmProfile profile;
     private long previousTimeMillis;
     public ArmGravityController(ArmProfile armProfile) {
         this.profile = armProfile;
-        disable();
+        this.enhancedPIDController = new EnhancedPIDController(armProfile);
     }
 
-    public void setDesiredPosition(double desiredPosition) {
-        this.desiredPosition = desiredPosition;
-        this.activated = true;
+    public void setDesiredPosition(double newDesiredPosition) {
+        if (this.alive)
+            enhancedPIDController.startNewTaskKeepIntegration(new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, newDesiredPosition), desiredPosition);
+        else
+            enhancedPIDController.startNewTask(new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, newDesiredPosition), newDesiredPosition);
+
+        this.desiredPosition = newDesiredPosition;
+        this.alive = true;
         previousTimeMillis = System.currentTimeMillis();
     }
 
-    public void disable() {
-        this.activated = false;
-        resetErrorAccumulation();
-    }
-
-    public void resetErrorAccumulation() {
-        this.accumulatedError = 0;
-    }
-
-    /**
-     * @param armVelocityRadPerSec the velocity of the arm, in radian per second, POSITIVE IS UPWARDS
-     * @param armPositionRad the position of the arm, in radian, where ZERO IS HORIZONTAL, POSITIVE IS UPWARDS
-     * @return the correction power, in percent output, POSITIVE IS UPWARDS
-     * */
-    public double getMotorPower(double armVelocityRadPerSec, double armPositionRad) {
-        if (!activated)
-            return 0;
-        final double gravityPower = profile.gravityTorqueAtArmHorizontalState * Math.cos(armPositionRad),
-                mechanismPredictedPosition = armPositionRad + armVelocityRadPerSec * profile.feedForwardTime,
-                mechanismError = desiredPosition - mechanismPredictedPosition,
-                proportionPower = Math.abs(mechanismError) > profile.errorTolerance ?
-                        profile.maximumPower * mechanismError / profile.errorStartDecelerate : 0,
-                integralPower = accumulatedError * proportionPower,
-                dt = (System.currentTimeMillis() - previousTimeMillis) / 1000.0;
-
-        accumulatedError += mechanismError * profile.errorAccumulationProportion * dt;
+    @Override
+    public double getMotorPower(double mechanismVelocity, double mechanismPosition) {
+        if (!alive) return 0;
+        final double gravityCorrectionPower = profile.gravityTorqueEquilibriumMotorPowerLookUpTable.getYPrediction(mechanismPosition),
+                dt = (System.currentTimeMillis() - previousTimeMillis) / 1000.0,
+                overallCorrectionPower = gravityCorrectionPower + enhancedPIDController.getMotorPower(mechanismPosition, mechanismVelocity, dt);
         previousTimeMillis = System.currentTimeMillis();
-        return Math.min(gravityPower + proportionPower + integralPower, profile.maximumPower);
+        if (Math.abs(overallCorrectionPower) > profile.getMaxPowerAllowed())
+            return Math.copySign(profile.maxAcceleration, overallCorrectionPower);
+        return overallCorrectionPower;
     }
 
-    public void setProfile(ArmProfile newProfile) {
-        this.profile = newProfile;
+    public void updateArmProfile(ArmProfile newArmProfile) {
+        this.profile = newArmProfile;
+        this.enhancedPIDController.setPidProfile(newArmProfile);
     }
 
-    public static final class ArmProfile {
-        public final double maximumPower, errorStartDecelerate, errorTolerance, feedForwardTime, errorAccumulationProportion, gravityTorqueAtArmHorizontalState;
+    public void reset(double initialPosition) {
+        this.enhancedPIDController.reset(initialPosition, false);
+    }
 
-        public ArmProfile(double maximumPower, double errorStartDecelerate, double errorTolerance, double feedForwardTime, double errorAccumulationProportion, double gravityTorqueAtArmHorizontalState) {
-            this.maximumPower = maximumPower;
-            this.errorStartDecelerate = errorStartDecelerate;
-            this.errorTolerance = errorTolerance;
-            this.feedForwardTime = feedForwardTime;
-            this.gravityTorqueAtArmHorizontalState = gravityTorqueAtArmHorizontalState;
-            this.errorAccumulationProportion = errorAccumulationProportion;
+
+    public static final class ArmProfile extends EnhancedPIDController.DynamicalPIDProfile {
+        public final LookUpTable gravityTorqueEquilibriumMotorPowerLookUpTable;
+
+        /**
+         * Creates a arm PID profile which is another dynamic pid profile
+         *
+         * @param maxPowerAllowed                       the restriction on power
+         * @param errorTolerance                        the amount of error to ignore
+         * @param integralCoefficientError              the coefficient of the cumulated error, also known as kI
+         * @param maxAcceleration                       the maximum instant acceleration that the mechanism can achieve with the max power
+         * @param maxVelocity                           the restriction on the velocity of the mechanism
+         */
+        public ArmProfile(double maxPowerAllowed, double errorTolerance, double integralCoefficientError, double maxAcceleration, double maxVelocity, LookUpTable gravityTorqueEquilibriumMotorPowerLookUpTable) {
+            super(Double.POSITIVE_INFINITY, maxPowerAllowed, 0, errorTolerance, integralCoefficientError, 0, maxAcceleration, maxVelocity);
+            this.gravityTorqueEquilibriumMotorPowerLookUpTable = gravityTorqueEquilibriumMotorPowerLookUpTable;
         }
     }
 }

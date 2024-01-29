@@ -142,7 +142,7 @@ public class PilotChassis extends RobotServiceBase {
             );
 
 
-        SmartDashboard.putNumber("desired heading", desiredHeading);
+        // SmartDashboard.putNumber("desired heading", desiredHeading);
 
         /* calls to the chassis module and pass the desired motion */
         chassis.setTranslationalTask(chassisTranslationalTask, this);
