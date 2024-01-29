@@ -116,6 +116,20 @@
         <distanceSensorThreshold>24</distanceSensorThreshold>
         <splitTime>0.5</splitTime>
     </intake>
+    <arm>
+        <armMotorPort>25</armMotorPort>
+        <!-- positive should be towards lower point -->
+        <armMotorReversed>1</armMotorReversed>
+        <armEncoderReversed>1</armEncoderReversed>
+
+        <!-- arm PID -->
+        <maximumPower>0.8</maximumPower>
+        <errorStartDecelerate></errorStartDecelerate>
+        <errorTolerance></errorTolerance>
+        <feedForwardTime></feedForwardTime>
+        <errorAccumulationProportion></errorAccumulationProportion>
+        <!-- lookup table -->
+    </arm>
 
     <auto>
         <autoStageMaxAcceleration type="double">12</autoStageMaxAcceleration>

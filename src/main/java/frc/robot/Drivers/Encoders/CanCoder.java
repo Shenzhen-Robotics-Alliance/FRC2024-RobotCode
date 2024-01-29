@@ -37,12 +37,13 @@ public class CanCoder extends RobotDriverBase implements Encoder {
      */
     @Override
     public double getEncoderPosition() {
-        final double differenceFromZeroPosition = AngleUtils.getActualDifference(encoderZeroPosition, getRawSensorReading());
+        final double differenceFromZeroPosition = AngleUtils.getActualDifference(encoderZeroPosition, getRawEncoderReading());
         return AngleUtils.simplifyAngle(differenceFromZeroPosition * encoderScaleFactor);
     }
 
     /** the raw sensor reading, converted to radian */
-    public double getRawSensorReading() {
+    @Override
+    public double getRawEncoderReading() {
         return encoderInstance.getAbsolutePosition().getValueAsDouble() * Math.PI * 2;
     }
 

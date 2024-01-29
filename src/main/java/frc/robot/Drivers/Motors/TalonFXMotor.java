@@ -13,7 +13,7 @@ public class TalonFXMotor extends RobotDriverBase implements Motor, Encoder {
     private final int portID;
     /** encoder is built-in, so they reverse together */
     private double powerAndEncoderScaleFactor;
-    private double currentPower = 0;
+    private double currentPower = 0, zeroPosition = 0;
     private boolean enabled;
     private ZeroPowerBehavior zeroPowerBehavior;
 
@@ -103,19 +103,24 @@ public class TalonFXMotor extends RobotDriverBase implements Motor, Encoder {
 
     @Override
     public void setZeroPosition(double zeroPosition) {
-
+        this.zeroPosition = zeroPosition;
     }
 
     /** gets the current position, not in radian */
     @Override
     public double getEncoderPosition() {
-        return talonFXInstance.getRotorPosition().getValueAsDouble() * powerAndEncoderScaleFactor * 2048; // TODO just use rotations, convert the units in other parts of the code
+        return getRawEncoderReading() - zeroPosition;
     }
 
     /** gets the current velocity, not in radian, but in per second */
     @Override
     public double getEncoderVelocity() {
         return talonFXInstance.getRotorVelocity().getValueAsDouble() * 2048 * powerAndEncoderScaleFactor;
+    }
+
+    @Override
+    public double getRawEncoderReading() {
+        return talonFXInstance.getRotorPosition().getValueAsDouble() * powerAndEncoderScaleFactor * 2048;
     }
 
     public EncoderMotorMechanism toEncoderAndMotorMechanism() {

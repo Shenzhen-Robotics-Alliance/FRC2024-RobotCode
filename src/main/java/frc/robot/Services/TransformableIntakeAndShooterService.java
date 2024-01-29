@@ -2,7 +2,7 @@ package frc.robot.Services;
 
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Modules.UpperStructure.Intake;
-import frc.robot.Modules.UpperStructure.IntakeTransformer;
+import frc.robot.Modules.UpperStructure.TransformableArm;
 import frc.robot.Modules.UpperStructure.Shooter;
 import frc.robot.Utils.RobotConfigReader;
 
@@ -12,7 +12,7 @@ import frc.robot.Utils.RobotConfigReader;
 public class TransformableIntakeAndShooterService extends RobotServiceBase {
     private final Intake intakeModule;
     private final Shooter shooterModule;
-    private final IntakeTransformer transformerModule;
+    private final TransformableArm transformerModule;
     private final RobotConfigReader robotConfig;
     private final XboxController copilotController;
 
@@ -42,7 +42,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
      * initialization of intake and shooter service
      * a transformable mechanism that can intake and move up to shoot
      */
-    protected TransformableIntakeAndShooterService(RobotConfigReader robotConfig, Intake intakeModule, Shooter shooterModule, IntakeTransformer transformerModule, XboxController copilotController) {
+    protected TransformableIntakeAndShooterService(RobotConfigReader robotConfig, Intake intakeModule, Shooter shooterModule, TransformableArm transformerModule, XboxController copilotController) {
         super("Intake-And-Shooter-Service");
         this.intakeModule = intakeModule;
         this.shooterModule = shooterModule;
@@ -88,7 +88,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
         switch (currentStatus) {
             // TODO finish the code here
             case AT_DEFAULT_POSITION -> {
-                transformerModule.setTransformerDesiredPosition(IntakeTransformer.TransformerPosition.DEFAULT, this);
+                transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
                 if (START_GRAB_BUTTON)
                     this.currentStatus = IntakeAndShooterStatus.PROCEEDING_INTAKE;
                 else if (MOVE_TO_GRAB_STANDBY_POSITION_BUTTON)
@@ -96,7 +96,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
             }
             case AT_DEFAULT_POSITION_HOLDING_NOTE -> {
                 // the transformer is at standby position, and holding a note
-                transformerModule.setTransformerDesiredPosition(IntakeTransformer.TransformerPosition.DEFAULT, this);
+                transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
                 if (intakeModule.isNoteInsideIntake())
                     this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION;
                 if (START_SPLIT_BUTTON)

@@ -59,7 +59,7 @@ public class WheelsCalibration implements SimpleRobotTest { // calibrate wheel
                 new CANcoder((int) config.getConfig("hardware", wheelsSendableChooser.getSelected().name() + "WheelEncoder"), "ChassisCanivore")
         );
 
-        SmartDashboard.putNumber("raw steer encoder reading", testCanCoder.getRawSensorReading());
+        SmartDashboard.putNumber("raw steer encoder reading", testCanCoder.getRawEncoderReading());
         SmartDashboard.putNumber("raw steer encoder velocity", testCanCoder.getEncoderVelocity());
 
         if (testController.getAButton())
