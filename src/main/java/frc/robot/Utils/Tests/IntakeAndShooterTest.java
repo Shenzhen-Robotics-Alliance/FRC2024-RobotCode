@@ -50,8 +50,8 @@ public class IntakeAndShooterTest implements SimpleRobotTest {
     double desiredShooterRPM;
     @Override
     public void testPeriodic() {
-        desiredShooterRPM += dt.get() * (-180000.0 / 2048.0 * 60.0) * xboxController.getLeftY();
-        desiredShooterRPM = Math.max(0, Math.min(180000.0 / 2048.0 * 60.0, desiredShooterRPM));
+        desiredShooterRPM -= dt.get() * 6200 * xboxController.getLeftY();
+        desiredShooterRPM = Math.max(0, Math.min(6200, desiredShooterRPM));
         dt.reset();
         if (xboxController.getAButton())
             shooter.setDesiredSpeed(desiredShooterRPM);

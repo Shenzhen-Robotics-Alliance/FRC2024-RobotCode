@@ -101,7 +101,7 @@ public class Shooter extends RobotModuleBase {
                 robotConfig.getConfig("shooter", "speedControllerFeedForwardGain"),
                 robotConfig.getConfig("shooter", "speedControllerFrictionGain"),
                 robotConfig.getConfig("shooter", "speedControllerFeedForwardDelay"),
-                robotConfig.getConfig("shooter", "speedControllerMaximumSpeed"),
+                robotConfig.getConfig("shooter", "speedControllerMaximumSpeed") / this.encoderVelocityToRPM,
                 robotConfig.getConfig("shooter", "speedControllerTimeNeededToAccelerateToMaxSpeed")
         );
         for (FlyWheelSpeedController speedController:speedControllers)

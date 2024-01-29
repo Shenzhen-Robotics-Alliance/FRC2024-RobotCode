@@ -101,7 +101,7 @@
         <speedControllerFeedForwardGain>0.6</speedControllerFeedForwardGain>
         <speedControllerFrictionGain>0.03</speedControllerFrictionGain>
         <speedControllerFeedForwardDelay>0</speedControllerFeedForwardDelay>
-        <speedControllerMaximumSpeed>180000</speedControllerMaximumSpeed>
+        <speedControllerMaximumSpeed>6200</speedControllerMaximumSpeed>
         <speedControllerTimeNeededToAccelerateToMaxSpeed>0.8</speedControllerTimeNeededToAccelerateToMaxSpeed>
         <flyWheelSpeedErrorTolerance>0.05</flyWheelSpeedErrorTolerance>
         <shooter1Port>13</shooter1Port>
@@ -126,10 +126,10 @@
 
         <!-- arm PID -->
         <maximumPower>0.8</maximumPower>
-        <errorStartDecelerate></errorStartDecelerate>
-        <errorTolerance></errorTolerance>
-        <feedForwardTime></feedForwardTime>
-        <errorAccumulationProportion></errorAccumulationProportion>
+        <errorStartDecelerate>0</errorStartDecelerate>
+        <errorTolerance>0</errorTolerance>
+        <feedForwardTime>0</feedForwardTime>
+        <errorAccumulationProportion>0</errorAccumulationProportion>
         <!-- lookup table -->
     </arm>
 

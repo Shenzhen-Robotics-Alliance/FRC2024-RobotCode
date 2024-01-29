@@ -32,11 +32,11 @@ public class ArmGravityTest implements SimpleRobotTest {
     @Override
     public void testPeriodic() {
         if (xboxController.getAButton())
-            testArmGravityController.setDesiredPosition(testArmMotor.getEncoderPosition(), testArmMotor.getEncoderVelocity(), Math.toRadians(90) / radianPerEncoderTick);
+            testArmGravityController.goToDesiredPosition(testArmMotor.getEncoderPosition(), testArmMotor.getEncoderVelocity(), Math.toRadians(90) / radianPerEncoderTick);
         else if (xboxController.getAButton())
-            testArmGravityController.setDesiredPosition(testArmMotor.getEncoderPosition(), testArmMotor.getEncoderVelocity(), Math.toRadians(45) / radianPerEncoderTick);
+            testArmGravityController.goToDesiredPosition(testArmMotor.getEncoderPosition(), testArmMotor.getEncoderVelocity(), Math.toRadians(45) / radianPerEncoderTick);
         else if (xboxController.getYButton())
-            testArmGravityController.setDesiredPosition(testArmMotor.getEncoderPosition(), testArmMotor.getEncoderVelocity(), Math.toRadians(0) / radianPerEncoderTick);
+            testArmGravityController.goToDesiredPosition(testArmMotor.getEncoderPosition(), testArmMotor.getEncoderVelocity(), Math.toRadians(0) / radianPerEncoderTick);
 
         SmartDashboard.putNumber("arm gravity controller correction power", testArmGravityController.getMotorPower(testArmMotor.getEncoderVelocity(), testArmMotor.getEncoderPosition()));
         if (xboxController.getLeftBumper())

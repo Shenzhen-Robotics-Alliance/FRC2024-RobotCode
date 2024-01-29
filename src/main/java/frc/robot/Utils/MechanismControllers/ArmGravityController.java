@@ -11,7 +11,8 @@ public class ArmGravityController implements MechanismController {
      *  3. so we might want to add another subclass called armTask
      * */
     private final EnhancedPIDController enhancedPIDController;
-    private double desiredPosition;
+    private EnhancedPIDController.TrapezoidPathSchedule currentSchedule;
+    private double desiredPosition, currentScheduleStartingPosition, currentScheduleStartingVelocity;
     private boolean alive;
     public ArmProfile profile;
     private long previousTimeMillis;
@@ -20,9 +21,20 @@ public class ArmGravityController implements MechanismController {
         this.enhancedPIDController = new EnhancedPIDController(armProfile);
     }
 
-    public void setDesiredPosition(double currentPosition, double currentVelocity, double newDesiredPosition) {
-        if (newDesiredPosition == desiredPosition) return;
+    public void updateDesiredPosition(double newDesiredPosition) {
+        // TODO task timer will be reset when created , this is a bug
+        this.currentSchedule = new EnhancedPIDController.TrapezoidPathSchedule(profile, new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, newDesiredPosition), currentScheduleStartingPosition, currentScheduleStartingVelocity);
         this.desiredPosition = newDesiredPosition;
+        this.alive = true;
+        previousTimeMillis = System.currentTimeMillis();
+    }
+
+    public void goToDesiredPosition(double currentPosition, double currentVelocity, double newDesiredPosition) {
+        if (newDesiredPosition == desiredPosition) return;
+        this.currentSchedule = new EnhancedPIDController.TrapezoidPathSchedule(profile, new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, newDesiredPosition), currentPosition, currentVelocity);
+        this.desiredPosition = newDesiredPosition;
+        this.currentScheduleStartingPosition = currentPosition;
+        this.currentScheduleStartingVelocity = currentVelocity;
         this.alive = true;
         previousTimeMillis = System.currentTimeMillis();
     }

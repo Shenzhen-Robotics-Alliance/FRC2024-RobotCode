@@ -652,25 +652,12 @@ public class EnhancedPIDController {
             return task.value; // when the process is already complete, stay in the current position
         }
 
-        @Deprecated
-        public double getCurrentPathPositionIntegralTime() {
-            double dt = task.getTaskTime() - this.previousTime;
-            if (task.value - startingPosition > 0)
-                currentPosition += dt * getCurrentSpeed();
-            else
-                currentPosition -= dt * getCurrentSpeed();
-
-            this.previousTime = task.getTaskTime();
-
-            return currentPosition;
-        }
-
         /** get the amount speed at the current time, according to the plan, note that direction will not be specified */
         private double getCurrentSpeed() {
             /* if the task isn't started yet */
             if (task.getTaskTime() < 0)
                 return 0;
-            for (int currentCheckPoint = 1; currentCheckPoint < checkPoints.length; currentCheckPoint++) {
+            for (int currentCheckPoint = 1; currentCheckPoint < checkPoints.length; currentCheckPoint++)
                 if (task.getTaskTime() < checkPoints[currentCheckPoint].time) {
                     CheckPoint previousCheckPoint = checkPoints[currentCheckPoint-1];
                     CheckPoint nextCheckPoint = checkPoints[currentCheckPoint];
@@ -679,7 +666,6 @@ public class EnhancedPIDController {
 
                     return requiredSpeed;
                 }
-            }
             /* if the task is already over */
             return 0;
         }
