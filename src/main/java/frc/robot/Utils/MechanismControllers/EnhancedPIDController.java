@@ -70,23 +70,25 @@ public class EnhancedPIDController {
         reset(initialValue, false);
     }
 
+    public void startNewTask(Task newTask) {
+        startNewTask(newTask, previousPosition);
+    }
+
     public void startNewTask(Task newTask, double initialPosition) {
         this.task = newTask;
         reset(initialPosition);
     }
 
-    public void startNewTask(Task newTask) {
-        startNewTask(newTask, previousPosition);
+    public void startNewTaskKeepIntegration(Task newTask) {
+        startNewTaskKeepIntegration(newTask, previousPosition);
     }
 
     /** start a new task, but keep the current integration so the machine do not need to find integration again */
     public void startNewTaskKeepIntegration(Task newTask, double initialPosition) {
+        if (newTask.taskType == Task.TaskType.GO_TO_POSITION && this.pidProfile.dynamicallyAdjusting)
+            this.pathSchedule = new TrapezoidPathSchedule((DynamicalPIDProfile) pidProfile, newTask, initialPosition);
         this.task = newTask;
         reset(initialPosition, true);
-    }
-
-    public void startNewTaskKeepIntegration(Task newTask) {
-        startNewTaskKeepIntegration(newTask, previousPosition);
     }
 
     public double getMotorPower(double currentPosition, double dt) {
@@ -165,9 +167,6 @@ public class EnhancedPIDController {
 
 
     public double getMotorPowerGoToPositionDynamic(double currentPosition, double velocity, double dt) {
-        if (pathSchedule == null)
-            pathSchedule = new TrapezoidPathSchedule((DynamicalPIDProfile) this.pidProfile, this.task, currentPosition);
-
         return getMotorPowerGoToPositionClassic(
                 currentPosition,
                 velocity,
@@ -302,7 +301,6 @@ public class EnhancedPIDController {
 
         return feedBackPower;
     }
-
 
     // <-- subclasses -->
     /**
@@ -564,6 +562,11 @@ public class EnhancedPIDController {
         private double expectedTimeOfArrival;
 
         public TrapezoidPathSchedule(DynamicalPIDProfile profile, Task task, double startingPosition) {
+            this(profile, task, startingPosition, 0);
+        }
+
+        public TrapezoidPathSchedule(DynamicalPIDProfile profile, Task task, double startingPosition, double startingVelocity) {
+            // TODO if necessary, we add a starting velocity option so that the process will be smoother
             if (task.taskType != Task.TaskType.GO_TO_POSITION)
                 throw new IllegalStateException("the current task type:" + task.taskType + "does not support trapezoid path schedule");
 
@@ -633,8 +636,6 @@ public class EnhancedPIDController {
                             profile.maxAcceleration * checkPoints[1].time * (currentTime - checkPoints[1].time) - profile.maxAcceleration * (currentTime - checkPoints[1].time) * (currentTime - checkPoints[1].time) / 2;
                 return task.value;
             }
-
-            System.out.print("(trapezoid)");
 
             if (currentTime < checkPoints[1].time) // the second checkpoint is not passed yet(still accelerating)
                 return startingPosition +

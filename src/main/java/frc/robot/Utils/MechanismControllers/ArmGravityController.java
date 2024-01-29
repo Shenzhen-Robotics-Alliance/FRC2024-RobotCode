@@ -3,6 +3,13 @@ package frc.robot.Utils.MechanismControllers;
 import frc.robot.Utils.MathUtils.LookUpTable;
 
 public class ArmGravityController implements MechanismController {
+    /**
+     * TODO
+     *  here we need to achieve:
+     *  1. the schedule can be interrupted and altered smoothly in the middle of execution
+     *  2. we can update the destination in a small range without scheduling
+     *  3. so we might want to add another subclass called armTask
+     * */
     private final EnhancedPIDController enhancedPIDController;
     private double desiredPosition;
     private boolean alive;
@@ -13,12 +20,8 @@ public class ArmGravityController implements MechanismController {
         this.enhancedPIDController = new EnhancedPIDController(armProfile);
     }
 
-    public void setDesiredPosition(double newDesiredPosition) {
-        if (this.alive)
-            enhancedPIDController.startNewTaskKeepIntegration(new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, newDesiredPosition), desiredPosition);
-        else
-            enhancedPIDController.startNewTask(new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, newDesiredPosition), newDesiredPosition);
-
+    public void setDesiredPosition(double currentPosition, double currentVelocity, double newDesiredPosition) {
+        if (newDesiredPosition == desiredPosition) return;
         this.desiredPosition = newDesiredPosition;
         this.alive = true;
         previousTimeMillis = System.currentTimeMillis();
