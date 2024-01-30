@@ -4,6 +4,7 @@ import frc.robot.Drivers.Encoders.Encoder;
 import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Modules.RobotModuleBase;
 import frc.robot.Services.RobotServiceBase;
+import frc.robot.Utils.MathUtils.LookUpTable;
 import frc.robot.Utils.MechanismControllers.ArmGravityController;
 import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 import frc.robot.Utils.RobotConfigReader;
@@ -45,7 +46,7 @@ public class TransformableArm extends RobotModuleBase {
         super.motors.add(armLifterMotor);
         this.armEncoder = armEncoder;
         this.armLifterMechanism = new EncoderMotorMechanism(armEncoder, armLifterMotor);
-        this.armController = new ArmGravityController(new ArmGravityController.ArmProfile(0,0,0,0,0 ,null));
+        this.armController = new ArmGravityController(new ArmGravityController.ArmProfile(0, 0, 0, 0,0,0,0 ,null));
         this.armLifterMechanism.setController(armController);
         this.robotConfig = robotConfig;
 
@@ -66,7 +67,17 @@ public class TransformableArm extends RobotModuleBase {
 
     @Override
     public void updateConfigs() {
-
+        final LookUpTable gravityTorqueLookUpTable = new LookUpTable(new double[] {Math.toRadians(0) / radianPerEncoderTick, Math.toRadians(45) / radianPerEncoderTick, Math.toRadians(90) / radianPerEncoderTick}, new double[] {0.2, 0, -0.2}); // TODO put in robotconfig
+        this.armController.updateArmProfile(new ArmGravityController.ArmProfile(
+                robotConfig.getConfig("arm", "maximumPower"),
+                Math.toRadians(robotConfig.getConfig("arm", "errorStartDecelerate")) / radianPerEncoderTick,
+                Math.toRadians(robotConfig.getConfig("arm", "errorTolerance")) / radianPerEncoderTick,
+                robotConfig.getConfig("arm", "feedForwardTime"),
+                robotConfig.getConfig("arm", "errorAccumulationProportion"),
+                Math.toRadians(robotConfig.getConfig("arm", "maxAcceleration")) / radianPerEncoderTick,
+                Math.toRadians(robotConfig.getConfig("arm", "maxVelocity")) / radianPerEncoderTick,
+                gravityTorqueLookUpTable
+        ));
     }
 
     @Override

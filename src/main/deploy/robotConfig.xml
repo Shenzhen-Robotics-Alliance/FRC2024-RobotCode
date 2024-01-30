@@ -126,10 +126,12 @@
 
         <!-- arm PID -->
         <maximumPower>0.8</maximumPower>
-        <errorStartDecelerate>0</errorStartDecelerate>
-        <errorTolerance>0</errorTolerance>
-        <feedForwardTime>0</feedForwardTime>
+        <errorStartDecelerate>45</errorStartDecelerate>
+        <errorTolerance>3</errorTolerance>
+        <feedForwardTime>0.3</feedForwardTime>
         <errorAccumulationProportion>0</errorAccumulationProportion>
+        <maxAcceleration>180</maxAcceleration>
+        <maxVelocity>90</maxVelocity>
         <!-- lookup table -->
     </arm>
 

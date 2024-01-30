@@ -39,18 +39,18 @@ public class ArmGravityController implements MechanismController {
     private long previousTimeMillis, currentScheduleCreatedTime;
     public ArmGravityController(ArmProfile armProfile) {
         this.profile = armProfile;
-        this.enhancedPIDController = new EnhancedPIDController(armProfile);
+        this.enhancedPIDController = new EnhancedPIDController(armProfile.staticPIDProfile);
     }
 
     public void updateDesiredPosition(double newDesiredPosition) {
-        this.currentSchedule = new EnhancedPIDController.TrapezoidPathSchedule(profile, new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, newDesiredPosition), currentSchedule.getCurrentPathPosition(0), currentSchedule.getCurrentSpeed(0));
+        this.currentSchedule = new EnhancedPIDController.TrapezoidPathSchedule(profile.dynamicalPIDProfile, new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, newDesiredPosition), currentSchedule.getCurrentPathPosition(0), currentSchedule.getCurrentSpeed(0));
         this.alive = true;
         previousTimeMillis = System.currentTimeMillis();
     }
 
     public void goToDesiredPosition(double currentPosition, double currentVelocity, double newDesiredPosition) {
         if (newDesiredPosition == desiredPosition) return;
-        this.currentSchedule = new EnhancedPIDController.TrapezoidPathSchedule(profile, new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, newDesiredPosition), currentPosition, currentVelocity);
+        this.currentSchedule = new EnhancedPIDController.TrapezoidPathSchedule(profile.dynamicalPIDProfile, new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, newDesiredPosition), currentPosition, currentVelocity);
         this.desiredPosition = newDesiredPosition;
         this.alive = true;
         currentScheduleCreatedTime = previousTimeMillis = System.currentTimeMillis();
@@ -75,14 +75,14 @@ public class ArmGravityController implements MechanismController {
         EasyShuffleBoard.putNumber("arm controller", "correction power: ", pidCorrectionPower);
 
         previousTimeMillis = System.currentTimeMillis();
-        if (Math.abs(overallCorrectionPower) > profile.getMaxPowerAllowed())
-            return Math.copySign(profile.maxAcceleration, overallCorrectionPower);
+        if (Math.abs(overallCorrectionPower) > profile.staticPIDProfile.getMaxPowerAllowed())
+            return Math.copySign(profile.staticPIDProfile.getMaxPowerAllowed(), overallCorrectionPower);
         return overallCorrectionPower;
     }
 
     public void updateArmProfile(ArmProfile newArmProfile) {
         this.profile = newArmProfile;
-        this.enhancedPIDController.setPidProfile(newArmProfile);
+        this.enhancedPIDController.setPidProfile(newArmProfile.staticPIDProfile);
     }
 
     public void reset(double initialPosition) {
@@ -90,8 +90,10 @@ public class ArmGravityController implements MechanismController {
     }
 
 
-    public static final class ArmProfile extends EnhancedPIDController.DynamicalPIDProfile {
+    public static final class ArmProfile {
         public final LookUpTable gravityTorqueEquilibriumMotorPowerLookUpTable;
+        public final EnhancedPIDController.StaticPIDProfile staticPIDProfile;
+        public final EnhancedPIDController.DynamicalPIDProfile dynamicalPIDProfile;
 
         /**
          * Creates a arm PID profile which is another dynamic pid profile
@@ -102,8 +104,9 @@ public class ArmGravityController implements MechanismController {
          * @param maxAcceleration                       the maximum instant acceleration that the mechanism can achieve with the max power
          * @param maxVelocity                           the restriction on the velocity of the mechanism
          */
-        public ArmProfile(double maxPowerAllowed, double errorTolerance, double integralCoefficientError, double maxAcceleration, double maxVelocity, LookUpTable gravityTorqueEquilibriumMotorPowerLookUpTable) {
-            super(Double.POSITIVE_INFINITY, maxPowerAllowed, 0, errorTolerance, integralCoefficientError, 0, maxAcceleration, maxVelocity);
+        public ArmProfile(double maxPowerAllowed, double errorStartDecelerate, double errorTolerance, double feedForwardTime, double integralCoefficient, double maxAcceleration, double maxVelocity, LookUpTable gravityTorqueEquilibriumMotorPowerLookUpTable) {
+            this.dynamicalPIDProfile = new EnhancedPIDController.DynamicalPIDProfile(Double.POSITIVE_INFINITY, maxPowerAllowed, 0, errorTolerance, integralCoefficient, 0, maxAcceleration, maxVelocity);
+            this.staticPIDProfile = new EnhancedPIDController.StaticPIDProfile(Double.POSITIVE_INFINITY, maxPowerAllowed, 0, errorStartDecelerate, errorTolerance, feedForwardTime, integralCoefficient, 0);
             this.gravityTorqueEquilibriumMotorPowerLookUpTable = gravityTorqueEquilibriumMotorPowerLookUpTable;
         }
     }

@@ -15,7 +15,9 @@ public class ArmGravityTest implements SimpleRobotTest {
             radianPerEncoderTick = Math.PI * 2 / overallGearRatio / 2048;
     private final ArmGravityController testArmGravityController = new ArmGravityController(new ArmGravityController.ArmProfile(
             0.75,
+            Math.toRadians(45) / radianPerEncoderTick,
             Math.toRadians(5) / radianPerEncoderTick,
+            0.3,
             0,
             Math.toRadians(180) / radianPerEncoderTick,
             Math.toRadians(90) / radianPerEncoderTick,
