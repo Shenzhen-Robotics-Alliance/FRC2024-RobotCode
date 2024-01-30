@@ -61,7 +61,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
         this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION;
     }
 
-    private void gainOwnerShips() {
+    private void gainOwnerShipsToModules() {
         this.intakeModule.clearOwners();
         this.intakeModule.gainOwnerShip(this);
         this.shooterModule.clearOwners();
@@ -100,6 +100,10 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
                 if (!intakeModule.isNoteInsideIntake())
                     this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION;
+                else if (START_SHOOTER_BUTTON)
+                    this.currentStatus = IntakeAndShooterStatus.AT_SHOOTING_STANDBY_POSITION_HOLDING_NOTE;
+                else if (TOGGLE_AMPLIFIER_BUTTON)
+                    this.currentStatus = IntakeAndShooterStatus.AT_AMPLIFIER_POSITION_HOLDING_NOTE;
                 else if (START_SPLIT_BUTTON)
                     startSplitProcess();
             }
@@ -109,10 +113,6 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                 intakeModule.turnOffIntake(this);
                 if (START_GRAB_BUTTON)
                     startIntakeProcess();
-                else if (START_SHOOTER_BUTTON)
-                    this.currentStatus = IntakeAndShooterStatus.AT_SHOOTING_STANDBY_POSITION_HOLDING_NOTE;
-                else if (TOGGLE_AMPLIFIER_BUTTON)
-                    this.currentStatus = IntakeAndShooterStatus.AT_AMPLIFIER_POSITION_HOLDING_NOTE;
             }
             case PROCEEDING_INTAKE -> {
                 /* the transformer is at intake active position, the intake is already set to be spinning, so that they can grab the note */
@@ -141,7 +141,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                 *  */
 
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, this);
-                shooterModule.setDesiredSpeed(6000);
+                shooterModule.setDesiredSpeed(6000, this);
                 if (START_SPLIT_BUTTON)
                     launchProcessFailed();
                 else if (CANCEL_ACTION_BUTTON)
@@ -155,13 +155,15 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, this);
                 if (START_SPLIT_BUTTON)
                     launchProcessFailed();
-                else if (intakeModule.isCurrentTaskComplete())
+                else if (CANCEL_ACTION_BUTTON)
+                    launchProcessCancelled();
+                else if (!intakeModule.isNoteInsideIntake())
                     launchProcessSucceeded();
             }
             case AT_AMPLIFIER_POSITION_HOLDING_NOTE -> {
                 /* the transformer is at amplifier position and is standing by */
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SCORE_AMPLIFIER, this);
-                shooterModule.setDesiredSpeed(1500); // TODO find this value in robot config as "amplifier scoring shooter speed"
+                shooterModule.setDesiredSpeed(1500, this); // TODO find this value in robot config as "amplifier scoring shooter speed"
                 if (!TOGGLE_AMPLIFIER_BUTTON)
                     startAmplifyProcess();
                 else if (CANCEL_ACTION_BUTTON)
@@ -178,6 +180,8 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
             }
             default -> throw new IllegalStateException("unknown status for intake and shooter:" + currentStatus);
         }
+        if (SET_ACTIVATE_BUTTON)
+            gainOwnerShipsToModules();
         System.out.println("intake and shooter service current status: " + currentStatus);
     }
 
@@ -202,23 +206,23 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
     }
 
     private void launchProcessSucceeded() {
-        shooterModule.setDesiredSpeed(0);
+        shooterModule.setDesiredSpeed(0, this);
         this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION;
     }
 
     /** in case the shooter gets stuck */
     private void launchProcessFailed() {
-        shooterModule.setDesiredSpeed(0);
+        shooterModule.setDesiredSpeed(0, this);
         startSplitProcess();
     }
 
     private void launchProcessCancelled() {
-        shooterModule.setDesiredSpeed(0);
+        shooterModule.setDesiredSpeed(0, this);
         this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION_HOLDING_NOTE;
     }
 
     private void startAmplifyProcess() {
-        intakeModule.startSplit(this);
+        intakeModule.startLaunch(this);
         this.currentStatus = IntakeAndShooterStatus.SPLITTING_TO_AMPLIFIER;
     }
 

@@ -6,6 +6,7 @@ import frc.robot.Modules.RobotModuleBase;
 import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 import frc.robot.Utils.MechanismControllers.FlyWheelSpeedController;
 import frc.robot.Utils.RobotConfigReader;
+import frc.robot.Utils.RobotModuleOperatorMarker;
 
 import java.util.Arrays;
 
@@ -36,7 +37,9 @@ public class Shooter extends RobotModuleBase {
      * set the desired speed of the shooter, 0 for stop
      * @param desiredSpeedRPM the desired speed of the shooter, in rpm
      * */
-    public void setDesiredSpeed(double desiredSpeedRPM) {
+    public void setDesiredSpeed(double desiredSpeedRPM, RobotModuleOperatorMarker operator) {
+        if (!isOwner(operator)) return;
+
         this.desiredRPM = desiredSpeedRPM;
         final double desiredEncoderVelocity = desiredSpeedRPM / encoderVelocityToRPM;
         for (int shooterID = 0; shooterID < shooters.length; shooterID++)
@@ -45,11 +48,12 @@ public class Shooter extends RobotModuleBase {
 
     public boolean shooterReady() {
         if (desiredRPM == 0) return false;
-        double maxError = 0;
+        double maxErrorRPM = 0;
         for (EncoderMotorMechanism shooter:shooters)
-            maxError = Math.max(Math.abs(shooter.getEncoderVelocity() - this.desiredRPM/ encoderVelocityToRPM), maxError);
-        System.out.println("shooter max error (rpm): " + maxError * encoderVelocityToRPM);
-        return maxError < shooterReadyErrorBound;
+            maxErrorRPM = Math.max(Math.abs(shooter.getEncoderVelocity() * encoderVelocityToRPM - this.desiredRPM), maxErrorRPM);
+        System.out.println("shooter speed error (rpm): " + maxErrorRPM);
+        System.out.println("shooter speed error tolerance (rpm): " + shooterReadyErrorBound);
+        return maxErrorRPM < shooterReadyErrorBound;
     }
 
     @Override
@@ -74,8 +78,10 @@ public class Shooter extends RobotModuleBase {
 
     @Override
     public void resetModule() {
-        setDesiredSpeed(0);
+        setDesiredSpeed(0, null);
         updateConfigs();
+        for (EncoderMotorMechanism shooter : shooters)
+            shooter.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.RELAX, this);
     }
 
     @Override

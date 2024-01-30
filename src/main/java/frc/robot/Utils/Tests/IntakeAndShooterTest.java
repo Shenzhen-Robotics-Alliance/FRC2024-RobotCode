@@ -54,7 +54,7 @@ public class IntakeAndShooterTest implements SimpleRobotTest {
         desiredShooterRPM = Math.max(0, Math.min(6200, desiredShooterRPM));
         dt.reset();
         if (xboxController.getAButton())
-            shooter.setDesiredSpeed(desiredShooterRPM);
+            shooter.setDesiredSpeed(desiredShooterRPM, null);
 
         shooter.updateConfigs();
         if (xboxController.getLeftBumper()) {

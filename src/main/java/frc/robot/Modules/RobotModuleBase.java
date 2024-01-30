@@ -153,6 +153,6 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
      * @return whether it is one of or the only owner of this module
      */
     public boolean isOwner(RobotModuleOperatorMarker operator) {
-        return owners.contains(operator);
+        return owners.contains(operator) || operator == null;
     }
 }
