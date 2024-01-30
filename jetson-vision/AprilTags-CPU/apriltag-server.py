@@ -1,5 +1,7 @@
-CAMERA_RESOLUTION = (320, 240)
+CAMERA_RESOLUTION = (640, 480)
+CAMERA_FRAMERATE = 60
 STREAMING_RESOLUTION = (320, 240)
+STREAMING_FRAMERATE = 24
 FLIP_IMAGE = 1 # 0 for vertical flip, 1 for horizontal flip, -1 for flip both, None for do not flip
 
 '''
@@ -15,10 +17,10 @@ from http.server import SimpleHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
 from time import time, sleep
 
-cap = cv2.VideoCapture(0) # camera port
-cap.set(3, CAMERA_RESOLUTION[0]) # width
-cap.set(4, CAMERA_RESOLUTION[1]) # height
-cap.set(cv2.CAP_PROP_FPS, 90) 
+cap = cv2.VideoCapture(0, cv2.CAP_V4L2) # camera port
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, CAMERA_RESOLUTION[0]) # width
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, CAMERA_RESOLUTION[1]) # height
+cap.set(cv2.CAP_PROP_FPS, CAMERA_FRAMERATE) 
 # detector = apriltag.Detector(apriltag.DetectorOptions(families='tag36h11 tag25h9', nthreads=1))
 detector = apriltag.Detector(families='tag36h11', nthreads=4) # for windows
 
@@ -40,7 +42,10 @@ def generate_frames():
         dt = time()
         lock.acquire()
         ret, frame = cap.read()
+        if frame is None:
+            continue
         print("read camera time: " + str(int((time() - dt)*1000)) + "ms")
+        print("camera actual resolution", frame.shape)
         
         dt = time()
         if FLIP_IMAGE is not None:
@@ -91,7 +96,6 @@ def generate_frames():
         detection_results_ready = True
 
 # MJPEG Streaming Server
-update_rate = 24
 class StreamingHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         global new_frame_ready, detection_results_ready, detection_results, frame_time_samplecount, frame_time_total, lock
@@ -108,7 +112,10 @@ class StreamingHandler(SimpleHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'text/plain')
             self.end_headers()
-            self.wfile.write( ("FPS: " + str(round(frame_time_samplecount / frame_time_total)))  .encode())
+            if frame_time_total == 0:
+                self.wfile.write("waiting for camera to start".encode())
+            else:
+                self.wfile.write( ("FPS: " + str(round(frame_time_samplecount / frame_time_total)))  .encode())
             frame_time_total = 0
             frame_time_samplecount = 0
         elif self.path == '/video_feed':
@@ -118,7 +125,7 @@ class StreamingHandler(SimpleHTTPRequestHandler):
             while running:
                 # while (not new_frame_ready) and running:
                 #     sleep(0.02)
-                sleep(1/update_rate)
+                sleep(1/STREAMING_FRAMERATE)
                 lock.acquire()
                 try:
                     frame_resized = cv2.resize(frame, STREAMING_RESOLUTION)

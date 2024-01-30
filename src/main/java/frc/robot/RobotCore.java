@@ -11,6 +11,9 @@ import frc.robot.Drivers.Encoders.CanCoder;
 import frc.robot.Drivers.IMUs.PigeonsIMU;
 import frc.robot.Drivers.IMUs.SimpleGyro;
 import frc.robot.Drivers.Motors.TalonFXMotor;
+import frc.robot.Drivers.Visions.FixedAnglePositionTrackingCamera;
+import frc.robot.Drivers.Visions.JetsonDetectionAppClient;
+import frc.robot.Drivers.Visions.TargetFieldPositionTracker;
 import frc.robot.Modules.PositionReader.SwerveWheelPositionEstimator;
 import frc.robot.Modules.PositionReader.SwerveWheelPositionEstimatorCurveOptimized;
 import frc.robot.Modules.RobotModuleBase;
@@ -18,6 +21,8 @@ import frc.robot.Modules.Chassis.SwerveBasedChassis;
 import frc.robot.Modules.Chassis.SwerveWheel;
 import frc.robot.Services.RobotServiceBase;
 import frc.robot.Utils.*;
+import frc.robot.Utils.FixedAngleCameraUtils.FixedAngleCameraProfile;
+import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
 
 /**
@@ -32,6 +37,8 @@ public class RobotCore {
         public final SimpleGyro gyro;
         public final SwerveWheelPositionEstimator positionReader;
         public final SwerveBasedChassis chassisModule;
+        public final JetsonDetectionAppClient aprilTagDetectionAppClient;
+        public final TargetFieldPositionTracker aprilTagPositionTrackingCamera;
         private final List<String> configsToTune = new ArrayList<>(1);
         private final List<RobotModuleBase> modules;
         private List<RobotServiceBase> services;
@@ -83,6 +90,18 @@ public class RobotCore {
 
                 this.chassisModule = new SwerveBasedChassis(swerveWheels, gyro, robotConfig, positionReader);
                 modules.add(chassisModule);
+
+                aprilTagDetectionAppClient = new JetsonDetectionAppClient("AprilTagDetector", "10.55.16.109", 8888);
+                final double[] targetHeights = new double[] {100, 100, 100, 100, 100, 100};
+                aprilTagPositionTrackingCamera = new FixedAnglePositionTrackingCamera(
+                        aprilTagDetectionAppClient,
+                        new FixedAngleCameraProfile(
+                                -0.47,
+                                -0.001966,
+                                -0.001321
+                        ),
+                        targetHeights
+                );
         }
 
         private SwerveWheel createSwerveWheel(String name, int id, Vector2D wheelInstallationPosition) {
@@ -177,6 +196,8 @@ public class RobotCore {
                 for (RobotModuleBase module: modules)
                         module.enable();
 
+                aprilTagDetectionAppClient.startRecognizing();
+
                 wasEnabled = true;
                 System.out.println("<-- Robot Core | current stage started -->");
         }
@@ -190,6 +211,9 @@ public class RobotCore {
                 for (RobotModuleBase module: modules)
                         module.disable();
                 this.services = new ArrayList<>();
+
+                aprilTagDetectionAppClient.stopRecognizing();
+
                 System.out.println("<-- Robot | robot paused... -->");
         }
 
@@ -213,15 +237,40 @@ public class RobotCore {
                         for (RobotModuleBase module:modules)
                                 module.periodic();
 
-//                SmartDashboard.putNumber("robot x", positionReader.getRobotPosition2D().getValue()[0]);
-//                SmartDashboard.putNumber("robot y", positionReader.getRobotPosition2D().getValue()[1]);
-//                SmartDashboard.putNumber("velocity x", positionReader.getRobotVelocity2D().getValue()[0]);
-//                SmartDashboard.putNumber("velocity y", positionReader.getRobotVelocity2D().getValue()[1]);
+                // printChassisDebugMessages();
+                printAprilTagCameraResultsToDashboard();
 
                 robotConfig.updateTuningConfigsFromDashboard();
 
                 /* monitor the program's performance */
                 SmartDashboard.putNumber("program delay (ms)", System.currentTimeMillis() - t);
                 t = System.currentTimeMillis();
+        }
+
+        private void printChassisDebugMessagesToDashboard() {
+                SmartDashboard.putNumber("robot x", positionReader.getRobotPosition2D().getValue()[0]);
+                SmartDashboard.putNumber("robot y", positionReader.getRobotPosition2D().getValue()[1]);
+                SmartDashboard.putNumber("velocity x", positionReader.getRobotVelocity2D().getValue()[0]);
+                SmartDashboard.putNumber("velocity y", positionReader.getRobotVelocity2D().getValue()[1]);
+        }
+
+        private void printAprilTagCameraResultsToDashboard() {
+                if (aprilTagPositionTrackingCamera == null) return;
+                aprilTagPositionTrackingCamera.update(new Vector2D(), new Rotation2D(0));
+                final int targetID = 4;
+                final TargetFieldPositionTracker.TargetOnField target;
+                final double x,y,dis,hdg;
+                if ((target = aprilTagPositionTrackingCamera.getTargetByID(targetID)) == null)
+                        x = y = dis = hdg = -1;
+                else {
+                        x = target.fieldPosition.getX() * 100;
+                        y = target.fieldPosition.getY() * 100;
+                        dis = target.fieldPosition.getMagnitude() * 100;
+                        hdg = Math.toDegrees(target.fieldPosition.getHeading()) - 90;
+                }
+                EasyShuffleBoard.putNumber("apriltag", "target relative position to camera X (CM)", x);
+                EasyShuffleBoard.putNumber("apriltag", "target relative position to camera Y (CM)", y);
+                EasyShuffleBoard.putNumber("apriltag", "target distance from camera (CM)", dis);
+                EasyShuffleBoard.putNumber("apriltag", "target Ang From Center Line (DEG)", hdg);
         }
 }
