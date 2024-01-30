@@ -100,7 +100,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
                 if (!intakeModule.isNoteInsideIntake())
                     this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION;
-                if (START_SPLIT_BUTTON)
+                else if (START_SPLIT_BUTTON)
                     startSplitProcess();
             }
             case AT_INTAKE_STANDBY_POSITION -> {
@@ -109,13 +109,17 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                 intakeModule.turnOffIntake(this);
                 if (START_GRAB_BUTTON)
                     startIntakeProcess();
+                else if (START_SHOOTER_BUTTON)
+                    this.currentStatus = IntakeAndShooterStatus.AT_SHOOTING_STANDBY_POSITION_HOLDING_NOTE;
+                else if (TOGGLE_AMPLIFIER_BUTTON)
+                    this.currentStatus = IntakeAndShooterStatus.AT_AMPLIFIER_POSITION_HOLDING_NOTE;
             }
             case PROCEEDING_INTAKE -> {
                 /* the transformer is at intake active position, the intake is already set to be spinning, so that they can grab the note */
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, this);
                 if (CANCEL_GRAB_BUTTON)
                     cancelIntakeProcess();
-                if (intakeModule.isCurrentTaskComplete())
+                else if (intakeModule.isCurrentTaskComplete())
                     this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION_HOLDING_NOTE;
             }
             case PROCEEDING_SPLIT -> {
@@ -139,7 +143,9 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, this);
                 if (START_SPLIT_BUTTON)
                     launchProcessFailed();
-                if (START_SHOOTER_BUTTON && shooterModule.shooterReady() && transformerModule.transformerInPosition())
+                else if (CANCEL_ACTION_BUTTON)
+                    launchProcessCancelled();
+                else if (LAUNCH_BUTTON && shooterModule.shooterReady() && transformerModule.transformerInPosition())
                     startLaunchProcess();
             }
             case LAUNCHING_NOTE -> {
@@ -148,15 +154,17 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, this);
                 if (START_SPLIT_BUTTON)
                     launchProcessFailed();
-                if (intakeModule.isCurrentTaskComplete())
+                else if (intakeModule.isCurrentTaskComplete())
                     launchProcessSucceeded();
             }
             case AT_AMPLIFIER_POSITION_HOLDING_NOTE -> {
                 /* the transformer is at amplifier position and is standing by */
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SCORE_AMPLIFIER, this);
-                if (START_SHOOTER_BUTTON)
+                shooterModule.setDesiredSpeed(1500); // TODO find this value in robot config as "amplifier scoring shooter speed"
+                if (!TOGGLE_AMPLIFIER_BUTTON)
                     startAmplifyProcess();
-
+                else if (CANCEL_ACTION_BUTTON)
+                    launchProcessCancelled();
             }
             case SPLITTING_TO_AMPLIFIER -> {
                 /* the transformer is at amplifier position and is splitting the note */
@@ -203,8 +211,12 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
         startSplitProcess();
     }
 
+    private void launchProcessCancelled() {
+        shooterModule.setDesiredSpeed(0);
+        this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION_HOLDING_NOTE;
+    }
+
     private void startAmplifyProcess() {
-        shooterModule.setDesiredSpeed(2000); // TODO find this value in robot config as "amplifier scoring shooter speed"
         intakeModule.startSplit(this);
         this.currentStatus = IntakeAndShooterStatus.SPLITTING_TO_AMPLIFIER;
     }
