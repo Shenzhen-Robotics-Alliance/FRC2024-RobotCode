@@ -42,7 +42,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
      * initialization of intake and shooter service
      * a transformable mechanism that can intake and move up to shoot
      */
-    protected TransformableIntakeAndShooterService(RobotConfigReader robotConfig, Intake intakeModule, Shooter shooterModule, TransformableArm transformerModule, XboxController copilotController) {
+    public TransformableIntakeAndShooterService(Intake intakeModule, Shooter shooterModule, TransformableArm transformerModule, RobotConfigReader robotConfig, XboxController copilotController) {
         super("Intake-And-Shooter-Service");
         this.intakeModule = intakeModule;
         this.shooterModule = shooterModule;
@@ -141,6 +141,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                 *  */
 
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, this);
+                shooterModule.setDesiredSpeed(6000);
                 if (START_SPLIT_BUTTON)
                     launchProcessFailed();
                 else if (CANCEL_ACTION_BUTTON)

@@ -44,14 +44,22 @@ public class RobotConfigReader {
     XPath xPath;
 
 
-    public RobotConfigReader() throws Exception {
-        readConfigs("robotConfig");
-        System.out.println("robot config: " + robotConfigs);
+    public RobotConfigReader() {
+        try {
+            readConfigs("robotConfig");
+            System.out.println("robot config: " + robotConfigs);
+        } catch (Exception e) {
+            throw new RuntimeException("error while reading robot config:" + e);
+        }
     }
-    public RobotConfigReader(String configName) throws Exception {
-        readConfigs("robotConfig");
-        readConfigs(configName); // override the previous
-        System.out.println("robot config: " + robotConfigs);
+    public RobotConfigReader(String configName) {
+        try {
+            readConfigs("robotConfig");
+            readConfigs(configName); // override the previous
+            System.out.println("robot config: " + robotConfigs);
+        } catch (Exception e) {
+            throw new RuntimeException("error while reading robot config:" + e);
+        }
     }
 
     private void readConfigs(String configName) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
@@ -111,7 +119,7 @@ public class RobotConfigReader {
         }
 
         domainConfigs.put(constantName, Double.parseDouble(node.getTextContent()));
-        System.out.println("reading " + domainName + " constant: " + constantName + ", value: " + node.getTextContent());
+        // System.out.println("reading " + domainName + " constant: " + constantName + ", value: " + node.getTextContent());
     }
 
     /**

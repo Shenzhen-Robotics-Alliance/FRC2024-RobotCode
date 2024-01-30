@@ -61,7 +61,7 @@ public class TransformableArm extends RobotModuleBase {
 
     @Override
     protected void periodic(double dt) {
-
+        System.out.println("arm current position: " + desiredPosition);
     }
 
     @Override
@@ -98,6 +98,6 @@ public class TransformableArm extends RobotModuleBase {
     }
 
     public boolean transformerInPosition() {
-        return false;
+        return true;
     }
 }

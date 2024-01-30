@@ -32,7 +32,7 @@ import frc.robot.Utils.MathUtils.Vector2D;
  * */
 // TODO: we have to sort the shuffleboard, it's too messy now
 public class RobotCore {
-        RobotConfigReader robotConfig;
+        public final RobotConfigReader robotConfig;
         public final SwerveWheel frontLeftWheel, backLeftWheel, frontRightWheel, backRightWheel;
         public final SimpleGyro gyro;
         public final SwerveWheelPositionEstimator positionReader;
@@ -60,12 +60,7 @@ public class RobotCore {
                 modules = new ArrayList<>();
                 services = new ArrayList<>();
 
-                try {
-                        robotConfig = new RobotConfigReader(configName);
-                } catch (Exception e) {
-                        e.printStackTrace();
-                        throw new RuntimeException("error while reading robot config");
-                }
+                robotConfig = new RobotConfigReader(configName);
 
                 frontLeftWheel = createSwerveWheel("frontLeft", 1, new Vector2D(new double[] { -0.6, 0.6 }));
                 modules.add(frontLeftWheel);
