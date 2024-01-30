@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class TransformableArm extends RobotModuleBase {
+    // TODO we have to finish this module after we test the arm gravity controller
     private final EncoderMotorMechanism armLifterMechanism;
     private final Encoder armEncoder;
     private final ArmGravityController armController;
@@ -70,12 +71,7 @@ public class TransformableArm extends RobotModuleBase {
 
     @Override
     public void updateConfigs() {
-//        List<Double> encoderPositions =
-//        ArmGravityController.ArmProfile armProfile = new ArmGravityController.ArmProfile(
-//
-//        )
-//        this.armController.updateArmProfile();
-//        this.errorAsArmReady = // we think that the arm is ready if error is within 2 times the error tolerance
+
     }
 
     @Override

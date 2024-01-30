@@ -181,7 +181,7 @@ public class EnhancedPIDController {
      * @param velocity
      * @return
      */
-    private double getMotorPowerGoToPositionClassic(double currentPosition, double velocity, double dt) {
+    public double getMotorPowerGoToPositionClassic(double currentPosition, double velocity, double dt) {
         return getMotorPowerGoToPositionClassic(currentPosition, velocity, this.task, dt);
     }
 
@@ -192,7 +192,7 @@ public class EnhancedPIDController {
      * @param task the task to execute
      * @return
      */
-    private double getMotorPowerGoToPositionClassic(double currentPosition, double velocity, Task task, double dt) {
+    public double getMotorPowerGoToPositionClassic(double currentPosition, double velocity, Task task, double dt) {
         double predictedFuturePosition = currentPosition + velocity * pidProfile.getFeedForwardTime();
         double error = getActualDifference(predictedFuturePosition, task.value);
 
@@ -620,11 +620,13 @@ public class EnhancedPIDController {
 
 
         public double getCurrentPathPosition() {
+            return getCurrentPathPosition(task.getTaskTime());
+        }
+
+        public double getCurrentPathPosition(double currentTime) {
             final double timeToFullyAccelerate = profile.maxVelocity / profile.maxAcceleration;
             final double distanceTravelledDuringAccelerating = timeToFullyAccelerate * profile.maxVelocity / 2;
             final double totalDistance = Math.abs(task.value - startingPosition);
-
-            double currentTime = task.getTaskTime();
 
             if (distanceTravelledDuringAccelerating * 2 > totalDistance) {
                 if (currentTime < checkPoints[1].time)
@@ -652,19 +654,21 @@ public class EnhancedPIDController {
             return task.value; // when the process is already complete, stay in the current position
         }
 
+        public double getCurrentSpeed() {
+            return getCurrentSpeed(task.getTaskTime());
+        }
+
         /** get the amount speed at the current time, according to the plan, note that direction will not be specified */
-        private double getCurrentSpeed() {
+        public double getCurrentSpeed(double currentTime) {
             /* if the task isn't started yet */
-            if (task.getTaskTime() < 0)
+            if (currentTime < 0)
                 return 0;
             for (int currentCheckPoint = 1; currentCheckPoint < checkPoints.length; currentCheckPoint++)
-                if (task.getTaskTime() < checkPoints[currentCheckPoint].time) {
+                if (currentTime < checkPoints[currentCheckPoint].time) {
                     CheckPoint previousCheckPoint = checkPoints[currentCheckPoint-1];
                     CheckPoint nextCheckPoint = checkPoints[currentCheckPoint];
 
-                    double requiredSpeed = previousCheckPoint.velocity + (task.getTaskTime() - previousCheckPoint.time) / (nextCheckPoint.time - previousCheckPoint.time);
-
-                    return requiredSpeed;
+                    return previousCheckPoint.velocity + (currentTime - previousCheckPoint.time) / (nextCheckPoint.time - previousCheckPoint.time);
                 }
             /* if the task is already over */
             return 0;

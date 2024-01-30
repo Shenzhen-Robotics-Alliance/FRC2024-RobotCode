@@ -1,5 +1,5 @@
-CAMERA_RESOLUTION = (640, 480)
-STREAMING_RESOLUTION = (640, 480)
+CAMERA_RESOLUTION = (320, 240)
+STREAMING_RESOLUTION = (320, 240)
 FLIP_IMAGE = 1 # 0 for vertical flip, 1 for horizontal flip, -1 for flip both, None for do not flip
 
 '''

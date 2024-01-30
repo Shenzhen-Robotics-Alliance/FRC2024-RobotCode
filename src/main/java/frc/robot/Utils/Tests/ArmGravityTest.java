@@ -38,9 +38,9 @@ public class ArmGravityTest implements SimpleRobotTest {
         else if (xboxController.getYButton())
             testArmGravityController.goToDesiredPosition(testArmMotor.getEncoderPosition(), testArmMotor.getEncoderVelocity(), Math.toRadians(0) / radianPerEncoderTick);
 
-        SmartDashboard.putNumber("arm gravity controller correction power", testArmGravityController.getMotorPower(testArmMotor.getEncoderVelocity(), testArmMotor.getEncoderPosition()));
         if (xboxController.getLeftBumper())
             testArmMotor.updateWithController(null);
         else testArmMotor.setPower((xboxController.getRightTriggerAxis() - xboxController.getLeftTriggerAxis()) * 0.5, null);
+        testArmGravityController.getMotorPower(testArmMotor.getEncoderVelocity(), testArmMotor.getEncoderPosition());
     }
 }
