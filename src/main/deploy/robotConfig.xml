@@ -121,14 +121,14 @@
         <!-- positive should be towards lower point -->
         <armMotorReversed>1</armMotorReversed>
         <armEncoderReversed>1</armEncoderReversed>
-        <overallGearRatio>80</overallGearRatio>
+        <overallGearRatio>133.33</overallGearRatio>
         <encoderTicksPerRevolution>2048</encoderTicksPerRevolution>
 
         <!-- arm PID -->
-        <maximumPower>0.8</maximumPower>
-        <errorStartDecelerate>45</errorStartDecelerate>
-        <errorTolerance>3</errorTolerance>
-        <feedForwardTime>0.3</feedForwardTime>
+        <maximumPower>0.25</maximumPower>
+        <errorStartDecelerate>25</errorStartDecelerate>
+        <errorTolerance>2</errorTolerance>
+        <feedForwardTime>0.1</feedForwardTime>
         <errorAccumulationProportion>0</errorAccumulationProportion>
         <maxAcceleration>180</maxAcceleration>
         <maxVelocity>90</maxVelocity>

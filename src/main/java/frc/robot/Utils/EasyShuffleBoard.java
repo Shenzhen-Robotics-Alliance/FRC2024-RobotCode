@@ -12,12 +12,12 @@ import java.util.Map;
  * */
 public class EasyShuffleBoard {
     private static final Map<String, Map<String, GenericEntry>> widgetsInTags = new HashMap<>();
-    public static void putNumber(String tag, String title, double number) {
-        if (!widgetsInTags.containsKey(tag))
-            widgetsInTags.put(tag, new HashMap<>());
-        if (!widgetsInTags.get(tag).containsKey(title))
-            widgetsInTags.get(tag).put(title, Shuffleboard.getTab(tag).add(title, number).getEntry());
-        widgetsInTags.get(tag).get(title).setDouble(number);
+    public static void putNumber(String tab, String title, double number) {
+        if (!widgetsInTags.containsKey(tab))
+            widgetsInTags.put(tab, new HashMap<>());
+        if (!widgetsInTags.get(tab).containsKey(title))
+            widgetsInTags.get(tab).put(title, Shuffleboard.getTab(tab).add(title, number).getEntry());
+        widgetsInTags.get(tab).get(title).setDouble(number);
     }
 
     public static double getNumber(String tag, String title, double defaultValue) {

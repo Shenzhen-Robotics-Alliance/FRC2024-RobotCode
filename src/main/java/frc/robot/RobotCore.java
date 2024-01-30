@@ -238,7 +238,7 @@ public class RobotCore {
                 robotConfig.updateTuningConfigsFromDashboard();
 
                 /* monitor the program's performance */
-                SmartDashboard.putNumber("program delay (ms)", System.currentTimeMillis() - t);
+                SmartDashboard.putNumber("robot main thread rate", 1000/(System.currentTimeMillis()-t));
                 t = System.currentTimeMillis();
         }
 

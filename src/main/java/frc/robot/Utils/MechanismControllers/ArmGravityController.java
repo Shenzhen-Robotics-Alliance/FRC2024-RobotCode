@@ -60,7 +60,8 @@ public class ArmGravityController implements MechanismController {
     public double getMotorPower(double mechanismVelocity, double mechanismPosition) {
         if (!alive) return 0;
         final double scheduleTimer = (System.currentTimeMillis() - currentScheduleCreatedTime) / 1000.0,
-                currentDesiredPositionAccordingToSchedule = currentSchedule.getCurrentPathPosition(scheduleTimer),
+                // currentDesiredPositionAccordingToSchedule = currentSchedule.getCurrentPathPosition(scheduleTimer),
+                currentDesiredPositionAccordingToSchedule = desiredPosition, // TODO here we disabled the profiled PID control for test
                 gravityCorrectionPower = profile.gravityTorqueEquilibriumMotorPowerLookUpTable.getYPrediction(mechanismPosition),
                 dt = (System.currentTimeMillis() - previousTimeMillis) / 1000.0,
                 pidCorrectionPower = enhancedPIDController.getMotorPowerGoToPositionClassic(mechanismPosition, mechanismVelocity,
@@ -68,11 +69,15 @@ public class ArmGravityController implements MechanismController {
                         dt),
                 overallCorrectionPower = gravityCorrectionPower + pidCorrectionPower;
 
-        EasyShuffleBoard.putNumber("arm controller", "mechanism actual position", mechanismPosition);
-        EasyShuffleBoard.putNumber("arm controller", "mechanism actual velocity", mechanismVelocity);
-        EasyShuffleBoard.putNumber("arm controller", "current desired position (not updated)", desiredPosition);
-        EasyShuffleBoard.putNumber("arm controller", "current desired position (with schedule)", currentDesiredPositionAccordingToSchedule);
-        EasyShuffleBoard.putNumber("arm controller", "correction power: ", pidCorrectionPower);
+        final double radianPerEncoderTick = Math.PI * 2 / 133.33 / 2048;
+        EasyShuffleBoard.putNumber("arm", "mechanism actual position", Math.toDegrees(mechanismPosition * radianPerEncoderTick));
+        EasyShuffleBoard.putNumber("arm", "mechanism actual velocity", Math.toDegrees(mechanismVelocity * radianPerEncoderTick));
+        EasyShuffleBoard.putNumber("arm", "current desired position (not updated)", Math.toDegrees(desiredPosition * radianPerEncoderTick));
+        EasyShuffleBoard.putNumber("arm", "current desired position (with schedule)", Math.toDegrees(currentDesiredPositionAccordingToSchedule * radianPerEncoderTick));
+        EasyShuffleBoard.putNumber("arm", "current desired velocity with schedule",  Math.toDegrees(currentSchedule.getCurrentSpeed(scheduleTimer) * radianPerEncoderTick));
+        EasyShuffleBoard.putNumber("arm", "gravity correction power", gravityCorrectionPower);
+        EasyShuffleBoard.putNumber("arm", "pid correction power", pidCorrectionPower);
+        EasyShuffleBoard.putNumber("arm", "overall correction power: ", overallCorrectionPower);
 
         previousTimeMillis = System.currentTimeMillis();
         if (Math.abs(overallCorrectionPower) > profile.staticPIDProfile.getMaxPowerAllowed())

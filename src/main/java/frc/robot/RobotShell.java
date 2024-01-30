@@ -1,18 +1,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.AutoStagePrograms.AprilTagCameraAutomaticMeasuring;
 import frc.robot.AutoStagePrograms.AutoStageProgram;
-import frc.robot.AutoStagePrograms.TestAutoStageProgram;
-import frc.robot.Drivers.Visions.FixedAnglePositionTrackingCamera;
-import frc.robot.Drivers.Visions.JetsonDetectionAppClient;
-import frc.robot.Drivers.Visions.TargetFieldPositionTracker;
 import frc.robot.Services.AutoProgramRunner;
 import frc.robot.Services.PilotChassis;
 import frc.robot.Services.RobotServiceBase;
-import frc.robot.Utils.FixedAngleCameraUtils.FixedAngleCameraProfile;
-import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.SequentialCommandSegment;
 import frc.robot.Utils.Tests.*;
