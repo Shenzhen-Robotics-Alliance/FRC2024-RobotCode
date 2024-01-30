@@ -1,19 +1,14 @@
 package frc.robot.Modules.UpperStructure;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.Encoders.Encoder;
 import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Modules.RobotModuleBase;
 import frc.robot.Services.RobotServiceBase;
-import frc.robot.Utils.MathUtils.LookUpTable;
-import frc.robot.Utils.MathUtils.StatisticsUtils;
 import frc.robot.Utils.MechanismControllers.ArmGravityController;
 import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 import frc.robot.Utils.RobotConfigReader;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class TransformableArm extends RobotModuleBase {
@@ -32,7 +27,7 @@ public class TransformableArm extends RobotModuleBase {
         /** the position at which the intake spinner can touch the ground  */
         INTAKE,
         /** the position where the shooter points at the target, notice that the specific position is determined by the aiming system */
-        SHOOT,
+        SHOOT_NOTE,
         /** the position where the shooter points at the amplifier */
         SCORE_AMPLIFIER
     }
