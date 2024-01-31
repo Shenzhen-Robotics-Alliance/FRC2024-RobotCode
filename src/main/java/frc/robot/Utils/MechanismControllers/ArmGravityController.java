@@ -48,10 +48,18 @@ public class ArmGravityController implements MechanismController {
         previousTimeMillis = System.currentTimeMillis();
     }
 
-    public void goToDesiredPosition(double currentPosition, double currentVelocity, double newDesiredPosition) {
+    public void goToDesiredPosition(double newDesiredPosition) {
         if (newDesiredPosition == desiredPosition) return;
-        this.currentSchedule = new EnhancedPIDController.TrapezoidPathSchedule(profile.dynamicalPIDProfile, new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, newDesiredPosition), currentPosition, currentVelocity);
-        this.desiredPosition = newDesiredPosition;
+
+
+        if (currentSchedule == null) // TODO set a default position
+            this.currentSchedule = new EnhancedPIDController.TrapezoidPathSchedule(profile.dynamicalPIDProfile, new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, newDesiredPosition), 0, 0);
+        else {
+            final double scheduleTimer = (System.currentTimeMillis() - currentScheduleCreatedTime) / 1000.0;
+            this.currentSchedule = new EnhancedPIDController.TrapezoidPathSchedule(profile.dynamicalPIDProfile, new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, newDesiredPosition), currentSchedule.getCurrentPathPosition(scheduleTimer), currentSchedule.getCurrentSpeed(scheduleTimer));
+            this.desiredPosition = newDesiredPosition;
+        }
+
         this.alive = true;
         currentScheduleCreatedTime = previousTimeMillis = System.currentTimeMillis();
     }
@@ -60,8 +68,8 @@ public class ArmGravityController implements MechanismController {
     public double getMotorPower(double mechanismVelocity, double mechanismPosition) {
         if (!alive) return 0;
         final double scheduleTimer = (System.currentTimeMillis() - currentScheduleCreatedTime) / 1000.0,
-                // currentDesiredPositionAccordingToSchedule = currentSchedule.getCurrentPathPosition(scheduleTimer),
-                currentDesiredPositionAccordingToSchedule = desiredPosition, // TODO here we disabled the profiled PID control for test
+                currentDesiredPositionAccordingToSchedule = currentSchedule.getCurrentPathPosition(scheduleTimer),
+                // currentDesiredPositionAccordingToSchedule = desiredPosition, // disable the profiled PID control for test
                 gravityCorrectionPower = profile.gravityTorqueEquilibriumMotorPowerLookUpTable.getYPrediction(mechanismPosition),
                 dt = (System.currentTimeMillis() - previousTimeMillis) / 1000.0,
                 pidCorrectionPower = enhancedPIDController.getMotorPowerGoToPositionClassic(mechanismPosition, mechanismVelocity,

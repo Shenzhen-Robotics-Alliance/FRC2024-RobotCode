@@ -14,14 +14,14 @@ public class ArmGravityTest implements SimpleRobotTest {
     private static final double overallGearRatio = 133.33,
             radianPerEncoderTick = Math.PI * 2 / overallGearRatio / 2048;
     private final ArmGravityController testArmGravityController = new ArmGravityController(new ArmGravityController.ArmProfile(
-            0.55,
+            0.5,
             Math.toRadians(40) / radianPerEncoderTick,
             Math.toRadians(2) / radianPerEncoderTick,
             0.06,
             0,
-            Math.toRadians(18) / radianPerEncoderTick,
-            Math.toRadians(36) / radianPerEncoderTick,
-            new LookUpTable(new double[] {Math.toRadians(0) / radianPerEncoderTick, Math.toRadians(45) / radianPerEncoderTick, Math.toRadians(90) / radianPerEncoderTick}, new double[] {0.17, 0, -0.17})
+            Math.toRadians(240) / radianPerEncoderTick,
+            Math.toRadians(150) / radianPerEncoderTick,
+            new LookUpTable(new double[] {Math.toRadians(0) / radianPerEncoderTick, Math.toRadians(20) / radianPerEncoderTick, Math.toRadians(45) / radianPerEncoderTick, Math.toRadians(90) / radianPerEncoderTick}, new double[] {0, 0.12, 0, -0.15})
             ));
 
     @Override
@@ -34,11 +34,11 @@ public class ArmGravityTest implements SimpleRobotTest {
     @Override
     public void testPeriodic() {
         if (xboxController.getAButton())
-            testArmGravityController.goToDesiredPosition(testArmMotor.getEncoderPosition(), testArmMotor.getEncoderVelocity(), Math.toRadians(90) / radianPerEncoderTick);
+            testArmGravityController.goToDesiredPosition(Math.toRadians(75) / radianPerEncoderTick);
         else if (xboxController.getBButton())
-            testArmGravityController.goToDesiredPosition(testArmMotor.getEncoderPosition(), testArmMotor.getEncoderVelocity(), Math.toRadians(45) / radianPerEncoderTick);
+            testArmGravityController.goToDesiredPosition(Math.toRadians(40) / radianPerEncoderTick);
         else if (xboxController.getYButton())
-            testArmGravityController.goToDesiredPosition(testArmMotor.getEncoderPosition(), testArmMotor.getEncoderVelocity(), Math.toRadians(0) / radianPerEncoderTick);
+            testArmGravityController.goToDesiredPosition(Math.toRadians(0) / radianPerEncoderTick);
 
         if (xboxController.getLeftBumper())
             testArmMotor.updateWithController(null);

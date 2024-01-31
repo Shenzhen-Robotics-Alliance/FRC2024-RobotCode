@@ -572,21 +572,21 @@ public class EnhancedPIDController {
             this.startingPosition = startingPosition;
             this.task = task;
 
-            System.out.println("trapezoid schedule, start: " + startingPosition + ", end: " + task.value);
+            System.out.println("trapezoid schedule, start: " + startingPosition * 360 / 133.33 / 2048 + ", end: " + task.value * 360 / 133.33 / 2048);
 
             scheduleCheckPoints();
 
             /* here we print the checkpoints, they look good */
             System.out.println("<-- checkpoints: -->");
             for (CheckPoint checkPoint:checkPoints)
-                System.out.println("time: " + checkPoint.time + ", velocity: " + checkPoint.velocity + ", position: " + checkPoint.position);
+                System.out.println("time: " + checkPoint.time + ", velocity: " + checkPoint.velocity * 360 / 133.33 / 2048 + ", position: " + checkPoint.position * 360 / 133.33 / 2048);
             System.out.println("<-- END -->");
         }
 
         private void scheduleCheckPoints() {
-            double timeToFullyAccelerate = profile.maxVelocity / profile.maxAcceleration;
-            double distanceTravelledDuringAccelerating = timeToFullyAccelerate * profile.maxVelocity / 2;
-            double totalDistance = Math.abs(task.value - startingPosition);
+            final double timeToFullyAccelerate = profile.maxVelocity / profile.maxAcceleration,
+                    distanceTravelledDuringAccelerating = timeToFullyAccelerate * profile.maxVelocity / 2,
+                    totalDistance = Math.abs(task.value - startingPosition);
 
             /** whether the trapezoid is a triangle */
             boolean isTriangle = distanceTravelledDuringAccelerating * 2 > totalDistance; // it is a triangle whenever there is no enough distance to fully accelerate and decelerate
@@ -597,7 +597,7 @@ public class EnhancedPIDController {
 
                 this.checkPoints[0] = new CheckPoint(0, 0, this.startingPosition);
 
-                final double timeToAccelerate = Math.sqrt(totalDistance / 2 / this.profile.maxAcceleration), // 2AT^2 = D
+                final double timeToAccelerate = Math.sqrt(totalDistance / this.profile.maxAcceleration), // 1/2AT^2 = 1/2D
                     fullSpeed = timeToAccelerate * profile.maxAcceleration;
                 this.checkPoints[1] = new CheckPoint(timeToAccelerate, fullSpeed, (task.value + startingPosition)/2);
 
@@ -614,15 +614,15 @@ public class EnhancedPIDController {
             double distanceTravelled = 0;
             this.checkPoints[0] = new CheckPoint(0, 0, this.startingPosition);
 
-            distanceTravelled += timeToFullyAccelerate * profile.maxVelocity / 2;
-            this.checkPoints[1] = new CheckPoint(checkPoints[0].time + timeToFullyAccelerate, profile.maxVelocity, Math.copySign(distanceTravelled, task.value - startingPosition));
+            distanceTravelled += distanceTravelledDuringAccelerating;
+            this.checkPoints[1] = new CheckPoint(checkPoints[0].time + timeToFullyAccelerate, profile.maxVelocity, startingPosition + Math.copySign(distanceTravelled, task.value - startingPosition));
 
             final double timeFullSpeed = (totalDistance - distanceTravelledDuringAccelerating * 2) / profile.maxVelocity;
             distanceTravelled += timeFullSpeed * profile.maxVelocity;
-            this.checkPoints[2] = new CheckPoint(checkPoints[1].time + timeFullSpeed, profile.maxVelocity, Math.copySign(distanceTravelled, task.value - startingPosition));
+            this.checkPoints[2] = new CheckPoint(checkPoints[1].time + timeFullSpeed, profile.maxVelocity, startingPosition + Math.copySign(distanceTravelled, task.value - startingPosition));
 
-            distanceTravelled += timeToFullyAccelerate * profile.maxVelocity / 2;
-            this.checkPoints[3] = new CheckPoint(checkPoints[2].time + timeToFullyAccelerate, 0, Math.copySign(distanceTravelled, task.value - startingPosition));
+            distanceTravelled += distanceTravelledDuringAccelerating;
+            this.checkPoints[3] = new CheckPoint(checkPoints[2].time + timeToFullyAccelerate, 0, startingPosition + Math.copySign(distanceTravelled, task.value - startingPosition));
 
             expectedTimeOfArrival = checkPoints[3].time;
         }
@@ -641,7 +641,8 @@ public class EnhancedPIDController {
                             timeSincePeriodStart = (currentTime-checkPoints[i].time),
                             currentVelocity = checkPoints[i].velocity + timeSincePeriodStart * accelerationDuringCurrentPeriod, // v1 = v0 + at
                             averageVelocityFromPeriodStartToNow = (checkPoints[i].velocity + currentVelocity) / 2; // v = (v0+v1)/2
-                    return checkPoints[i].position + averageVelocityFromPeriodStartToNow * timeSincePeriodStart;
+                    // System.out.println("time: " + currentTime + ", last checkpoint: " + i + ", current velocity: " + currentVelocity * 360 / 133.33 / 2048 + ", current position: " + (checkPoints[i].position + Math.copySign(averageVelocityFromPeriodStartToNow * timeSincePeriodStart, task.value - startingPosition)) * 360 / 133.33 / 2048);
+                    return checkPoints[i].position + Math.copySign(averageVelocityFromPeriodStartToNow * timeSincePeriodStart, task.value - startingPosition);
                 }
             return task.value;
         }
