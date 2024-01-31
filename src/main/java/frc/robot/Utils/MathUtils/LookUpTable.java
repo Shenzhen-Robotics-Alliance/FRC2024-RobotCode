@@ -30,7 +30,7 @@ public class LookUpTable {
         return x * bestFitLineSlope + bestFitLineIntersect; // if no interval satisfies, we use best-fit line instead
     }
 
-    public double linearInterpretation(double x1, double y1, double x2, double y2, double x) {
+    private double linearInterpretation(double x1, double y1, double x2, double y2, double x) {
         return y1 + (x-x1) * (y2-y1) / (x2-x1);
     }
 }

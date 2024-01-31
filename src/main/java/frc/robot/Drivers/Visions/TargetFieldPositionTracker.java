@@ -15,16 +15,28 @@ public interface TargetFieldPositionTracker {
      * @return true for visible, false for not seen
      * */
     default boolean isTargetVisible(int id) {
-        return getTargetByID(id) != null;
+        return getVisibleTargetByID(id) != null;
     }
 
     /**
-     * gets the target of selected id
+     * gets the visible target of selected id, requires the target to be currently visible
+     * @param id the id of the target
+     * @return the target instance, null for unseen
+     * */
+    default TargetOnField getVisibleTargetByID(int id) {
+        for (TargetOnField target:getVisibleTargets())
+            if (target.id == id)
+                return target;
+        return null;
+    }
+
+    /**
+     * gets the target of selected id, no mater visible or not
      * @param id the id of the target
      * @return the target instance, null for unseen
      * */
     default TargetOnField getTargetByID(int id) {
-        for (TargetOnField target:getVisibleTargets())
+        for (TargetOnField target:getAllTargets())
             if (target.id == id)
                 return target;
         return null;

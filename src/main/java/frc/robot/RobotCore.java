@@ -255,7 +255,7 @@ public class RobotCore {
                 final int targetID = 4;
                 final TargetFieldPositionTracker.TargetOnField target;
                 final double x,y,dis,hdg;
-                if ((target = aprilTagPositionTrackingCamera.getTargetByID(targetID)) == null)
+                if ((target = aprilTagPositionTrackingCamera.getVisibleTargetByID(targetID)) == null)
                         x = y = dis = hdg = -1;
                 else {
                         x = target.fieldPosition.getX() * 100;

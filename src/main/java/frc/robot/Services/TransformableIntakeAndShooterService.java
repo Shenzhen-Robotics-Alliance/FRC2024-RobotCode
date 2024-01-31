@@ -132,16 +132,8 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                     this.currentStatus = IntakeAndShooterStatus.AT_INTAKE_STANDBY_POSITION;
             }
             case AT_SHOOTING_STANDBY_POSITION_HOLDING_NOTE -> {
-                /*
-                * the transformer is at the shooting position, standing by for further instruction
-                * TODO
-                *  1. aiming logic should go here, pass the arm position calculated by the aiming system to the arm module
-                *  2. maybe also request the chassis to face to the target
-                *  3. shooter module should be set as activated, so that it automatically obtains aiming data and update its shooter speed accordingly
-                *  */
-
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, this);
-                shooterModule.setDesiredSpeed(6000, this);
+                shooterModule.setShooterMode(Shooter.ShooterMode.SHOOT, this);
                 if (START_SPLIT_BUTTON)
                     launchProcessFailed();
                 else if (CANCEL_ACTION_BUTTON)
@@ -163,7 +155,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
             case AT_AMPLIFIER_POSITION_HOLDING_NOTE -> {
                 /* the transformer is at amplifier position and is standing by */
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SCORE_AMPLIFIER, this);
-                shooterModule.setDesiredSpeed(1500, this); // TODO find this value in robot config as "amplifier scoring shooter speed"
+                shooterModule.setShooterMode(Shooter.ShooterMode.AMPLIFY, this);
                 if (!TOGGLE_AMPLIFIER_BUTTON)
                     startAmplifyProcess();
                 else if (CANCEL_ACTION_BUTTON)
@@ -206,18 +198,18 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
     }
 
     private void launchProcessSucceeded() {
-        shooterModule.setDesiredSpeed(0, this);
+        shooterModule.setShooterMode(Shooter.ShooterMode.DISABLED, this);
         this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION;
     }
 
     /** in case the shooter gets stuck */
     private void launchProcessFailed() {
-        shooterModule.setDesiredSpeed(0, this);
+        shooterModule.setShooterMode(Shooter.ShooterMode.DISABLED, this);
         startSplitProcess();
     }
 
     private void launchProcessCancelled() {
-        shooterModule.setDesiredSpeed(0, this);
+        shooterModule.setShooterMode(Shooter.ShooterMode.DISABLED, this);
         this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION_HOLDING_NOTE;
     }
 
