@@ -14,7 +14,7 @@ import frc.robot.Services.TransformableIntakeAndShooterService;
 import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 import frc.robot.Utils.RobotConfigReader;
 
-public class IntakeAnShooterServiceLogicTest implements SimpleRobotTest {
+public class CompleteIntakeAndShooterTest implements SimpleRobotTest {
     final TalonFXMotor armMotor = new TalonFXMotor(new TalonFX(25));
     final RobotConfigReader robotConfig = new RobotConfigReader();
     final TransformableArm transformableArm = new TransformableArm(armMotor, armMotor, robotConfig);

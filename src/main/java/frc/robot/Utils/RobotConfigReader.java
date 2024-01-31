@@ -147,7 +147,7 @@ public class RobotConfigReader {
         try {
             return robotConfigs.get(domainName).get(constantName);
         } catch (NullPointerException e) {
-            throw new RuntimeException("config not found: " + domainName + "/" + constantName);
+            throw new NullPointerException("config not found: " + domainName + "/" + constantName);
         }
 
     }

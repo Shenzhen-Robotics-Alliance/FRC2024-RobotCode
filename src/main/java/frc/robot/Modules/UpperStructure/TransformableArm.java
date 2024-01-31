@@ -5,17 +5,20 @@ import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Modules.RobotModuleBase;
 import frc.robot.Services.RobotServiceBase;
 import frc.robot.Utils.MathUtils.LookUpTable;
+import frc.robot.Utils.MathUtils.StatisticsUtils;
 import frc.robot.Utils.MechanismControllers.ArmGravityController;
 import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 import frc.robot.Utils.RobotConfigReader;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TransformableArm extends RobotModuleBase {
-    // TODO we have to finish this module after we test the arm gravity controller
     private final EncoderMotorMechanism armLifterMechanism;
     private final Encoder armEncoder;
+    private final Shooter shooterModule;
     private final ArmGravityController armController;
     private double errorAsArmReady;
     private final double radianPerEncoderTick;
@@ -35,14 +38,19 @@ public class TransformableArm extends RobotModuleBase {
     private TransformerPosition desiredPosition;
     private Map<TransformerPosition, Double> desiredEncoderPositionTable = new HashMap<>();
 
+    public TransformableArm(Motor armLifterMotor, Encoder armEncoder, RobotConfigReader robotConfig) {
+        this(armLifterMotor, armEncoder, null, robotConfig);
+    }
+
     /**
      * crates a transformable arm instance
      * @param armLifterMotor the lifter motor, with positive direction is in harmony with the encoder
      * @param armEncoder the lifter encoder, with positive direction is in harmony with the motor, the zero position of the encoder will be set to the position when the module is initialized
      * @param robotConfig the config xml file
      */
-    public TransformableArm(Motor armLifterMotor, Encoder armEncoder, RobotConfigReader robotConfig) {
+    public TransformableArm(Motor armLifterMotor, Encoder armEncoder, Shooter shooterModule, RobotConfigReader robotConfig) {
         super("Transformable-Intake");
+        this.shooterModule = shooterModule;
         super.motors.add(armLifterMotor);
         this.armEncoder = armEncoder;
         this.armLifterMechanism = new EncoderMotorMechanism(armEncoder, armLifterMotor);
@@ -62,12 +70,26 @@ public class TransformableArm extends RobotModuleBase {
 
     @Override
     protected void periodic(double dt) {
+        // TODO calibrate with limit switch
         System.out.println("arm current position: " + desiredPosition);
+        armController.goToDesiredPosition(desiredEncoderPositionTable.get(desiredPosition));
+
+        if (this.desiredPosition == TransformerPosition.SHOOT_NOTE && shooterModule != null && shooterModule.getAimingArmPosition() != -1)
+            armController.updateDesiredPosition(shooterModule.getAimingArmPosition());
     }
 
     @Override
     public void updateConfigs() {
-        final LookUpTable gravityTorqueLookUpTable = new LookUpTable(new double[] {Math.toRadians(0) / radianPerEncoderTick, Math.toRadians(45) / radianPerEncoderTick, Math.toRadians(90) / radianPerEncoderTick}, new double[] {0.2, 0, -0.2}); // TODO put in robotconfig
+        final List<Double> encoderPositions = new ArrayList<>(), gravityTorques = new ArrayList<>();
+        int i = 0; while (true) {
+            try {
+                encoderPositions.add(Math.toRadians(robotConfig.getConfig("arm", "encoderPosition" + i)) / radianPerEncoderTick);
+                gravityTorques.add(robotConfig.getConfig("arm", "gravityTorque"+ i));
+                i++;
+            } catch (NullPointerException end) { break; }
+        }
+        final LookUpTable gravityTorqueLookUpTable = new LookUpTable(StatisticsUtils.toArray(encoderPositions), StatisticsUtils.toArray(gravityTorques));
+
         this.armController.updateArmProfile(new ArmGravityController.ArmProfile(
                 robotConfig.getConfig("arm", "maximumPower"),
                 Math.toRadians(robotConfig.getConfig("arm", "errorStartDecelerate")) / radianPerEncoderTick,
@@ -78,6 +100,9 @@ public class TransformableArm extends RobotModuleBase {
                 Math.toRadians(robotConfig.getConfig("arm", "maxVelocity")) / radianPerEncoderTick,
                 gravityTorqueLookUpTable
         ));
+
+        for (TransformerPosition transformerPosition:TransformerPosition.values())
+            desiredEncoderPositionTable.put(transformerPosition, robotConfig.getConfig("arm", "position-"+transformerPosition.name()));
     }
 
     @Override

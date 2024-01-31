@@ -125,14 +125,28 @@
         <encoderTicksPerRevolution>2048</encoderTicksPerRevolution>
 
         <!-- arm PID -->
-        <maximumPower>0.25</maximumPower>
-        <errorStartDecelerate>25</errorStartDecelerate>
+        <maximumPower>0.5</maximumPower>
+        <errorStartDecelerate>40</errorStartDecelerate>
         <errorTolerance>2</errorTolerance>
-        <feedForwardTime>0.1</feedForwardTime>
+        <feedForwardTime>0.08</feedForwardTime>
         <errorAccumulationProportion>0</errorAccumulationProportion>
-        <maxAcceleration>180</maxAcceleration>
-        <maxVelocity>90</maxVelocity>
+        <maxAcceleration>240</maxAcceleration>
+        <maxVelocity>150</maxVelocity>
         <!-- lookup table -->
+        <encoderPosition0>0</encoderPosition0>
+        <gravityTorque0>0</gravityTorque0>
+        <encoderPosition1>20</encoderPosition1>
+        <gravityTorque1>0.12</gravityTorque1>
+        <encoderPosition2>45</encoderPosition2>
+        <gravityTorque2>0</gravityTorque2>
+        <encoderPosition3>90</encoderPosition3>
+        <gravityTorque3>-0.15</gravityTorque3>
+        <!-- arm positions -->
+        <position-DEFAULT>45</position-DEFAULT>
+        <position-INTAKE_STANDBY>75</position-INTAKE_STANDBY>
+        <position-INTAKE>80</position-INTAKE>
+        <position-SHOOT_NOTE>60</position-SHOOT_NOTE>
+        <position-SCORE_AMPLIFIER>0</position-SCORE_AMPLIFIER>
     </arm>
 
     <auto>

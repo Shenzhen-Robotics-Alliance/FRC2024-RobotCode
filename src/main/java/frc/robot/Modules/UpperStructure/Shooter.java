@@ -113,4 +113,12 @@ public class Shooter extends RobotModuleBase {
         for (FlyWheelSpeedController speedController:speedControllers)
             speedController.setProfile(speedControllerProfile);
     }
+
+    /**
+     * gets the aiming angle from the aiming system, so that the arm knows where to go
+     * @return the arm position to shoot, in radian; if there is no target in front, return -1
+     * */
+    public double getAimingArmPosition() {
+        return -1; // TODO use apriltag detector to aim
+    }
 }
