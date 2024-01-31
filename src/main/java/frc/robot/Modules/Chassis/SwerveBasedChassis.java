@@ -366,14 +366,12 @@ public class SwerveBasedChassis extends RobotModuleBase {
     }
 
     public boolean isCurrentTranslationalTaskFinished() {
-        switch (translationalTask.taskType) {
-            case SET_VELOCITY:
-                return translationalTask.translationValue.getMagnitude() == 0;
-            case GO_TO_POSITION:
-                return Vector2D.displacementToTarget(positionEstimator.getRobotPosition2D(), translationalTask.translationValue).getMagnitude() < positionDifferenceAsTaskFinished;
-            default:
-                throw new UnsupportedOperationException("unsupported translational task type:" + this.translationalTask.taskType.name());
-        }
+        return switch (translationalTask.taskType) {
+            case SET_VELOCITY ->
+                    translationalTask.translationValue.getMagnitude() == 0;
+            case GO_TO_POSITION ->
+                    Vector2D.displacementToTarget(positionEstimator.getRobotPosition2D(), translationalTask.translationValue).getMagnitude() < positionDifferenceAsTaskFinished;
+        };
     }
 
     public static class ChassisTaskTranslation {

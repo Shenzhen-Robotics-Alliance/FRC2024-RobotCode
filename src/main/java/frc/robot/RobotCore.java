@@ -87,13 +87,13 @@ public class RobotCore {
                 modules.add(chassisModule);
 
                 aprilTagDetectionAppClient = new JetsonDetectionAppClient("AprilTagDetector", "10.55.16.109", 8888);
-                final double[] targetHeights = new double[] {100, 100, 100, 100, 100, 100};
-                aprilTagPositionTrackingCamera = new FixedAnglePositionTrackingCamera(
+                final double[] targetHeights = new double[] {130, 130, 130, 130, 130, 130};
+                aprilTagPositionTrackingCamera = new FixedAnglePositionTrackingCamera( // TODO load and save to robotConfig
                         aprilTagDetectionAppClient,
                         new FixedAngleCameraProfile(
-                                -0.47,
-                                -0.001966,
-                                -0.001321
+                                0.37725,
+                                -0.00284,
+                                -0.00203
                         ),
                         targetHeights
                 );

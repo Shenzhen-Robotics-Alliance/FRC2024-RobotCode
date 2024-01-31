@@ -58,8 +58,8 @@ public class AprilTagCameraAutomaticMeasuring implements AutoStageProgram{
                 });
                 System.out.println("segment with ending position" + targetedPosition);
                 commandSegments.add(commandFactory.moveFromPointToPointAndStop(
-                        robotPreviousPosition,
-                        targetedPosition,
+                        toFieldPosition(robotPreviousPosition),
+                        toFieldPosition(targetedPosition),
                         () -> System.out.println("moving to position"),
                         this::putDataOnDashBoard,
                         () -> targetInPlace(robotCore.positionReader)
@@ -130,8 +130,8 @@ public class AprilTagCameraAutomaticMeasuring implements AutoStageProgram{
                 cameraFacingAngleBias = StatisticsUtils.getBestFitLineIntersect(pixelXSamples, angleXSamples),
                 r_squared1 = Math.pow(StatisticsUtils.getCorrelationCoefficient(pixelXSamples, angleXSamples), 2),
 
-                cameraAngleRadianPerPixelY = StatisticsUtils.getBestFitLineSlope(pixelYSamples, angleYSamples),
-                cameraInstallationVerticalAngle = StatisticsUtils.getBestFitLineIntersect(pixelYSamples, angleYSamples),
+                cameraAngleRadianPerPixelY = -StatisticsUtils.getBestFitLineSlope(pixelYSamples, angleYSamples),
+                cameraInstallationVerticalAngle = -StatisticsUtils.getBestFitLineIntersect(pixelYSamples, angleYSamples),
                 r_squared2 = Math.pow(StatisticsUtils.getCorrelationCoefficient(pixelYSamples, angleYSamples), 2);
 
         System.out.println("Camera Angle Radian per Pixel (x): " + cameraAngleRadianPerPixelX);
