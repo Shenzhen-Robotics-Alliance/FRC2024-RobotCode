@@ -144,7 +144,8 @@ public class Shooter extends RobotModuleBase {
     private static final double defaultShootingRPM = 4500;
     private static final double amplifyingRPM = 3000;
     private static final double idleRPM = 1000;
-    private static final double projectileSpeed = 6;
+    private static final double projectileSpeed = 10;
+    private static final double shootingRange = 6;
     private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5, 6}, new double[] {3800, 3900, 4200, 4500, 4800, 5100, 5500, 6000});
     /** the desired arm position for aiming, in degrees and in reference to the default shooting position of the arm, which is specified in the arm configs */
     private static final LookUpTable armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5, 6}, new double[] {-10, -5, -5, -5, 0, 0, 0, 0});
@@ -174,6 +175,14 @@ public class Shooter extends RobotModuleBase {
             return 0;
         final double distanceToTarget = targetRelativePositionToRobot.getMagnitude();
         return Math.toRadians(armPositionDegreesToTargetDistanceLookUpTable.getYPrediction(distanceToTarget));
+    }
+
+    public boolean targetInRange() {
+        final Vector2D targetRelativePositionToRobot;
+        if (aimingSystem == null
+                || (targetRelativePositionToRobot = aimingSystem.getRelativePositionToTarget(projectileSpeed)) == null)
+            return false;
+        return targetRelativePositionToRobot.getMagnitude() < shootingRange;
     }
 
     private double getShooterSpeedWithAimingSystem() {

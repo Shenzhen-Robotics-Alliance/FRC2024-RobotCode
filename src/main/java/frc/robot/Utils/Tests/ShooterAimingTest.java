@@ -16,6 +16,7 @@ import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 import frc.robot.Utils.RobotConfigReader;
 
 public class ShooterAimingTest implements SimpleRobotTest {
+    // TODO vision have to be here
     final TalonFXMotor armMotor = new TalonFXMotor(new TalonFX(25));
     final RobotConfigReader robotConfig = new RobotConfigReader();
     final TransformableArm transformableArm = new TransformableArm(armMotor, armMotor, robotConfig);

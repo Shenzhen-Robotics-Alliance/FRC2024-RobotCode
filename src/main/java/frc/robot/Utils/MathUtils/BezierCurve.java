@@ -89,7 +89,7 @@ public class BezierCurve {
 
     // TODO get the boundary box
 
-    private double getLength(int samples) {
+    public double getLength(int samples) {
         double length = 0;
         for (double t = 0; t <= 1; t += 1.0d/samples)
             length += getVelocityWithLERP(t).getMagnitude() / samples;
