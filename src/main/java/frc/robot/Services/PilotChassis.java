@@ -2,16 +2,18 @@ package frc.robot.Services;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Modules.Chassis.SwerveBasedChassis;
+import frc.robot.Utils.EasyShuffleBoard;
 import frc.robot.Utils.PilotController;
 import frc.robot.Utils.RobotConfigReader;
 import frc.robot.Utils.MathUtils.Vector2D;
 
 public class PilotChassis extends RobotServiceBase {
     /** the module of the robot's chassis */
-    private final SwerveBasedChassis chassis;
+    protected final SwerveBasedChassis chassis;
 
-    private final RobotConfigReader robotConfig;
+    protected final RobotConfigReader robotConfig;
 
     /** the center of the translation axis of the stick, in vector */
     private Vector2D controllerTranslationStickCenter;
@@ -50,6 +52,7 @@ public class PilotChassis extends RobotServiceBase {
     @Override
     public void init() {
         reset();
+
     }
 
     @Override
@@ -77,15 +80,18 @@ public class PilotChassis extends RobotServiceBase {
         this.controllerTypeSendableChooser.setDefaultOption(defaultControllerType.name(), defaultControllerType);
         SmartDashboard.putData("pilot controller type", controllerTypeSendableChooser);
 
+        SmartDashboard.putData("Reset Chassis", new InstantCommand(chassis::reset));
+
         this.chassis.reset();
         this.chassis.gainOwnerShip(this);
     }
 
     private ControllerType previousSelectedController = null;
-    private PilotController pilotController;
+    protected PilotController pilotController;
+    protected String controllerName;
     @Override
     public void periodic() {
-        final String controllerName = "control-" + controllerTypeSendableChooser.getSelected();
+        controllerName = "control-" + controllerTypeSendableChooser.getSelected();
 
         /* if the controller type is switched, we create a new instance */
         if (controllerTypeSendableChooser.getSelected() != previousSelectedController)
@@ -94,34 +100,18 @@ public class PilotChassis extends RobotServiceBase {
 
         pilotController.updateKeys();
 
-        /** the minimum amount of stick input to respond to */
-        final int resetChassisButtonPort = (int) robotConfig.getConfig(controllerName, "resetChassisButton"),
-                maintainCurrentRotationButtonPort = (int) robotConfig.getConfig(controllerName, "maintainCurrentRotationButton"),
-                lockChassisButtonPort = (int) robotConfig.getConfig(controllerName, "lockChassisButtonPort");
-
         /* set the control and orientation mode for wheel speed */
         chassis.setWheelOutputMode(wheelOutputModeChooser.getSelected(), this);
         chassis.setOrientationMode(orientationModeChooser.getSelected(), this);
 
-        /* read the buttons */
-        final boolean resetChassis = pilotController.keyOnHold(resetChassisButtonPort),
-                lockChassis = pilotController.keyOnHold(lockChassisButtonPort),
-                maintainCurrentRotation = pilotController.keyOnHold(maintainCurrentRotationButtonPort),
-                initiateRotationMaintenance = pilotController.keyOnPress(maintainCurrentRotationButtonPort);
-
         /* read and process pilot's translation input */
         final Vector2D translationInput = pilotController.getTranslationalStickValue();
+        final int translationAutoPilotButton = (int)robotConfig.getConfig("control-" + controllerName, "translationAutoPilotButton");
         SwerveBasedChassis.ChassisTaskTranslation chassisTranslationalTask = new SwerveBasedChassis.ChassisTaskTranslation(
                 SwerveBasedChassis.ChassisTaskTranslation.TaskType.SET_VELOCITY,
-                translationInput
+                /* if autopilot is on, we scale the input down by a factor so that we can search for the target */
+                translationInput.multiplyBy(pilotController.keyOnHold(translationAutoPilotButton) ? robotConfig.getConfig("chassis", "lowSpeedModeTranslationalCommandScale"):1)
         );
-
-        // TODO test chassis PID by going to origin position
-//        if (pilotController.keyOnHold(2))
-//            chassisTranslationalTask = new SwerveBasedChassis.ChassisTaskTranslation(
-//                    SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION,
-//                    new Vector2D()
-//            );
 
         /* read and process the pilot's rotation inputs */
         final double rotationInput = pilotController.getRotationalStickValue();
@@ -130,29 +120,23 @@ public class PilotChassis extends RobotServiceBase {
                 SwerveBasedChassis.ChassisTaskRotation.TaskType.SET_VELOCITY,
                 rotationInput
         );
-
-        /* when initiated, record current heading as desired heading */
-        if (initiateRotationMaintenance)
+        if (pilotController.getRotationalStickValue() != 0) /* when there is rotational input, we record the current heading of the chassis */
             desiredHeading = chassis.getChassisHeading();
-        /* make it maintain rotation command if asked */
-        if (maintainCurrentRotation)
+        else /* when there is no rotational input, we stay at the previous rotation */
             chassisRotationalTask = new SwerveBasedChassis.ChassisTaskRotation(
                     SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
                     desiredHeading
             );
 
-
-        // SmartDashboard.putNumber("desired heading", desiredHeading);
+        EasyShuffleBoard.putNumber("chassis", "rotation maintenance heading", Math.toDegrees(desiredHeading));
 
         /* calls to the chassis module and pass the desired motion */
         chassis.setTranslationalTask(chassisTranslationalTask, this);
         chassis.setRotationalTask(chassisRotationalTask, this);
 
-        chassis.setChassisLocked(lockChassis, this);
-
-
-        /* reset the chassis if needed */
-        if (resetChassis) chassis.reset();
+        /* lock the chassis if needed */
+        final int lockChassisButtonPort = (int) robotConfig.getConfig(controllerName, "lockChassisButtonPort");
+        chassis.setChassisLocked(pilotController.keyOnHold(lockChassisButtonPort), this);
     }
 
     @Override

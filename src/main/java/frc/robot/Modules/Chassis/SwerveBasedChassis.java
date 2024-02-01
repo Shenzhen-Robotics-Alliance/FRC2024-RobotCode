@@ -57,7 +57,7 @@ public class SwerveBasedChassis extends RobotModuleBase {
 
     /** the four wheels of the robot */
     private final SwerveWheel[] swerveWheels;
-    private final PositionEstimator positionEstimator;
+    public final PositionEstimator positionEstimator;
     private final SimpleGyro gyro;
     private final RobotConfigReader robotConfig;
     public SwerveBasedChassis(SwerveWheel[] swerveWheels, SimpleGyro gyro, RobotConfigReader robotConfig, PositionEstimator positionEstimator) {
@@ -98,15 +98,15 @@ public class SwerveBasedChassis extends RobotModuleBase {
         }
 
         /* then we slow it down to max rotationalSpeedMaxSacrifice */
-        // System.out.println("highest wheel speed:" + highestWheelSpeed);
-        // System.out.println("sacrificing rotational part by scale: " + rotationMinScale);
+        EasyShuffleBoard.putNumber("chassis", "highest wheel speed:", highestWheelSpeed);
+        EasyShuffleBoard.putNumber("chassis", "sacrificing rotational part by scale: ", rotationMinScale);
         rotationalSpeed *= Math.sqrt(rotationMinScale);
         highestWheelSpeed = driveWheels(processedTranslationalSpeed, rotationalSpeed);
         if (highestWheelSpeed <= wheelsPowerConstrain) return;
 
         /* finally, we start scaling down the translational part */
-        // System.out.println("highest wheel speed:" + highestWheelSpeed);
-        // System.out.println("scaling down translational speed by factor:" + wheelsPowerConstrain/highestWheelSpeed);
+        EasyShuffleBoard.putNumber("chassis", "highest wheel speed:", highestWheelSpeed);
+        EasyShuffleBoard.putNumber("chassis", "scaling down translational speed by factor:", wheelsPowerConstrain/highestWheelSpeed);
         processedTranslationalSpeed = processedTranslationalSpeed.multiplyBy(wheelsPowerConstrain/highestWheelSpeed);
         rotationalSpeed *= wheelsPowerConstrain/highestWheelSpeed;
         driveWheels(processedTranslationalSpeed, rotationalSpeed);
@@ -226,7 +226,7 @@ public class SwerveBasedChassis extends RobotModuleBase {
                 decidedVelocity.multiplyBy(-1)
         );
 
-        // SmartDashboard.putNumber("vel ctrl decided", decidedVelocity.getMagnitude());
+        EasyShuffleBoard.putNumber("chassis", "vel ctrl decided", decidedVelocity.getMagnitude());
         Vector2D step = new Vector2D(velocityDifference.getHeading(),
                 Math.min(dt * maxAcceleration, velocityDifference.getMagnitude())
         );

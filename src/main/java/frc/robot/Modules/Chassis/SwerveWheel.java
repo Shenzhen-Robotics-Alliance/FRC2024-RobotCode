@@ -172,9 +172,9 @@ public class SwerveWheel extends RobotModuleBase {
         /** the correction speed obtained from pid controller */
         double correctionMotorSpeed = steerPIDController.getMotorPower(steerEncoderCurrentReading, steerEncoderCurrentVelocity, dt);
 
-//        SmartDashboard.putNumber("steer " + swerveWheelID + " position", steerEncoderCurrentReading);
-//        SmartDashboard.putNumber("steer " + swerveWheelID + " velocity", steerEncoderCurrentVelocity);
-//        SmartDashboard.putNumber("steer " + swerveWheelID + "target", finalTargetedHeading);
+        EasyShuffleBoard.putNumber("chassis", "steer " + swerveWheelID + " position", steerEncoderCurrentReading);
+        EasyShuffleBoard.putNumber("chassis", "steer " + swerveWheelID + " velocity", steerEncoderCurrentVelocity);
+        EasyShuffleBoard.putNumber("chassis", "steer " + swerveWheelID + "target", finalTargetedHeading);
 
         /* given the power ratio of the steer, pass the PID feedback to the motor */
         final double steerPowerRate = locked ? 1: getSteerPowerRate(targetedSpeed);
@@ -215,7 +215,7 @@ public class SwerveWheel extends RobotModuleBase {
         this.steerWheelMaximumPower = robotConfig.getConfig("chassis/steerWheelMaximumPower");
         this.steerWheelMinimumPower = robotConfig.getConfig("chassis/steerWheelMinimumPower");
         this.steerWheelFeedForwardTime = robotConfig.getConfig("chassis/steerWheelFeedForwardTime");
-        // TODO make the following dynamic to chassis speed
+
         this.steerPIDController = new EnhancedPIDController(new EnhancedPIDController.StaticPIDProfile(
                 Math.PI * 2,
                 steerWheelMaximumPower,
@@ -253,7 +253,6 @@ public class SwerveWheel extends RobotModuleBase {
     @Override
     public void resetModule() {
         lastOperationTimer.start();
-        this.owners = new ArrayList<>(1);
         lastRecordedDriveSpeed = 0;
         this.targetedSpeed = 0;
         this.commandedHeading = defaultPosition;
@@ -414,7 +413,6 @@ public class SwerveWheel extends RobotModuleBase {
 //                * (reverseWheel? -1 : 1);
         long t0 = System.currentTimeMillis();
         double encoderVel = drivingEncoder.getEncoderVelocity();
-        System.out.println("read wheel velocity dt(ms): " + (System.currentTimeMillis() - t0));
         return encoderVel * (reverseWheel? -1 : 1);
     }
 

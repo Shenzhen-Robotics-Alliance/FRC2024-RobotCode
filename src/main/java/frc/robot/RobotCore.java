@@ -21,7 +21,7 @@ import frc.robot.Modules.Chassis.SwerveBasedChassis;
 import frc.robot.Modules.Chassis.SwerveWheel;
 import frc.robot.Services.RobotServiceBase;
 import frc.robot.Utils.*;
-import frc.robot.Utils.FixedAngleCameraUtils.FixedAngleCameraProfile;
+import frc.robot.Utils.ComputerVisionUtils.FixedAngleCameraProfile;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
 

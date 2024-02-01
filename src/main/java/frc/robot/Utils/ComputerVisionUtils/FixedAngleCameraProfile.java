@@ -1,4 +1,4 @@
-package frc.robot.Utils.FixedAngleCameraUtils;
+package frc.robot.Utils.ComputerVisionUtils;
 
 /**
  * camera profile for april tag camera installed in a fix angle

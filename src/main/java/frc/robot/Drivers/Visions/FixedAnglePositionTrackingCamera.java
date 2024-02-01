@@ -1,6 +1,6 @@
 package frc.robot.Drivers.Visions;
 
-import frc.robot.Utils.FixedAngleCameraUtils.FixedAngleCameraProfile;
+import frc.robot.Utils.ComputerVisionUtils.FixedAngleCameraProfile;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
 

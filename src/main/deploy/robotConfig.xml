@@ -52,6 +52,9 @@
         <steerCorrectionPowerRateAtZeroWheelSpeed type="double">0.4</steerCorrectionPowerRateAtZeroWheelSpeed>
         <steerCorrectionPowerFullWheelSpeed type="'double">0.4</steerCorrectionPowerFullWheelSpeed>
 
+        <!-- low speed mode -->
+        <lowSpeedModeTranslationalCommandScale>0.75</lowSpeedModeTranslationalCommandScale>
+
         <!-- the configuration for wheel speed control system -->
         <maxDrivingEncoderVelocity type="double">220000</maxDrivingEncoderVelocity> <!-- the encoder velocity read from the wheel when the robot is motioning at full speed -->
         <driveWheelFrictionIntegrationWeight type="double">0</driveWheelFrictionIntegrationWeight> <!-- how fast the robot is adjusting itself according to the sensed friction -->
@@ -171,9 +174,10 @@
         <pilotRotationalAxisExponent>2</pilotRotationalAxisExponent>
 
         <!-- key bindings -->
-        <resetChassisButton type="int">2</resetChassisButton>
+        <translationAutoPilotButton type="int">2</translationAutoPilotButton>
+        <rotationAutoPilotButton type="int">1</rotationAutoPilotButton>
         <lockChassisButtonPort type="int">3</lockChassisButtonPort>
-        <maintainCurrentRotationButton type="int">1</maintainCurrentRotationButton>
+
     </control-RM_POCKET>
     <control-RM_BOXER>
         <controllerPort type="int">0</controllerPort>

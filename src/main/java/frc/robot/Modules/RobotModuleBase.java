@@ -25,7 +25,7 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
     private boolean enabled = true;
 
     /** the current owner services or modules of the module */
-    protected List<RobotModuleOperatorMarker> owners = new ArrayList<>(1);
+    protected RobotModuleOperatorMarker owner = null;
 
     /** always add motors to this list */
     protected List<Motor> motors = new ArrayList<>();
@@ -124,35 +124,19 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
     }
 
     /**
-     * cancel the ownership of all services that currently owns to this module
-     * */
-    public void clearOwners() {
-        this.owners = new ArrayList<>(1);
-    }
-
-    /**
-     * make a service or module one of the owners (does not cancel ownerships of other services)
-     * @param owner the robot service or module that is desired to be one of the owner
-     */
-    public void addOwnerShip(RobotModuleOperatorMarker owner) {
-        this.owners.add(owner);
-    }
-
-    /**
      * make a service or module the only owner of this module
      * @param owner the robot service or module that is desired to be the owner
      */
     public void gainOwnerShip(RobotModuleOperatorMarker owner) {
-        clearOwners();
-        addOwnerShip(owner);
+        this.owner = owner;
     }
 
     /**
      * check if a service or module has ownership to this module
      * @param operator the service or module that needs to be checked
-     * @return whether it is one of or the only owner of this module
+     * @return whether it is the only owner of this module
      */
     public boolean isOwner(RobotModuleOperatorMarker operator) {
-        return owners.contains(operator) || operator == null;
+        return operator == null || operator == owner;
     }
 }

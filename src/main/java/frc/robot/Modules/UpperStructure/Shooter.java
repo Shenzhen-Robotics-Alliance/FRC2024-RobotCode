@@ -2,9 +2,9 @@ package frc.robot.Modules.UpperStructure;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.Motors.Motor;
-import frc.robot.Drivers.Visions.TargetFieldPositionTracker;
 import frc.robot.Modules.PositionReader.PositionEstimator;
 import frc.robot.Modules.RobotModuleBase;
+import frc.robot.Utils.ComputerVisionUtils.AprilTagReferredTarget;
 import frc.robot.Utils.MathUtils.LookUpTable;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
@@ -14,7 +14,6 @@ import frc.robot.Utils.RobotConfigReader;
 import frc.robot.Utils.RobotModuleOperatorMarker;
 
 import java.util.Arrays;
-import java.util.Map;
 
 public class Shooter extends RobotModuleBase {
     private static final boolean inTestMode = false;
@@ -188,18 +187,15 @@ public class Shooter extends RobotModuleBase {
 
     public static final class AimingSystem {
         public final PositionEstimator chassisPositionEstimator;
-        public final TargetFieldPositionTracker targetTracker;
-        public final Map<Integer, Vector2D> referenceTagsPositionToTarget;
+        public final AprilTagReferredTarget referencingTool;
         public final long timeUnseenTolerance;
 
         /**
-         * @param referenceTagsPositionToTarget the positions of the tags that can be used as references to the target, and (field) their positions in refer to the target
          * @param timeUnseenTolerance the amount of time, in ms, that we can accept the target to be gone
          * */
-        public AimingSystem(PositionEstimator chassisPositionEstimator, TargetFieldPositionTracker targetTracker, Map<Integer, Vector2D> referenceTagsPositionToTarget, long timeUnseenTolerance) {
+        public AimingSystem(PositionEstimator chassisPositionEstimator, AprilTagReferredTarget aprilTagReferredTarget, long timeUnseenTolerance) {
             this.chassisPositionEstimator = chassisPositionEstimator;
-            this.targetTracker = targetTracker;
-            this.referenceTagsPositionToTarget = referenceTagsPositionToTarget;
+            this.referencingTool = aprilTagReferredTarget;
             this.timeUnseenTolerance = timeUnseenTolerance;
         }
 
@@ -216,21 +212,8 @@ public class Shooter extends RobotModuleBase {
          * @return the relative position to target, in meters, and in reference to the robot; if not seen for too long, return null
           */
         public Vector2D getRelativePositionToTarget(double projectileSpeed) {
-            int visibleTargetCount = 0;
-            Vector2D targetFieldPosition = new Vector2D();
-            for (int id:referenceTagsPositionToTarget.keySet()) {
-                TargetFieldPositionTracker.TargetOnField target = targetTracker.getTargetByID(id);
-                if (target == null || target.timeMillisSinceLastContact() > timeUnseenTolerance)
-                    continue;
-
-                /* the target's field position is equal the current reference's position minus the reference's relative position to target */
-                final Vector2D targetFieldPositionEstimatedByCurrentReference = target.fieldPosition.addBy(referenceTagsPositionToTarget.get(id).multiplyBy(-1));
-                targetFieldPosition = targetFieldPosition.addBy(targetFieldPositionEstimatedByCurrentReference);
-                visibleTargetCount++;
-            }
-            if (visibleTargetCount == 0) return null;
-
-            targetFieldPosition = targetFieldPosition.multiplyBy(1.0/visibleTargetCount);
+            final Vector2D targetFieldPosition = referencingTool.getTargetFieldPositionWithAprilTags(timeUnseenTolerance);
+            if (targetFieldPosition == null) return null;
             final double distanceToTarget = Vector2D.displacementToTarget(chassisPositionEstimator.getRobotPosition2D(), targetFieldPosition).getMagnitude(),
                     flightTime = distanceToTarget / projectileSpeed;
             final Vector2D chassisPositionAfterFlightTime = chassisPositionEstimator.getRobotPosition2D().addBy(chassisPositionEstimator.getRobotVelocity2D().multiplyBy(flightTime)),

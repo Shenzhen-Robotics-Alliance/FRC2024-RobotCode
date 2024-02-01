@@ -3,6 +3,7 @@ package frc.robot.Modules.PositionReader;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.IMUs.SimpleGyro;
 import frc.robot.Modules.Chassis.SwerveWheel;
+import frc.robot.Utils.EasyShuffleBoard;
 import frc.robot.Utils.MathUtils.AngleUtils;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
@@ -57,8 +58,8 @@ public class SwerveWheelPositionEstimatorCurveOptimized extends SwerveWheelPosit
             wheelVelocities[wheelID] = wheelVelocity; // keep a copy of the velocity
         }
 
-//        SmartDashboard.putNumber("new position estimator (x)", getRobotPosition2D().getX());
-//        SmartDashboard.putNumber("new position estimator (y)", getRobotPosition2D().getY());
+        EasyShuffleBoard.putNumber("chassis", "new position estimator (x)", getRobotPosition2D().getX());
+        EasyShuffleBoard.putNumber("chassis", "new position estimator (y)", getRobotPosition2D().getY());
     }
 
 

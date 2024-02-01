@@ -6,9 +6,6 @@ import frc.robot.Modules.UpperStructure.TransformableArm;
 import frc.robot.Modules.UpperStructure.Shooter;
 import frc.robot.Utils.RobotConfigReader;
 
-/**
- * TODO communicate with vision-aided chassis
- * */
 public class TransformableIntakeAndShooterService extends RobotServiceBase {
     private final Intake intakeModule;
     private final Shooter shooterModule;
@@ -62,11 +59,8 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
     }
 
     private void gainOwnerShipsToModules() {
-        this.intakeModule.clearOwners();
         this.intakeModule.gainOwnerShip(this);
-        this.shooterModule.clearOwners();
         this.shooterModule.gainOwnerShip(this);
-        this.transformerModule.clearOwners();
         this.transformerModule.gainOwnerShip(this);
     }
 
