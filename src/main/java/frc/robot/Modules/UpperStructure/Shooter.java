@@ -174,7 +174,7 @@ public class Shooter extends RobotModuleBase {
                 || (targetRelativePositionToRobot = aimingSystem.getRelativePositionToTarget(projectileSpeed)) == null)
             return 0;
         final double distanceToTarget = targetRelativePositionToRobot.getMagnitude();
-        return Math.toDegrees(armPositionDegreesToTargetDistanceLookUpTable.getYPrediction(distanceToTarget));
+        return Math.toRadians(armPositionDegreesToTargetDistanceLookUpTable.getYPrediction(distanceToTarget));
     }
 
     private double getShooterSpeedWithAimingSystem() {

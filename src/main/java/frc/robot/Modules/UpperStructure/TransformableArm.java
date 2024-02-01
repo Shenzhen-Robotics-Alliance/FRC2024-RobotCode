@@ -36,7 +36,8 @@ public class TransformableArm extends RobotModuleBase {
         SCORE_AMPLIFIER
     }
     private TransformerPosition desiredPosition;
-    private Map<TransformerPosition, Double> desiredEncoderPositionTable = new HashMap<>();
+    /** in radian */
+    private final Map<TransformerPosition, Double> desiredEncoderPositionTable = new HashMap<>();
 
     public TransformableArm(Motor armLifterMotor, Encoder armEncoder, RobotConfigReader robotConfig) {
         this(armLifterMotor, armEncoder, null, robotConfig);
@@ -72,10 +73,21 @@ public class TransformableArm extends RobotModuleBase {
     protected void periodic(double dt) {
         // TODO calibrate with limit switch
         System.out.println("arm current position: " + desiredPosition);
-        armController.goToDesiredPosition(desiredEncoderPositionTable.get(desiredPosition));
+        armController.goToDesiredPosition(desiredEncoderPositionTable.get(desiredPosition) / radianPerEncoderTick);
 
         if (this.desiredPosition == TransformerPosition.SHOOT_NOTE && shooterModule != null)
-            armController.updateDesiredPosition(desiredEncoderPositionTable.get(TransformerPosition.SHOOT_NOTE) + shooterModule.getArmPositionWithAimingSystem());
+            armController.updateDesiredPosition((desiredEncoderPositionTable.get(TransformerPosition.SHOOT_NOTE) + shooterModule.getArmPositionWithAimingSystem()) / radianPerEncoderTick);
+    }
+
+    /**
+     * for test only
+     * @param aimingAngle the angle to aim, in reference to default shoot position and in radian
+     * */
+    @Deprecated
+    public void updateShootingPosition(double aimingAngle, RobotServiceBase operatorService) {
+        if (!isOwner(operatorService) || this.desiredPosition != TransformerPosition.SHOOT_NOTE) return;
+
+        armController.updateDesiredPosition((desiredEncoderPositionTable.get(TransformerPosition.SHOOT_NOTE) + aimingAngle) / radianPerEncoderTick);
     }
 
     @Override
@@ -102,7 +114,7 @@ public class TransformableArm extends RobotModuleBase {
         ));
 
         for (TransformerPosition transformerPosition:TransformerPosition.values())
-            desiredEncoderPositionTable.put(transformerPosition, robotConfig.getConfig("arm", "position-"+transformerPosition.name()));
+            desiredEncoderPositionTable.put(transformerPosition, Math.toRadians(robotConfig.getConfig("arm", "position-"+transformerPosition.name())));
     }
 
     @Override
@@ -134,6 +146,6 @@ public class TransformableArm extends RobotModuleBase {
     }
 
     public boolean transformerInPosition() {
-        return true;
+        return true; // TODO judge whether error inside tolerance
     }
 }

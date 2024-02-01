@@ -42,12 +42,18 @@ public class ArmGravityController implements MechanismController {
         this.enhancedPIDController = new EnhancedPIDController(armProfile.staticPIDProfile);
     }
 
+    /**
+     * @param newDesiredPosition the new desired position, in encoder ticks
+     * */
     public void updateDesiredPosition(double newDesiredPosition) {
         this.currentSchedule = new EnhancedPIDController.TrapezoidPathSchedule(profile.dynamicalPIDProfile, new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, newDesiredPosition), currentSchedule.getCurrentPathPosition(0), currentSchedule.getCurrentSpeed(0));
         this.alive = true;
         previousTimeMillis = System.currentTimeMillis();
     }
 
+    /**
+     * @param newDesiredPosition the new desired position, in encoder ticks
+     * */
     public void goToDesiredPosition(double newDesiredPosition) {
         if (newDesiredPosition == desiredPosition) return;
 
