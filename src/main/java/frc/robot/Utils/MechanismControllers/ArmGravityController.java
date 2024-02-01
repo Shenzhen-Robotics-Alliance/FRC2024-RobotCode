@@ -63,8 +63,8 @@ public class ArmGravityController implements MechanismController {
         else {
             final double scheduleTimer = (System.currentTimeMillis() - currentScheduleCreatedTime) / 1000.0;
             this.currentSchedule = new EnhancedPIDController.TrapezoidPathSchedule(profile.dynamicalPIDProfile, new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, newDesiredPosition), currentSchedule.getCurrentPathPosition(scheduleTimer), currentSchedule.getCurrentSpeed(scheduleTimer));
-            this.desiredPosition = newDesiredPosition;
         }
+        this.desiredPosition = newDesiredPosition;
 
         this.alive = true;
         currentScheduleCreatedTime = previousTimeMillis = System.currentTimeMillis();
@@ -119,7 +119,6 @@ public class ArmGravityController implements MechanismController {
          *
          * @param maxPowerAllowed                       the restriction on power
          * @param errorTolerance                        the amount of error to ignore
-         * @param integralCoefficientError              the coefficient of the cumulated error, also known as kI
          * @param maxAcceleration                       the maximum instant acceleration that the mechanism can achieve with the max power
          * @param maxVelocity                           the restriction on the velocity of the mechanism
          */

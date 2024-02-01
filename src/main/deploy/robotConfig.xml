@@ -135,6 +135,7 @@
         <errorAccumulationProportion>0</errorAccumulationProportion>
         <maxAcceleration>240</maxAcceleration>
         <maxVelocity>150</maxVelocity>
+        <errorToleranceAsInPosition>1.5</errorToleranceAsInPosition>
         <!-- lookup table -->
         <encoderPosition0>0</encoderPosition0>
         <gravityTorque0>0</gravityTorque0>
