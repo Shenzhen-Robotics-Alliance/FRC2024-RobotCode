@@ -378,7 +378,7 @@ public class SwerveBasedChassis extends RobotModuleBase {
     public boolean isCurrentRotationalTaskFinished() {
         return switch (rotationalTask.taskType) {
             case SET_VELOCITY -> rotationalTask.rotationalValue == 0;
-            case FACE_DIRECTION -> AngleUtils.getActualDifference(getChassisHeading(), translationalTask.translationValue < rotati);
+            case FACE_DIRECTION -> Math.abs(AngleUtils.getActualDifference(getChassisHeading(), rotationalTask.rotationalValue)) < rotationDifferenceAsTaskFinished;
         };
     }
 
