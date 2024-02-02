@@ -3,7 +3,6 @@ package frc.robot.Modules.Chassis;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.IMUs.SimpleGyro;
-import frc.robot.Modules.Chassis.SwerveWheel;
 import frc.robot.Modules.PositionReader.PositionEstimator;
 import frc.robot.Modules.RobotModuleBase;
 import frc.robot.Utils.*;
@@ -71,7 +70,7 @@ public class SwerveBasedChassis extends RobotModuleBase {
 
     @Override
     public void init() {
-        this.reset();
+        this.onReset();
     }
 
     @Override
@@ -173,7 +172,8 @@ public class SwerveBasedChassis extends RobotModuleBase {
     }
 
     @Override
-    public void resetModule() {
+    public void onReset() {
+        System.out.println("<-- chassis reset coming through --> ");
         /* reset and recover ownerships to the wheels */
         for (SwerveWheel swerveWheel: swerveWheels) {
             swerveWheel.reset();

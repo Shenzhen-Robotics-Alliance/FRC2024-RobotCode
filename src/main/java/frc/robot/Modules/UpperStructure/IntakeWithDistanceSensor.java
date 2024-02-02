@@ -2,7 +2,6 @@ package frc.robot.Modules.UpperStructure;
 
 import frc.robot.Drivers.DistanceSensors.DistanceSensor;
 import frc.robot.Drivers.Motors.Motor;
-import frc.robot.Modules.RobotModuleBase;
 import frc.robot.Services.RobotServiceBase;
 import frc.robot.Utils.RobotConfigReader;
 
@@ -20,7 +19,7 @@ public class IntakeWithDistanceSensor extends Intake {
 
     @Override
     public void init() {
-        resetModule();
+        onReset();
     }
 
     private double intakePower, launchPower, revertPower, distanceSensorThreshold, splitTime;
@@ -61,7 +60,7 @@ public class IntakeWithDistanceSensor extends Intake {
     }
 
     @Override
-    public void resetModule() {
+    public void onReset() {
         updateConfigs();
         this.currentStatus = IntakeModuleStatus.DISABLED;
         intakeMotor.gainOwnerShip(this);

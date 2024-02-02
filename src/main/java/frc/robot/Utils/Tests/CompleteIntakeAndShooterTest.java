@@ -3,6 +3,7 @@ package frc.robot.Utils.Tests;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Drivers.DistanceSensors.Rev2mDistanceSensorEncapsulation;
+import frc.robot.Drivers.Encoders.DCAbsolutePositionEncoder;
 import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Drivers.Motors.MotorsSet;
 import frc.robot.Drivers.Motors.TalonFXMotor;
@@ -15,13 +16,15 @@ import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 import frc.robot.Utils.RobotConfigReader;
 
 public class CompleteIntakeAndShooterTest implements SimpleRobotTest {
-    final TalonFXMotor armMotor = new TalonFXMotor(new TalonFX(25));
+    /* TODO following constants in robotConfigs */
+    final TalonFXMotor armMotor = new TalonFXMotor(new TalonFX(25) ,false);
+    final DCAbsolutePositionEncoder armEncoder = new DCAbsolutePositionEncoder(1, false);
     final RobotConfigReader robotConfig = new RobotConfigReader();
-    final TransformableArm transformableArm = new TransformableArm(armMotor, armMotor, robotConfig);
+    final TransformableArm transformableArm = new TransformableArm(armMotor, armEncoder, robotConfig);
     final MotorsSet intakeMotors = new MotorsSet(
             new Motor[] {
-                    new TalonFXMotor(new TalonFX(14), true),
-                    new TalonFXMotor(new TalonFX(15), true)
+                    new TalonFXMotor(new TalonFX(13), true),
+                    new TalonFXMotor(new TalonFX(14), true)
             });
     final Intake intake = new IntakeWithDistanceSensor(intakeMotors, new Rev2mDistanceSensorEncapsulation(), robotConfig);
     final EncoderMotorMechanism[] shooterMechanisms = new EncoderMotorMechanism[] {
@@ -40,9 +43,13 @@ public class CompleteIntakeAndShooterTest implements SimpleRobotTest {
     @Override
     public void testStart() {
         shooter.init();
+        shooter.reset();
         intake.init();
+        intake.reset();
         transformableArm.init();
+        transformableArm.reset();
         intakeAndShooterService.init();
+        intakeAndShooterService.reset();
     }
 
     @Override
@@ -51,6 +58,14 @@ public class CompleteIntakeAndShooterTest implements SimpleRobotTest {
 
         shooter.periodic();
         intake.periodic();
+        transformableArm.updateConfigs();
         transformableArm.periodic();
+    }
+
+    @Override
+    public void testEnd() {
+        shooter.disable();
+        intake.disable();
+        transformableArm.disable();
     }
 }

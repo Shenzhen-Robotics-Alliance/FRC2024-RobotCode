@@ -17,12 +17,23 @@ public class EasyShuffleBoard {
             widgetsInTags.put(tab, new HashMap<>());
         if (!widgetsInTags.get(tab).containsKey(title))
             widgetsInTags.get(tab).put(title, Shuffleboard.getTab(tab).add(title, number).getEntry());
-        widgetsInTags.get(tab).get(title).setDouble(number);
+        try {
+            widgetsInTags.get(tab).get(title).setDouble(number);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static double getNumber(String tag, String title, double defaultValue) {
         if (!widgetsInTags.containsKey(tag) || !widgetsInTags.get(tag).containsKey(title))
             return defaultValue; // in case the widget is nowhere to be found
-        return widgetsInTags.get(tag).get(title).getDouble(defaultValue);
+        try {
+            return widgetsInTags.get(tag).get(title).getDouble(defaultValue);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return defaultValue;
+        }
+
     }
 }

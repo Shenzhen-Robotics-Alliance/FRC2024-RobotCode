@@ -21,7 +21,6 @@ public class TransformableArm extends RobotModuleBase {
     private final Shooter shooterModule;
     private final ArmGravityController armController;
     private double errorAsArmReady = 0;
-    private final double radianPerEncoderTick;
     private final RobotConfigReader robotConfig;
     public enum TransformerPosition {
         /** the position of the arm such that the robot is balanced */
@@ -59,25 +58,23 @@ public class TransformableArm extends RobotModuleBase {
         this.armController = new ArmGravityController(new ArmGravityController.ArmProfile(0, 0, 0, 0,0,0,0 ,null));
         this.armLifterMechanism.setController(armController);
         this.robotConfig = robotConfig;
-
-        this.radianPerEncoderTick = Math.PI * 2 / robotConfig.getConfig("arm", "overallGearRatio") / robotConfig.getConfig("arm", "encoderTicksPerRevolution");
     }
 
     @Override
     public void init() {
-        armEncoder.setCurrentPositionAsZeroPosition();
-        this.resetModule();
+        this.onReset();
         updateConfigs();
     }
 
     @Override
     protected void periodic(double dt) {
-        // TODO calibrate with limit switch
         System.out.println("arm current position: " + desiredPosition);
-        armController.goToDesiredPosition(desiredEncoderPosition = desiredEncoderPositionTable.get(desiredPosition) / radianPerEncoderTick);
+        armController.goToDesiredPosition(desiredEncoderPosition = desiredEncoderPositionTable.get(desiredPosition));
 
         if (this.desiredPosition == TransformerPosition.SHOOT_NOTE && shooterModule != null)
-            armController.updateDesiredPosition(desiredEncoderPosition = (desiredEncoderPositionTable.get(TransformerPosition.SHOOT_NOTE) + shooterModule.getArmPositionWithAimingSystem()) / radianPerEncoderTick);
+            armController.updateDesiredPosition(desiredEncoderPosition = (desiredEncoderPositionTable.get(TransformerPosition.SHOOT_NOTE) + shooterModule.getArmPositionWithAimingSystem()));
+
+        armLifterMechanism.updateWithController(this);
     }
 
     /**
@@ -88,7 +85,7 @@ public class TransformableArm extends RobotModuleBase {
     public void updateShootingPosition(double aimingAngle, RobotServiceBase operatorService) {
         if (!isOwner(operatorService) || this.desiredPosition != TransformerPosition.SHOOT_NOTE) return;
 
-        armController.updateDesiredPosition((desiredEncoderPositionTable.get(TransformerPosition.SHOOT_NOTE) + aimingAngle) / radianPerEncoderTick);
+        armController.updateDesiredPosition((desiredEncoderPositionTable.get(TransformerPosition.SHOOT_NOTE) + aimingAngle));
     }
 
     @Override
@@ -96,22 +93,22 @@ public class TransformableArm extends RobotModuleBase {
         final List<Double> encoderPositions = new ArrayList<>(), gravityTorques = new ArrayList<>();
         int i = 0; while (true) {
             try {
-                encoderPositions.add(Math.toRadians(robotConfig.getConfig("arm", "encoderPosition" + i)) / radianPerEncoderTick);
+                encoderPositions.add(Math.toRadians(robotConfig.getConfig("arm", "encoderPosition" + i)));
                 gravityTorques.add(robotConfig.getConfig("arm", "gravityTorque"+ i));
                 i++;
             } catch (NullPointerException end) { break; }
         }
         final LookUpTable gravityTorqueLookUpTable = new LookUpTable(StatisticsUtils.toArray(encoderPositions), StatisticsUtils.toArray(gravityTorques));
 
-        errorAsArmReady = Math.toRadians(robotConfig.getConfig("arm", "errorTolerance")) / radianPerEncoderTick * robotConfig.getConfig("arm", "errorToleranceAsInPosition");
+        errorAsArmReady = Math.toRadians(robotConfig.getConfig("arm", "errorTolerance")) * robotConfig.getConfig("arm", "errorToleranceAsInPosition");
         this.armController.updateArmProfile(new ArmGravityController.ArmProfile(
                 robotConfig.getConfig("arm", "maximumPower"),
-                Math.toRadians(robotConfig.getConfig("arm", "errorStartDecelerate")) / radianPerEncoderTick,
-                Math.toRadians(robotConfig.getConfig("arm", "errorTolerance")) / radianPerEncoderTick,
+                Math.toRadians(robotConfig.getConfig("arm", "errorStartDecelerate")),
+                Math.toRadians(robotConfig.getConfig("arm", "errorTolerance")),
                 robotConfig.getConfig("arm", "feedForwardTime"),
                 robotConfig.getConfig("arm", "errorAccumulationProportion"),
-                Math.toRadians(robotConfig.getConfig("arm", "maxAcceleration")) / radianPerEncoderTick,
-                Math.toRadians(robotConfig.getConfig("arm", "maxVelocity")) / radianPerEncoderTick,
+                Math.toRadians(robotConfig.getConfig("arm", "maxAcceleration")),
+                Math.toRadians(robotConfig.getConfig("arm", "maxVelocity")),
                 gravityTorqueLookUpTable
         ));
 
@@ -120,11 +117,15 @@ public class TransformableArm extends RobotModuleBase {
     }
 
     @Override
-    public void resetModule() {
+    public void onReset() {
+        updateConfigs();
         this.desiredPosition = TransformerPosition.DEFAULT;
         desiredEncoderPosition = desiredEncoderPositionTable.get(desiredPosition);
         this.armController.reset(armEncoder.getEncoderPosition());
         this.armLifterMechanism.gainOwnerShip(this);
+
+        this.armEncoder.setZeroPosition(robotConfig.getConfig("arm", "encoderZeroPositionRadians"));
+        this.armLifterMechanism.setSoftEncoderLimit(Math.toRadians(robotConfig.getConfig("arm", "lowerPositionLimit")), Math.toRadians(robotConfig.getConfig("arm", "upperPositionLimit")));
     }
 
     @Override

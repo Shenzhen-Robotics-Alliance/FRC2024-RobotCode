@@ -94,11 +94,11 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
     public void updateConfigs() {}
 
     /** called to reset module to initial state, you can also call it by the end of init() */
-    public abstract void resetModule();
+    public abstract void onReset();
 
     public void reset() {
         this.previousTimeMillis = System.currentTimeMillis();
-        resetModule();
+        onReset();
         enabled = true;
     }
 
@@ -119,6 +119,8 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
         if (!enabled)
             return;
         System.out.println("<-- Module Base | disabling module " + moduleName + " -->");
+        for (Motor motor:motors)
+            motor.disableMotor(getMarker());
         onDisable();
         this.enabled = false;
     }

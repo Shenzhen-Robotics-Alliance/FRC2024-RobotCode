@@ -129,8 +129,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
     @Override
     public void periodic() {
         super.periodic();
-        final int translationAutoPilotButton = (int)robotConfig.getConfig("control-" + super.controllerName, "translationAutoPilotButton"),
-                rotationAutoPilotButton = (int)robotConfig.getConfig("control-" + super.controllerName, "rotationAutoPilotButton");
+        final int translationAutoPilotButton = (int)robotConfig.getConfig(super.controllerName, "translationAutoPilotButton"),
+                rotationAutoPilotButton = (int)robotConfig.getConfig(super.controllerName, "rotationAutoPilotButton");
         final VisionTargetClass currentAimingTargetClass = targetChooser.getSelected();
         final AprilTagReferredTarget currentAimingTarget = switch (currentAimingTargetClass) {
             case SPEAKER -> speakerTarget;

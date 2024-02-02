@@ -31,7 +31,4 @@ public interface Encoder {
      * get the raw encoder reading, despite the calibrated zero position
      * */
     double getRawEncoderReading();
-
-    /** gain ownership to this encoder */
-    void gainOwnerShip(RobotModuleBase ownerModule);
 }

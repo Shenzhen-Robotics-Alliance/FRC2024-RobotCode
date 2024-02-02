@@ -87,7 +87,7 @@ public class Shooter extends RobotModuleBase {
             shooter.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE, this);
             shooter.gainOwnerShip(this);
         }
-        this.resetModule();
+        this.onReset();
         updateConfigs();
     }
 
@@ -115,7 +115,7 @@ public class Shooter extends RobotModuleBase {
     }
 
     @Override
-    public void resetModule() {
+    public void onReset() {
         setDesiredSpeed(0, null);
         updateConfigs();
         for (EncoderMotorMechanism shooter : shooters)

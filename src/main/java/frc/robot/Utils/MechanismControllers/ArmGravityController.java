@@ -83,12 +83,11 @@ public class ArmGravityController implements MechanismController {
                         dt),
                 overallCorrectionPower = gravityCorrectionPower + pidCorrectionPower;
 
-        final double radianPerEncoderTick = Math.PI * 2 / 133.33 / 2048;
-        EasyShuffleBoard.putNumber("arm", "mechanism actual position", Math.toDegrees(mechanismPosition * radianPerEncoderTick));
-        EasyShuffleBoard.putNumber("arm", "mechanism actual velocity", Math.toDegrees(mechanismVelocity * radianPerEncoderTick));
-        EasyShuffleBoard.putNumber("arm", "current desired position (not updated)", Math.toDegrees(desiredPosition * radianPerEncoderTick));
-        EasyShuffleBoard.putNumber("arm", "current desired position (with schedule)", Math.toDegrees(currentDesiredPositionAccordingToSchedule * radianPerEncoderTick));
-        EasyShuffleBoard.putNumber("arm", "current desired velocity with schedule",  Math.toDegrees(currentSchedule.getCurrentSpeed(scheduleTimer) * radianPerEncoderTick));
+        EasyShuffleBoard.putNumber("arm", "mechanism actual position", Math.toDegrees(mechanismPosition));
+        EasyShuffleBoard.putNumber("arm", "mechanism actual velocity", Math.toDegrees(mechanismVelocity));
+        EasyShuffleBoard.putNumber("arm", "current desired position (not updated)", Math.toDegrees(desiredPosition));
+        EasyShuffleBoard.putNumber("arm", "current desired position (with schedule)", Math.toDegrees(currentDesiredPositionAccordingToSchedule));
+        EasyShuffleBoard.putNumber("arm", "current desired velocity with schedule",  Math.toDegrees(currentSchedule.getCurrentSpeed(scheduleTimer)));
         EasyShuffleBoard.putNumber("arm", "gravity correction power", gravityCorrectionPower);
         EasyShuffleBoard.putNumber("arm", "pid correction power", pidCorrectionPower);
         EasyShuffleBoard.putNumber("arm", "overall correction power: ", overallCorrectionPower);

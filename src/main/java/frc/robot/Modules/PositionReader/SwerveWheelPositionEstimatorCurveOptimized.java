@@ -1,6 +1,5 @@
 package frc.robot.Modules.PositionReader;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.IMUs.SimpleGyro;
 import frc.robot.Modules.Chassis.SwerveWheel;
 import frc.robot.Utils.EasyShuffleBoard;
@@ -23,12 +22,12 @@ public class SwerveWheelPositionEstimatorCurveOptimized extends SwerveWheelPosit
     private final double[] wheelSteerEncoderReadings = new double[swerveWheels.length];
 
     @Override
-    public void resetModule() {
+    public void onReset() {
         for (int wheelID = 0; wheelID < swerveWheels.length; wheelID++) {
             wheelDriveEncoderReadings[wheelID] = swerveWheels[wheelID].getWheelDrivingEncoderValue();
             wheelSteerEncoderReadings[wheelID] = swerveWheels[wheelID].getSteerHeading();
         }
-        super.resetModule();
+        super.onReset();
     }
 
     @Override

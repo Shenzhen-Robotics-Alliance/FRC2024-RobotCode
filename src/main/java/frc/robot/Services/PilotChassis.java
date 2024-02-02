@@ -2,6 +2,7 @@ package frc.robot.Services;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Modules.Chassis.SwerveBasedChassis;
 import frc.robot.Utils.EasyShuffleBoard;
@@ -80,10 +81,17 @@ public class PilotChassis extends RobotServiceBase {
         this.controllerTypeSendableChooser.setDefaultOption(defaultControllerType.name(), defaultControllerType);
         SmartDashboard.putData("pilot controller type", controllerTypeSendableChooser);
 
-        SmartDashboard.putData("Reset Chassis", new InstantCommand(chassis::reset));
+        addResetChassisCommandButtonToDashboard();
 
         this.chassis.reset();
         this.chassis.gainOwnerShip(this);
+    }
+
+    private void addResetChassisCommandButtonToDashboard() {
+        SmartDashboard.putData("Reset Chassis", new InstantCommand(() -> {
+            chassis.reset();
+            addResetChassisCommandButtonToDashboard();
+        }));
     }
 
     private ControllerType previousSelectedController = null;
@@ -106,7 +114,7 @@ public class PilotChassis extends RobotServiceBase {
 
         /* read and process pilot's translation input */
         final Vector2D translationInput = pilotController.getTranslationalStickValue();
-        final int translationAutoPilotButton = (int)robotConfig.getConfig("control-" + controllerName, "translationAutoPilotButton");
+        final int translationAutoPilotButton = (int)robotConfig.getConfig(controllerName, "translationAutoPilotButton");
         SwerveBasedChassis.ChassisTaskTranslation chassisTranslationalTask = new SwerveBasedChassis.ChassisTaskTranslation(
                 SwerveBasedChassis.ChassisTaskTranslation.TaskType.SET_VELOCITY,
                 /* if autopilot is on, we scale the input down by a factor so that we can search for the target */

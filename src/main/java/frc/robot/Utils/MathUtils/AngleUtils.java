@@ -7,9 +7,10 @@ public class AngleUtils {
      * @return the simplified angle, in radian and in the range 0 < x < Math.Pi*2
      * */
     public static double simplifyAngle(double radian) {
-        while (radian > Math.PI * 2)
-            radian -= Math.PI * 2;
-        while (radian < 0)
+        if (Double.isNaN(radian) || Double.isInfinite(radian) || Math.abs(radian) > 10e7)
+            throw new IllegalArgumentException("invalid radian: " + radian);
+        radian = Math.copySign(radian % (Math.PI*2), radian);
+        if (radian < 0)
             radian += Math.PI * 2;
         return radian;
     }
@@ -21,9 +22,7 @@ public class AngleUtils {
      * @return the shortest distance between the two points, in radian and positive is counter-clockwise
      * */
     public static double getActualDifference(double currentRotation, double targetedRotation) {
-        double loopLength = Math.PI * 2;
-        if (loopLength == Double.POSITIVE_INFINITY)
-            return targetedRotation - currentRotation;
+        final double loopLength = Math.PI * 2;
         currentRotation = simplifyAngle(currentRotation);
         targetedRotation = simplifyAngle(targetedRotation);
         double difference = targetedRotation - currentRotation;

@@ -77,6 +77,8 @@ public class RobotShell extends TimedRobot {
     public void disabledInit() {
         // System.out.println("<-- Robot Shell | disable init -->");
         stopStage();
+        if (robotTest != null)
+            robotTest.testEnd();
     }
 
     @Override

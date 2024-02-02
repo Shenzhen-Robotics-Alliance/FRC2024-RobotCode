@@ -2,16 +2,17 @@ package frc.robot.Utils.MechanismControllers;
 
 import frc.robot.Drivers.Encoders.Encoder;
 import frc.robot.Drivers.Motors.Motor;
+import frc.robot.Drivers.Motors.MotorWithLimitSwitch;
 import frc.robot.Modules.RobotModuleBase;
 
 public class EncoderMotorMechanism implements Encoder, Motor {
     private final Encoder encoder;
-    private final Motor motor;
+    private final MotorWithLimitSwitch motor;
     private MechanismController controller = null;
 
     public EncoderMotorMechanism(Encoder encoder, Motor motor) {
         this.encoder = encoder;
-        this.motor = motor;
+        this.motor = new MotorWithLimitSwitch(motor);
     }
 
     @Override
@@ -62,7 +63,6 @@ public class EncoderMotorMechanism implements Encoder, Motor {
     @Override
     public void gainOwnerShip(RobotModuleBase ownerModule) {
         motor.gainOwnerShip(ownerModule);
-        encoder.gainOwnerShip(ownerModule);
     }
 
     @Override
@@ -82,5 +82,10 @@ public class EncoderMotorMechanism implements Encoder, Motor {
     public void updateWithController(RobotModuleBase operatorModule) {
         if (controller == null) motor.setPower(0, operatorModule);
         else setPower(controller.getMotorPower(encoder.getEncoderVelocity(), encoder.getEncoderPosition()), operatorModule);
+    }
+
+    public void setSoftEncoderLimit(double lowerLimit, double upperLimit) {
+        motor.setPositiveDirectionLimitSwitch(() -> encoder.getEncoderPosition() >= upperLimit);
+        motor.setNegativeDirectionLimitSwitch(() -> encoder.getEncoderPosition() <= lowerLimit);
     }
 }

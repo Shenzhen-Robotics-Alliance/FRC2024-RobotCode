@@ -122,7 +122,7 @@ public class SwerveWheel extends RobotModuleBase {
     public void init() {
         /* calibrate the steer encoder */
         this.steerEncoder.setZeroPosition(motorEncoderBias);
-        reset();
+        onReset();
     }
 
     @Override
@@ -251,7 +251,7 @@ public class SwerveWheel extends RobotModuleBase {
     }
 
     @Override
-    public void resetModule() {
+    public void onReset() {
         lastOperationTimer.start();
         lastRecordedDriveSpeed = 0;
         this.targetedSpeed = 0;

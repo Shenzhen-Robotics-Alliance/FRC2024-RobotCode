@@ -20,7 +20,7 @@ public class IntakeWithEncoder extends Intake {
     }
     @Override
     public void init() {
-        resetModule();
+        onReset();
     }
 
     @Override
@@ -29,7 +29,7 @@ public class IntakeWithEncoder extends Intake {
     }
 
     @Override
-    public void resetModule() {
+    public void onReset() {
         updateConfigs();
         this.currentStatus = IntakeModuleStatus.DISABLED;
         intakeEncoderMotorMechanism.gainOwnerShip(this);

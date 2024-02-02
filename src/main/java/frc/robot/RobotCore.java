@@ -30,7 +30,6 @@ import frc.robot.Utils.MathUtils.Vector2D;
  * the core of the robot, including all the modules that powers the module
  * note that services are not included in this field
  * */
-// TODO: we have to sort the shuffleboard, it's too messy now
 public class RobotCore {
         public final RobotConfigReader robotConfig;
         public final SwerveWheel frontLeftWheel, backLeftWheel, frontRightWheel, backRightWheel;
@@ -162,13 +161,13 @@ public class RobotCore {
 //                configsToTune.add("chassis/timeNeededToFullyAccelerate");
 
                 /* steer PID */
-                configsToTune.add("chassis/steerWheelErrorTolerance");
-                configsToTune.add("chassis/steerWheelErrorStartDecelerate");
-                configsToTune.add("chassis/steerWheelMaximumPower");
-                configsToTune.add("chassis/steerWheelMinimumPower");
-                configsToTune.add("chassis/steerWheelFeedForwardTime");
-                configsToTune.add("chassis/steerCorrectionPowerRateAtZeroWheelSpeed");
-                configsToTune.add("chassis/steerCorrectionPowerFullWheelSpeed");
+//                configsToTune.add("chassis/steerWheelErrorTolerance");
+//                configsToTune.add("chassis/steerWheelErrorStartDecelerate");
+//                configsToTune.add("chassis/steerWheelMaximumPower");
+//                configsToTune.add("chassis/steerWheelMinimumPower");
+//                configsToTune.add("chassis/steerWheelFeedForwardTime");
+//                configsToTune.add("chassis/steerCorrectionPowerRateAtZeroWheelSpeed");
+//                configsToTune.add("chassis/steerCorrectionPowerFullWheelSpeed");
         }
 
         /**

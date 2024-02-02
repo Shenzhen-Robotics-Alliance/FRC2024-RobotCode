@@ -33,7 +33,7 @@ public class SwerveWheelPositionEstimator extends RobotModuleBase implements Pos
 
     @Override
     public void init() {
-        this.reset();
+        onReset();
     }
 
     @Override
@@ -56,7 +56,7 @@ public class SwerveWheelPositionEstimator extends RobotModuleBase implements Pos
     }
 
     @Override
-    public void resetModule() {
+    public void onReset() {
         this.resetRobotPosition();
         this.resetRobotRotation();
         for (int wheelID = 0; wheelID < swerveWheels.length; wheelID++) {

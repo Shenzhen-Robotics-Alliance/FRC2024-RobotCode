@@ -3,7 +3,7 @@ package frc.robot.Drivers.Motors;
 import frc.robot.Modules.RobotModuleBase;
 
 public interface Motor {
-    public static enum ZeroPowerBehavior {
+     enum ZeroPowerBehavior {
         BRAKE,
         RELAX
     }
