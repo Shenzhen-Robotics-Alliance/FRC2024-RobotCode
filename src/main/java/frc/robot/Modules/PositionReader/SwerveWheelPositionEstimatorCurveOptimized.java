@@ -14,7 +14,7 @@ public class SwerveWheelPositionEstimatorCurveOptimized extends SwerveWheelPosit
      * @param swerveWheels
      * @param gyro
      */
-    public SwerveWheelPositionEstimatorCurveOptimized(SwerveWheel[] swerveWheels, SimpleGyro gyro) {
+    public SwerveWheelPositionEstimatorCurveOptimized(SwerveWheel[] swerveWheels, SimpleGyro gyro) {//优化曲线估计？
         super(swerveWheels, gyro);
     }
 

@@ -25,27 +25,27 @@ public class RobotShell extends TimedRobot {
     /** called once when the robot powers on */
     @Override
     public void robotInit() {
-        // System.out.println("<-- Robot Shell | robot init -->");
-        robotCore = new RobotCore("fasterChassis");
+        System.out.println("<-- Robot Shell | robot init -->");
+        robotCore = new RobotCore("6706");
     }
 
     /** called once when the driver station first connects to the robot */
     @Override
     public void driverStationConnected() {
-        // System.out.println("<-- Robot Shell | driver station connected -->");
+        System.out.println("<-- Robot Shell | driver station connected -->");
         robotCore.initializeRobot();
     }
 
     /** called repeatedly after the robot powers on, no matter enabled or not */
     @Override
     public void robotPeriodic() {
-        // System.out.println("<-- Robot Shell | robot periodic -->");
+        System.out.println("<-- Robot Shell | robot periodic -->");
     }
 
     /** called once when auto is selected and enable button is hit */
     @Override
     public void autonomousInit() {
-        // System.out.println("<-- Robot Shell | autonomous init -->");
+        System.out.println("<-- Robot Shell | autonomous init -->");
         startAutoStage(new AprilTagCameraAutomaticMeasuring(
                 robotCore.aprilTagDetectionAppClient,
                 4,
@@ -59,25 +59,25 @@ public class RobotShell extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
-        // System.out.println("<-- Robot Shell | auto periodic -->");
+        System.out.println("<-- Robot Shell | auto periodic -->");
         robotCore.updateRobot();
     }
 
     @Override
     public void teleopInit() {
-        // System.out.println("<-- Robot Shell | teleop init -->");
+        System.out.println("<-- Robot Shell | teleop init -->");
         startManualStage();
     }
 
     @Override
     public void teleopPeriodic() {
-        // System.out.println("<-- Robot Shell | teleop periodic -->");
+        System.out.println("<-- Robot Shell | teleop periodic -->");
         robotCore.updateRobot();
     }
 
     @Override
     public void disabledInit() {
-        // System.out.println("<-- Robot Shell | disable init -->");
+        System.out.println("<-- Robot Shell | disable init -->");
         stopStage();
         if (robotTest != null)
             robotTest.testEnd();
@@ -85,14 +85,14 @@ public class RobotShell extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-        // System.out.println("<-- Robot Shell | disabled periodic -->");
+        System.out.println("<-- Robot Shell | disabled periodic -->");
         // TODO if the robot is left unused for a long time, let the motors sing
     }
 
     private SimpleRobotTest robotTest = null;
     @Override
     public void testInit() {
-        // System.out.println("<-- Robot Shell | test init -->");
+        System.out.println("<-- Robot Shell | test init -->");
         if (robotTest == null)
             this.robotTest = new CompleteIntakeAndShooterTest();
         robotTest.testStart();
@@ -100,7 +100,7 @@ public class RobotShell extends TimedRobot {
 
     @Override
     public void testPeriodic() {
-        // System.out.println("<-- Robot Shell | robot init -->");
+        System.out.println("<-- Robot Shell | robot init -->");
         robotTest.testPeriodic();
     }
 

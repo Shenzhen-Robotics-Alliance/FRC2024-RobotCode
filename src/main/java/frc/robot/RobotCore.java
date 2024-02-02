@@ -43,11 +43,11 @@ import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
  * */
 public class RobotCore {
         public final RobotConfigReader robotConfig;
-        public final SwerveWheel frontLeftWheel, backLeftWheel, frontRightWheel, backRightWheel;
-        public final SimpleGyro gyro;
-        public final SwerveWheelPositionEstimator positionReader;
-        public final SwerveBasedChassis chassisModule;
-        public final JetsonDetectionAppClient aprilTagDetectionAppClient;
+        public final SwerveWheel frontLeftWheel, backLeftWheel, frontRightWheel, backRightWheel;//四驱
+        public final SimpleGyro gyro;//陀螺仪
+        public final SwerveWheelPositionEstimator positionReader;//舵轮定位
+        public final SwerveBasedChassis chassisModule;//底盘的整体module
+        public final JetsonDetectionAppClient aprilTagDetectionAppClient;//vision
         public final TargetFieldPositionTracker aprilTagPositionTrackingCamera;
 
         public final TransformableArm transformableArm;
@@ -76,7 +76,7 @@ public class RobotCore {
                 services = new ArrayList<>();
 
                 robotConfig = new RobotConfigReader(configName);
-
+                //初始化四个轮子,加入module类中
                 frontLeftWheel = createSwerveWheel("frontLeft", 1, new Vector2D(new double[] { -0.6, 0.6 }));
                 modules.add(frontLeftWheel);
 
@@ -88,18 +88,18 @@ public class RobotCore {
 
                 backRightWheel = createSwerveWheel("backRight", 4, new Vector2D(new double[] { 0.6, -0.6 }));
                 modules.add(backRightWheel);
-
+                // initialize gyro
                 this.gyro = new SimpleGyro(0, false, new PigeonsIMU((int) robotConfig.getConfig("hardware/gyroPort")));
 
                 final SwerveWheel[] swerveWheels = new SwerveWheel[] {frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel};
-                positionReader = new SwerveWheelPositionEstimator(swerveWheels, gyro);
+                positionReader = new SwerveWheelPositionEstimator(swerveWheels, gyro);// read ciurrent position
                 modules.add(positionReader);
 
-                SwerveWheelPositionEstimatorCurveOptimized testPositionEstimator = new SwerveWheelPositionEstimatorCurveOptimized(swerveWheels, gyro);
+                SwerveWheelPositionEstimatorCurveOptimized testPositionEstimator = new SwerveWheelPositionEstimatorCurveOptimized(swerveWheels, gyro);//?
                 modules.add(testPositionEstimator);
 
                 this.chassisModule = new SwerveBasedChassis(swerveWheels, gyro, robotConfig, positionReader);
-                modules.add(chassisModule);
+                modules.add(chassisModule);// the whole chassis as a module, used to?
 
                 aprilTagDetectionAppClient = new JetsonDetectionAppClient("AprilTagDetector", "10.55.16.109", 8888);
                 final double[] targetHeights = new double[] {130, 130, 130, 130, 130, 130};
@@ -153,7 +153,7 @@ public class RobotCore {
                 );
         }
 
-        private SwerveWheel createSwerveWheelOnCanivore(String name, int id, Vector2D wheelInstallationPosition) {
+        private SwerveWheel createSwerveWheelOnCanivore(String name, int id, Vector2D wheelInstallationPosition) {//can bus的额外拓展板
                 return new SwerveWheel(
                         new TalonFXMotor(new TalonFX( (int) robotConfig.getConfig("hardware/"+name+"WheelDriveMotor"), "ChassisCanivore")),
                         new TalonFXMotor(new TalonFX( (int) robotConfig.getConfig("hardware/"+name+"WheelSteerMotor"), "ChassisCanivore"), robotConfig.getConfig("hardware/"+name+"WheelSteerMotorReversed") == 1),
@@ -191,7 +191,7 @@ public class RobotCore {
                 System.out.println("<-- Robot | robot initialized -->");
         }
 
-        private void addConfigsToTune() {
+        private void addConfigsToTune() {//?
                 /* feed forward controller */
 //                configsToTune.add("chassis/driveWheelFeedForwardRate");
 //                configsToTune.add("chassis/driveWheelFrictionDefaultValue");
@@ -259,7 +259,7 @@ public class RobotCore {
         /**
          * called when the robot is enabled
          * */
-        private long t = System.currentTimeMillis();
+        private long t = System.currentTimeMillis();// currentTimeMills?
         public void updateRobot() {
                 for (RobotServiceBase service: services)
                         service.periodic();
@@ -274,18 +274,18 @@ public class RobotCore {
                 robotConfig.updateTuningConfigsFromDashboard();
 
                 /* monitor the program's performance */
-                SmartDashboard.putNumber("robot main thread rate", 1000/(System.currentTimeMillis()-t));
+                SmartDashboard.putNumber("robot main thread rate", 1000/(System.currentTimeMillis()-t));// smart dashboard 是历史的调试软件，System.currentTimeMillis()-t求出经过的时间
                 t = System.currentTimeMillis();
         }
 
-        private void printChassisDebugMessagesToDashboard() {
+        private void printChassisDebugMessagesToDashboard() {//调试
                 SmartDashboard.putNumber("robot x", positionReader.getRobotPosition2D().getValue()[0]);
                 SmartDashboard.putNumber("robot y", positionReader.getRobotPosition2D().getValue()[1]);
                 SmartDashboard.putNumber("velocity x", positionReader.getRobotVelocity2D().getValue()[0]);
                 SmartDashboard.putNumber("velocity y", positionReader.getRobotVelocity2D().getValue()[1]);
         }
 
-        private void printAprilTagCameraResultsToDashboard() {
+        private void printAprilTagCameraResultsToDashboard() {//调试
                 if (aprilTagPositionTrackingCamera == null) return;
                 aprilTagPositionTrackingCamera.update(new Vector2D(), new Rotation2D(0));
                 final int targetID = 4;

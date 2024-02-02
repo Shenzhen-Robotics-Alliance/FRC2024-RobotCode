@@ -30,7 +30,7 @@ public class PilotChassis extends RobotServiceBase {
     private final SendableChooser<SwerveBasedChassis.WheelOutputMode> wheelOutputModeChooser = new SendableChooser<>();
     private final SwerveBasedChassis.WheelOutputMode defaultSpeedOutputMode = SwerveBasedChassis.WheelOutputMode.PERCENT_POWER;
 
-    private enum ControllerType {
+    private enum ControllerType {// several controller that used
         RM_BOXER,
         RM_POCKET,
         JOYSTICK,
