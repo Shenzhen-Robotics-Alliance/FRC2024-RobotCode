@@ -1,5 +1,6 @@
 package frc.robot.Services;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,8 +12,12 @@ import frc.robot.Modules.UpperStructure.TransformableArm;
 import frc.robot.Utils.ComputerVisionUtils.AprilTagReferredTarget;
 import frc.robot.Utils.MathUtils.AngleUtils;
 import frc.robot.Utils.MathUtils.BezierCurve;
+import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.RobotConfigReader;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * based on the pilot chassis, we add auto-aiming, shoot and intake functions in this service
@@ -53,28 +58,44 @@ public class VisionAidedPilotChassis extends PilotChassis {
     private final Shooter shooter;
     private final Intake intake;
     private final TransformableArm arm;
-    private final TargetFieldPositionTracker noteTracker;
-    private final AprilTagReferredTarget speakerTarget, amplifierTarget;
+    private final AprilTagReferredTarget speakerTarget, amplifierTarget, noteTarget;
     private final XboxController copilotGamePad;
+    private final DriverStation.Alliance alliance;
+
+
 
     /**
      * @param chassis
      * @param shooter
      * @param intake
      * @param arm
-     * @param speakerTarget
-     * @param amplifierTarget
+     * @param aprilTagTracker
      * @param noteTracker
+     * @param copilotGamePad
      * @param robotConfig
      */
-    public VisionAidedPilotChassis(SwerveBasedChassis chassis, Shooter shooter, Intake intake, TransformableArm arm, AprilTagReferredTarget speakerTarget, AprilTagReferredTarget amplifierTarget, TargetFieldPositionTracker noteTracker, XboxController copilotGamePad, RobotConfigReader robotConfig) {
+    public VisionAidedPilotChassis(SwerveBasedChassis chassis, Shooter shooter, Intake intake, TransformableArm arm, TargetFieldPositionTracker aprilTagTracker, TargetFieldPositionTracker noteTracker, XboxController copilotGamePad, RobotConfigReader robotConfig) {
         super(chassis, robotConfig);
         this.shooter = shooter;
         this.intake = intake;
         this.arm = arm;
-        this.speakerTarget = speakerTarget;
-        this.amplifierTarget = amplifierTarget;
-        this.noteTracker = noteTracker;
+
+        /* TODO: the following into robot config */
+        final Map<Integer, Vector2D> speakerTargetAprilTagReferences = new HashMap<>(), amplifierTargetAprilTagReferences = new HashMap<>(), noteTargetReferences = new HashMap<>();
+        this.alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Red); // default to red
+        if (alliance == DriverStation.Alliance.Red) {
+            speakerTargetAprilTagReferences.put(4, new Vector2D(new double[] {0,0}));
+            speakerTargetAprilTagReferences.put(3, new Vector2D(new double[] {0.565,0}));
+            amplifierTargetAprilTagReferences.put(5, new Vector2D(new double[] {0, 0}));
+        } else {
+            speakerTargetAprilTagReferences.put(7, new Vector2D(new double[] {0,0}));
+            speakerTargetAprilTagReferences.put(8, new Vector2D(new double[] {-0.565,0}));
+            amplifierTargetAprilTagReferences.put(6, new Vector2D(new double[] {0, 0}));
+        }
+        noteTargetReferences.put(0, new Vector2D()); // the id of note is always 0, and the note is itself the reference so the relative position is (0,0)
+        this.speakerTarget = new AprilTagReferredTarget(aprilTagTracker, speakerTargetAprilTagReferences);
+        this.amplifierTarget = new AprilTagReferredTarget(aprilTagTracker, amplifierTargetAprilTagReferences);
+        this.noteTarget = new AprilTagReferredTarget(noteTracker, noteTargetReferences); // we call it april tag referred target but it is actually recognized by detect-net app
         this.copilotGamePad = copilotGamePad;
     }
 
@@ -96,10 +117,14 @@ public class VisionAidedPilotChassis extends PilotChassis {
     }
 
 
+    /** the robot's position when the current task started, 0.4 seconds in advance of the current chassis position (predicted by velocity) */
     private Vector2D chassisPositionWhenCurrentVisionTaskStarted;
+    /** the position of the current target, when it is last seen, this is always updated when a visual task started and is updated during the task process whenever target is seen */
+    private Vector2D currentVisualTargetLastSeenPosition;
     /** only calculated once when the task is initiated */
     private double currentVisionTaskETA;
     private long timeTaskStartedMillis;
+    /** whether the launch process is already running, reset to false at the start of a task */
     private boolean launchStartedInCurrentTask;
     @Override
     public void periodic() {
@@ -127,26 +152,30 @@ public class VisionAidedPilotChassis extends PilotChassis {
                             this);
             }
             case SEARCHING_FOR_SHOOT_TARGET -> {
+                updateChassisPositionWhenTaskStarted();
+
                 shooter.setShooterMode(Shooter.ShooterMode.SHOOT, this);
                 arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, this);
                 intake.turnOffIntake(this);
 
                 if (!pilotController.keyOnHold(translationAutoPilotButton))
                     currentStatus = Status.MANUALLY_DRIVING;
-                else if (currentAimingTarget.getTargetFieldPositionWithVisibleAprilTags() != null)
+                else if (currentAimingTarget.isVisible())
                     switch (currentAimingTargetClass) {
                         case SPEAKER -> initiateGoToSpeakerTargetProcess();
                         case AMPLIFIER -> initiateGoToAmplifierProcess();
                     }
             }
             case SEARCHING_FOR_NOTE -> {
+                updateChassisPositionWhenTaskStarted();
+
                 shooter.setShooterMode(Shooter.ShooterMode.DISABLED, this);
                 arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE_STANDBY, this);
                 intake.turnOffIntake(this);
 
                 if (!pilotController.keyOnHold(translationAutoPilotButton))
                     currentStatus = Status.MANUALLY_DRIVING;
-                else if (noteTracker.isTargetVisible(0))
+                else if (noteTarget.isVisible())
                     initiateGrabNoteProcess();
             }
             case REACHING_TO_SHOOT_TARGET -> {
@@ -156,21 +185,12 @@ public class VisionAidedPilotChassis extends PilotChassis {
                     case AMPLIFIER -> proceedGoToAmplifierTarget(translationAutoPilotButton);
                 }
             }
-            case GRABBING_NOTE -> {
-                shooter.setShooterMode(Shooter.ShooterMode.DISABLED, this);
-                arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, this);
-
-                final double timeSinceTaskStarted = (System.currentTimeMillis() - timeTaskStartedMillis) / 1000.0;
-                final BezierCurve currentPath = getPathToNoteTarget();
-                chassis.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION,
-                        currentPath.getPositionWithLERP(timeSinceTaskStarted / currentVisionTaskETA)), this);
-                chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
-                        getNoteRotation()), this);
-
-                if (!pilotController.keyOnHold(translationAutoPilotButton) || intake.isNoteInsideIntake())
-                    currentStatus = Status.MANUALLY_DRIVING;
-            }
+            case GRABBING_NOTE -> proceedGrabNoteProcess(translationAutoPilotButton);
         }
+    }
+
+    private void updateChassisPositionWhenTaskStarted() {
+        chassisPositionWhenCurrentVisionTaskStarted = chassis.positionEstimator.getRobotPosition2D().addBy(chassis.positionEstimator.getRobotVelocity2D().multiplyBy(chassisReactionDelay));
     }
 
     /**
@@ -181,7 +201,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         if (targetPosition2D == null)
             return switch (currentAimingTargetClass) {
                 case SPEAKER -> speakerDefaultRotation;
-                case AMPLIFIER -> amplifierDefaultRotation;
+                case AMPLIFIER -> amplifyingDefaultFacing;
             };
         return Vector2D.displacementToTarget(chassis.positionEstimator.getRobotPosition2D(), targetPosition2D).getHeading() - Math.toRadians(90);
     }
@@ -192,12 +212,13 @@ public class VisionAidedPilotChassis extends PilotChassis {
     private double getNoteRotation() {
         final int pov = copilotGamePad.getPOV();
         if (pov == -1)
-            return noteDefaultRotation;
+            return grabbingNoteDefaultFacing;
         return AngleUtils.simplifyAngle(Math.toRadians(pov + 180));
     }
 
     private void initiateGoToSpeakerTargetProcess() {
-        chassisPositionWhenCurrentVisionTaskStarted = chassis.positionEstimator.getRobotPosition2D();
+        if (updateTargetPositionIfSeen(speakerTarget)) return; // failed when unseen
+
         currentStatus = Status.REACHING_TO_SHOOT_TARGET;
         final double length = getPathToSpeakerTarget().getLength(10);
         currentVisionTaskETA = length / chassisSpeedLimitWhenAutoAim;
@@ -208,6 +229,9 @@ public class VisionAidedPilotChassis extends PilotChassis {
     private void proceedGoToSpeakerTarget(int translationAutoPilotButton) {
         shooter.setShooterMode(Shooter.ShooterMode.SHOOT, this);
         arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, this);
+
+        /* if seen, update the position */
+        updateTargetPositionIfSeen(speakerTarget);
 
         final double timeSinceTaskStarted = (System.currentTimeMillis() - timeTaskStartedMillis) / 1000.0;
         final BezierCurve currentPath = getPathToSpeakerTarget();
@@ -226,10 +250,29 @@ public class VisionAidedPilotChassis extends PilotChassis {
     }
 
     private BezierCurve getPathToSpeakerTarget() {
-        return new BezierCurve(new Vector2D(), new Vector2D()); // TODO finish this logic
+        final boolean pilotSpecifyingShootingProcessEndPoint = pilotController.getTranslationalStickValue().getMagnitude() > 0.4; // only when significant movement
+        final Vector2D
+                /* the position of the ending point of the path of the shooting task, relative to the shooting sweet-spot  */
+                shootingProcessEndPointFromSweetSpotDeviation = pilotSpecifyingShootingProcessEndPoint ?
+                pilotController.getTranslationalStickValue().multiplyBy(shootingProcessEndingPointUpdatableRange) :
+                defaultShootProcessEndingPoint,
+                /* the position of the ending point of the path of the shooting task, relative to the speaker  */
+                shootingProcessEndPoint = shootingSweetSpot.addBy(shootingProcessEndPointFromSweetSpotDeviation),
+                /* the middle point of the path, relative to the shooting sweet-spot  */
+                shootingProcessAnotherPoint = shootingSweetSpot.addBy(shootingProcessEndPointFromSweetSpotDeviation.multiplyBy(-1)),
+                shootingProcessEndPointFieldPosition = shootingProcessEndPoint.addBy(currentVisualTargetLastSeenPosition),
+                shootingProcessAnotherPointFieldPosition = shootingProcessAnotherPoint.addBy(currentVisualTargetLastSeenPosition);
+
+        return new BezierCurve(
+                chassisPositionWhenCurrentVisionTaskStarted, // starting from the chassis initial position during task
+                shootingProcessAnotherPointFieldPosition, // middle point is the another point
+                shootingProcessEndPointFieldPosition
+        );
     }
 
     private void initiateGoToAmplifierProcess() {
+        if (!updateTargetPositionIfSeen(amplifierTarget)) return; // failed if unseen
+
         launchStartedInCurrentTask = false;
         currentStatus = Status.REACHING_TO_SHOOT_TARGET;
     }
@@ -238,8 +281,12 @@ public class VisionAidedPilotChassis extends PilotChassis {
         shooter.setShooterMode(Shooter.ShooterMode.AMPLIFY, this);
         arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SCORE_AMPLIFIER, this);
 
+        /* if seen, update the position */
+        updateTargetPositionIfSeen(amplifierTarget);
+
+        /* pass the target position to chassis */
         chassis.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION,
-                new Vector2D()), this); // TODO figure out the position to go
+                currentVisualTargetLastSeenPosition.addBy(amplifyingPositionToAmplifier)), this);
         chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
                 getAprilTagTargetRotation(VisionTargetClass.AMPLIFIER, amplifierTarget)), this);
 
@@ -253,6 +300,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
     }
 
     private void initiateGrabNoteProcess() {
+        if (!updateTargetPositionIfSeen(noteTarget)) return; // fails if note not seen
+
         chassisPositionWhenCurrentVisionTaskStarted = chassis.positionEstimator.getRobotPosition2D();
         currentStatus = Status.GRABBING_NOTE;
         final double length = getPathToNoteTarget().getLength(10);
@@ -261,19 +310,97 @@ public class VisionAidedPilotChassis extends PilotChassis {
         timeTaskStartedMillis = System.currentTimeMillis();
     }
 
-    private BezierCurve getPathToNoteTarget() {
-        return new BezierCurve(new Vector2D(), new Vector2D()); // TODO finish this logic
+    private void proceedGrabNoteProcess(int translationAutoPilotButton) {
+        shooter.setShooterMode(Shooter.ShooterMode.DISABLED, this);
+        arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, this);
+
+        /* if seen, update the position */
+        updateTargetPositionIfSeen(noteTarget);
+
+        final double timeSinceTaskStarted = (System.currentTimeMillis() - timeTaskStartedMillis) / 1000.0;
+        final BezierCurve currentPath = getPathToNoteTarget();
+        chassis.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION,
+                currentPath.getPositionWithLERP(timeSinceTaskStarted / currentVisionTaskETA)), this);
+        chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
+                getNoteRotation()), this);
+
+        if (!pilotController.keyOnHold(translationAutoPilotButton) || intake.isNoteInsideIntake())
+            currentStatus = Status.MANUALLY_DRIVING;
     }
 
-    /* TODO put the following to robotConfig */
-    private static final long objectUnseenTimeOut = 1000;
-    private static final double speakerDefaultRotation = 0;
-    private static final double amplifierDefaultRotation = Math.toRadians(90);
-    private static final double noteDefaultRotation = Math.toRadians(90);
-    private static final double chassisSpeedLimitWhenAutoAim = 5; // m/s
+    private BezierCurve getPathToNoteTarget() {
+        // only specify when significant command is sent by the pilot
+        final boolean pilotSpecifyingGrabbingProcessEndPoint = pilotController.getTranslationalStickValue().getMagnitude() > 0.4;
+        final Vector2D
+                /* the position of the ending point of the path of the grabbing task, relative to the note target  */
+                grabbingProcessEndPointFromNoteDeviation =
+                pilotSpecifyingGrabbingProcessEndPoint ?
+                        new Vector2D(pilotController.getTranslationalStickValue().getHeading(), grabbingNoteDistance) :
+                        new Vector2D(new double[] {0, -grabbingNoteDistance}).multiplyBy(new Rotation2D(grabbingNoteDefaultFacing)), // by default, we move backwards in relative to the robot, but we need to convert this to in relative to field by rotating it.
+                /* the position of the ending point of the path of the grabbing task, relative to the speaker */
+                grabbingProcessEndingPoint = currentVisualTargetLastSeenPosition.addBy(grabbingProcessEndPointFromNoteDeviation),
+                grabbingProcessEndingAnotherPoint = currentVisualTargetLastSeenPosition.addBy(grabbingProcessEndPointFromNoteDeviation.multiplyBy(-1));
+
+        return new BezierCurve(
+                chassisPositionWhenCurrentVisionTaskStarted, // starting from the chassis initial position during task
+                grabbingProcessEndingAnotherPoint, // middle point is the another point
+                grabbingProcessEndingPoint
+        );
+    }
+
+    /**
+     * @return whether the position have been updated
+     * */
+    private boolean updateTargetPositionIfSeen(AprilTagReferredTarget target) {
+        if (!target.isVisible())
+            return false;
+        currentVisualTargetLastSeenPosition = target.getTargetFieldPositionWithVisibleAprilTags();
+        return true;
+    }
+
+    private long objectUnseenTimeOut;
+    private double speakerDefaultRotation;
+    private Vector2D amplifyingPositionToAmplifier;
+    /** in radian, zero is front */
+    private double amplifyingDefaultFacing;
+    /** in radian, zero is front */
+    private double grabbingNoteDefaultFacing;
+    /** the amount of distance to travel when intake is sucking the note */
+    private double grabbingNoteDistance;
+    private double chassisSpeedLimitWhenAutoAim; // m/s
+    private Vector2D shootingSweetSpot;
+    /** the pilot can specify the spot of shooting, by this amount of distance away from the sweet spot */
+    private double shootingProcessEndingPointUpdatableRange;
+    /** the default shoot process ending point, in reference to the shooting sweet spot */
+    private Vector2D defaultShootProcessEndingPoint;
+    /** how many seconds does the chassis need to react */
+    private double chassisReactionDelay;
     @Override
     public void updateConfigs() {
         super.updateConfigs();
+
+        /* TODO read from robotConfig */
+        objectUnseenTimeOut = 1000;
+        grabbingNoteDistance = 0.25;
+        speakerDefaultRotation = 0;
+        chassisSpeedLimitWhenAutoAim = 5;
+        shootingSweetSpot = new Vector2D(new double[] {0, -2.5});
+        shootingProcessEndingPointUpdatableRange = 0.5;
+        chassisReactionDelay = 0.4;
+        switch (alliance) {
+            case Red -> {
+                amplifyingPositionToAmplifier = new Vector2D(new double[] {0, -0.4});
+                amplifyingDefaultFacing = Math.toRadians(-90);
+                grabbingNoteDefaultFacing = Math.toRadians(-120);
+                defaultShootProcessEndingPoint = new Vector2D(new double[] {0, -shootingProcessEndingPointUpdatableRange});
+            }
+            case Blue -> {
+                amplifyingPositionToAmplifier = new Vector2D(new double[] {0, 0.4});
+                amplifyingDefaultFacing = Math.toRadians(90);
+                grabbingNoteDefaultFacing = Math.toRadians(120);
+                defaultShootProcessEndingPoint = new Vector2D(new double[] {0, shootingProcessEndingPointUpdatableRange});
+            }
+        }
     }
 
     /**

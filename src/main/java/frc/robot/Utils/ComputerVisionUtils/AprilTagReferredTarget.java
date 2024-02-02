@@ -54,4 +54,8 @@ public class AprilTagReferredTarget {
 
         return targetFieldPosition.multiplyBy(1.0/visibleTargetCount);
     }
+
+    public boolean isVisible() {
+        return getTargetFieldPositionWithVisibleAprilTags() != null;
+    }
 }
