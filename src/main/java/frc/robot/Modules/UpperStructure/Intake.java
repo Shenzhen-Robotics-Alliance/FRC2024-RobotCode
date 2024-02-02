@@ -4,6 +4,7 @@ import frc.robot.Modules.RobotModuleBase;
 import frc.robot.Services.RobotServiceBase;
 
 public abstract class Intake extends RobotModuleBase {
+    // TODO handle the situation when the distance sensor is disconnected
     protected Intake() {
         super("Intake");
     }

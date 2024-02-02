@@ -1,11 +1,13 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.AutoStagePrograms.AprilTagCameraAutomaticMeasuring;
 import frc.robot.AutoStagePrograms.AutoStageProgram;
 import frc.robot.Services.AutoProgramRunner;
 import frc.robot.Services.PilotChassis;
 import frc.robot.Services.RobotServiceBase;
+import frc.robot.Services.TransformableIntakeAndShooterService;
 import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.SequentialCommandSegment;
 import frc.robot.Utils.Tests.*;
@@ -112,8 +114,15 @@ public class RobotShell extends TimedRobot {
 
     private void startManualStage() {
         final List<RobotServiceBase> services = new ArrayList<>();
-        PilotChassis pilotChassis = new PilotChassis(robotCore.chassisModule, robotCore.robotConfig);
+
+        /* pilot chassis */
+        final PilotChassis pilotChassis = new PilotChassis(robotCore.chassisModule, robotCore.robotConfig);
         services.add(pilotChassis);
+
+        /* upper structure */
+        final TransformableIntakeAndShooterService intakeAndShooterService = new TransformableIntakeAndShooterService(robotCore.intake, robotCore.shooter, robotCore.transformableArm, robotCore.robotConfig, new XboxController(1));
+        services.add(intakeAndShooterService);
+
         robotCore.startStage(services);
     }
 

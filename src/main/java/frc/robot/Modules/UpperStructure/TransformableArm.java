@@ -25,8 +25,6 @@ public class TransformableArm extends RobotModuleBase {
     public enum TransformerPosition {
         /** the position of the arm such that the robot is balanced */
         DEFAULT,
-        /** the position where the arm is standing by for intake without touching the ground and can move to intake very fast */
-        INTAKE_STANDBY,
         /** the position at which the intake spinner can touch the ground  */
         INTAKE,
         /** the position where the shooter points at the target, notice that the specific position is determined by the aiming system */
@@ -125,6 +123,7 @@ public class TransformableArm extends RobotModuleBase {
         this.armLifterMechanism.gainOwnerShip(this);
 
         this.armEncoder.setZeroPosition(robotConfig.getConfig("arm", "encoderZeroPositionRadians"));
+        this.armLifterMechanism.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE, this);
         this.armLifterMechanism.setSoftEncoderLimit(Math.toRadians(robotConfig.getConfig("arm", "lowerPositionLimit")), Math.toRadians(robotConfig.getConfig("arm", "upperPositionLimit")));
     }
 

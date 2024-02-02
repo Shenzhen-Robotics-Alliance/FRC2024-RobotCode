@@ -18,8 +18,6 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
         AT_DEFAULT_POSITION,
         /** the transformer is at standby position, and holding a note */
         AT_DEFAULT_POSITION_HOLDING_NOTE,
-        /** the transformer is at intake standby position, which does not hit the floor, waiting for intake command */
-        AT_INTAKE_STANDBY_POSITION,
         /** the transformer is at intake active position, the intake wheels spin to grab the note */
         PROCEEDING_INTAKE,
         /** the transformer is at intake standby position, and the intake is splitting the note out */
@@ -69,8 +67,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
         /* read the xbox input */
         final boolean
                 /** set the current service as the activated  */
-                SET_ACTIVATE_BUTTON = copilotController.getBackButton(), // "back" for manual control, "start" for auto control (in vision aided chassis)
-                MOVE_TO_GRAB_STANDBY_POSITION_BUTTON = copilotController.getAButton(),
+                SET_ACTIVATE_BUTTON = copilotController.getBackButton(), // "back" for manual control, "start" for auto control (in vision aided chassis) TODO replace with a sendable chooser
                 START_GRAB_BUTTON = copilotController.getRightTriggerAxis() > 0.75,
                 CANCEL_GRAB_BUTTON = copilotController.getRightTriggerAxis() < 0.25,
                 START_SPLIT_BUTTON = copilotController.getRightBumper(),
@@ -84,13 +81,13 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                 /* the transformer is at standby position not holding a note */
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
                 intakeModule.turnOffIntake(this);
+                shooterModule.setShooterMode(Shooter.ShooterMode.DISABLED, this);
                 if (START_GRAB_BUTTON)
                     startIntakeProcess();
-                else if (MOVE_TO_GRAB_STANDBY_POSITION_BUTTON)
-                    this.currentStatus = IntakeAndShooterStatus.AT_INTAKE_STANDBY_POSITION;
             }
             case AT_DEFAULT_POSITION_HOLDING_NOTE -> {
                 /* the transformer is at standby position, and holding a note */
+                shooterModule.setShooterMode(Shooter.ShooterMode.DISABLED, this);
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
                 if (!intakeModule.isNoteInsideIntake())
                     this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION;
@@ -101,15 +98,9 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                 else if (START_SPLIT_BUTTON)
                     startSplitProcess();
             }
-            case AT_INTAKE_STANDBY_POSITION -> {
-                /* the transformer is at intake standby position, which does not hit the floor, waiting for intake command */
-                transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE_STANDBY, this);
-                intakeModule.turnOffIntake(this);
-                if (START_GRAB_BUTTON)
-                    startIntakeProcess();
-            }
             case PROCEEDING_INTAKE -> {
                 /* the transformer is at intake active position, the intake is already set to be spinning, so that they can grab the note */
+                shooterModule.setShooterMode(Shooter.ShooterMode.DISABLED, this);
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, this);
                 if (CANCEL_GRAB_BUTTON)
                     cancelIntakeProcess();
@@ -121,9 +112,10 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                 * the transformer is at intake standby position, and the intake is already set to be splitting
                 * the intake module will just split for 0.5s so we just wait for it to finish
                 * */
-                transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE_STANDBY, this);
+                shooterModule.setShooterMode(Shooter.ShooterMode.DISABLED, this);
+                transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
                 if (intakeModule.isCurrentTaskComplete())
-                    this.currentStatus = IntakeAndShooterStatus.AT_INTAKE_STANDBY_POSITION;
+                    this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION;
             }
             case AT_SHOOTING_STANDBY_POSITION_HOLDING_NOTE -> {
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, this);
@@ -137,7 +129,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
             }
             case LAUNCHING_NOTE -> {
                 /* the transformer is at the shooting position and the note is kicker are spinning to launch the note */
-
+                shooterModule.setShooterMode(Shooter.ShooterMode.SHOOT, this);
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, this);
                 if (START_SPLIT_BUTTON)
                     launchProcessFailed();
@@ -158,7 +150,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
             case SPLITTING_TO_AMPLIFIER -> {
                 /* the transformer is at amplifier position and is splitting the note */
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SCORE_AMPLIFIER, this);
-
+                shooterModule.setShooterMode(Shooter.ShooterMode.AMPLIFY, this);
                 if (START_SPLIT_BUTTON)
                     launchProcessFailed();
                 if (intakeModule.isCurrentTaskComplete())
@@ -183,7 +175,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
 
     private void cancelIntakeProcess() {
         intakeModule.turnOffIntake(this);
-        this.currentStatus = IntakeAndShooterStatus.AT_INTAKE_STANDBY_POSITION;
+        this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION;
     }
 
     private void startLaunchProcess() {

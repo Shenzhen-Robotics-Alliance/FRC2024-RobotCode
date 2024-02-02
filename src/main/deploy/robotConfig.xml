@@ -113,10 +113,13 @@
         <shooter2Reversed>0</shooter2Reversed>
     </shooter>
     <intake>
-        <launchPower>0.75</launchPower>
-        <intakePower>0.65</intakePower>
-        <revertPower>-0.65</revertPower>
-        <distanceSensorThreshold>24</distanceSensorThreshold>
+<!--        <launchPower>0.75</launchPower>-->
+<!--        <intakePower>0.65</intakePower>-->
+<!--        <revertPower>-0.65</revertPower>-->
+        <launchPower>0.35</launchPower>
+        <intakePower>0.25</intakePower>
+        <revertPower>-0.25</revertPower>
+        <distanceSensorThreshold>22</distanceSensorThreshold>
         <splitTime>0.5</splitTime>
     </intake>
     <arm>
@@ -139,7 +142,7 @@
         <encoderZeroPositionRadians>6</encoderZeroPositionRadians>
 
         <!-- software limit -->
-        <lowerPositionLimit>0</lowerPositionLimit>
+        <lowerPositionLimit>5</lowerPositionLimit>
         <upperPositionLimit>98</upperPositionLimit>
         <!-- lookup table -->
         <encoderPosition0>0</encoderPosition0>
@@ -152,10 +155,9 @@
         <gravityTorque3>0</gravityTorque3>
         <!-- arm positions -->
         <position-DEFAULT>60</position-DEFAULT>
-        <position-INTAKE_STANDBY>78</position-INTAKE_STANDBY>
         <position-INTAKE>96</position-INTAKE>
         <position-SHOOT_NOTE>75</position-SHOOT_NOTE>
-        <position-SCORE_AMPLIFIER>0</position-SCORE_AMPLIFIER>
+        <position-SCORE_AMPLIFIER>15</position-SCORE_AMPLIFIER>
     </arm>
 
     <auto>

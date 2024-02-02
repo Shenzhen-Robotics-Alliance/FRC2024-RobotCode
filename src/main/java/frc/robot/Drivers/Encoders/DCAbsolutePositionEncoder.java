@@ -10,6 +10,7 @@ import frc.robot.Utils.MathUtils.AngleUtils;
  *  1.
  * */
 public class DCAbsolutePositionEncoder implements Encoder {
+    // TODO here, we need to make limit switches react to the condition when the encoder is unavailable
     private final DutyCycleEncoder dutyCycleEncoder;
     private final double encoderFactor;
     private double zeroPosition;
@@ -59,8 +60,9 @@ public class DCAbsolutePositionEncoder implements Encoder {
     private final Timer dt = new Timer();
     @Override
     public double getEncoderVelocity() {
-        final double velocity = (dutyCycleEncoder.getDistance() - previousDistance) / dt.get();
-        dt.reset();
+        final double currentDistance = dutyCycleEncoder.getAbsolutePosition(),
+                velocity = (currentDistance - previousDistance) / dt.get();
+        dt.reset(); previousDistance = currentDistance;
         return velocity * encoderFactor;
     }
 

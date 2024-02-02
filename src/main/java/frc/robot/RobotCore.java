@@ -6,10 +6,15 @@ import java.util.List;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.CANcoder;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Drivers.DistanceSensors.Rev2mDistanceSensorEncapsulation;
 import frc.robot.Drivers.Encoders.CanCoder;
+import frc.robot.Drivers.Encoders.DCAbsolutePositionEncoder;
 import frc.robot.Drivers.IMUs.PigeonsIMU;
 import frc.robot.Drivers.IMUs.SimpleGyro;
+import frc.robot.Drivers.Motors.Motor;
+import frc.robot.Drivers.Motors.MotorsSet;
 import frc.robot.Drivers.Motors.TalonFXMotor;
 import frc.robot.Drivers.Visions.FixedAnglePositionTrackingCamera;
 import frc.robot.Drivers.Visions.JetsonDetectionAppClient;
@@ -19,11 +24,17 @@ import frc.robot.Modules.PositionReader.SwerveWheelPositionEstimatorCurveOptimiz
 import frc.robot.Modules.RobotModuleBase;
 import frc.robot.Modules.Chassis.SwerveBasedChassis;
 import frc.robot.Modules.Chassis.SwerveWheel;
+import frc.robot.Modules.UpperStructure.Intake;
+import frc.robot.Modules.UpperStructure.IntakeWithDistanceSensor;
+import frc.robot.Modules.UpperStructure.Shooter;
+import frc.robot.Modules.UpperStructure.TransformableArm;
 import frc.robot.Services.RobotServiceBase;
+import frc.robot.Services.TransformableIntakeAndShooterService;
 import frc.robot.Utils.*;
 import frc.robot.Utils.ComputerVisionUtils.FixedAngleCameraProfile;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
+import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 
 /**
  *
@@ -38,6 +49,11 @@ public class RobotCore {
         public final SwerveBasedChassis chassisModule;
         public final JetsonDetectionAppClient aprilTagDetectionAppClient;
         public final TargetFieldPositionTracker aprilTagPositionTrackingCamera;
+
+        public final TransformableArm transformableArm;
+        public final Intake intake;
+        public final Shooter shooter;
+
         private final List<String> configsToTune = new ArrayList<>(1);
         private final List<RobotModuleBase> modules;
         private List<RobotServiceBase> services;
@@ -96,6 +112,27 @@ public class RobotCore {
                         ),
                         targetHeights
                 );
+
+                final TalonFXMotor armMotor = new TalonFXMotor(new TalonFX(25) ,false);
+                final DCAbsolutePositionEncoder armEncoder = new DCAbsolutePositionEncoder(1, false);
+                this.transformableArm = new TransformableArm(armMotor, armEncoder, robotConfig); modules.add(transformableArm);
+                final MotorsSet intakeMotors = new MotorsSet(
+                        new Motor[] {
+                                new TalonFXMotor(new TalonFX(13), true),
+                                new TalonFXMotor(new TalonFX(14), true)
+                        });
+                this.intake = new IntakeWithDistanceSensor(intakeMotors, new Rev2mDistanceSensorEncapsulation(), robotConfig); modules.add(intake);
+                final EncoderMotorMechanism[] shooterMechanisms = new EncoderMotorMechanism[] {
+                        new TalonFXMotor(
+                                new TalonFX((int)robotConfig.getConfig("shooter/shooter1Port")),
+                                robotConfig.getConfig("shooter/shooter1Reversed") != 0
+                        ).toEncoderAndMotorMechanism(),
+                        new TalonFXMotor(
+                                new TalonFX((int)robotConfig.getConfig("shooter/shooter2Port")),
+                                robotConfig.getConfig("shooter/shooter2Reversed") != 0
+                        ).toEncoderAndMotorMechanism()
+                };
+                this.shooter = new Shooter(shooterMechanisms, robotConfig); modules.add(shooter);
         }
 
         private SwerveWheel createSwerveWheel(String name, int id, Vector2D wheelInstallationPosition) {
