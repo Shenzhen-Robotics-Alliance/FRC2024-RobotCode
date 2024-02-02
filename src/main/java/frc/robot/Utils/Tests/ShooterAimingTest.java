@@ -7,16 +7,21 @@ import frc.robot.Drivers.DistanceSensors.Rev2mDistanceSensorEncapsulation;
 import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Drivers.Motors.MotorsSet;
 import frc.robot.Drivers.Motors.TalonFXMotor;
+import frc.robot.Drivers.Visions.FixedAnglePositionTrackingCamera;
+import frc.robot.Drivers.Visions.JetsonDetectionAppClient;
+import frc.robot.Drivers.Visions.TargetFieldPositionTracker;
 import frc.robot.Modules.UpperStructure.Intake;
 import frc.robot.Modules.UpperStructure.IntakeWithDistanceSensor;
 import frc.robot.Modules.UpperStructure.Shooter;
 import frc.robot.Modules.UpperStructure.TransformableArm;
+import frc.robot.Utils.ComputerVisionUtils.FixedAngleCameraProfile;
 import frc.robot.Utils.EasyShuffleBoard;
+import frc.robot.Utils.MathUtils.Rotation2D;
+import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 import frc.robot.Utils.RobotConfigReader;
 
 public class ShooterAimingTest implements SimpleRobotTest {
-    // TODO vision have to be here
     final TalonFXMotor armMotor = new TalonFXMotor(new TalonFX(25));
     final RobotConfigReader robotConfig = new RobotConfigReader();
     final TransformableArm transformableArm = new TransformableArm(armMotor, armMotor, robotConfig);
@@ -39,6 +44,16 @@ public class ShooterAimingTest implements SimpleRobotTest {
     final Shooter shooter = new Shooter(shooterMechanisms, robotConfig);
 
     final XboxController xboxController = new XboxController(1);
+    final JetsonDetectionAppClient aprilTagDetectionAppClient = new JetsonDetectionAppClient("AprilTagDetector", "10.55.16.109", 8888);
+    final double[] targetHeights = new double[] {130, 130, 130, 130, 130, 130};
+    final FixedAnglePositionTrackingCamera aprilTagPositionTrackingCamera = new FixedAnglePositionTrackingCamera(
+            aprilTagDetectionAppClient,
+            new FixedAngleCameraProfile(
+                    0.37725,
+                    -0.00284,
+                    -0.00203)
+            , targetHeights
+    );
     @Override
     public void testStart() {
         shooter.init();
@@ -47,6 +62,7 @@ public class ShooterAimingTest implements SimpleRobotTest {
         shootingPosition = 0;
         shooterRPM = 1200;
         dt.start();
+        aprilTagDetectionAppClient.startRecognizing();
     }
 
 
@@ -85,5 +101,26 @@ public class ShooterAimingTest implements SimpleRobotTest {
         EasyShuffleBoard.putNumber("aiming", "desiredShooterRPM (Press Start to confirm)", shooterRPM);
         EasyShuffleBoard.putNumber("aiming", "desiredArmPosition (Press Start to confirm)", shootingPosition);
         dt.reset();
+
+        printAprilTagCameraResultsToDashboard();
+    }
+
+    private void printAprilTagCameraResultsToDashboard() {
+        aprilTagPositionTrackingCamera.update(new Vector2D(), new Rotation2D(0));
+        final int targetID = 4;
+        final TargetFieldPositionTracker.TargetOnField target;
+        final double x,y,dis,hdg;
+        if ((target = aprilTagPositionTrackingCamera.getVisibleTargetByID(targetID)) == null)
+            x = y = dis = hdg = -1;
+        else {
+            x = target.fieldPosition.getX() * 100;
+            y = target.fieldPosition.getY() * 100;
+            dis = target.fieldPosition.getMagnitude() * 100;
+            hdg = Math.toDegrees(target.fieldPosition.getHeading()) - 90;
+        }
+        EasyShuffleBoard.putNumber("apriltag", "target relative position to camera X (CM)", x);
+        EasyShuffleBoard.putNumber("apriltag", "target relative position to camera Y (CM)", y);
+        EasyShuffleBoard.putNumber("apriltag", "target distance from camera (CM)", dis);
+        EasyShuffleBoard.putNumber("apriltag", "target Ang From Center Line (DEG)", hdg);
     }
 }
