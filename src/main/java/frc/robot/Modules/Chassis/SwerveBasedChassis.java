@@ -75,8 +75,9 @@ public class SwerveBasedChassis extends RobotModuleBase {
 
     @Override
     protected void periodic(double dt) {
+        // System.out.println("<-- SwerveBasedChassis | periodic -->");
         Vector2D processedTranslationalSpeed = processTranslationalMotion(dt);
-        // SmartDashboard.putNumber("decided vel(x)", processedTranslationalSpeed.getValue()[0]);
+        SmartDashboard.putNumber("decided vel(x)", processedTranslationalSpeed.getValue()[0]);
         double rotationalSpeed = processRotationalMotion(dt);
 
 

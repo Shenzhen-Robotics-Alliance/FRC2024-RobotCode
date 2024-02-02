@@ -12,7 +12,7 @@ import java.util.HashMap;
  * @author Sam
  * @version 0.1
  */
-public abstract class RobotServiceBase extends RobotModuleOperatorMarker {
+public abstract class RobotServiceBase extends RobotModuleOperatorMarker {// all those function are used to override
     /** the name of the service */
     public String serviceName;
 

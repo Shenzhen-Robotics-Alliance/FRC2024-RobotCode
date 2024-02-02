@@ -119,7 +119,7 @@ public class SwerveWheel extends RobotModuleBase {
     }
 
     @Override
-    public void init() {
+    public void init() {// every function that has different usage all override the init function
         /* calibrate the steer encoder */
         this.steerEncoder.setZeroPosition(motorEncoderBias);
         reset();
