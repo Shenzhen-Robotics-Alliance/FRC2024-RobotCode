@@ -4,6 +4,7 @@ import frc.robot.Drivers.Encoders.Encoder;
 import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Modules.RobotModuleBase;
 import frc.robot.Services.RobotServiceBase;
+import frc.robot.Utils.EasyShuffleBoard;
 import frc.robot.Utils.MathUtils.LookUpTable;
 import frc.robot.Utils.MathUtils.StatisticsUtils;
 import frc.robot.Utils.MechanismControllers.ArmGravityController;
@@ -48,7 +49,7 @@ public class TransformableArm extends RobotModuleBase {
      * @param robotConfig the config xml file
      */
     public TransformableArm(Motor armLifterMotor, Encoder armEncoder, Shooter shooterModule, RobotConfigReader robotConfig) {
-        super("Transformable-Intake");
+        super("Transformable-Intake", 128);
         this.shooterModule = shooterModule;
         super.motors.add(armLifterMotor);
         this.armEncoder = armEncoder;
@@ -66,6 +67,7 @@ public class TransformableArm extends RobotModuleBase {
 
     @Override
     protected void periodic(double dt) {
+        EasyShuffleBoard.putNumber("arm", "module update rate", (int)(1/dt));
         System.out.println("arm current position: " + desiredPosition);
         armController.goToDesiredPosition(desiredEncoderPosition = desiredEncoderPositionTable.get(desiredPosition));
 

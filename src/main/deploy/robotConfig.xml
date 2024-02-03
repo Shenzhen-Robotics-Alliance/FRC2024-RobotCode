@@ -113,9 +113,12 @@
         <shooter2Reversed>0</shooter2Reversed>
     </shooter>
     <intake>
-        <launchPower>0.75</launchPower>
-        <intakePower>0.65</intakePower>
-        <revertPower>-0.65</revertPower>
+<!--        <launchPower>0.75</launchPower>-->
+<!--        <intakePower>0.65</intakePower>-->
+<!--        <revertPower>-0.65</revertPower>-->
+        <launchPower>0</launchPower>
+        <intakePower>0</intakePower>
+        <revertPower>0</revertPower>
         <distanceSensorThreshold>22</distanceSensorThreshold>
         <splitTime>0.5</splitTime>
     </intake>
@@ -125,15 +128,21 @@
         <armMotorReversed>0</armMotorReversed>
         <armEncoderReversed>0</armEncoderReversed>
 
+        <!-- arm positions -->
+        <position-DEFAULT>50</position-DEFAULT> <!-- 60 -->
+        <position-INTAKE>96</position-INTAKE>
+        <position-SHOOT_NOTE>75</position-SHOOT_NOTE>
+        <position-SCORE_AMPLIFIER>15</position-SCORE_AMPLIFIER>
+
         <!-- arm PID -->
-        <maximumPower>0.5</maximumPower>
-        <errorStartDecelerate>28</errorStartDecelerate>
-        <errorTolerance>2.5</errorTolerance>
-        <feedForwardTime>0.08</feedForwardTime>
+        <maximumPower>0.6</maximumPower>
+        <errorStartDecelerate>60</errorStartDecelerate>
+        <errorTolerance>2</errorTolerance>
+        <feedForwardTime>0.06</feedForwardTime>
         <errorAccumulationProportion>0</errorAccumulationProportion>
-        <maxAcceleration>280</maxAcceleration>
-        <maxVelocity>150</maxVelocity>
-        <errorToleranceAsInPosition>1.5</errorToleranceAsInPosition>
+        <maxAcceleration>180</maxAcceleration>
+        <maxVelocity>120</maxVelocity>
+        <errorToleranceAsInPosition>2</errorToleranceAsInPosition>
 
         <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
         <encoderZeroPositionRadians>6</encoderZeroPositionRadians>
@@ -141,20 +150,22 @@
         <!-- software limit -->
         <lowerPositionLimit>5</lowerPositionLimit>
         <upperPositionLimit>98</upperPositionLimit>
+
         <!-- lookup table -->
         <encoderPosition0>0</encoderPosition0>
-        <gravityTorque0>0</gravityTorque0>
-        <encoderPosition1>20</encoderPosition1>
+        <gravityTorque0>0.04</gravityTorque0>
+        <!-- the upper balanced point -->
+        <encoderPosition1>17</encoderPosition1>
         <gravityTorque1>0</gravityTorque1>
-        <encoderPosition2>45</encoderPosition2>
-        <gravityTorque2>0</gravityTorque2>
-        <encoderPosition3>100</encoderPosition3>
+        <!-- midway between the upper balance point and the lower balance point  -->
+        <encoderPosition2>40</encoderPosition2>
+        <gravityTorque2>0.04</gravityTorque2>
+        <!-- lower balance point (aka. default position) -->
+        <encoderPosition3>62</encoderPosition3>
         <gravityTorque3>0</gravityTorque3>
-        <!-- arm positions -->
-        <position-DEFAULT>60</position-DEFAULT>
-        <position-INTAKE>96</position-INTAKE>
-        <position-SHOOT_NOTE>75</position-SHOOT_NOTE>
-        <position-SCORE_AMPLIFIER>15</position-SCORE_AMPLIFIER>
+        <!-- lowest position -->
+        <encoderPosition4>100</encoderPosition4>
+        <gravityTorque4>-0.05</gravityTorque4>
     </arm>
 
     <auto>

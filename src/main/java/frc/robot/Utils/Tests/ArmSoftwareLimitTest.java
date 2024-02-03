@@ -28,6 +28,7 @@ public class ArmSoftwareLimitTest implements SimpleRobotTest {
         if (xboxController.getBackButton())
             armMechanism.disableMotor(null);
         else armMechanism.setPower((xboxController.getLeftTriggerAxis()-xboxController.getRightTriggerAxis()) * 0.3, null);
-        System.out.println("arm encoder reading(deg): "+ Math.toDegrees(armEncoder.getEncoderPosition()));
+        EasyShuffleBoard.putNumber("arm",  "encoder reading(deg)", Math.toDegrees(armEncoder.getEncoderPosition()));
+        EasyShuffleBoard.putNumber("arm", "power", (xboxController.getLeftTriggerAxis()-xboxController.getRightTriggerAxis()) * 0.3);
     }
 }

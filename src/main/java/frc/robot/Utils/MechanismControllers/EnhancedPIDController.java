@@ -633,7 +633,7 @@ public class EnhancedPIDController {
         }
 
         public double getCurrentPathPosition(double currentTime) {
-            // TODO bugs over here, the checkpoints are good but the path is wrong
+            // TODO there are still bugs here
             if (currentTime <= 0) return startingPosition;
             for (int i =0; i < checkPoints.length-1; i++)
                 if (currentTime < checkPoints[i+1].time) {
@@ -660,8 +660,9 @@ public class EnhancedPIDController {
                 if (currentTime < checkPoints[currentCheckPoint].time) {
                     CheckPoint previousCheckPoint = checkPoints[currentCheckPoint-1];
                     CheckPoint nextCheckPoint = checkPoints[currentCheckPoint];
+                    final double averageAcceleration = (nextCheckPoint.velocity - previousCheckPoint.velocity) / (nextCheckPoint.time - previousCheckPoint.time);
 
-                    return previousCheckPoint.velocity + (currentTime - previousCheckPoint.time) / (nextCheckPoint.time - previousCheckPoint.time);
+                    return previousCheckPoint.velocity + (currentTime - previousCheckPoint.time) * averageAcceleration;
                 }
             /* if the task is already over */
             return 0;

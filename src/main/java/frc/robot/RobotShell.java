@@ -94,7 +94,7 @@ public class RobotShell extends TimedRobot {
     public void testInit() {
         // System.out.println("<-- Robot Shell | test init -->");
         if (robotTest == null)
-            this.robotTest = new CompleteIntakeAndShooterTest();
+            this.robotTest = new ArmSoftwareLimitTest();
         robotTest.testStart();
     }
 
@@ -120,8 +120,10 @@ public class RobotShell extends TimedRobot {
         services.add(pilotChassis);
 
         /* upper structure */
-        final TransformableIntakeAndShooterService intakeAndShooterService = new TransformableIntakeAndShooterService(robotCore.intake, robotCore.shooter, robotCore.transformableArm, robotCore.robotConfig, new XboxController(1));
-        services.add(intakeAndShooterService);
+        if (robotCore.intake != null && robotCore.shooter != null && robotCore.transformableArm != null) {
+            final TransformableIntakeAndShooterService intakeAndShooterService = new TransformableIntakeAndShooterService(robotCore.intake, robotCore.shooter, robotCore.transformableArm, robotCore.robotConfig, new XboxController(1));
+            services.add(intakeAndShooterService);
+        }
 
         robotCore.startStage(services);
     }

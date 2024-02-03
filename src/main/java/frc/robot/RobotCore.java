@@ -50,9 +50,9 @@ public class RobotCore {
         public final JetsonDetectionAppClient aprilTagDetectionAppClient;
         public final TargetFieldPositionTracker aprilTagPositionTrackingCamera;
 
-        public final TransformableArm transformableArm;
-        public final Intake intake;
-        public final Shooter shooter;
+        public TransformableArm transformableArm;
+        public Intake intake;
+        public Shooter shooter;
 
         private final List<String> configsToTune = new ArrayList<>(1);
         private final List<RobotModuleBase> modules;
@@ -205,6 +205,16 @@ public class RobotCore {
 //                configsToTune.add("chassis/steerWheelFeedForwardTime");
 //                configsToTune.add("chassis/steerCorrectionPowerRateAtZeroWheelSpeed");
 //                configsToTune.add("chassis/steerCorrectionPowerFullWheelSpeed");
+
+                /* arm pid */
+                configsToTune.add("arm/maximumPower");
+                configsToTune.add("arm/errorStartDecelerate");
+                configsToTune.add("arm/errorTolerance");
+                configsToTune.add("arm/feedForwardTime");
+                configsToTune.add("arm/errorAccumulationProportion");
+                configsToTune.add("arm/maxAcceleration");
+                configsToTune.add("arm/maxVelocity");
+                configsToTune.add("arm/errorToleranceAsInPosition");
         }
 
         /**
