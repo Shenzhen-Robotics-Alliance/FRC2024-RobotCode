@@ -15,28 +15,16 @@ public interface TargetFieldPositionTracker {
      * @return true for visible, false for not seen
      * */
     default boolean isTargetVisible(int id) {
-        return getVisibleTargetByID(id) != null;
+        return getTargetByID(id) != null;
     }
 
     /**
-     * gets the visible target of selected id, requires the target to be currently visible
+     * gets the target of selected id
      * @param id the id of the target
      * @return the target instance, null for unseen
      * */
-    default TargetOnField getVisibleTargetByID(int id) {
+    default TargetOnField getTargetByID(int id) {// find specific apriltag
         for (TargetOnField target:getVisibleTargets())
-            if (target.id == id)
-                return target;
-        return null;
-    }
-
-    /**
-     * gets the target of selected id, no mater visible or not
-     * @param id the id of the target
-     * @return the target instance, null for unseen
-     * */
-    default TargetOnField getTargetByID(int id) {
-        for (TargetOnField target:getAllTargets())
             if (target.id == id)
                 return target;
         return null;
