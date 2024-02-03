@@ -1,11 +1,14 @@
 package frc.robot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.CANcoder;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.DistanceSensors.Rev2mDistanceSensorEncapsulation;
@@ -31,6 +34,7 @@ import frc.robot.Modules.UpperStructure.TransformableArm;
 import frc.robot.Services.RobotServiceBase;
 import frc.robot.Services.TransformableIntakeAndShooterService;
 import frc.robot.Utils.*;
+import frc.robot.Utils.ComputerVisionUtils.AprilTagReferredTarget;
 import frc.robot.Utils.ComputerVisionUtils.FixedAngleCameraProfile;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
@@ -101,6 +105,8 @@ public class RobotCore {
                 this.chassisModule = new SwerveBasedChassis(swerveWheels, gyro, robotConfig, positionReader);
                 modules.add(chassisModule);
 
+
+                /* TODO: the following into robot config */
                 aprilTagDetectionAppClient = new JetsonDetectionAppClient("AprilTagDetector", "10.55.16.109", 8888);
                 final double[] targetHeights = new double[] {130, 130, 130, 130, 130, 130};
                 aprilTagPositionTrackingCamera = new FixedAnglePositionTrackingCamera( // TODO load and save to robotConfig
@@ -112,6 +118,23 @@ public class RobotCore {
                         ),
                         targetHeights
                 );
+                final Map<Integer, Vector2D> speakerTargetAprilTagReferences = new HashMap<>(), amplifierTargetAprilTagReferences = new HashMap<>(), noteTargetReferences = new HashMap<>();
+                final DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Red); // default to red
+                if (alliance == DriverStation.Alliance.Red) {
+                        speakerTargetAprilTagReferences.put(4, new Vector2D(new double[] {0,0}));
+                        speakerTargetAprilTagReferences.put(3, new Vector2D(new double[] {0.565,0}));
+                        amplifierTargetAprilTagReferences.put(5, new Vector2D(new double[] {0, 0}));
+                } else {
+                        speakerTargetAprilTagReferences.put(7, new Vector2D(new double[] {0,0}));
+                        speakerTargetAprilTagReferences.put(8, new Vector2D(new double[] {-0.565,0}));
+                        amplifierTargetAprilTagReferences.put(6, new Vector2D(new double[] {0, 0}));
+                }
+                noteTargetReferences.put(0, new Vector2D()); // the id of note is always 0, and the note is itself the reference so the relative position is (0,0)
+                final AprilTagReferredTarget speakerTarget = new AprilTagReferredTarget(aprilTagPositionTrackingCamera, speakerTargetAprilTagReferences),
+                        amplifierTarget = new AprilTagReferredTarget(aprilTagPositionTrackingCamera, amplifierTargetAprilTagReferences),
+                        /* TODO note target tracking camera */
+                        noteTarget = new AprilTagReferredTarget(aprilTagPositionTrackingCamera, noteTargetReferences); // we call it april tag referred target but it is actually recognized by detect-net app
+                final Shooter.AimingSystem aimingSystem = new Shooter.AimingSystem(positionReader, speakerTarget, 1000);
 
                 final TalonFXMotor armMotor = new TalonFXMotor(new TalonFX(25) ,false);
                 final DCAbsolutePositionEncoder armEncoder = new DCAbsolutePositionEncoder(1, false);
@@ -132,7 +155,7 @@ public class RobotCore {
                                 robotConfig.getConfig("shooter/shooter2Reversed") != 0
                         ).toEncoderAndMotorMechanism()
                 };
-                this.shooter = new Shooter(shooterMechanisms, robotConfig); modules.add(shooter);
+                this.shooter = new Shooter(shooterMechanisms, aimingSystem, robotConfig); modules.add(shooter);
         }
 
         private SwerveWheel createSwerveWheel(String name, int id, Vector2D wheelInstallationPosition) {
@@ -218,10 +241,10 @@ public class RobotCore {
 //                configsToTune.add("arm/errorToleranceAsInPosition");
 
                 /* arm positions */
-//                configsToTune.add("arm/position-DEFAULT");
-//                configsToTune.add("arm/position-INTAKE");
-//                configsToTune.add("arm/position-SHOOT_NOTE");
-//                configsToTune.add("arm/position-SCORE_AMPLIFIER");
+                configsToTune.add("arm/position-DEFAULT");
+                configsToTune.add("arm/position-INTAKE");
+                configsToTune.add("arm/position-SHOOT_NOTE");
+                configsToTune.add("arm/position-SCORE_AMPLIFIER");
         }
 
         /**
@@ -279,19 +302,34 @@ public class RobotCore {
         private long t = System.currentTimeMillis();
         public void updateRobot() {
                 for (RobotServiceBase service: services)
+//                        service.periodic();
+                {
+                        long dt = System.currentTimeMillis();
                         service.periodic();
+//                        if (System.currentTimeMillis()-dt>10)
+//                                System.out.println("service " + service.serviceName + " update time (ms): " + (System.currentTimeMillis() - dt));
+                }
 
+                if (aprilTagPositionTrackingCamera != null)
+                        aprilTagPositionTrackingCamera.update(positionReader.getRobotPosition2D(), new Rotation2D(positionReader.getRobotRotation()));
                 if (!useMultiThreads)
                         for (RobotModuleBase module:modules)
                                 module.periodic();
 
                 // printChassisDebugMessages();
+                long dt = System.currentTimeMillis();
                 printAprilTagCameraResultsToDashboard();
+//                if (System.currentTimeMillis()-dt>10)
+//                        System.out.println("print april tag camera time (ms): " + (System.currentTimeMillis() - dt));
 
+                dt = System.currentTimeMillis();
                 robotConfig.updateTuningConfigsFromDashboard();
+//                if (System.currentTimeMillis()-dt>10)
+//                        System.out.println("update config time (ms): " + (System.currentTimeMillis() - dt));
 
                 /* monitor the program's performance */
-                SmartDashboard.putNumber("robot main thread rate", 1000/(System.currentTimeMillis()-t));
+                // TODO extremely high program delay, leading to errors
+                SmartDashboard.putNumber("robot main thread delay", System.currentTimeMillis()-t);
                 t = System.currentTimeMillis();
         }
 
@@ -303,8 +341,8 @@ public class RobotCore {
         }
 
         private void printAprilTagCameraResultsToDashboard() {
-                if (aprilTagPositionTrackingCamera == null) return;
-                aprilTagPositionTrackingCamera.update(new Vector2D(), new Rotation2D(0));
+                if (aprilTagPositionTrackingCamera == null)
+                        return;
                 final int targetID = 4;
                 final TargetFieldPositionTracker.TargetOnField target;
                 final double x,y,dis,hdg;

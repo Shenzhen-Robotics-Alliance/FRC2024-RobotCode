@@ -34,10 +34,10 @@ public final class FixedAngleCameraProfile {
      * */
     public double getDistanceFromYPixel(double yPixel, double targetHeightCM) {
         final double targetVerticalAngleRadian = angleRadianPerCameraPixelY * yPixel;
-        System.out.println("tgt y pix: " + yPixel);
-        System.out.println("cam inst ang: " + Math.toDegrees(cameraInstallationAngleRadian));
-        System.out.println("tag vert ang: " + Math.toDegrees(targetVerticalAngleRadian));
-        System.out.println("target vertical angle: " + Math.toDegrees(cameraInstallationAngleRadian + targetVerticalAngleRadian));
+//        System.out.println("tgt y pix: " + yPixel);
+//        System.out.println("cam inst ang: " + Math.toDegrees(cameraInstallationAngleRadian));
+//        System.out.println("tag vert ang: " + Math.toDegrees(targetVerticalAngleRadian));
+//        System.out.println("target vertical angle: " + Math.toDegrees(cameraInstallationAngleRadian + targetVerticalAngleRadian));
         return targetHeightCM / Math.tan(cameraInstallationAngleRadian + targetVerticalAngleRadian);
     }
 

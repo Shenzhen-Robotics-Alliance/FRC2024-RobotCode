@@ -36,7 +36,7 @@ public interface TargetFieldPositionTracker {
      * @return the target instance, null for unseen
      * */
     default TargetOnField getTargetByID(int id) {
-        for (TargetOnField target:getAllTargets())
+        for (TargetOnField target:getAllTargets()) // TODO: concurrent modification exception in multi-threading
             if (target.id == id)
                 return target;
         return null;

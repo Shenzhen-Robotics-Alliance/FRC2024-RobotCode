@@ -29,7 +29,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
         /** the transformer is at amplifier position and is standing by */
         AT_AMPLIFIER_POSITION_HOLDING_NOTE,
         /** the transformer is at amplifier position and is splitting the note */
-        SPLITTING_TO_AMPLIFIER
+        AMPLIFYING
     }
     private IntakeAndShooterStatus currentStatus;
     private boolean currentTaskComplete;
@@ -54,6 +54,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
     @Override
     public void reset() {
         this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION;
+        gainOwnerShipsToModules(); // TODO sendable chooser to choose between this and vision chassis
     }
 
     private void gainOwnerShipsToModules() {
@@ -84,6 +85,8 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                 shooterModule.setShooterMode(Shooter.ShooterMode.DISABLED, this);
                 if (START_GRAB_BUTTON)
                     startIntakeProcess();
+                else if (START_SPLIT_BUTTON)
+                    startSplitProcess();
             }
             case AT_DEFAULT_POSITION_HOLDING_NOTE -> {
                 /* the transformer is at standby position, and holding a note */
@@ -104,7 +107,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, this);
                 if (CANCEL_GRAB_BUTTON)
                     cancelIntakeProcess();
-                else if (intakeModule.isCurrentTaskComplete())
+                else if (intakeModule.isNoteInsideIntake())
                     this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION_HOLDING_NOTE;
             }
             case PROCEEDING_SPLIT -> {
@@ -147,13 +150,13 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                 else if (CANCEL_ACTION_BUTTON)
                     launchProcessCancelled();
             }
-            case SPLITTING_TO_AMPLIFIER -> {
+            case AMPLIFYING -> {
                 /* the transformer is at amplifier position and is splitting the note */
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SCORE_AMPLIFIER, this);
                 shooterModule.setShooterMode(Shooter.ShooterMode.AMPLIFY, this);
                 if (START_SPLIT_BUTTON)
                     launchProcessFailed();
-                if (intakeModule.isCurrentTaskComplete())
+                if (!intakeModule.isNoteInsideIntake())
                     this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION;
             }
             default -> throw new IllegalStateException("unknown status for intake and shooter:" + currentStatus);
@@ -201,7 +204,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
 
     private void startAmplifyProcess() {
         intakeModule.startLaunch(this);
-        this.currentStatus = IntakeAndShooterStatus.SPLITTING_TO_AMPLIFIER;
+        this.currentStatus = IntakeAndShooterStatus.AMPLIFYING;
     }
 
     @Override

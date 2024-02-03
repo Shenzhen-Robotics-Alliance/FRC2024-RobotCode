@@ -35,10 +35,10 @@
     </hardware>
     <chassis>
         <!-- profiled translational velocity controller -->
-        <translationalTaskUpdatableRange type="double">0.15</translationalTaskUpdatableRange>
-        <ignoredAccelerateTime type="double">0.1</ignoredAccelerateTime>
+        <translationalTaskUpdatableRange type="double">0.1</translationalTaskUpdatableRange>
+        <ignoredAccelerateTime type="double">0.08</ignoredAccelerateTime>
         <robotMaximumSpeed type="double">6</robotMaximumSpeed>
-        <timeNeededToFullyAccelerate type="double">0.4</timeNeededToFullyAccelerate>
+        <timeNeededToFullyAccelerate type="double">0.25</timeNeededToFullyAccelerate>
         <robotSpeedActivateSpeedControl type="double">0.1</robotSpeedActivateSpeedControl>
 
 

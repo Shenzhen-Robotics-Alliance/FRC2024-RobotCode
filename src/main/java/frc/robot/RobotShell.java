@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RobotShell extends TimedRobot {
-    private static final int updateFreq = 64;
+    private static final int updateFreq = 128;
     public RobotShell() {
         super(1.0/updateFreq);
     }

@@ -152,6 +152,7 @@ public class TransformableArm extends RobotModuleBase {
     }
 
     public boolean transformerInPosition() {
+        // System.out.println("transformer error: " + Math.toDegrees(Math.abs(armEncoder.getEncoderPosition() - desiredEncoderPosition)) + ", tolerance: " + Math.toDegrees(errorAsArmReady));
         return Math.abs(armEncoder.getEncoderPosition() - desiredEncoderPosition) < errorAsArmReady;
     }
 }

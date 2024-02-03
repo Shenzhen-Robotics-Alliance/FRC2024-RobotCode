@@ -46,7 +46,6 @@ public class PilotController {
                 new Vector2D(new double[] {xSensitivity, 0}),
                 new Vector2D(new double[] {0, ySensitivity})
         );
-        // TODO these does not update once the program is already running, work on a dynamic updating method
 
         this.zSensitivity = zSensitivity;
         this.stickThresholdWhenOtherAxisUnused = stickThresholdWhenOtherAxisUnused;
@@ -84,17 +83,17 @@ public class PilotController {
         final double translationalStickMagnitudeRaw = translationalStickValue.getMagnitude(),
                 translationalStickMagnitude = applyExponent(translationalStickMagnitudeRaw, translationalAxisExponent);
 
-        SmartDashboard.putNumber("trans inp raw mag", translationalStickMagnitudeRaw);
-        SmartDashboard.putNumber("trans inp scaled", translationalStickMagnitude);
+//        SmartDashboard.putNumber("trans inp raw mag", translationalStickMagnitudeRaw);
+//        SmartDashboard.putNumber("trans inp scaled", translationalStickMagnitude);
 
         return new Vector2D(translationalStickValue.getHeading(), translationalStickMagnitude)
                 .multiplyBy(sensitivityTransformation);
     }
 
     public double getRotationalStickValue() {
-        SmartDashboard.putNumber("rot inp raw mag", rawController.getRawAxis(zAxisPortID));
-        SmartDashboard.putNumber("rot inp threshold-ed", applyThreshold(rawController.getRawAxis(zAxisPortID), stickThresholdWhenOtherAxisUnused));
-        SmartDashboard.putNumber("rot inp scaled", applyExponent(applyThreshold(rawController.getRawAxis(zAxisPortID), stickThresholdWhenOtherAxisUnused), rotationalAxisExponent));
+//        SmartDashboard.putNumber("rot inp raw mag", rawController.getRawAxis(zAxisPortID));
+//        SmartDashboard.putNumber("rot inp threshold-ed", applyThreshold(rawController.getRawAxis(zAxisPortID), stickThresholdWhenOtherAxisUnused));
+//        SmartDashboard.putNumber("rot inp scaled", applyExponent(applyThreshold(rawController.getRawAxis(zAxisPortID), stickThresholdWhenOtherAxisUnused), rotationalAxisExponent));
         return applyExponent(
                 applyThreshold(rawController.getRawAxis(zAxisPortID), stickThresholdWhenOtherAxisUnused),
                 rotationalAxisExponent) * zSensitivity;

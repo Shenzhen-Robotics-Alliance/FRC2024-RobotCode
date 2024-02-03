@@ -69,34 +69,20 @@ public class VisionAidedPilotChassis extends PilotChassis {
      * @param shooter
      * @param intake
      * @param arm
-     * @param aprilTagTracker
-     * @param noteTracker
      * @param copilotGamePad
      * @param robotConfig
      */
-    public VisionAidedPilotChassis(SwerveBasedChassis chassis, Shooter shooter, Intake intake, TransformableArm arm, TargetFieldPositionTracker aprilTagTracker, TargetFieldPositionTracker noteTracker, XboxController copilotGamePad, RobotConfigReader robotConfig) {
+    public VisionAidedPilotChassis(SwerveBasedChassis chassis, Shooter shooter, Intake intake, TransformableArm arm, AprilTagReferredTarget speakerTarget, AprilTagReferredTarget amplifierTarget, AprilTagReferredTarget noteTarget, XboxController copilotGamePad, RobotConfigReader robotConfig) {
         super(chassis, robotConfig);
         this.shooter = shooter;
         this.intake = intake;
         this.arm = arm;
 
-        /* TODO: the following into robot config */
-        final Map<Integer, Vector2D> speakerTargetAprilTagReferences = new HashMap<>(), amplifierTargetAprilTagReferences = new HashMap<>(), noteTargetReferences = new HashMap<>();
-        this.alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Red); // default to red
-        if (alliance == DriverStation.Alliance.Red) {
-            speakerTargetAprilTagReferences.put(4, new Vector2D(new double[] {0,0}));
-            speakerTargetAprilTagReferences.put(3, new Vector2D(new double[] {0.565,0}));
-            amplifierTargetAprilTagReferences.put(5, new Vector2D(new double[] {0, 0}));
-        } else {
-            speakerTargetAprilTagReferences.put(7, new Vector2D(new double[] {0,0}));
-            speakerTargetAprilTagReferences.put(8, new Vector2D(new double[] {-0.565,0}));
-            amplifierTargetAprilTagReferences.put(6, new Vector2D(new double[] {0, 0}));
-        }
-        noteTargetReferences.put(0, new Vector2D()); // the id of note is always 0, and the note is itself the reference so the relative position is (0,0)
-        this.speakerTarget = new AprilTagReferredTarget(aprilTagTracker, speakerTargetAprilTagReferences);
-        this.amplifierTarget = new AprilTagReferredTarget(aprilTagTracker, amplifierTargetAprilTagReferences);
-        this.noteTarget = new AprilTagReferredTarget(noteTracker, noteTargetReferences); // we call it april tag referred target but it is actually recognized by detect-net app
+        this.noteTarget = noteTarget;
+        this.speakerTarget = speakerTarget;
+        this.amplifierTarget = amplifierTarget;
         this.copilotGamePad = copilotGamePad;
+        this.alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Red);
     }
 
 

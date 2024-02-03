@@ -76,8 +76,7 @@ public class Shooter extends RobotModuleBase {
         double maxErrorRPM = 0;
         for (EncoderMotorMechanism shooter:shooters)
             maxErrorRPM = Math.max(Math.abs(shooter.getEncoderVelocity() * encoderVelocityToRPM - decidedRPM), maxErrorRPM);
-        System.out.println("shooter speed error (rpm): " + maxErrorRPM);
-        System.out.println("shooter speed error tolerance (rpm): " + shooterReadyErrorBound);
+        // System.out.println("shooter speed error (rpm): " + maxErrorRPM + ", tolerance: " + shooterReadyErrorBound);
         return maxErrorRPM < shooterReadyErrorBound;
     }
 
@@ -93,9 +92,6 @@ public class Shooter extends RobotModuleBase {
 
     @Override
     protected void periodic(double dt) {
-        for (EncoderMotorMechanism shooter : shooters)
-            shooter.updateWithController(this);
-
         final double desiredEncoderVelocity = decideRPM() / encoderVelocityToRPM;
         for (int shooterID = 0; shooterID < shooters.length; shooterID++) {
             speedControllers[shooterID].setDesiredSpeed(desiredEncoderVelocity);
@@ -103,6 +99,9 @@ public class Shooter extends RobotModuleBase {
         }
 
         EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", specifiedRPM);
+
+        for (EncoderMotorMechanism shooter : shooters)
+            shooter.updateWithController(this);
     }
 
     private double decideRPM() {
@@ -192,6 +191,10 @@ public class Shooter extends RobotModuleBase {
                 || (targetRelativePositionToRobot = aimingSystem.getRelativePositionToTarget(projectileSpeed)) == null)
             return defaultShootingRPM;
         final double distanceToTarget = targetRelativePositionToRobot.getMagnitude();
+
+        System.out.println("shooter corresponding (RPM): " + shooterRPMToTargetDistanceLookUpTable.getYPrediction(distanceToTarget));
+        EasyShuffleBoard.putNumber("shooter", "target distance", distanceToTarget);
+        EasyShuffleBoard.putNumber("shooter", "shooter corresponding RPM",  shooterRPMToTargetDistanceLookUpTable.getYPrediction(distanceToTarget));
         return shooterRPMToTargetDistanceLookUpTable.getYPrediction(distanceToTarget);
     }
 
