@@ -6,7 +6,9 @@ import frc.robot.Utils.EasyShuffleBoard;
 import frc.robot.Utils.MathUtils.AngleUtils;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
-
+/*
+ * ^^ this class is improved version of SwerveWheelPositionEstimator, this class used a better curve arithmetic to estimate the position of the robot, but this class hasn't been take into pratice
+ */
 public class SwerveWheelPositionEstimatorCurveOptimized extends SwerveWheelPositionEstimator {
     /**
      * swerve wheel position reader,

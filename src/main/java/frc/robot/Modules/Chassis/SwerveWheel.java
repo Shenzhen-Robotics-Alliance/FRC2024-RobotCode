@@ -109,8 +109,7 @@ public class SwerveWheel extends RobotModuleBase {
         this.motorEncoderBias = AngleUtils.simplifyAngle(motorEncoderBias); // critical, the motor encoder bias provided in the config is to the front, this actual motor encoder bias needs to be to the left
 
         /*
-         * calculate the direction of rotation motion of the robot in reference to the
-         * wheel
+         * calculate the direction of rotation motion of the robot in reference to thewheel
          */
         Transformation2D rotate90DegCounterWiseTransformation = new Rotation2D(Math.toRadians(90));
         final Vector2D rotationDirectionVectorRaw = wheelPositionVector.multiplyBy(rotate90DegCounterWiseTransformation);
@@ -119,7 +118,7 @@ public class SwerveWheel extends RobotModuleBase {
     }
 
     @Override
-    public void init() {// every function that has different usage all override the init function
+    public void init() {// ^^ every function that has different usage all override the init function
         /* calibrate the steer encoder */
         this.steerEncoder.setZeroPosition(motorEncoderBias);
         onReset();

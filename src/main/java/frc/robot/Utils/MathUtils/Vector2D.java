@@ -7,7 +7,7 @@ package frc.robot.Utils.MathUtils;
  * @author Sam
  * @version 0.1
  */
-public class Vector2D {
+public class Vector2D {// ^^ a class that used to deal with vector
     private double[] vector;
 
     /** initialize the vector, with a empty value */

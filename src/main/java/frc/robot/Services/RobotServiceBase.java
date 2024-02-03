@@ -6,13 +6,11 @@ import frc.robot.Utils.RobotModuleOperatorMarker;
 import java.util.HashMap;
 
 /**
- * The template for the classes that controls how the robot respond to the
- * pilot's commands
- * 
+ * The template for the classes that controls how the robot respond to the pilot's commands
  * @author Sam
  * @version 0.1
  */
-public abstract class RobotServiceBase extends RobotModuleOperatorMarker {// all those function are used to override
+public abstract class RobotServiceBase extends RobotModuleOperatorMarker {// ^^ all those function are used to override
     /** the name of the service */
     public String serviceName;
 

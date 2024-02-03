@@ -8,7 +8,7 @@ import frc.robot.Utils.MathUtils.Rotation2D;
  *  A path feeder and two rotation feeders are specified in the auto stage command segments.
  *  The robot decides, just before the command segment is executed, what path should be followed and what rotation should be faced
  * */
-public class SequentialCommandSegment {
+public class SequentialCommandSegment {// ^^ this class is for auto stage
     public final BezierCurveFeeder chassisMovementPathFeeder;
     public final Runnable beginning, periodic, ending;
     public final IsCompleteChecker isCompleteChecker;

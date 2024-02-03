@@ -89,6 +89,7 @@ public class RobotShell extends TimedRobot {
         // TODO if the robot is left unused for a long time, let the motors sing
     }
 
+    // ^^ class that used in test mode
     private SimpleRobotTest robotTest = null;
     @Override
     public void testInit() {
@@ -103,7 +104,7 @@ public class RobotShell extends TimedRobot {
         System.out.println("<-- Robot Shell | robot init -->");
         robotTest.testPeriodic();
     }
-
+    // ^^ the below part distinguish auto stage and manual stage
     private void startAutoStage(AutoStageProgram autoStageProgram) {
         final List<RobotServiceBase> services = new ArrayList<>();
         final List<SequentialCommandSegment> commandSegments = autoStageProgram.getCommandSegments(robotCore);
@@ -125,7 +126,7 @@ public class RobotShell extends TimedRobot {
 
         robotCore.startStage(services);
     }
-
+    //stopstage line is the same for both stage
     private void stopStage() {
         robotCore.stopStage();
     }

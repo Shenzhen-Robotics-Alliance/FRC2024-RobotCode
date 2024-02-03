@@ -7,7 +7,7 @@ import frc.robot.Utils.MathUtils.BezierCurve;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
 
-public class SequentialCommandFactory {
+public class SequentialCommandFactory {// this class is for auto stage
     private final SwerveBasedChassis chassis;
     private final PositionEstimator positionEstimator;
     public SequentialCommandFactory(RobotCore robotCore) {
