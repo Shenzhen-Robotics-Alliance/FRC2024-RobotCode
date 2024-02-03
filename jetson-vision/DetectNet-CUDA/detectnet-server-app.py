@@ -8,7 +8,7 @@ from http.server import SimpleHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
 from time import time, sleep
 
-net = detectNet("ssd-mobilenet-v1", model="/home/iron-maple/Documents/jetson-vision/DetectNet-CUDA/mymobilenet.onnx", labels="/home/iron-maple/Documents/jetson-vision/DetectNet-CUDA/labels.txt", input_blob="input_0", output_cvg="scores", output_bbox="boxes", threshold=0.92)
+net = detectNet("ssd-mobilenet-v1", model="/home/iron-maple/Documents/jetson-vision/DetectNet-CUDA/NoteDetection-mobilenet.onnx", labels="/home/iron-maple/Documents/jetson-vision/DetectNet-CUDA/labels.txt", input_blob="input_0", output_cvg="scores", output_bbox="boxes", threshold=0.92)
 camera = videoSource("/dev/video0") # V4L2 port0
 # display_window = videoOutput("display://0")
 

@@ -170,7 +170,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
                 updateChassisPositionWhenTaskStarted();
 
                 shooter.setShooterMode(Shooter.ShooterMode.DISABLED, this);
-                arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE_STANDBY, this);
+                arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
                 intake.turnOffIntake(this);
 
                 if (!pilotController.keyOnHold(translationAutoPilotButton))

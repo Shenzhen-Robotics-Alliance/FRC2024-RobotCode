@@ -1,0 +1,27 @@
+<annotation>
+    <filename>20240114-145704.jpg</filename>
+    <folder>Note-Detection</folder>
+    <source>
+        <database>Note-Detection</database>
+        <annotation>custom</annotation>
+        <image>custom</image>
+    </source>
+    <size>
+        <width>640</width>
+        <height>480</height>
+        <depth>3</depth>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>Note</name>
+        <pose>unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>74</xmin>
+            <ymin>115</ymin>
+            <xmax>550</xmax>
+            <ymax>400</ymax>
+        </bndbox>
+    </object>
+</annotation>
