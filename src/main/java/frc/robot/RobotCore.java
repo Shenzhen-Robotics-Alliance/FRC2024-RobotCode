@@ -61,7 +61,7 @@ public class RobotCore {
                 services = new ArrayList<>();
 
                 robotConfig = new RobotConfigReader(configName);
-                //初始化四个轮子,加入module类中
+                // ^^ 初始化四个轮子,加入module类中
                 frontLeftWheel = createSwerveWheel("frontLeft", 1, new Vector2D(new double[] { -0.6, 0.6 }));
                 modules.add(frontLeftWheel);
 
@@ -77,14 +77,14 @@ public class RobotCore {
                 this.gyro = new SimpleGyro(0, false, new PigeonsIMU((int) robotConfig.getConfig("hardware/gyroPort")));
 
                 final SwerveWheel[] swerveWheels = new SwerveWheel[] {frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel};
-                positionReader = new SwerveWheelPositionEstimator(swerveWheels, gyro);// read ciurrent position
+                positionReader = new SwerveWheelPositionEstimator(swerveWheels, gyro);// read current position
                 modules.add(positionReader);
 
                 SwerveWheelPositionEstimatorCurveOptimized testPositionEstimator = new SwerveWheelPositionEstimatorCurveOptimized(swerveWheels, gyro);//?
                 modules.add(testPositionEstimator);
 
                 this.chassisModule = new SwerveBasedChassis(swerveWheels, gyro, robotConfig, positionReader);
-                modules.add(chassisModule);// the whole chassis as a module, used to?
+                modules.add(chassisModule);// ^^ the whole chassis as a module, used to estimate the robot velocity and postion
 
                 aprilTagDetectionAppClient = new JetsonDetectionAppClient("AprilTagDetector", "10.55.16.109", 8888);
                 final double[] targetHeights = new double[] {130, 130, 130, 130, 130, 130};
@@ -101,7 +101,7 @@ public class RobotCore {
 
         private SwerveWheel createSwerveWheel(String name, int id, Vector2D wheelInstallationPosition) {
                 if (robotConfig.getConfig("hardware/chassisOnCanivore") != 0)
-                        return createSwerveWheelOnCanivore(name, id, wheelInstallationPosition);
+                        return createSwerveWheelOnCanivore(name, id, wheelInstallationPosition);// ^^ Canivore is a extended can bus that used for extra wires since a normal can bus can only handle 10 wires
                 return new SwerveWheel(
                         new TalonFXMotor(new TalonFX( (int) robotConfig.getConfig("hardware/"+name+"WheelDriveMotor"))),
                         new TalonFXMotor(new TalonFX( (int) robotConfig.getConfig("hardware/"+name+"WheelSteerMotor")), robotConfig.getConfig("hardware/"+name+"WheelSteerMotorReversed") == 1),
@@ -117,7 +117,7 @@ public class RobotCore {
                 );
         }
 
-        private SwerveWheel createSwerveWheelOnCanivore(String name, int id, Vector2D wheelInstallationPosition) {//can bus的额外拓展板
+        private SwerveWheel createSwerveWheelOnCanivore(String name, int id, Vector2D wheelInstallationPosition) {// ^^ can bus的额外拓展板
                 return new SwerveWheel(
                         new TalonFXMotor(new TalonFX( (int) robotConfig.getConfig("hardware/"+name+"WheelDriveMotor"), "ChassisCanivore")),
                         new TalonFXMotor(new TalonFX( (int) robotConfig.getConfig("hardware/"+name+"WheelSteerMotor"), "ChassisCanivore"), robotConfig.getConfig("hardware/"+name+"WheelSteerMotorReversed") == 1),
@@ -223,7 +223,7 @@ public class RobotCore {
         /**
          * called when the robot is enabled
          * */
-        private long t = System.currentTimeMillis();// currentTimeMills?
+        private long t = System.currentTimeMillis();// ^^ currentTimeMillis is the total time after 1970-1-01
         public void updateRobot() {
                 for (RobotServiceBase service: services)
                         service.periodic();
@@ -238,18 +238,19 @@ public class RobotCore {
                 robotConfig.updateTuningConfigsFromDashboard();
 
                 /* monitor the program's performance */
-                SmartDashboard.putNumber("robot main thread rate", 1000/(System.currentTimeMillis()-t));// smart dashboard 是历史的调试软件，System.currentTimeMillis()-t求出经过的时间
+                SmartDashboard.putNumber("robot main thread rate", 1000/(System.currentTimeMillis()-t));// ^^ smart dashboard 是历史的调试软件，现在使用shuffleboard（shuffleboard仍旧支持运行smart dashboard 的语句）
+                // ^^ System.currentTimeMillis()-t求出经过的时间
                 t = System.currentTimeMillis();
         }
 
-        private void printChassisDebugMessagesToDashboard() {//调试
+        private void printChassisDebugMessagesToDashboard() {// ^^ 调试
                 SmartDashboard.putNumber("robot x", positionReader.getRobotPosition2D().getValue()[0]);
                 SmartDashboard.putNumber("robot y", positionReader.getRobotPosition2D().getValue()[1]);
                 SmartDashboard.putNumber("velocity x", positionReader.getRobotVelocity2D().getValue()[0]);
                 SmartDashboard.putNumber("velocity y", positionReader.getRobotVelocity2D().getValue()[1]);
         }
 
-        private void printAprilTagCameraResultsToDashboard() {//调试
+        private void printAprilTagCameraResultsToDashboard() {// ^^ 调试
                 if (aprilTagPositionTrackingCamera == null) return;
                 aprilTagPositionTrackingCamera.update(new Vector2D(), new Rotation2D(0));
                 final int targetID = 4;

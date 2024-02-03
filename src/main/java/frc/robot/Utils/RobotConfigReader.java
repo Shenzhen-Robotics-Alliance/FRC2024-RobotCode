@@ -28,7 +28,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-public class RobotConfigReader {
+public class RobotConfigReader {// ^^ class that used to convert xml form file into hashmap
     /** user configuration */
     private static final String HOME_DIR = "/home/lvuser/";
 

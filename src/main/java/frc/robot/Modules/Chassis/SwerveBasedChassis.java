@@ -18,6 +18,7 @@ import frc.robot.Utils.MechanismControllers.EnhancedPIDController;
 public class SwerveBasedChassis extends RobotModuleBase {
     private final boolean useProfiledSpeedControl = true;
     /** the amount of changes updatable for the old task before initiating a new task */
+    // ^^ robot movement variable
     private double translationalTaskUpdatableRange;
     private double robotMaximumSpeed;
     private double timeNeededToFullyAccelerate;
@@ -76,7 +77,7 @@ public class SwerveBasedChassis extends RobotModuleBase {
     @Override
     protected void periodic(double dt) {
         // System.out.println("<-- SwerveBasedChassis | periodic -->");
-        Vector2D processedTranslationalSpeed = processTranslationalMotion(dt);
+        Vector2D processedTranslationalSpeed = processTranslationalMotion(dt);// speed?
         SmartDashboard.putNumber("decided vel(x)", processedTranslationalSpeed.getValue()[0]);
         double rotationalSpeed = processRotationalMotion(dt);
 
@@ -89,10 +90,10 @@ public class SwerveBasedChassis extends RobotModuleBase {
         /* if a wheel is asked to run higher than max power, we need to slow everything down to avoid tearing the robot apart */
 
         /* first we slow down the rotational part */
-        final double rotationMinScale = (1-rotationalSpeedMaxSacrifice);
+        final double rotationMinScale = (1-rotationalSpeedMaxSacrifice);// ?
 
         // System.out.println("sacrificing rotational part by scale: " + Math.sqrt(rotationMinScale));
-        rotationalSpeed *= Math.sqrt(rotationMinScale);
+        rotationalSpeed *= Math.sqrt(rotationMinScale);// ?
         highestWheelSpeed = driveWheels(processedTranslationalSpeed, rotationalSpeed);
         if (highestWheelSpeed <= wheelsPowerConstrain) {
             return;
@@ -280,8 +281,8 @@ public class SwerveBasedChassis extends RobotModuleBase {
     /**
      * get the amount of chassis speed needed in order to maintain the desired rotation
      *
-     * @param desiredRotation
-     * @return
+     * @param desiredRotation // ^^ provide some description for this parameter
+     * @return // ^^ provide some description for the return value
      */
     private double getRotationalCorrectionSpeed(double desiredRotation, double dt) {
         goToRotationController.startNewTask(new EnhancedPIDController.Task(

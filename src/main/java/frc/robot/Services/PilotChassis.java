@@ -27,7 +27,7 @@ public class PilotChassis extends RobotServiceBase {
     private final SendableChooser<SwerveBasedChassis.WheelOutputMode> wheelOutputModeChooser = new SendableChooser<>();
     private final SwerveBasedChassis.WheelOutputMode defaultSpeedOutputMode = SwerveBasedChassis.WheelOutputMode.PERCENT_POWER;
 
-    private enum ControllerType {// several controller that used
+    private enum ControllerType {// ^^ several controller that used, remember to put the controller on driver station to the 0 position
         RM_BOXER,
         RM_POCKET,
         JOYSTICK,
@@ -126,10 +126,8 @@ public class PilotChassis extends RobotServiceBase {
         /* read and process the pilot's rotation inputs */
         final double rotationInput = pilotController.getRotationalStickValue();
         /* turn it into a task */
-        SwerveBasedChassis.ChassisTaskRotation chassisRotationalTask = new SwerveBasedChassis.ChassisTaskRotation(
-                SwerveBasedChassis.ChassisTaskRotation.TaskType.SET_VELOCITY,
-                rotationInput
-        );
+        SwerveBasedChassis.ChassisTaskRotation chassisRotationalTask = 
+        new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.SET_VELOCITY,rotationInput);
 
         /* when initiated, record current heading as desired heading */
         if (initiateRotationMaintenance)
@@ -147,7 +145,6 @@ public class PilotChassis extends RobotServiceBase {
         /* calls to the chassis module and pass the desired motion */
         chassis.setTranslationalTask(chassisTranslationalTask, this);
         chassis.setRotationalTask(chassisRotationalTask, this);
-
         chassis.setChassisLocked(lockChassis, this);
 
 
