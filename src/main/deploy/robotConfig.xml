@@ -133,7 +133,7 @@
         <position-DEFAULT>95</position-DEFAULT> <!-- 60 -->
         <position-INTAKE>100</position-INTAKE>
         <position-SHOOT_NOTE>92</position-SHOOT_NOTE>
-        <position-SCORE_AMPLIFIER>15</position-SCORE_AMPLIFIER>
+        <position-SCORE_AMPLIFIER>2</position-SCORE_AMPLIFIER>
 
         <!-- software limit -->
         <lowerPositionLimit>5</lowerPositionLimit>
@@ -155,7 +155,7 @@
 
         <!-- lookup table -->
         <encoderPosition0>0</encoderPosition0>
-        <gravityTorque0>0.04</gravityTorque0>
+        <gravityTorque0>0.07</gravityTorque0>
         <!-- the upper balanced point -->
         <encoderPosition1>17</encoderPosition1>
         <gravityTorque1>0</gravityTorque1>
