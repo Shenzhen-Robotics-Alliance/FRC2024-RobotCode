@@ -54,7 +54,7 @@ public class TransformableArm extends RobotModuleBase {
         super.motors.add(armLifterMotor);
         this.armEncoder = armEncoder;
         this.armLifterMechanism = new EncoderMotorMechanism(armEncoder, armLifterMotor);
-        this.armController = new ArmGravityController(new ArmGravityController.ArmProfile(0, 0, 0, 0,0,0,0 ,null));
+        this.armController = new ArmGravityController(new ArmGravityController.ArmProfile(0, 0, 0, 0,0,0,0 ,0,null));
         this.armLifterMechanism.setController(armController);
         this.robotConfig = robotConfig;
     }
@@ -109,6 +109,7 @@ public class TransformableArm extends RobotModuleBase {
                 robotConfig.getConfig("arm", "errorAccumulationProportion"),
                 Math.toRadians(robotConfig.getConfig("arm", "maxAcceleration")),
                 Math.toRadians(robotConfig.getConfig("arm", "maxVelocity")),
+                robotConfig.getConfig("arm", "inAdvanceTime"),
                 gravityTorqueLookUpTable
         ));
 

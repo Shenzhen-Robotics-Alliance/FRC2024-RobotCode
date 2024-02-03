@@ -46,7 +46,7 @@
         <steerWheelMinimumPower type = "double">0.01</steerWheelMinimumPower> <!-- this is the minimum amount of motor speed needed to turn the steer, in percentage of the full speed -->
         <steerWheelFeedForwardTime type = "double">0</steerWheelFeedForwardTime>
         <steerCorrectionPowerRateAtZeroWheelSpeed type="double">1</steerCorrectionPowerRateAtZeroWheelSpeed>
-        <steerCorrectionPowerFullWheelSpeed type="'double">1</steerCorrectionPowerFullWheelSpeed>
+        <steerCorrectionPowerFullWheelSpeed type="double">1</steerCorrectionPowerFullWheelSpeed>
 
         <robotMaximumSpeed type="double">5</robotMaximumSpeed>
         <timeNeededToFullyAccelerate type="double">0.25</timeNeededToFullyAccelerate>

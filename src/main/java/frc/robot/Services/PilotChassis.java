@@ -85,11 +85,17 @@ public class PilotChassis extends RobotServiceBase {
 
         this.chassis.reset();
         this.chassis.gainOwnerShip(this);
+
+        lastRotationalInputTimeMillis = System.currentTimeMillis();
     }
 
     private void addResetChassisCommandButtonToDashboard() {
         SmartDashboard.putData("Reset Chassis", new InstantCommand(() -> {
             chassis.reset();
+            /* make rotation maintenance target zero */
+            desiredHeading = 0;
+            /* start rotation maintenance immediately */
+            lastRotationalInputTimeMillis = System.currentTimeMillis() - (long)(robotConfig.getConfig("chassis", "timeLockRotationAfterRotationalInputStops") * 1000);
             addResetChassisCommandButtonToDashboard();
         }));
     }
@@ -97,6 +103,7 @@ public class PilotChassis extends RobotServiceBase {
     private ControllerType previousSelectedController = null;
     protected PilotController pilotController;
     protected String controllerName;
+    private long lastRotationalInputTimeMillis;
     @Override
     public void periodic() {
         controllerName = "control-" + controllerTypeSendableChooser.getSelected();
@@ -128,15 +135,19 @@ public class PilotChassis extends RobotServiceBase {
                 SwerveBasedChassis.ChassisTaskRotation.TaskType.SET_VELOCITY,
                 rotationInput
         );
-        if (pilotController.getRotationalStickValue() != 0) /* when there is rotational input, we record the current heading of the chassis */
+
+        /* when there is rotational input or there has been rotational input in the previous 0.3 seconds, we record the current heading of the chassis */
+        if (pilotController.getRotationalStickValue() != 0)
+            lastRotationalInputTimeMillis = System.currentTimeMillis();
+        if (System.currentTimeMillis() - lastRotationalInputTimeMillis < robotConfig.getConfig("chassis", "timeLockRotationAfterRotationalInputStops") * 1000)
             desiredHeading = chassis.getChassisHeading();
-        else /* when there is no rotational input, we stay at the previous rotation */
+        else /* or, when there is no rotational input, we stay at the previous rotation */
             chassisRotationalTask = new SwerveBasedChassis.ChassisTaskRotation(
                     SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
                     desiredHeading
             );
 
-        EasyShuffleBoard.putNumber("chassis", "rotation maintenance heading", Math.toDegrees(desiredHeading));
+        SmartDashboard.putNumber("rotation maintenance heading", Math.toDegrees(desiredHeading));
 
         /* calls to the chassis module and pass the desired motion */
         chassis.setTranslationalTask(chassisTranslationalTask, this);

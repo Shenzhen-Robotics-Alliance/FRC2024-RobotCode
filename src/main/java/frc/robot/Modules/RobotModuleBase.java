@@ -51,6 +51,7 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
     protected abstract void periodic(double dt);
 
     public void periodic() {
+        // System.out.println("<-- base periodic of " + moduleName + ", enabled: " + enabled + "-->");
         if (!enabled) {
             for (Motor motor:motors)
                 motor.disableMotor(getMarker());
@@ -64,8 +65,10 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
             periodic();
         }
         updateConfigs();
+        // System.out.println("executing periodic");
         periodic((newTimeMillis - previousTimeMillis) / 1000.0f);
         this.previousTimeMillis = newTimeMillis;
+        // System.out.println("<-- end of base periodic -->");
     }
 
     public Thread getPeriodicUpdateThread() {
@@ -74,6 +77,7 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
             private final double periodMS = 1000.0f / desiredUpdateFrequency;
             @Override
             public void run() {
+                System.out.println("<-- start of the update thread of " + moduleName + "-->");
                 while (true) {
                     periodic();
 
@@ -99,7 +103,7 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
     public void reset() {
         this.previousTimeMillis = System.currentTimeMillis();
         onReset();
-        enabled = true;
+        enable();
     }
 
     /** called when the program ends */

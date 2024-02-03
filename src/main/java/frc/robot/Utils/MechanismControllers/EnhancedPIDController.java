@@ -572,15 +572,16 @@ public class EnhancedPIDController {
             this.startingPosition = startingPosition;
             this.task = task;
 
-            System.out.println("trapezoid schedule, start: " + startingPosition * 360 / 133.33 / 2048 + ", end: " + task.value * 360 / 133.33 / 2048);
+            // System.out.println("trapezoid schedule, start: " + startingPosition + ", end: " + task.value);
 
             scheduleCheckPoints();
 
-            /* here we print the checkpoints, they look good */
-            System.out.println("<-- checkpoints: -->");
-            for (CheckPoint checkPoint:checkPoints)
-                System.out.println("time: " + checkPoint.time + ", velocity: " + checkPoint.velocity * 360 / 133.33 / 2048 + ", position: " + checkPoint.position * 360 / 133.33 / 2048);
-            System.out.println("<-- END -->");
+//            /* here we print the checkpoints, they look good */
+//            System.out.println("<-- checkpoints: -->");
+//            for (CheckPoint checkPoint:checkPoints)
+//                System.out.println("time: " + checkPoint.time + ", velocity: " + checkPoint.velocity + ", position: " + checkPoint.position);
+//            System.out.println("<-- END -->");
+
         }
 
         private void scheduleCheckPoints() {

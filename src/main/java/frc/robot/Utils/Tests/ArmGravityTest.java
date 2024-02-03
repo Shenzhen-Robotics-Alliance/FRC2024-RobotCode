@@ -21,6 +21,7 @@ public class ArmGravityTest implements SimpleRobotTest {
             0,
             Math.toRadians(240) / radianPerEncoderTick,
             Math.toRadians(150) / radianPerEncoderTick,
+            0.2,
             new LookUpTable(new double[] {Math.toRadians(0) / radianPerEncoderTick, Math.toRadians(20) / radianPerEncoderTick, Math.toRadians(45) / radianPerEncoderTick, Math.toRadians(90) / radianPerEncoderTick}, new double[] {0, 0.12, 0, -0.15})
             ));
 

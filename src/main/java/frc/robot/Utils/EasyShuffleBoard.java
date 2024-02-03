@@ -13,14 +13,14 @@ import java.util.Map;
 public class EasyShuffleBoard {
     private static final Map<String, Map<String, GenericEntry>> widgetsInTags = new HashMap<>();
     public static void putNumber(String tab, String title, double number) {
-        if (!widgetsInTags.containsKey(tab))
-            widgetsInTags.put(tab, new HashMap<>());
-        if (!widgetsInTags.get(tab).containsKey(title))
-            widgetsInTags.get(tab).put(title, Shuffleboard.getTab(tab).add(title, number).getEntry());
         try {
+            if (!widgetsInTags.containsKey(tab))
+                widgetsInTags.put(tab, new HashMap<>());
+            if (!widgetsInTags.get(tab).containsKey(title))
+                widgetsInTags.get(tab).put(title, Shuffleboard.getTab(tab).add(title, number).getEntry());
             widgetsInTags.get(tab).get(title).setDouble(number);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
+            // System.out.println("<-- shuffleboard error, ignoring... -->"); // TODO a lot of error here
         }
 
     }

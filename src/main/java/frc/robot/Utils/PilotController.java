@@ -126,7 +126,7 @@ public class PilotController {
     }
 
     public void updateKeys() {
-        for (int keyPort = 0; keyPort < buttonsOnHold.length; keyPort++) {
+        for (int keyPort = 1; keyPort < buttonsOnHold.length; keyPort++) {
             final boolean currentStatus = rawController.getRawButton(keyPort);
             this.buttonsOnPress[keyPort] = !buttonsOnHold[keyPort] && currentStatus;
             this.buttonsOnRelease[keyPort] = buttonsOnHold[keyPort] && !currentStatus;

@@ -1,10 +1,10 @@
 package frc.robot.Modules.UpperStructure;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Modules.PositionReader.PositionEstimator;
 import frc.robot.Modules.RobotModuleBase;
 import frc.robot.Utils.ComputerVisionUtils.AprilTagReferredTarget;
+import frc.robot.Utils.EasyShuffleBoard;
 import frc.robot.Utils.MathUtils.LookUpTable;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
@@ -99,10 +99,10 @@ public class Shooter extends RobotModuleBase {
         final double desiredEncoderVelocity = decideRPM() / encoderVelocityToRPM;
         for (int shooterID = 0; shooterID < shooters.length; shooterID++) {
             speedControllers[shooterID].setDesiredSpeed(desiredEncoderVelocity);
-            SmartDashboard.putNumber("Shooter " + shooterID + " actual speed", shooters[shooterID].getEncoderVelocity() * encoderVelocityToRPM);
+            EasyShuffleBoard.putNumber("shooter", "motor " + shooterID + " actual speed", shooters[shooterID].getEncoderVelocity() * encoderVelocityToRPM);
         }
 
-        SmartDashboard.putNumber("Shooter Desired RPM", specifiedRPM);
+        EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", specifiedRPM);
     }
 
     private double decideRPM() {

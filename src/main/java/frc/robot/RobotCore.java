@@ -207,14 +207,21 @@ public class RobotCore {
 //                configsToTune.add("chassis/steerCorrectionPowerFullWheelSpeed");
 
                 /* arm pid */
-                configsToTune.add("arm/maximumPower");
-                configsToTune.add("arm/errorStartDecelerate");
-                configsToTune.add("arm/errorTolerance");
-                configsToTune.add("arm/feedForwardTime");
-                configsToTune.add("arm/errorAccumulationProportion");
-                configsToTune.add("arm/maxAcceleration");
-                configsToTune.add("arm/maxVelocity");
-                configsToTune.add("arm/errorToleranceAsInPosition");
+//                configsToTune.add("arm/maximumPower");
+//                configsToTune.add("arm/errorStartDecelerate");
+//                configsToTune.add("arm/errorTolerance");
+//                configsToTune.add("arm/feedForwardTime");
+//                configsToTune.add("arm/errorAccumulationProportion");
+//                configsToTune.add("arm/maxAcceleration");
+//                configsToTune.add("arm/maxVelocity");
+//                configsToTune.add("arm/inAdvanceTime");
+//                configsToTune.add("arm/errorToleranceAsInPosition");
+
+                /* arm positions */
+//                configsToTune.add("arm/position-DEFAULT");
+//                configsToTune.add("arm/position-INTAKE");
+//                configsToTune.add("arm/position-SHOOT_NOTE");
+//                configsToTune.add("arm/position-SCORE_AMPLIFIER");
         }
 
         /**

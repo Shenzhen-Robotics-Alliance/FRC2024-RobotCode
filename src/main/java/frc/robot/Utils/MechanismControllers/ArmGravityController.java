@@ -74,8 +74,10 @@ public class ArmGravityController implements MechanismController {
     public double getMotorPower(double mechanismVelocity, double mechanismPosition) {
         if (!alive) return 0;
         final double scheduleTimer = (System.currentTimeMillis() - currentScheduleCreatedTime) / 1000.0,
-                currentDesiredPositionAccordingToSchedule = currentSchedule.getCurrentPathPosition(scheduleTimer),
-                // currentDesiredPositionAccordingToSchedule = desiredPosition, // disable the profiled PID control for test
+                currentDesiredVelocityAccordingToSchedule = Math.copySign(currentSchedule.getCurrentSpeed(scheduleTimer), currentSchedule.getCurrentPathPosition(1) - currentSchedule.getCurrentPathPosition(0)),
+                currentDesiredPositionAccordingToSchedule = currentSchedule.getCurrentPathPosition(scheduleTimer)
+                        /* to solve the delay problem of trapezoid scheduled control, we set the desired position some time(about .5s) in advance, according to the current speed */
+                        + currentDesiredVelocityAccordingToSchedule * profile.inAdvanceTime,
                 gravityCorrectionPower = profile.gravityTorqueEquilibriumMotorPowerLookUpTable.getYPrediction(mechanismPosition),
                 dt = (System.currentTimeMillis() - previousTimeMillis) / 1000.0,
                 pidCorrectionPower = enhancedPIDController.getMotorPowerGoToPositionClassic(mechanismPosition, mechanismVelocity,
@@ -85,8 +87,9 @@ public class ArmGravityController implements MechanismController {
 
         EasyShuffleBoard.putNumber("arm", "mechanism actual position", Math.toDegrees(mechanismPosition));
         EasyShuffleBoard.putNumber("arm", "mechanism actual velocity", Math.toDegrees(mechanismVelocity));
-        EasyShuffleBoard.putNumber("arm", "current desired position (not updated)", Math.toDegrees(desiredPosition));
         EasyShuffleBoard.putNumber("arm", "current desired position (with schedule)", Math.toDegrees(currentDesiredPositionAccordingToSchedule));
+        EasyShuffleBoard.putNumber("arm", "current desired position (with compensation", Math.toDegrees(currentSchedule.getCurrentPathPosition(scheduleTimer)
+                + Math.copySign(currentSchedule.getCurrentSpeed(scheduleTimer), currentSchedule.getCurrentPathPosition(1) - currentSchedule.getCurrentPathPosition(0)) * profile.inAdvanceTime));
         EasyShuffleBoard.putNumber("arm", "current desired velocity with schedule",  Math.toDegrees(currentSchedule.getCurrentSpeed(scheduleTimer)));
         EasyShuffleBoard.putNumber("arm", "gravity correction power", gravityCorrectionPower);
         EasyShuffleBoard.putNumber("arm", "pid correction power", pidCorrectionPower);
@@ -112,6 +115,7 @@ public class ArmGravityController implements MechanismController {
         public final LookUpTable gravityTorqueEquilibriumMotorPowerLookUpTable;
         public final EnhancedPIDController.StaticPIDProfile staticPIDProfile;
         public final EnhancedPIDController.DynamicalPIDProfile dynamicalPIDProfile;
+        public final double inAdvanceTime;
 
         /**
          * Creates a arm PID profile which is another dynamic pid profile
@@ -121,10 +125,11 @@ public class ArmGravityController implements MechanismController {
          * @param maxAcceleration                       the maximum instant acceleration that the mechanism can achieve with the max power
          * @param maxVelocity                           the restriction on the velocity of the mechanism
          */
-        public ArmProfile(double maxPowerAllowed, double errorStartDecelerate, double errorTolerance, double feedForwardTime, double integralCoefficient, double maxAcceleration, double maxVelocity, LookUpTable gravityTorqueEquilibriumMotorPowerLookUpTable) {
+        public ArmProfile(double maxPowerAllowed, double errorStartDecelerate, double errorTolerance, double feedForwardTime, double integralCoefficient, double maxAcceleration, double maxVelocity, double inAdvanceTime, LookUpTable gravityTorqueEquilibriumMotorPowerLookUpTable) {
             this.dynamicalPIDProfile = new EnhancedPIDController.DynamicalPIDProfile(Double.POSITIVE_INFINITY, maxPowerAllowed, 0, errorTolerance, integralCoefficient, 0, maxAcceleration, maxVelocity);
             this.staticPIDProfile = new EnhancedPIDController.StaticPIDProfile(Double.POSITIVE_INFINITY, maxPowerAllowed, 0, errorStartDecelerate, errorTolerance, feedForwardTime, integralCoefficient, 0);
             this.gravityTorqueEquilibriumMotorPowerLookUpTable = gravityTorqueEquilibriumMotorPowerLookUpTable;
+            this.inAdvanceTime = inAdvanceTime;
         }
     }
 }

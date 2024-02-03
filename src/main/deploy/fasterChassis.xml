@@ -34,9 +34,13 @@
         <backRightWheelZeroPosition type = "double">-2.329</backRightWheelZeroPosition>
     </hardware>
     <chassis>
-        <!-- override existing -->
-        <steerCorrectionPowerRateAtZeroWheelSpeed type="double">1</steerCorrectionPowerRateAtZeroWheelSpeed>
-        <steerCorrectionPowerFullWheelSpeed type="'double">1</steerCorrectionPowerFullWheelSpeed> <!-- we do not use dynamic pid in this chassis -->
+        <!-- profiled translational velocity controller -->
+        <translationalTaskUpdatableRange type="double">0.15</translationalTaskUpdatableRange>
+        <ignoredAccelerateTime type="double">0.1</ignoredAccelerateTime>
+        <robotMaximumSpeed type="double">6</robotMaximumSpeed>
+        <timeNeededToFullyAccelerate type="double">0.4</timeNeededToFullyAccelerate>
+        <robotSpeedActivateSpeedControl type="double">0.1</robotSpeedActivateSpeedControl>
+
 
         <!-- position controller -->
         <robotPositionErrorTolerance type="double">0.02</robotPositionErrorTolerance> <!-- in meters -->
@@ -44,5 +48,14 @@
         <robotPositionMaximumCorrectionPower type="double">0.8</robotPositionMaximumCorrectionPower>
         <robotPositionMinimumCorrectionPower type="double">0.05</robotPositionMinimumCorrectionPower>
         <robotPositionFeedForwardTime type="double">0.14</robotPositionFeedForwardTime> <!-- in seconds -->
+
+        <!-- PID coefficients for steer wheels -->
+        <steerWheelErrorTolerance type = "double">1</steerWheelErrorTolerance> <!-- the amount of error to ignore, in degrees -->
+        <steerWheelErrorStartDecelerate type = "double">60</steerWheelErrorStartDecelerate> <!-- the amount of error where the motors should try to correct using full motor speed, in degrees -->
+        <steerWheelMaximumPower type = "double">0.85</steerWheelMaximumPower> <!-- use this value as the full speed -->
+        <steerWheelMinimumPower type = "double">0.03</steerWheelMinimumPower> <!-- this is the minimum amount of motor speed needed to turn the steer, in percentage of the full speed -->
+        <steerWheelFeedForwardTime type = "double">0</steerWheelFeedForwardTime>
+        <steerCorrectionPowerRateAtZeroWheelSpeed type="double">1</steerCorrectionPowerRateAtZeroWheelSpeed>
+        <steerCorrectionPowerFullWheelSpeed type="double">1</steerCorrectionPowerFullWheelSpeed>
     </chassis>
 </robotConfig>

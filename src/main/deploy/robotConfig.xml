@@ -76,6 +76,7 @@
         <wheelsPowerConstrain type="double">1.1</wheelsPowerConstrain>
         <rotationalSpeedMaxSacrifice type="double">0.3</rotationalSpeedMaxSacrifice>
 
+        <timeLockRotationAfterRotationalInputStops>0.3</timeLockRotationAfterRotationalInputStops>
         <!-- the configuration for rotation controller -->
         <robotRotationalErrorTolerance type="double">1</robotRotationalErrorTolerance> <!-- in degrees -->
         <robotRotationalErrorStartDecelerate type="double">45</robotRotationalErrorStartDecelerate> <!-- in degrees -->
@@ -116,9 +117,9 @@
 <!--        <launchPower>0.75</launchPower>-->
 <!--        <intakePower>0.65</intakePower>-->
 <!--        <revertPower>-0.65</revertPower>-->
-        <launchPower>0</launchPower>
-        <intakePower>0</intakePower>
-        <revertPower>0</revertPower>
+        <launchPower>0.45</launchPower>
+        <intakePower>0.35</intakePower>
+        <revertPower>0.35</revertPower>
         <distanceSensorThreshold>22</distanceSensorThreshold>
         <splitTime>0.5</splitTime>
     </intake>
@@ -129,10 +130,14 @@
         <armEncoderReversed>0</armEncoderReversed>
 
         <!-- arm positions -->
-        <position-DEFAULT>50</position-DEFAULT> <!-- 60 -->
-        <position-INTAKE>96</position-INTAKE>
-        <position-SHOOT_NOTE>75</position-SHOOT_NOTE>
+        <position-DEFAULT>70</position-DEFAULT> <!-- 60 -->
+        <position-INTAKE>100</position-INTAKE>
+        <position-SHOOT_NOTE>82</position-SHOOT_NOTE>
         <position-SCORE_AMPLIFIER>15</position-SCORE_AMPLIFIER>
+
+        <!-- software limit -->
+        <lowerPositionLimit>5</lowerPositionLimit>
+        <upperPositionLimit>100</upperPositionLimit>
 
         <!-- arm PID -->
         <maximumPower>0.6</maximumPower>
@@ -141,15 +146,12 @@
         <feedForwardTime>0.06</feedForwardTime>
         <errorAccumulationProportion>0</errorAccumulationProportion>
         <maxAcceleration>180</maxAcceleration>
-        <maxVelocity>120</maxVelocity>
+        <maxVelocity>150</maxVelocity>
+        <inAdvanceTime>0.25</inAdvanceTime>
         <errorToleranceAsInPosition>2</errorToleranceAsInPosition>
 
         <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
         <encoderZeroPositionRadians>6</encoderZeroPositionRadians>
-
-        <!-- software limit -->
-        <lowerPositionLimit>5</lowerPositionLimit>
-        <upperPositionLimit>98</upperPositionLimit>
 
         <!-- lookup table -->
         <encoderPosition0>0</encoderPosition0>
@@ -211,9 +213,9 @@
         <pilotRotationalAxisExponent>2</pilotRotationalAxisExponent>
 
         <!-- key bindings -->
-        <resetChassisButton type="int">5</resetChassisButton>
+        <translationAutoPilotButton type="int">5</translationAutoPilotButton>
         <lockChassisButtonPort type="int">3</lockChassisButtonPort>
-        <maintainCurrentRotationButton type="int">4</maintainCurrentRotationButton>
+        <rotationAutoPilotButton type="int">4</rotationAutoPilotButton>
     </control-RM_BOXER>
     <control-JOYSTICK>
         <controllerPort type="int">1</controllerPort>
@@ -230,9 +232,9 @@
         <pilotTranslationalAxisExponent>1.8</pilotTranslationalAxisExponent>
         <pilotRotationalAxisExponent>2</pilotRotationalAxisExponent>
 
-        <resetChassisButton type="int">11</resetChassisButton>
+        <translationAutoPilotButton type="int">11</translationAutoPilotButton>
         <lockChassisButtonPort type="int">4</lockChassisButtonPort>
-        <maintainCurrentRotationButton type="int">3</maintainCurrentRotationButton>
+        <rotationAutoPilotButton type="int">3</rotationAutoPilotButton>
     </control-JOYSTICK>
 
     <control-XBOX>
@@ -250,8 +252,8 @@
         <pilotTranslationalAxisExponent>1.6</pilotTranslationalAxisExponent>
         <pilotRotationalAxisExponent>2</pilotRotationalAxisExponent>
 
-        <resetChassisButton type="int">2</resetChassisButton>
+        <translationAutoPilotButton type="int">2</translationAutoPilotButton>
         <lockChassisButtonPort type="int">10</lockChassisButtonPort>
-        <maintainCurrentRotationButton type="int">9</maintainCurrentRotationButton>
+        <rotationAutoPilotButton type="int">9</rotationAutoPilotButton>
     </control-XBOX>
 </robotConfig>
