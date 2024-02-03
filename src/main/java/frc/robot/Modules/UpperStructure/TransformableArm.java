@@ -67,8 +67,8 @@ public class TransformableArm extends RobotModuleBase {
 
     @Override
     protected void periodic(double dt) {
-        EasyShuffleBoard.putNumber("arm", "module update rate", (int)(1/dt));
-        System.out.println("arm current position: " + desiredPosition);
+        EasyShuffleBoard.putNumber("arm", "module dt", (int)(dt*1000));
+        // System.out.println("arm current position: " + desiredPosition);
         armController.goToDesiredPosition(desiredEncoderPosition = desiredEncoderPositionTable.get(desiredPosition));
 
         if (this.desiredPosition == TransformerPosition.SHOOT_NOTE && shooterModule != null)

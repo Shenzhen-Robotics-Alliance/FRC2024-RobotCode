@@ -160,7 +160,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
         }
         if (SET_ACTIVATE_BUTTON)
             gainOwnerShipsToModules();
-        System.out.println("intake and shooter service current status: " + currentStatus);
+        // System.out.println("intake and shooter service current status: " + currentStatus);
     }
 
     private void startIntakeProcess() {

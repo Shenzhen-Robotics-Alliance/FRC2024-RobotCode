@@ -33,7 +33,6 @@ public class FlyWheelSpeedController implements MechanismController {
 
     public void setDesiredSpeed(double newDesiredSpeed) {
         // v = at, t = v / a
-        System.out.println("jmp to tgt: " + (Math.abs(newDesiredSpeed - desiredSpeed) < jumpToDesiredSpeedMarginInMaximumSpeed * profile.maximumSpeed));
         if (Math.abs(newDesiredSpeed - desiredSpeed) < jumpToDesiredSpeedMarginInMaximumSpeed * profile.maximumSpeed)
             this.desiredSpeed = newDesiredSpeed;
         else

@@ -36,7 +36,7 @@ public class JetsonDetectionAppClient implements RawObjectDetectionCamera {
             try {
                 tryToEstablishConnectionWithServer();
             } catch (Exception e) {
-                System.out.println("<-- Jetson Client | Connection failed. Waiting for the server to start... -->");
+                // System.out.println("<-- Jetson Client | Connection failed. Waiting for the server to start... -->");
                 try {Thread.sleep(50);} catch (InterruptedException ignored) {}
             }
         }
@@ -50,9 +50,9 @@ public class JetsonDetectionAppClient implements RawObjectDetectionCamera {
         try {
             pullResultsFromServer(connection);
         } catch (SocketTimeoutException e) {
-            System.out.println("<-- Jetson Client | Connection timeout. Waiting for the server to start... -->");
+            // System.out.println("<-- Jetson Client | Connection timeout. Waiting for the server to start... -->");
         } catch (ConnectException e) {
-            System.out.println("<-- Jetson Client | Connection error. Waiting for the server to start... -->");
+            // System.out.println("<-- Jetson Client | Connection error. Waiting for the server to start... -->");
         }
 
         connection.disconnect();
