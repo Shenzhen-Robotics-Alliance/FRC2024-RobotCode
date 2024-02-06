@@ -74,7 +74,7 @@ public class TransformableArm extends RobotModuleBase {
         if (this.desiredPosition == TransformerPosition.SHOOT_NOTE && shooterModule != null)
             armController.updateDesiredPosition(desiredEncoderPosition = (desiredEncoderPositionTable.get(TransformerPosition.SHOOT_NOTE) + shooterModule.getArmPositionWithAimingSystem()));
 
-        armLifterMechanism.updateWithController(this);
+        armLifterMechanism.disableMotor(this); // armLifterMechanism.updateWithController(this); // TODO here we disable the arm for testing
     }
 
     /**
@@ -153,6 +153,7 @@ public class TransformableArm extends RobotModuleBase {
 
     public boolean transformerInPosition() {
         // System.out.println("transformer error: " + Math.toDegrees(Math.abs(armEncoder.getEncoderPosition() - desiredEncoderPosition)) + ", tolerance: " + Math.toDegrees(errorAsArmReady));
-        return Math.abs(armEncoder.getEncoderPosition() - desiredEncoderPosition) < errorAsArmReady;
+        // return Math.abs(armEncoder.getEncoderPosition() - desiredEncoderPosition) < errorAsArmReady;
+        return true; // TODO here we tell the system that we are always ready as we have disabled the arm
     }
 }
