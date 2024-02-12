@@ -5,6 +5,7 @@ import frc.robot.Drivers.Visions.RawObjectDetectionCamera;
 import frc.robot.Modules.PositionReader.PositionEstimator;
 import frc.robot.RobotCore;
 import frc.robot.Utils.MathUtils.BezierCurve;
+import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.StatisticsUtils;
 import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.SequentialCommandFactory;
@@ -62,7 +63,8 @@ public class AprilTagCameraAutomaticMeasuring implements AutoStageProgram{
                         toFieldPosition(targetedPosition),
                         () -> System.out.println("moving to position"),
                         this::putDataOnDashBoard,
-                        () -> targetInPlace(robotCore.positionReader)
+                        () -> targetInPlace(robotCore.positionReader),
+                        new Rotation2D(0), new Rotation2D(0)
                 ));
                 robotPreviousPosition = targetedPosition;
                 horizontalDistance += unitSpace;

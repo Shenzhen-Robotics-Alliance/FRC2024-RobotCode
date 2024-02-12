@@ -80,6 +80,16 @@ public class SequentialCommandFactory {
         );
     }
 
+    public SequentialCommandSegment moveFromPointToPointAndStop(Vector2D startingPoint, Vector2D endingPoint, Runnable beginning, Runnable periodic, Runnable ending, Rotation2D startingRotation, Rotation2D endingRotation) {
+        return new SequentialCommandSegment(
+                justGo,
+                () -> new BezierCurve(startingPoint, endingPoint),
+                beginning, periodic, ending,
+                chassis::isCurrentTranslationalTaskFinished,
+                () -> startingRotation, () -> endingRotation
+        );
+    }
+
     public SequentialCommandSegment justDoIt(Runnable job) {
         return new SequentialCommandSegment(
                 justGo,

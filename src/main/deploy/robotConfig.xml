@@ -96,9 +96,9 @@
         <errorToleranceAsCommandFinished>2</errorToleranceAsCommandFinished>
 
         <!-- the configuration of steer wheels -->
-        <maxUnusedTime type="double">2</maxUnusedTime> <!-- the amount of time that the steer wheel will wait when not used until they go back to default position -->
+        <maxUnusedTime type="double">1</maxUnusedTime> <!-- the amount of time that the steer wheel will wait when not used until they go back to default position -->
         <defaultPosition type="double">90</defaultPosition> <!--to straight forward-->
-        <minUsageSpeed type="double">0.04</minUsageSpeed>
+        <minUsageSpeed type="double">0.02</minUsageSpeed>
     </chassis>
 
     <!-- robot module configs goes here -->
@@ -133,14 +133,14 @@
         <armEncoderReversed>0</armEncoderReversed>
 
         <!-- arm positions -->
-        <position-DEFAULT>97</position-DEFAULT> <!-- 60 -->
-        <position-INTAKE>100</position-INTAKE>
+        <position-DEFAULT>105</position-DEFAULT> <!-- 60 -->
+        <position-INTAKE>110</position-INTAKE>
         <position-SHOOT_NOTE>92</position-SHOOT_NOTE>
         <position-SCORE_AMPLIFIER>5</position-SCORE_AMPLIFIER>
 
         <!-- software limit -->
-        <lowerPositionLimit>-5</lowerPositionLimit>
-        <upperPositionLimit>105</upperPositionLimit>
+        <lowerPositionLimit>0</lowerPositionLimit>
+        <upperPositionLimit>115</upperPositionLimit>
 
         <!-- arm PID -->
         <maximumPower>0.65</maximumPower>
@@ -154,7 +154,7 @@
         <errorToleranceAsInPosition>4</errorToleranceAsInPosition>
 
         <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
-        <encoderZeroPositionRadians>0.766</encoderZeroPositionRadians>
+        <encoderZeroPositionRadians>5.854</encoderZeroPositionRadians>
 
         <!-- lookup table -->
         <encoderPosition0>0</encoderPosition0>

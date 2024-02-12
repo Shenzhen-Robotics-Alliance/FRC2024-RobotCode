@@ -318,9 +318,9 @@ public class SwerveWheel extends RobotModuleBase {
     public double drive(double heading, double speed, RobotModuleOperatorMarker operator) {
         if (!isOwner(operator))
             return 0;
-        this.targetedSpeed = speed;
-        if (speed > lowestUsageSpeed)
-            this.commandedHeading = heading;
+        final boolean inUse = speed > lowestUsageSpeed;
+        this.commandedHeading = inUse ? heading : commandedHeading;
+        this.targetedSpeed = inUse ? speed : 0;
         return speed;
     }
 
