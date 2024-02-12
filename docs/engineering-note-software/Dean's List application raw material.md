@@ -4,7 +4,7 @@ Dear FTC Dean's List Award Judges,
 
 I am honored to recommend Yiran Liu, or Sam, for the prestigious FTC Dean's List Award. Sam has been fulfilling the roles of team captain and chief programmer in Team 19581 *IRON MAPLE* since last year (2022). He has consistently demonstrated exemplary leadership, technical expertise, and remarkable dedication to the program. His contributions and impact on both our team and the FTC community are truly outstanding.
 
-
+I am a mentor in an FRC team in Shenzhen, and I would like to nominate a student named Yiran Liu (also called Sam) as an FRC dean's list candidate. I have written my metarials.  However, the essay I wrote is not organized in the order required by FIRST.  So I want you to read my essay and answer five questions specified by FIRST.  Now you only need to read my essay and tell me if you understand its content, here is my essay:
 
 #### Joining the team
 
@@ -20,7 +20,7 @@ FIRST events have been cancelled throughout China during the past three years. T
 
 #### seeking to learn abroad
 
-Before the start of the new season, I recommended Sam to go to a summer camp by Carnegie Melon University called Feiyue, where he can learn some experiences from the Americans. It was a summer camp intended to help new FRC paritcipants around the world by having them work with experienced mentors who are team members from local team 3504 "Girls of Steel" and team 4467 "Titanium Titans". The event lasted for two weeks, and apart from learning skills and knowledges, gaining inspirations and ideas is more important in my opinion.  Sam, for example, was deeply shocked by the vision-guided auto driving function of hyperion, the 2023 competition robot by 4467, and wanted to develop a similar system in his program.  But above all, the camp ignited the passion of the kid and he got obsessed with this competition. 
+Before the start of the new season, I recommended Sam to go to a summer camp by Carnegie Melon University called Feiyue, where he can learn some experiences from the Americans. It was a summer camp intended to help new FRC paritcipants around the world by having them work with experienced mentors who are themselves team members from local team 3504 "Girls of Steel" and team 4467 "Titanium Titans". The event lasted for two weeks, and apart from learning skills and knowledges, gaining inspirations and ideas is more important in my opinion.  Sam, for example, was deeply shocked by the vision-guided auto driving function of hyperion, the 2023 competition robot by 4467. As a result, he wanted to develop a similar system in his program.  Above all, the camp ignited the passion of the kid-he got obsessed with this competition. 
 
 
 #### the new FRC season
@@ -33,3 +33,16 @@ As we are moving to Feburary, the machine is nearly finished.  Sam is starting t
 
 #### future plans
 
+Inspired by the Feiyue summer camp, Sam is planning to set up a similar project. He wants use our club classroom as the basement and open a summer project facing students from other high schools in ShenZhen, and introduce them to the world of FIRST Roboticis. This idea came into his mind because a lot of high schools in our region that have previously been participating in FIRST Robotics were in hard times of transition.  Unlike our team that still has experts like Sam and I, some teams can't even get the game started because there were literally no one who knows how to code for the robot after that three-year-gap of the pandamic. Therefore, Sam plans to open this project after finishing his last FRC competion in Feburary 2025, at that time he will have a handful of free time.  He will focus on introducing the principals and guidelins of engineering to the newers, help them find their positions in the team, and most importantly ignite their passion in Robotics. 
+
+
+Before I give you the questions, please keep the following in mind:
+1. you are only allowed to use facts that I have mentioned in my essay, everything you write must be supported by my essay. 
+2. You should write no more than 800 characters (which is about 120 words) for each question. So you ought to use simple and clear language, and focus on the main idea. 
+3. Remember to provide as much details and facts as possible to support your point. Don't just write "Sam demonstrated the FIRST spirit", write about the specific things Sam did that demonstrates the spirit. You must avoid writing "empty sentences" where you just repeat the question provide no useful informations to the judges.
+Do you understand?
+
+
+
+
+(The writting above is created by team 5516, and organized by GPT4)
