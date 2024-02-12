@@ -13,7 +13,7 @@ import frc.robot.Utils.RobotConfigReader;
 
 public class ArmSoftwareLimitTest implements SimpleRobotTest {
     private final TalonFXMotor armMotor = new TalonFXMotor(new TalonFX(25), false);
-    private final Encoder armEncoder = new DCAbsolutePositionEncoder(1);
+    private final Encoder armEncoder = new DCAbsolutePositionEncoder(0);
     private final EncoderMotorMechanism armMechanism = new EncoderMotorMechanism(armEncoder, armMotor);
     private final XboxController xboxController = new XboxController(1);
     @Override

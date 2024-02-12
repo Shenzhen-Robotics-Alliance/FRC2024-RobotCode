@@ -2,6 +2,7 @@ package frc.robot.Utils;
 
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,12 +18,22 @@ public class EasyShuffleBoard {
             if (!widgetsInTags.containsKey(tab))
                 widgetsInTags.put(tab, new HashMap<>());
             if (!widgetsInTags.get(tab).containsKey(title))
-                widgetsInTags.get(tab).put(title, Shuffleboard.getTab(tab).add(title, number).getEntry());
+                addEntry(tab, Shuffleboard.getTab(tab), title, number, 0);
             widgetsInTags.get(tab).get(title).setDouble(number);
-        } catch (Exception ignored) {
-            // System.out.println("<-- shuffleboard error, ignoring... -->"); // TODO a lot of error here
+        } catch (Exception e) {
+            e.printStackTrace();
+            // System.out.print("<-- shuffleboard exception, ignoring... -->"); // TODO concurrent modification exception
         }
+    }
 
+    private static void addEntry(String tabName, ShuffleboardTab tab, String title, double number, int duplicate) {
+        final String actualTitle =
+                duplicate == 0 ? title : title + " (" + duplicate + ")";
+        try {
+            widgetsInTags.get(tab.getTitle()).put(title, tab.add(actualTitle, number).getEntry());
+        } catch (IllegalArgumentException ignored){
+            addEntry(tabName, tab, title, number, duplicate+1);
+        }
     }
 
     public static double getNumber(String tag, String title, double defaultValue) {
@@ -31,7 +42,7 @@ public class EasyShuffleBoard {
         try {
             return widgetsInTags.get(tag).get(title).getDouble(defaultValue);
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             return defaultValue;
         }
 
