@@ -30,7 +30,7 @@ public class EasyShuffleBoard {
         final String actualTitle =
                 duplicate == 0 ? title : title + " (" + duplicate + ")";
         try {
-            widgetsInTags.get(tab.getTitle()).put(title, tab.add(actualTitle, number).getEntry());
+            widgetsInTags.get(tabName).put(title, tab.add(actualTitle, number).getEntry());
         } catch (IllegalArgumentException ignored){
             addEntry(tabName, tab, title, number, duplicate+1);
         }

@@ -127,7 +127,7 @@ public class ArmGravityController implements MechanismController {
          */
         public ArmProfile(double maxPowerAllowed, double errorStartDecelerate, double errorTolerance, double feedForwardTime, double integralCoefficient, double maxAcceleration, double maxVelocity, double inAdvanceTime, LookUpTable gravityTorqueEquilibriumMotorPowerLookUpTable) {
             this.dynamicalPIDProfile = new EnhancedPIDController.DynamicalPIDProfile(Double.POSITIVE_INFINITY, maxPowerAllowed, 0, errorTolerance, integralCoefficient, 0, maxAcceleration, maxVelocity);
-            this.staticPIDProfile = new EnhancedPIDController.StaticPIDProfile(Double.POSITIVE_INFINITY, maxPowerAllowed, 0, errorStartDecelerate, errorTolerance, feedForwardTime, integralCoefficient, 0);
+            this.staticPIDProfile = new EnhancedPIDController.StaticPIDProfile(Math.PI * 2, maxPowerAllowed, 0, errorStartDecelerate, errorTolerance, feedForwardTime, integralCoefficient, 0);
             this.gravityTorqueEquilibriumMotorPowerLookUpTable = gravityTorqueEquilibriumMotorPowerLookUpTable;
             this.inAdvanceTime = inAdvanceTime;
         }

@@ -151,7 +151,7 @@
         <errorToleranceAsInPosition>4</errorToleranceAsInPosition>
 
         <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
-        <encoderZeroPositionRadians>6</encoderZeroPositionRadians>
+        <encoderZeroPositionRadians>0.766</encoderZeroPositionRadians>
 
         <!-- lookup table -->
         <encoderPosition0>0</encoderPosition0>

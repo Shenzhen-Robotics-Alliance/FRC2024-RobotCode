@@ -47,7 +47,7 @@ public class RobotConfigReader {
     public RobotConfigReader() {
         try {
             readConfigs("robotConfig");
-            System.out.println("robot config: " + robotConfigs);
+            // System.out.println("robot config: " + robotConfigs);
         } catch (Exception e) {
             throw new RuntimeException("error while reading robot config:" + e);
         }
@@ -56,7 +56,7 @@ public class RobotConfigReader {
         try {
             readConfigs("robotConfig");
             readConfigs(configName); // override the previous
-            System.out.println("robot config: " + robotConfigs);
+            // System.out.println("robot config: " + robotConfigs);
         } catch (Exception e) {
             throw new RuntimeException("error while reading robot config:" + e);
         }

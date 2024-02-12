@@ -136,8 +136,8 @@ public class RobotCore {
                         noteTarget = new AprilTagReferredTarget(aprilTagPositionTrackingCamera, noteTargetReferences); // we call it april tag referred target but it is actually recognized by detect-net app
                 final Shooter.AimingSystem aimingSystem = new Shooter.AimingSystem(positionReader, speakerTarget, 1000);
 
-                final TalonFXMotor armMotor = new TalonFXMotor(new TalonFX(25) ,false);
-                final DCAbsolutePositionEncoder armEncoder = new DCAbsolutePositionEncoder(1, false);
+                final TalonFXMotor armMotor = new TalonFXMotor(new TalonFX(25) ,robotConfig.getConfig("arm/armMotorReversed")!=0);
+                final DCAbsolutePositionEncoder armEncoder = new DCAbsolutePositionEncoder(1, robotConfig.getConfig("arm/armEncoderReversed")!=0);
                 this.transformableArm = new TransformableArm(armMotor, armEncoder, robotConfig); modules.add(transformableArm);
                 final MotorsSet intakeMotors = new MotorsSet(
                         new Motor[] {
