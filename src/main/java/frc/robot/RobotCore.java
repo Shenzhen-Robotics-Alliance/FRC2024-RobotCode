@@ -135,16 +135,6 @@ public class RobotCore {
                         /* TODO note target tracking camera */
                         noteTarget = new AprilTagReferredTarget(aprilTagPositionTrackingCamera, noteTargetReferences); // we call it april tag referred target but it is actually recognized by detect-net app
                 final Shooter.AimingSystem aimingSystem = new Shooter.AimingSystem(positionReader, speakerTarget, 1000);
-
-                final TalonFXMotor armMotor = new TalonFXMotor(new TalonFX(25) ,robotConfig.getConfig("arm/armMotorReversed")!=0);
-                final DCAbsolutePositionEncoder armEncoder = new DCAbsolutePositionEncoder(1, robotConfig.getConfig("arm/armEncoderReversed")!=0);
-                this.transformableArm = new TransformableArm(armMotor, armEncoder, robotConfig); modules.add(transformableArm);
-                final MotorsSet intakeMotors = new MotorsSet(
-                        new Motor[] {
-                                new TalonFXMotor(new TalonFX(13), true),
-                                new TalonFXMotor(new TalonFX(14), true)
-                        });
-                this.intake = new IntakeWithDistanceSensor(intakeMotors, new Rev2mDistanceSensorEncapsulation(), robotConfig); modules.add(intake);
                 final EncoderMotorMechanism[] shooterMechanisms = new EncoderMotorMechanism[] {
                         new TalonFXMotor(
                                 new TalonFX((int)robotConfig.getConfig("shooter/shooter1Port")),
@@ -156,6 +146,17 @@ public class RobotCore {
                         ).toEncoderAndMotorMechanism()
                 };
                 this.shooter = new Shooter(shooterMechanisms, aimingSystem, robotConfig); modules.add(shooter);
+
+
+                final TalonFXMotor armMotor = new TalonFXMotor(new TalonFX(25) ,robotConfig.getConfig("arm/armMotorReversed")!=0);
+                final DCAbsolutePositionEncoder armEncoder = new DCAbsolutePositionEncoder(1, robotConfig.getConfig("arm/armEncoderReversed")!=0);
+                this.transformableArm = new TransformableArm(armMotor, armEncoder, shooter, robotConfig); modules.add(transformableArm);
+                final MotorsSet intakeMotors = new MotorsSet(
+                        new Motor[] {
+                                new TalonFXMotor(new TalonFX(13), true),
+                                new TalonFXMotor(new TalonFX(14), true)
+                        });
+                this.intake = new IntakeWithDistanceSensor(intakeMotors, new TalonFXMotor(new TalonFX(14), true), new Rev2mDistanceSensorEncapsulation(), robotConfig); modules.add(intake);
         }
 
         private SwerveWheel createSwerveWheel(String name, int id, Vector2D wheelInstallationPosition) {

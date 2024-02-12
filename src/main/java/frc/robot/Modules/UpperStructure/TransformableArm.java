@@ -73,7 +73,7 @@ public class TransformableArm extends RobotModuleBase {
 
         if (this.desiredPosition == TransformerPosition.SHOOT_NOTE && shooterModule != null) {
             armController.updateDesiredPosition(desiredEncoderPosition = (desiredEncoderPositionTable.get(TransformerPosition.SHOOT_NOTE) + shooterModule.getArmPositionWithAimingSystem()));
-            System.out.println("updating arm position to: " + Math.toDegrees(desiredEncoderPosition)); // TODO see if the arm module is updating
+            // System.out.println("updating arm position to: " + Math.toDegrees(desiredEncoderPosition)); // TODO see if the arm module is updating
         }
 
 
@@ -155,7 +155,7 @@ public class TransformableArm extends RobotModuleBase {
     }
 
     public boolean transformerInPosition() {
-        // System.out.println("transformer error: " + Math.toDegrees(Math.abs(armEncoder.getEncoderPosition() - desiredEncoderPosition)) + ", tolerance: " + Math.toDegrees(errorAsArmReady));
+        System.out.println("transformer error: " + Math.toDegrees(Math.abs(armEncoder.getEncoderPosition() - desiredEncoderPosition)) + ", tolerance: " + Math.toDegrees(errorAsArmReady));
         return Math.abs(armEncoder.getEncoderPosition() - desiredEncoderPosition) < errorAsArmReady;
     }
 }

@@ -26,7 +26,7 @@ public class CompleteIntakeAndShooterTest implements SimpleRobotTest {
                     new TalonFXMotor(new TalonFX(13), true),
                     new TalonFXMotor(new TalonFX(14), true)
             });
-    final Intake intake = new IntakeWithDistanceSensor(intakeMotors, new Rev2mDistanceSensorEncapsulation(), robotConfig);
+    final Intake intake = new IntakeWithDistanceSensor(intakeMotors, new TalonFXMotor(new TalonFX(14), true), new Rev2mDistanceSensorEncapsulation(), robotConfig);
     final EncoderMotorMechanism[] shooterMechanisms = new EncoderMotorMechanism[] {
             new TalonFXMotor(
                     new TalonFX((int)robotConfig.getConfig("shooter/shooter1Port")),

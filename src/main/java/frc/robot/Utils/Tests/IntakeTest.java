@@ -13,8 +13,8 @@ import frc.robot.Utils.RobotConfigReader;
 public class IntakeTest implements SimpleRobotTest {
     private final MotorsSet intakeMotors = new MotorsSet(
             new Motor[] {
-                    new TalonFXMotor(new TalonFX(14), true),
-                    new TalonFXMotor(new TalonFX(15), true)
+                    new TalonFXMotor(new TalonFX(13), true),
+                    new TalonFXMotor(new TalonFX(14), true)
             });
     private final Intake intake;
     private final XboxController testController = new XboxController(1);
@@ -27,7 +27,7 @@ public class IntakeTest implements SimpleRobotTest {
             throw new RuntimeException(e);
         }
 
-        this.intake = new IntakeWithDistanceSensor(intakeMotors, new Rev2mDistanceSensorEncapsulation(), robotConfigReader);
+        this.intake = new IntakeWithDistanceSensor(intakeMotors, new TalonFXMotor(new TalonFX(14), true), new Rev2mDistanceSensorEncapsulation(), robotConfigReader);
     }
 
     @Override

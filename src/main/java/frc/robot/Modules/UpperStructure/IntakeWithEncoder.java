@@ -31,7 +31,7 @@ public class IntakeWithEncoder extends Intake {
     @Override
     public void onReset() {
         updateConfigs();
-        this.currentStatus = IntakeModuleStatus.DISABLED;
+        this.currentStatus = IntakeModuleStatus.YIELD;
         intakeEncoderMotorMechanism.gainOwnerShip(this);
         intakeEncoderMotorMechanism.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE, this);
     }

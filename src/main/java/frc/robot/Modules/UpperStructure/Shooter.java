@@ -76,7 +76,7 @@ public class Shooter extends RobotModuleBase {
         double maxErrorRPM = 0;
         for (EncoderMotorMechanism shooter:shooters)
             maxErrorRPM = Math.max(Math.abs(shooter.getEncoderVelocity() * encoderVelocityToRPM - decidedRPM), maxErrorRPM);
-        // System.out.println("shooter speed error (rpm): " + maxErrorRPM + ", tolerance: " + shooterReadyErrorBound);
+        System.out.println("shooter speed error (rpm): " + maxErrorRPM + ", tolerance: " + shooterReadyErrorBound);
         return maxErrorRPM < shooterReadyErrorBound;
     }
 
@@ -100,8 +100,12 @@ public class Shooter extends RobotModuleBase {
 
         EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", decideRPM());
 
-        for (EncoderMotorMechanism shooter : shooters)
-            shooter.updateWithController(this);
+        for (EncoderMotorMechanism shooter : shooters) {
+            if (decideRPM() == 0)
+                shooter.setPower(idlePower, this);
+            else
+                shooter.updateWithController(this);
+        }
     }
 
     private double decideRPM() {
@@ -110,7 +114,7 @@ public class Shooter extends RobotModuleBase {
             case SHOOT -> getShooterSpeedWithAimingSystem();
             case AMPLIFY -> amplifyingRPM;
             case SPECIFIED_RPM -> specifiedRPM;
-            default -> idleRPM;
+            default -> 0; // idle
         };
     }
 
@@ -143,13 +147,13 @@ public class Shooter extends RobotModuleBase {
     /* TODO the following constants, move then to robotConfig and tune them */
     /** when the target is unseen */
     private static final double defaultShootingRPM = 6000;
-    private static final double amplifyingRPM = 3000;
-    private static final double idleRPM = 0;
+    private static final double amplifyingRPM = 1200;
+    private static final double idlePower = -0.1;
     private static final double projectileSpeed = 10;
     private static final double shootingRange = 6;
-    private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5, 6}, new double[] {3800, 3900, 4200, 4500, 4800, 5100, 5500, 6000});
+    private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7}, new double[] {5400, 5500, 5600, 5700, 5800, 5900, 6000, 6100, 6200});
     /** the desired arm position for aiming, in degrees and in reference to the default shooting position of the arm, which is specified in the arm configs */
-    private static final LookUpTable armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5, 6}, new double[] {15, 10, 5, 0, -5, -10, -20, -30});
+    private static final LookUpTable armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7}, new double[] {20, 17.5, 15, 12.5, 10, 7.5, 5, 0, -5});
     @Override
     public void updateConfigs() {
         final FlyWheelSpeedController.FlyWheelSpeedControllerProfile speedControllerProfile = new FlyWheelSpeedController.FlyWheelSpeedControllerProfile(
@@ -193,7 +197,7 @@ public class Shooter extends RobotModuleBase {
             return defaultShootingRPM;
         final double distanceToTarget = targetRelativePositionToRobot.getMagnitude();
 
-        System.out.println("shooter corresponding (RPM): " + shooterRPMToTargetDistanceLookUpTable.getYPrediction(distanceToTarget));
+        // System.out.println("shooter corresponding (RPM): " + shooterRPMToTargetDistanceLookUpTable.getYPrediction(distanceToTarget));
         EasyShuffleBoard.putNumber("shooter", "target distance", distanceToTarget);
         EasyShuffleBoard.putNumber("shooter", "shooter corresponding RPM",  shooterRPMToTargetDistanceLookUpTable.getYPrediction(distanceToTarget));
         return shooterRPMToTargetDistanceLookUpTable.getYPrediction(distanceToTarget);

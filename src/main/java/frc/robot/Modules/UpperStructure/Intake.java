@@ -10,10 +10,11 @@ public abstract class Intake extends RobotModuleBase {
     }
 
     public enum IntakeModuleStatus {
-        DISABLED,
+        YIELD,
+        HOLDING,
         GRABBING,
         LAUNCHING,
-        REVERTING
+        SPLITTING
     }
     protected IntakeWithDistanceSensor.IntakeModuleStatus currentStatus;
 
@@ -21,7 +22,12 @@ public abstract class Intake extends RobotModuleBase {
      * @return the intake motor power at disabled status, which is always 0.0
      * */
     protected double updateStatusToDisabled() {
-        this.currentStatus = IntakeWithDistanceSensor.IntakeModuleStatus.DISABLED;
+        this.currentStatus = IntakeWithDistanceSensor.IntakeModuleStatus.YIELD;
+        return 0;
+    }
+
+    protected double updateStatusToHolding() {
+        this.currentStatus = IntakeModuleStatus.HOLDING;
         return 0;
     }
 
@@ -32,7 +38,7 @@ public abstract class Intake extends RobotModuleBase {
     public void turnOffIntake(RobotServiceBase operatorService) {
         if (!isOwner(operatorService))
             return;
-        this.currentStatus = IntakeModuleStatus.DISABLED;
+        this.currentStatus = IntakeModuleStatus.YIELD;
     }
     /**
      *  start the intake process
@@ -56,11 +62,11 @@ public abstract class Intake extends RobotModuleBase {
         if (!isOwner(operatorService))
             return;
 
-        this.currentStatus = IntakeModuleStatus.REVERTING;
+        this.currentStatus = IntakeModuleStatus.SPLITTING;
     }
 
     public boolean isCurrentTaskComplete() {
-        return currentStatus == IntakeModuleStatus.DISABLED;
+        return currentStatus == IntakeModuleStatus.YIELD;
     }
 
     public abstract boolean isNoteInsideIntake();

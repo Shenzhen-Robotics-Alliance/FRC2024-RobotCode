@@ -110,7 +110,7 @@
         <speedControllerFeedForwardDelay>0</speedControllerFeedForwardDelay>
         <speedControllerMaximumSpeed>6000</speedControllerMaximumSpeed>
         <speedControllerTimeNeededToAccelerateToMaxSpeed>0.8</speedControllerTimeNeededToAccelerateToMaxSpeed>
-        <flyWheelSpeedErrorTolerance>0.1</flyWheelSpeedErrorTolerance> <!-- 0.05 -->
+        <flyWheelSpeedErrorTolerance>0.05</flyWheelSpeedErrorTolerance>
         <shooter1Port>15</shooter1Port>
         <shooter2Port>16</shooter2Port>
         <shooter1Reversed>0</shooter1Reversed>
@@ -120,11 +120,11 @@
 <!--        <launchPower>0.75</launchPower>-->
 <!--        <intakePower>0.65</intakePower>-->
 <!--        <revertPower>-0.65</revertPower>-->
-        <launchPower>0.45</launchPower>
-        <intakePower>0.35</intakePower>
-        <revertPower>-0.35</revertPower>
-        <distanceSensorThreshold>22</distanceSensorThreshold>
-        <splitTime>0.5</splitTime>
+        <launchPower>0.65</launchPower>
+        <intakePower>0.4</intakePower>
+        <revertPower>-0.3</revertPower>
+        <distanceSensorThreshold>30</distanceSensorThreshold>
+        <splitTime>0.4</splitTime>
     </intake>
     <arm>
         <armMotorPort>25</armMotorPort>
@@ -133,25 +133,25 @@
         <armEncoderReversed>0</armEncoderReversed>
 
         <!-- arm positions -->
-        <position-DEFAULT>105</position-DEFAULT> <!-- 60 -->
-        <position-INTAKE>110</position-INTAKE>
-        <position-SHOOT_NOTE>92</position-SHOOT_NOTE>
-        <position-SCORE_AMPLIFIER>5</position-SCORE_AMPLIFIER>
+        <position-DEFAULT>96</position-DEFAULT> <!-- 60 -->
+        <position-INTAKE>108</position-INTAKE>
+        <position-SHOOT_NOTE>90</position-SHOOT_NOTE>
+        <position-SCORE_AMPLIFIER>0</position-SCORE_AMPLIFIER>
 
         <!-- software limit -->
-        <lowerPositionLimit>0</lowerPositionLimit>
+        <lowerPositionLimit>-0.1</lowerPositionLimit>
         <upperPositionLimit>115</upperPositionLimit>
 
         <!-- arm PID -->
-        <maximumPower>0.65</maximumPower>
-        <errorStartDecelerate>48</errorStartDecelerate>
+        <maximumPower>0.6</maximumPower>
+        <errorStartDecelerate>35</errorStartDecelerate>
         <errorTolerance>1.5</errorTolerance>
         <feedForwardTime>0.06</feedForwardTime>
         <errorAccumulationProportion>0</errorAccumulationProportion>
         <maxAcceleration>180</maxAcceleration>
         <maxVelocity>150</maxVelocity>
         <inAdvanceTime>0.25</inAdvanceTime>
-        <errorToleranceAsInPosition>4</errorToleranceAsInPosition>
+        <errorToleranceAsInPosition>2.5</errorToleranceAsInPosition>
 
         <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
         <encoderZeroPositionRadians>5.854</encoderZeroPositionRadians>
