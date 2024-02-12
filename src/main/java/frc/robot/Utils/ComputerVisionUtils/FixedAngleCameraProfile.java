@@ -17,8 +17,8 @@ public final class FixedAngleCameraProfile {
      * create a profile for n april tag camera with fixed angle
      *
      * @param cameraInstallationAngleRadian       the installation angle of the camera, 0 for VERTICALLY DOWNWARDS, positive is to the upper side, in radians
-     * @param angleRadianPerCameraXPixel          how much angle of a target, in radian, is altered per unit change in amount of pixels of the object's center in the camera view (x-axis)
-     * @param angleRadianPerCameraYPixel          how much angle of a target, in radian, is altered per unit change in amount of pixels of the object's center in the camera view (y-axis)
+     * @param angleRadianPerCameraXPixel          how much angle of a target, in radian, is altered per unit change in amount of pixels of the object's center in the camera view (x-axis), positive is counter-clockwise
+     * @param angleRadianPerCameraYPixel          how much angle of a target, in radian, is altered per unit change in amount of pixels of the object's center in the camera view (y-axis), positive is down
      */
     public FixedAngleCameraProfile(double cameraInstallationAngleRadian, double angleRadianPerCameraXPixel, double angleRadianPerCameraYPixel) {
         this.cameraInstallationAngleRadian = cameraInstallationAngleRadian;

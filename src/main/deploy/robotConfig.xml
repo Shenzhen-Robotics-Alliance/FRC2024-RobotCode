@@ -133,8 +133,8 @@
         <armEncoderReversed>0</armEncoderReversed>
 
         <!-- arm positions -->
-        <position-DEFAULT>95</position-DEFAULT> <!-- 60 -->
-        <position-INTAKE>103</position-INTAKE>
+        <position-DEFAULT>97</position-DEFAULT> <!-- 60 -->
+        <position-INTAKE>100</position-INTAKE>
         <position-SHOOT_NOTE>92</position-SHOOT_NOTE>
         <position-SCORE_AMPLIFIER>5</position-SCORE_AMPLIFIER>
 

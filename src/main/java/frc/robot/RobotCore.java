@@ -112,9 +112,9 @@ public class RobotCore {
                 aprilTagPositionTrackingCamera = new FixedAnglePositionTrackingCamera( // TODO load and save to robotConfig
                         aprilTagDetectionAppClient,
                         new FixedAngleCameraProfile(
-                                0.37725,
+                                0.6724,
                                 -0.00284,
-                                -0.00203
+                                0.00208
                         ),
                         targetHeights
                 );

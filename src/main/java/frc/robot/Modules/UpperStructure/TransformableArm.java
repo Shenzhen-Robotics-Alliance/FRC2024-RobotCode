@@ -71,8 +71,11 @@ public class TransformableArm extends RobotModuleBase {
         // System.out.println("arm current position: " + desiredPosition);
         armController.goToDesiredPosition(desiredEncoderPosition = desiredEncoderPositionTable.get(desiredPosition));
 
-        if (this.desiredPosition == TransformerPosition.SHOOT_NOTE && shooterModule != null)
+        if (this.desiredPosition == TransformerPosition.SHOOT_NOTE && shooterModule != null) {
             armController.updateDesiredPosition(desiredEncoderPosition = (desiredEncoderPositionTable.get(TransformerPosition.SHOOT_NOTE) + shooterModule.getArmPositionWithAimingSystem()));
+            System.out.println("updating arm position to: " + Math.toDegrees(desiredEncoderPosition)); // TODO see if the arm module is updating
+        }
+
 
         armLifterMechanism.updateWithController(this);
     }
