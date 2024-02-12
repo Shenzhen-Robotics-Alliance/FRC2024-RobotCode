@@ -68,6 +68,7 @@ public class JetsonDetectionAppClient implements RawObjectDetectionCamera {
             while (activated && (line = reader.readLine()) != null) {
                 // System.out.println("<-- Jetson Client | Received Line: " + line + " -->");
                 results = line;
+                updateResultsFromServerReturnString();
             }
             reader.close();
         }
@@ -96,6 +97,10 @@ public class JetsonDetectionAppClient implements RawObjectDetectionCamera {
 
     @Override
     public void update() {
+        // updateResultsFromServerReturnString();
+    }
+
+    private void updateResultsFromServerReturnString() {
         this.targetsList = new ArrayList<>();
         if (!activated || results.equals("no-rst")) return;
         for (String target:results.split("/")) {
@@ -112,7 +117,7 @@ public class JetsonDetectionAppClient implements RawObjectDetectionCamera {
 
     @Override
     public List<ObjectTargetRaw> getRawTargets() {
-        return targetsList;
+        return targetsList == null ? null : new ArrayList<>(targetsList);
     }
 
     public Thread.State getCommunicationThreadState() {

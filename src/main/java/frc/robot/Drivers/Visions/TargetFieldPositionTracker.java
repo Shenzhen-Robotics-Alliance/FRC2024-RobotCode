@@ -9,7 +9,6 @@ public interface TargetFieldPositionTracker {
     List<TargetOnField> getAllTargets();
     List<TargetOnField> getVisibleTargets();
     void update(Vector2D robotPositionInField2D, Rotation2D robotRotation);
-    boolean targetsListOnModifying();
     /**
      * whether the target is visible
      * @param id the id of the target
@@ -25,12 +24,6 @@ public interface TargetFieldPositionTracker {
      * @return the target instance, null for unseen
      * */
     default TargetOnField getVisibleTargetByID(int id) {
-        final long t0 = System.currentTimeMillis();
-        while (targetsListOnModifying()) if (System.currentTimeMillis() - t0 > 1000)
-        {
-            System.out.println("camera update timeout, cannot get target as this will trigger concurrent modification");
-            return null;
-        }
         for (TargetOnField target:getVisibleTargets())
             if (target.id == id)
                 return target;
@@ -43,12 +36,6 @@ public interface TargetFieldPositionTracker {
      * @return the target instance, null for unseen
      * */
     default TargetOnField getTargetByID(int id) {
-        final long t0 = System.currentTimeMillis();
-        while (targetsListOnModifying()) if (System.currentTimeMillis() - t0 > 1000)
-        {
-            System.out.println("camera update timeout, cannot get target as this will trigger concurrent modification");
-            return null;
-        }
         for (TargetOnField target:getAllTargets())
             if (target.id == id)
                 return target;

@@ -75,7 +75,6 @@ public class TransformableArm extends RobotModuleBase {
             armController.updateDesiredPosition(desiredEncoderPosition = (desiredEncoderPositionTable.get(TransformerPosition.SHOOT_NOTE) + shooterModule.getArmPositionWithAimingSystem()));
 
         armLifterMechanism.updateWithController(this);
-        EasyShuffleBoard.putNumber("arm", "correction power test", armController.getMotorPower(armLifterMechanism.getEncoderVelocity(), armLifterMechanism.getEncoderPosition()));
     }
 
     /**

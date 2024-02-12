@@ -49,8 +49,11 @@
         <steerWheelMaximumPower type = "double">0.65</steerWheelMaximumPower> <!-- use this value as the full speed -->
         <steerWheelMinimumPower type = "double">0.03</steerWheelMinimumPower> <!-- this is the minimum amount of motor speed needed to turn the steer, in percentage of the full speed -->
         <steerWheelFeedForwardTime type = "double">0</steerWheelFeedForwardTime>
-        <steerCorrectionPowerRateAtZeroWheelSpeed type="double">0.4</steerCorrectionPowerRateAtZeroWheelSpeed>
-        <steerCorrectionPowerFullWheelSpeed type="'double">0.4</steerCorrectionPowerFullWheelSpeed>
+<!--        <steerCorrectionPowerRateAtZeroWheelSpeed type="double">0.4</steerCorrectionPowerRateAtZeroWheelSpeed>-->
+<!--        <steerCorrectionPowerFullWheelSpeed type="'double">0.4</steerCorrectionPowerFullWheelSpeed>-->
+        <!-- here we disable smart steer PID -->
+        <steerCorrectionPowerRateAtZeroWheelSpeed type="double">1</steerCorrectionPowerRateAtZeroWheelSpeed>
+        <steerCorrectionPowerFullWheelSpeed type="'double">1</steerCorrectionPowerFullWheelSpeed>
 
         <!-- low speed mode -->
         <lowSpeedModeTranslationalCommandScale>0.75</lowSpeedModeTranslationalCommandScale>
@@ -78,7 +81,7 @@
 
         <timeLockRotationAfterRotationalInputStops>0.3</timeLockRotationAfterRotationalInputStops>
         <!-- the configuration for rotation controller -->
-        <robotRotationalErrorTolerance type="double">1</robotRotationalErrorTolerance> <!-- in degrees -->
+        <robotRotationalErrorTolerance type="double">3</robotRotationalErrorTolerance> <!-- in degrees -->
         <robotRotationalErrorStartDecelerate type="double">45</robotRotationalErrorStartDecelerate> <!-- in degrees -->
         <robotRotationMaximumCorrectionPower type="double">0.6</robotRotationMaximumCorrectionPower>
         <robotRotationMinimumCorrectionPower type="double">0.03</robotRotationMinimumCorrectionPower>
@@ -93,7 +96,7 @@
         <errorToleranceAsCommandFinished>2</errorToleranceAsCommandFinished>
 
         <!-- the configuration of steer wheels -->
-        <maxUnusedTime type="double">0.6</maxUnusedTime> <!-- the amount of time that the steer wheel will wait when not used until they go back to default position -->
+        <maxUnusedTime type="double">2</maxUnusedTime> <!-- the amount of time that the steer wheel will wait when not used until they go back to default position -->
         <defaultPosition type="double">90</defaultPosition> <!--to straight forward-->
         <minUsageSpeed type="double">0.04</minUsageSpeed>
     </chassis>
@@ -131,13 +134,13 @@
 
         <!-- arm positions -->
         <position-DEFAULT>95</position-DEFAULT> <!-- 60 -->
-        <position-INTAKE>100</position-INTAKE>
+        <position-INTAKE>103</position-INTAKE>
         <position-SHOOT_NOTE>92</position-SHOOT_NOTE>
-        <position-SCORE_AMPLIFIER>2</position-SCORE_AMPLIFIER>
+        <position-SCORE_AMPLIFIER>5</position-SCORE_AMPLIFIER>
 
         <!-- software limit -->
-        <lowerPositionLimit>5</lowerPositionLimit>
-        <upperPositionLimit>100</upperPositionLimit>
+        <lowerPositionLimit>-5</lowerPositionLimit>
+        <upperPositionLimit>105</upperPositionLimit>
 
         <!-- arm PID -->
         <maximumPower>0.65</maximumPower>

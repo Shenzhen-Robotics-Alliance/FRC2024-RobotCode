@@ -98,13 +98,14 @@ public class Shooter extends RobotModuleBase {
             EasyShuffleBoard.putNumber("shooter", "motor " + shooterID + " actual speed", shooters[shooterID].getEncoderVelocity() * encoderVelocityToRPM);
         }
 
-        EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", specifiedRPM);
+        EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", decideRPM());
 
         for (EncoderMotorMechanism shooter : shooters)
             shooter.updateWithController(this);
     }
 
     private double decideRPM() {
+        System.out.println("shooter current mode: " + currentMode.name());
         return switch (currentMode) {
             case SHOOT -> getShooterSpeedWithAimingSystem();
             case AMPLIFY -> amplifyingRPM;

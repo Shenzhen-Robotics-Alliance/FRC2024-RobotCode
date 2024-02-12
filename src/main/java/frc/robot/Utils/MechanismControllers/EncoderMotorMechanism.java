@@ -4,6 +4,7 @@ import frc.robot.Drivers.Encoders.Encoder;
 import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Drivers.Motors.MotorWithLimitSwitch;
 import frc.robot.Modules.RobotModuleBase;
+import frc.robot.Utils.MathUtils.AngleUtils;
 
 public class EncoderMotorMechanism implements Encoder, Motor {
     private final Encoder encoder;
@@ -80,12 +81,15 @@ public class EncoderMotorMechanism implements Encoder, Motor {
     }
 
     public void updateWithController(RobotModuleBase operatorModule) {
-        if (controller == null) motor.setPower(0, operatorModule);
+        if (controller == null) motor.disableMotor(operatorModule);
         else setPower(controller.getMotorPower(encoder.getEncoderVelocity(), encoder.getEncoderPosition()), operatorModule);
     }
 
+    /**
+     * if limit is applied to the encoder, the encoder must be in absolute position and must be in radian
+     * */
     public void setSoftEncoderLimit(double lowerLimit, double upperLimit) {
-        motor.setPositiveDirectionLimitSwitch(() -> encoder.getEncoderPosition() >= upperLimit);
-        motor.setNegativeDirectionLimitSwitch(() -> encoder.getEncoderPosition() <= lowerLimit);
+        motor.setPositiveDirectionLimitSwitch(() -> AngleUtils.getActualDifference(0, encoder.getEncoderPosition()) >= upperLimit);
+        motor.setNegativeDirectionLimitSwitch(() -> AngleUtils.getActualDifference(0, encoder.getEncoderPosition()) <= lowerLimit);
     }
 }

@@ -13,7 +13,6 @@ public class FixedAnglePositionTrackingCamera implements TargetFieldPositionTrac
     private final RawObjectDetectionCamera camera;
     private final FixedAngleCameraProfile cameraProfile;
     private final double[] targetHeights;
-    private boolean onModify;
     public FixedAnglePositionTrackingCamera(RawObjectDetectionCamera camera, FixedAngleCameraProfile cameraProfile, double[] targetHeights) {
         this.camera = camera;
         this.cameraProfile = cameraProfile;
@@ -21,12 +20,11 @@ public class FixedAnglePositionTrackingCamera implements TargetFieldPositionTrac
 
         targets = new ArrayList<>();
         visibleTargets = new ArrayList<>();
-        onModify = false;
     }
 
     @Override
     public void update(Vector2D robotPositionInField2D, Rotation2D robotRotation) {
-        onModify = true;
+        if (camera.getRawTargets()==null) return;
         camera.update();
         visibleTargets = new ArrayList<>();
         for (RawObjectDetectionCamera.ObjectTargetRaw targetRaw: camera.getRawTargets()) {
@@ -43,13 +41,7 @@ public class FixedAnglePositionTrackingCamera implements TargetFieldPositionTrac
             deleteTargetFromTargets(targetRaw.id);
             targets.add(target);
             visibleTargets.add(target);
-            onModify = false;
         }
-    }
-
-    @Override
-    public boolean targetsListOnModifying() {
-        return onModify;
     }
 
     private void deleteTargetFromTargets(int targetID) {
@@ -69,11 +61,11 @@ public class FixedAnglePositionTrackingCamera implements TargetFieldPositionTrac
 
     @Override
     public List<TargetOnField> getAllTargets() {
-        return targets;
+        return new ArrayList<>(targets); // avoid concurrent modification error
     }
 
     @Override
     public List<TargetOnField> getVisibleTargets() {
-        return visibleTargets;
+        return new ArrayList<>(visibleTargets);
     }
 }

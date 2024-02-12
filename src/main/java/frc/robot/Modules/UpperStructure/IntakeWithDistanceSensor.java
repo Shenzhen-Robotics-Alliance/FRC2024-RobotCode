@@ -3,6 +3,7 @@ package frc.robot.Modules.UpperStructure;
 import frc.robot.Drivers.DistanceSensors.DistanceSensor;
 import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Services.RobotServiceBase;
+import frc.robot.Utils.EasyShuffleBoard;
 import frc.robot.Utils.RobotConfigReader;
 
 public class IntakeWithDistanceSensor extends Intake {
@@ -26,6 +27,7 @@ public class IntakeWithDistanceSensor extends Intake {
     @Override
     protected void periodic(double dt) {
         intakeMotor.setPower(decidedIntakeMotorPower(dt), this);
+        EasyShuffleBoard.putNumber("intake", "note sensor reading (CM)", intakeDistanceSensor.getDistanceCM());
     }
 
     public double decidedIntakeMotorPower(double dt) {

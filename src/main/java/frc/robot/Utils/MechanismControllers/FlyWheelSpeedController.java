@@ -2,6 +2,7 @@ package frc.robot.Utils.MechanismControllers;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Utils.EasyShuffleBoard;
 
 /**
  * controls the speed of fly wheel
@@ -46,7 +47,7 @@ public class FlyWheelSpeedController implements MechanismController {
                 currentSpeed / profile.maximumSpeed,
                 getCurrentTargetSpeedWithLERP() / profile.maximumSpeed
         );
-        SmartDashboard.putNumber("flywheel controller current target speed", getCurrentTargetSpeedWithLERP());
+        EasyShuffleBoard.putNumber("shooter", "flywheel controller current target speed", getCurrentTargetSpeedWithLERP());
         return Math.max(correctionSpeed, 0); // do not go negative power
     }
 

@@ -29,7 +29,8 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
         /** the transformer is at amplifier position and is standing by */
         AT_AMPLIFIER_POSITION_HOLDING_NOTE,
         /** the transformer is at amplifier position and is splitting the note */
-        AMPLIFYING
+        AMPLIFYING,
+        ACTION_CANCELLED
     }
     private IntakeAndShooterStatus currentStatus;
     private boolean currentTaskComplete;
@@ -67,8 +68,6 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
     public void periodic() {
         /* read the xbox input */
         final boolean
-                /** set the current service as the activated  */
-                SET_ACTIVATE_BUTTON = copilotController.getBackButton(), // "back" for manual control, "start" for auto control (in vision aided chassis) TODO replace with a sendable chooser
                 START_GRAB_BUTTON = copilotController.getRightTriggerAxis() > 0.75,
                 CANCEL_GRAB_BUTTON = copilotController.getRightTriggerAxis() < 0.25,
                 START_SPLIT_BUTTON = copilotController.getRightBumper(),
@@ -94,9 +93,9 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                 transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
                 if (!intakeModule.isNoteInsideIntake())
                     this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION;
-                else if (START_SHOOTER_BUTTON)
+                else if (START_SHOOTER_BUTTON && !CANCEL_ACTION_BUTTON)
                     this.currentStatus = IntakeAndShooterStatus.AT_SHOOTING_STANDBY_POSITION_HOLDING_NOTE;
-                else if (TOGGLE_AMPLIFIER_BUTTON)
+                else if (TOGGLE_AMPLIFIER_BUTTON && !CANCEL_ACTION_BUTTON)
                     this.currentStatus = IntakeAndShooterStatus.AT_AMPLIFIER_POSITION_HOLDING_NOTE;
                 else if (START_SPLIT_BUTTON)
                     startSplitProcess();
@@ -159,10 +158,12 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                 if (!intakeModule.isNoteInsideIntake())
                     this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION;
             }
+            case ACTION_CANCELLED -> {
+                if (!TOGGLE_AMPLIFIER_BUTTON && LAUNCH_BUTTON)
+                    this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION_HOLDING_NOTE; // wait for the copilot to release the buttons
+            }
             default -> throw new IllegalStateException("unknown status for intake and shooter:" + currentStatus);
         }
-        if (SET_ACTIVATE_BUTTON)
-            gainOwnerShipsToModules();
         // System.out.println("intake and shooter service current status: " + currentStatus);
     }
 
@@ -199,7 +200,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
 
     private void launchProcessCancelled() {
         shooterModule.setShooterMode(Shooter.ShooterMode.DISABLED, this);
-        this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION_HOLDING_NOTE;
+        this.currentStatus = IntakeAndShooterStatus.ACTION_CANCELLED;
     }
 
     private void startAmplifyProcess() {

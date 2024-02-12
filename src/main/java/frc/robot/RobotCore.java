@@ -319,6 +319,7 @@ public class RobotCore {
                 // printChassisDebugMessages();
                 long dt = System.currentTimeMillis();
                 printAprilTagCameraResultsToDashboard();
+                printChassisDebugMessagesToDashboard();
 //                if (System.currentTimeMillis()-dt>10)
 //                        System.out.println("print april tag camera time (ms): " + (System.currentTimeMillis() - dt));
 
@@ -328,7 +329,6 @@ public class RobotCore {
 //                        System.out.println("update config time (ms): " + (System.currentTimeMillis() - dt));
 
                 /* monitor the program's performance */
-                // TODO extremely high program delay, leading to errors
                 SmartDashboard.putNumber("robot main thread delay", System.currentTimeMillis()-t);
                 t = System.currentTimeMillis();
         }
