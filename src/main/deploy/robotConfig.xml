@@ -133,9 +133,9 @@
         <armEncoderReversed>0</armEncoderReversed>
 
         <!-- arm positions -->
-        <position-DEFAULT>96</position-DEFAULT> <!-- 60 -->
+        <position-DEFAULT>98</position-DEFAULT> <!-- 60 -->
         <position-INTAKE>108</position-INTAKE>
-        <position-SHOOT_NOTE>90</position-SHOOT_NOTE>
+        <position-SHOOT_NOTE>98</position-SHOOT_NOTE>
         <position-SCORE_AMPLIFIER>0</position-SCORE_AMPLIFIER>
 
         <!-- software limit -->
@@ -143,15 +143,15 @@
         <upperPositionLimit>115</upperPositionLimit>
 
         <!-- arm PID -->
-        <maximumPower>0.6</maximumPower>
+        <maximumPower>0.65</maximumPower>
         <errorStartDecelerate>35</errorStartDecelerate>
-        <errorTolerance>1.5</errorTolerance>
+        <errorTolerance>1</errorTolerance>
         <feedForwardTime>0.06</feedForwardTime>
         <errorAccumulationProportion>0</errorAccumulationProportion>
         <maxAcceleration>180</maxAcceleration>
         <maxVelocity>150</maxVelocity>
         <inAdvanceTime>0.25</inAdvanceTime>
-        <errorToleranceAsInPosition>2.5</errorToleranceAsInPosition>
+        <errorToleranceAsInPosition>4.5</errorToleranceAsInPosition>
 
         <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
         <encoderZeroPositionRadians>5.854</encoderZeroPositionRadians>

@@ -101,10 +101,7 @@ public class Shooter extends RobotModuleBase {
         EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", decideRPM());
 
         for (EncoderMotorMechanism shooter : shooters) {
-            if (decideRPM() == 0)
-                shooter.setPower(idlePower, this);
-            else
-                shooter.updateWithController(this);
+            shooter.updateWithController(this);
         }
     }
 
@@ -114,7 +111,7 @@ public class Shooter extends RobotModuleBase {
             case SHOOT -> getShooterSpeedWithAimingSystem();
             case AMPLIFY -> amplifyingRPM;
             case SPECIFIED_RPM -> specifiedRPM;
-            default -> 0; // idle
+            default -> idleRPM; // idle
         };
     }
 
@@ -148,12 +145,12 @@ public class Shooter extends RobotModuleBase {
     /** when the target is unseen */
     private static final double defaultShootingRPM = 6000;
     private static final double amplifyingRPM = 1200;
-    private static final double idlePower = -0.1;
+    private static final double idleRPM = -500;
     private static final double projectileSpeed = 10;
     private static final double shootingRange = 6;
-    private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7}, new double[] {5400, 5500, 5600, 5700, 5800, 5900, 6000, 6100, 6200});
+    private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7}, new double[] {5800, 5850, 5900, 5950, 6000, 6050, 6100, 6150, 6200});
     /** the desired arm position for aiming, in degrees and in reference to the default shooting position of the arm, which is specified in the arm configs */
-    private static final LookUpTable armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7}, new double[] {20, 17.5, 15, 12.5, 10, 7.5, 5, 0, -5});
+    private static final LookUpTable armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7}, new double[] {10, 7.5, 5, 2.5, 0, -2.5, -5, -10, -15});
     @Override
     public void updateConfigs() {
         final FlyWheelSpeedController.FlyWheelSpeedControllerProfile speedControllerProfile = new FlyWheelSpeedController.FlyWheelSpeedControllerProfile(

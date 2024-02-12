@@ -31,7 +31,7 @@ public class IntakeWithDistanceSensor extends Intake {
     protected void periodic(double dt) {
         intakeMotor.setPower(decidedIntakeMotorPower(dt), this);
         EasyShuffleBoard.putNumber("intake", "note sensor reading (CM)", intakeDistanceSensor.getDistanceCM());
-        System.out.println("intake note sensor reading (CM): " + intakeDistanceSensor.getDistanceCM());
+        // System.out.println("intake note sensor reading (CM): " + intakeDistanceSensor.getDistanceCM());
         // System.out.println("intake encoder velocity: " + intakeEncoder.getEncoderVelocity()); // 74000
     }
 

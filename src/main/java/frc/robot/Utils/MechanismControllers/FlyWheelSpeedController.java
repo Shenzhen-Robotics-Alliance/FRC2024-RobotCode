@@ -41,14 +41,13 @@ public class FlyWheelSpeedController implements MechanismController {
     }
 
     public double getCorrectionPower(double currentSpeed) {
-        if (desiredSpeed <= profile.maximumSpeed * 0.05) return 0;
         currentSpeed = Math.abs(currentSpeed);
         final double correctionSpeed = simpleFeedForwardSpeedController.getSpeedControlPower(
                 currentSpeed / profile.maximumSpeed,
                 getCurrentTargetSpeedWithLERP() / profile.maximumSpeed
         );
         EasyShuffleBoard.putNumber("shooter", "flywheel controller current target speed", getCurrentTargetSpeedWithLERP());
-        return Math.max(correctionSpeed, 0); // do not go negative power
+        return correctionSpeed; // do not go negative power
     }
 
     private void startNewSpeedControlTask(double newDesiredSpeed) {
@@ -63,7 +62,7 @@ public class FlyWheelSpeedController implements MechanismController {
                 timeSinceTaskStarted = (System.nanoTime() - taskStartTimeNano) / nanoToSec,
                 speedDifferenceReached = Math.min(timeSinceTaskStarted * profile.maximumAcceleration, speedDifferenceMaximumMagnitude),
                 currentTargetSpeed = speedWhenTaskStarted + Math.copySign(speedDifferenceReached, speedDifferenceBetweenTaskStartAndEnd);
-        return Math.max(Math.min(profile.maximumSpeed, currentTargetSpeed),0);
+        return Math.max(Math.min(profile.maximumSpeed, currentTargetSpeed),-profile.maximumSpeed);
     }
 
     @Override
