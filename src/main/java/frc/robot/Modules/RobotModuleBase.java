@@ -58,11 +58,11 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
             Time.sleep(50);
             return;
         }
-        final long newTimeMillis = System.currentTimeMillis();
+        long newTimeMillis = System.currentTimeMillis();
         if (newTimeMillis == previousTimeMillis) {
             /* in case of dt=0 */
             Time.sleep(1);
-            periodic();
+            newTimeMillis = System.currentTimeMillis();
         }
         updateConfigs();
         // System.out.println("executing periodic");

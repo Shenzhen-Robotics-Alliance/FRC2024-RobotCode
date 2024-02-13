@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Drivers.Motors.TalonFXMotor;
 
 public class ShooterSpeedTest implements SimpleRobotTest {
-    private final TalonFXMotor testShooterMotor = new TalonFXMotor(new TalonFX(14), true);
+    private final TalonFXMotor testShooterMotor = new TalonFXMotor(new TalonFX(15), true);
     private final XboxController xboxController = new XboxController(1);
     @Override
     public void testStart() {
@@ -14,7 +14,11 @@ public class ShooterSpeedTest implements SimpleRobotTest {
 
     @Override
     public void testPeriodic() {
-        testShooterMotor.setPower(xboxController.getRightTriggerAxis(), null);
-        System.out.println("shooter speed (rpm) : " + testShooterMotor.getEncoderVelocity() / 2048.0 * 60.0);
+        final double power = xboxController.getRightTriggerAxis();
+        if (power > 0.05)
+            testShooterMotor.setPower(xboxController.getRightTriggerAxis(), null);
+        else
+            testShooterMotor.disableMotor(null);
+        System.out.println("motor power: " + power + ", shooter speed (rpm) : " + testShooterMotor.getEncoderVelocity() / 2048.0 * 60.0);
     }
 }

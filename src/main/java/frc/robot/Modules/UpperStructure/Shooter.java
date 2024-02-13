@@ -16,7 +16,6 @@ import frc.robot.Utils.RobotModuleOperatorMarker;
 import java.util.Arrays;
 
 public class Shooter extends RobotModuleBase {
-    private static final boolean inTestMode = false;
     public enum ShooterMode {
         DISABLED,
         SHOOT,
@@ -143,16 +142,18 @@ public class Shooter extends RobotModuleBase {
 
     /* TODO the following constants, move then to robotConfig and tune them */
     /** when the target is unseen */
-    private static final double defaultShootingRPM = 6000;
+    private static final double defaultShootingRPM = 6300;
     private static final double amplifyingRPM = 1200;
-    private static final double idleRPM = -100;
+    private static final double idleRPM = -200;
     private static final double projectileSpeed = 10;
     private static final double shootingRange = 6;
-    private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7}, new double[] {5800, 5850, 5900, 5950, 6000, 6050, 6100, 6150, 6200});
+    private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7}, new double[] {6000, 6500, 6700, 6700, 6700, 6700, 6700, 6700, 6700});
     /** the desired arm position for aiming, in degrees and in reference to the default shooting position of the arm, which is specified in the arm configs */
-    private static final LookUpTable armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7}, new double[] {10, 7.5, 5, 2.5, 0, -2.5, -5, -10, -15});
+    private static final LookUpTable armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7}, new double[] {10, 7.5, -4, -6, -8, -10, -12, -14, -16});
     @Override
     public void updateConfigs() {
+
+
         final FlyWheelSpeedController.FlyWheelSpeedControllerProfile speedControllerProfile = new FlyWheelSpeedController.FlyWheelSpeedControllerProfile(
                 robotConfig.getConfig("shooter", "speedControllerProportionGain"),
                 robotConfig.getConfig("shooter", "speedControllerFeedForwardGain"),

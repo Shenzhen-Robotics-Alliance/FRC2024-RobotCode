@@ -4,6 +4,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +20,8 @@ public class EasyShuffleBoard {
                 widgetsInTags.put(tab, new HashMap<>());
             if (!widgetsInTags.get(tab).containsKey(title))
                 addEntry(tab, Shuffleboard.getTab(tab), title, number, 0);
-            widgetsInTags.get(tab).get(title).setDouble(number);
+            if (widgetsInTags.get(tab).get(title) != null)
+                widgetsInTags.get(tab).get(title).setDouble(number);
         } catch (Exception e) {
             e.printStackTrace();
             // System.out.print("<-- shuffleboard exception, ignoring... -->"); // TODO concurrent modification exception
@@ -33,7 +35,7 @@ public class EasyShuffleBoard {
             widgetsInTags.get(tabName).put(title, tab.add(actualTitle, number).getEntry());
         } catch (IllegalArgumentException ignored){
             addEntry(tabName, tab, title, number, duplicate+1);
-        }
+        } catch (ConcurrentModificationException ignored) {}
     }
 
     public static double getNumber(String tag, String title, double defaultValue) {
