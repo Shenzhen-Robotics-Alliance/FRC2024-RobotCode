@@ -145,7 +145,7 @@ public class Shooter extends RobotModuleBase {
     /** when the target is unseen */
     private static final double defaultShootingRPM = 6000;
     private static final double amplifyingRPM = 1200;
-    private static final double idleRPM = -500;
+    private static final double idleRPM = -100;
     private static final double projectileSpeed = 10;
     private static final double shootingRange = 6;
     private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7}, new double[] {5800, 5850, 5900, 5950, 6000, 6050, 6100, 6150, 6200});

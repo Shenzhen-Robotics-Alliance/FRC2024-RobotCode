@@ -57,6 +57,7 @@ public class RobotCore {
         public TransformableArm transformableArm;
         public Intake intake;
         public Shooter shooter;
+        private AprilTagReferredTarget speakerTarget, amplifierTarget, noteTarget;
 
         private final List<String> configsToTune = new ArrayList<>(1);
         private final List<RobotModuleBase> modules;
@@ -112,9 +113,9 @@ public class RobotCore {
                 aprilTagPositionTrackingCamera = new FixedAnglePositionTrackingCamera( // TODO load and save to robotConfig
                         aprilTagDetectionAppClient,
                         new FixedAngleCameraProfile(
-                                0.3855,
-                                -0.00284,
-                                -0.00208
+                                0.42,
+                                -0.0023,
+                                -0.0016
                         ),
                         targetHeights
                 );
@@ -130,10 +131,10 @@ public class RobotCore {
                         amplifierTargetAprilTagReferences.put(6, new Vector2D(new double[] {0, 0}));
                 }
                 noteTargetReferences.put(0, new Vector2D()); // the id of note is always 0, and the note is itself the reference so the relative position is (0,0)
-                final AprilTagReferredTarget speakerTarget = new AprilTagReferredTarget(aprilTagPositionTrackingCamera, speakerTargetAprilTagReferences),
-                        amplifierTarget = new AprilTagReferredTarget(aprilTagPositionTrackingCamera, amplifierTargetAprilTagReferences),
-                        /* TODO note target tracking camera */
-                        noteTarget = new AprilTagReferredTarget(aprilTagPositionTrackingCamera, noteTargetReferences); // we call it april tag referred target but it is actually recognized by detect-net app
+                speakerTarget = new AprilTagReferredTarget(aprilTagPositionTrackingCamera, speakerTargetAprilTagReferences);
+                amplifierTarget = new AprilTagReferredTarget(aprilTagPositionTrackingCamera, amplifierTargetAprilTagReferences);
+                /* TODO note target tracking camera */
+                noteTarget = new AprilTagReferredTarget(aprilTagPositionTrackingCamera, noteTargetReferences); // we call it april tag referred target but it is actually recognized by detect-net app
                 final Shooter.AimingSystem aimingSystem = new Shooter.AimingSystem(positionReader, speakerTarget, 1000);
                 final EncoderMotorMechanism[] shooterMechanisms = new EncoderMotorMechanism[] {
                         new TalonFXMotor(
@@ -307,10 +308,11 @@ public class RobotCore {
                 {
                         long dt = System.currentTimeMillis();
                         service.periodic();
-//                        if (System.currentTimeMillis()-dt>10)
-//                                System.out.println("service " + service.serviceName + " update time (ms): " + (System.currentTimeMillis() - dt));
+                        if (System.currentTimeMillis()-dt>10)
+                                System.out.println("service " + service.serviceName + " update time (ms): " + (System.currentTimeMillis() - dt));
                 }
 
+                /* TODO the following can be running in another thread to save main thread performance   */
                 if (aprilTagPositionTrackingCamera != null)
                         aprilTagPositionTrackingCamera.update(positionReader.getRobotPosition2D(), new Rotation2D(positionReader.getRobotRotation()));
                 if (!useMultiThreads)
@@ -321,13 +323,13 @@ public class RobotCore {
                 long dt = System.currentTimeMillis();
                 printAprilTagCameraResultsToDashboard();
                 printChassisDebugMessagesToDashboard();
-//                if (System.currentTimeMillis()-dt>10)
-//                        System.out.println("print april tag camera time (ms): " + (System.currentTimeMillis() - dt));
+                if (System.currentTimeMillis()-dt>10)
+                        System.out.println("print april tag camera time (ms): " + (System.currentTimeMillis() - dt));
 
                 dt = System.currentTimeMillis();
                 robotConfig.updateTuningConfigsFromDashboard();
-//                if (System.currentTimeMillis()-dt>10)
-//                        System.out.println("update config time (ms): " + (System.currentTimeMillis() - dt));
+                if (System.currentTimeMillis()-dt>10)
+                        System.out.println("update config time (ms): " + (System.currentTimeMillis() - dt));
 
                 /* monitor the program's performance */
                 SmartDashboard.putNumber("robot main thread delay", System.currentTimeMillis()-t);
@@ -344,20 +346,21 @@ public class RobotCore {
         private void printAprilTagCameraResultsToDashboard() {
                 if (aprilTagPositionTrackingCamera == null)
                         return;
-                final int targetID = 4;
-                final TargetFieldPositionTracker.TargetOnField target;
-                final double x,y,dis,hdg;
-                if ((target = aprilTagPositionTrackingCamera.getVisibleTargetByID(targetID)) == null)
-                        x = y = dis = hdg = -1;
-                else {
-                        x = target.fieldPosition.getX() * 100;
-                        y = target.fieldPosition.getY() * 100;
-                        dis = target.fieldPosition.getMagnitude() * 100;
-                        hdg = Math.toDegrees(target.fieldPosition.getHeading()) - 90;
+
+                final Vector2D speakerFieldPosition =  this.speakerTarget.getTargetFieldPositionWithAprilTags(500);
+                if (speakerFieldPosition == null) {
+                        EasyShuffleBoard.putNumber("apriltag", "target absolute field position X", 0);
+                        EasyShuffleBoard.putNumber("apriltag", "target absolute field position Y", 0);
+                        EasyShuffleBoard.putNumber("apriltag", "target relative position to robot X", 0);
+                        EasyShuffleBoard.putNumber("apriltag", "target relative position to robot Y", 0);
+                        EasyShuffleBoard.putNumber("apriltag", "target distance from camera (CM)", 0);
+                        return;
                 }
-                EasyShuffleBoard.putNumber("apriltag", "target relative position to camera X (CM)", x);
-                EasyShuffleBoard.putNumber("apriltag", "target relative position to camera Y (CM)", y);
-                EasyShuffleBoard.putNumber("apriltag", "target distance from camera (CM)", dis);
-                EasyShuffleBoard.putNumber("apriltag", "target Ang From Center Line (DEG)", hdg);
+                final Vector2D speakerRelativePositionToRobot = Vector2D.displacementToTarget(positionReader.getRobotPosition2D(), speakerFieldPosition);
+                EasyShuffleBoard.putNumber("apriltag", "target absolute field position X", speakerFieldPosition.getX());
+                EasyShuffleBoard.putNumber("apriltag", "target absolute field position Y", speakerFieldPosition.getY());
+                EasyShuffleBoard.putNumber("apriltag", "target relative position to robot X", speakerRelativePositionToRobot.getX());
+                EasyShuffleBoard.putNumber("apriltag", "target relative position to robot Y", speakerRelativePositionToRobot.getY());
+                EasyShuffleBoard.putNumber("apriltag", "target distance from camera (CM)", speakerRelativePositionToRobot.getMagnitude());
         }
 }

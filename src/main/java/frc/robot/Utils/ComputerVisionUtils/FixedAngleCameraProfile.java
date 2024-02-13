@@ -38,6 +38,7 @@ public final class FixedAngleCameraProfile {
 //        System.out.println("cam inst ang: " + Math.toDegrees(cameraInstallationAngleRadian));
 //        System.out.println("tag vert ang: " + Math.toDegrees(targetVerticalAngleRadian));
 //        System.out.println("target vertical angle: " + Math.toDegrees(cameraInstallationAngleRadian + targetVerticalAngleRadian));
+//        System.out.println("distance: " + targetHeightCM / Math.tan(cameraInstallationAngleRadian + targetVerticalAngleRadian));
         return targetHeightCM / Math.tan(cameraInstallationAngleRadian + targetVerticalAngleRadian);
     }
 
