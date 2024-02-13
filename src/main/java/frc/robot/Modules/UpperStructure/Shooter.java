@@ -102,6 +102,8 @@ public class Shooter extends RobotModuleBase {
         for (EncoderMotorMechanism shooter : shooters) {
             shooter.updateWithController(this);
         }
+
+        System.out.println("<-- (shooter periodic) -->");
     }
 
     private double decideRPM() {
@@ -142,14 +144,14 @@ public class Shooter extends RobotModuleBase {
 
     /* TODO the following constants, move then to robotConfig and tune them */
     /** when the target is unseen */
-    private static final double defaultShootingRPM = 6300;
+    private static final double defaultShootingRPM = 6400;
     private static final double amplifyingRPM = 1200;
     private static final double idleRPM = -200;
     private static final double projectileSpeed = 10;
     private static final double shootingRange = 6;
-    private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7}, new double[] {6000, 6500, 6700, 6700, 6700, 6700, 6700, 6700, 6700});
+    private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5}, new double[] {6200, 6500, 6650, 6650, 6650});
     /** the desired arm position for aiming, in degrees and in reference to the default shooting position of the arm, which is specified in the arm configs */
-    private static final LookUpTable armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7}, new double[] {10, 7.5, -4, -6, -8, -10, -12, -14, -16});
+    private static final LookUpTable armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5}, new double[] {12, 6.5, 3.5, 0, -2});
     @Override
     public void updateConfigs() {
 

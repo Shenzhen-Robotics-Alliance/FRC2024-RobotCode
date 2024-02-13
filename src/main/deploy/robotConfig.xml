@@ -108,9 +108,9 @@
         <speedControllerFeedForwardGain>0.55</speedControllerFeedForwardGain>
         <speedControllerFrictionGain>0.02</speedControllerFrictionGain>
         <speedControllerFeedForwardDelay>0</speedControllerFeedForwardDelay>
-        <speedControllerMaximumSpeed>6700</speedControllerMaximumSpeed>
+        <speedControllerMaximumSpeed>6650</speedControllerMaximumSpeed>
         <speedControllerTimeNeededToAccelerateToMaxSpeed>0.8</speedControllerTimeNeededToAccelerateToMaxSpeed>
-        <flyWheelSpeedErrorTolerance>0.05</flyWheelSpeedErrorTolerance>
+        <flyWheelSpeedErrorTolerance>0.07</flyWheelSpeedErrorTolerance>
         <shooter1Port>15</shooter1Port>
         <shooter2Port>16</shooter2Port>
         <shooter1Reversed>0</shooter1Reversed>
