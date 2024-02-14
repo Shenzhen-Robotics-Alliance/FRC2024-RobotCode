@@ -54,10 +54,10 @@ public class RobotCore {
         public final JetsonDetectionAppClient aprilTagDetectionAppClient;
         public final TargetFieldPositionTracker aprilTagPositionTrackingCamera;
 
-        public TransformableArm transformableArm;
-        public Intake intake;
-        public Shooter shooter;
-        private AprilTagReferredTarget speakerTarget, amplifierTarget, noteTarget;
+        public final TransformableArm transformableArm;
+        public final Intake intake;
+        public final Shooter shooter;
+        public final AprilTagReferredTarget speakerTarget, amplifierTarget, noteTarget;
 
         private final List<String> configsToTune = new ArrayList<>(1);
         private final List<RobotModuleBase> modules;
@@ -308,8 +308,8 @@ public class RobotCore {
                 {
                         long dt = System.currentTimeMillis();
                         service.periodic();
-                        if (System.currentTimeMillis()-dt>10)
-                                System.out.println("service " + service.serviceName + " update time (ms): " + (System.currentTimeMillis() - dt));
+//                        if (System.currentTimeMillis()-dt>10)
+//                                System.out.println("service " + service.serviceName + " update time (ms): " + (System.currentTimeMillis() - dt));
                 }
 
                 /* TODO the following can be running in another thread to save main thread performance   */
@@ -323,13 +323,13 @@ public class RobotCore {
                 long dt = System.currentTimeMillis();
                 printAprilTagCameraResultsToDashboard();
                 printChassisDebugMessagesToDashboard();
-                if (System.currentTimeMillis()-dt>10)
-                        System.out.println("print april tag camera time (ms): " + (System.currentTimeMillis() - dt));
+//                if (System.currentTimeMillis()-dt>10)
+//                        System.out.println("print april tag camera time (ms): " + (System.currentTimeMillis() - dt));
 
                 dt = System.currentTimeMillis();
                 robotConfig.updateTuningConfigsFromDashboard();
-                if (System.currentTimeMillis()-dt>10)
-                        System.out.println("update config time (ms): " + (System.currentTimeMillis() - dt));
+//                if (System.currentTimeMillis()-dt>10)
+//                        System.out.println("update config time (ms): " + (System.currentTimeMillis() - dt));
 
                 /* monitor the program's performance */
                 SmartDashboard.putNumber("robot main thread delay", System.currentTimeMillis()-t);

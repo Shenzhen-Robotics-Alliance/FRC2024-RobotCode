@@ -4,10 +4,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.AutoStagePrograms.AprilTagCameraAutomaticMeasuring;
 import frc.robot.AutoStagePrograms.AutoStageProgram;
-import frc.robot.Services.AutoProgramRunner;
-import frc.robot.Services.PilotChassis;
-import frc.robot.Services.RobotServiceBase;
-import frc.robot.Services.TransformableIntakeAndShooterService;
+import frc.robot.Services.*;
 import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.SequentialCommandSegment;
 import frc.robot.Utils.Tests.*;
@@ -17,6 +14,7 @@ import java.util.List;
 
 public class RobotShell extends TimedRobot {
     private static final int updateFreq = 128;
+    public static final boolean activateShuffleboard = true;
     public RobotShell() {
         super(1.0/updateFreq);
     }
@@ -115,15 +113,13 @@ public class RobotShell extends TimedRobot {
     private void startManualStage() {
         final List<RobotServiceBase> services = new ArrayList<>();
 
-        /* pilot chassis */
         final PilotChassis pilotChassis = new PilotChassis(robotCore.chassisModule, robotCore.robotConfig);
-        services.add(pilotChassis);
+        final TransformableIntakeAndShooterService intakeAndShooterService = new TransformableIntakeAndShooterService(robotCore.intake, robotCore.shooter, robotCore.transformableArm, robotCore.robotConfig, new XboxController(1));
+        final VisionAidedPilotChassis visionAidedPilotChassis = new VisionAidedPilotChassis(robotCore.chassisModule, robotCore.shooter, robotCore.intake, robotCore.transformableArm, robotCore.speakerTarget, robotCore.amplifierTarget, robotCore.noteTarget, new XboxController(1), robotCore.robotConfig);
 
-        /* upper structure */
-        if (robotCore.intake != null && robotCore.shooter != null && robotCore.transformableArm != null) {
-            final TransformableIntakeAndShooterService intakeAndShooterService = new TransformableIntakeAndShooterService(robotCore.intake, robotCore.shooter, robotCore.transformableArm, robotCore.robotConfig, new XboxController(1));
-            services.add(intakeAndShooterService);
-        }
+//        services.add(intakeAndShooterService);
+//        services.add(pilotChassis);
+        services.add(visionAidedPilotChassis);
 
         robotCore.startStage(services);
     }

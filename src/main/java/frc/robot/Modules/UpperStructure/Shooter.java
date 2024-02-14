@@ -103,7 +103,7 @@ public class Shooter extends RobotModuleBase {
             shooter.updateWithController(this);
         }
 
-        System.out.println("<-- (shooter periodic) -->");
+        // System.out.println("<-- (shooter periodic) -->");
     }
 
     private double decideRPM() {
@@ -150,6 +150,9 @@ public class Shooter extends RobotModuleBase {
     private static final double projectileSpeed = 10;
     private static final double shootingRange = 6;
     private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5}, new double[] {6200, 6500, 6650, 6650, 6650});
+
+    private static final double defaultShootingAngle = 6;
+
     /** the desired arm position for aiming, in degrees and in reference to the default shooting position of the arm, which is specified in the arm configs */
     private static final LookUpTable armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5}, new double[] {12, 6.5, 3.5, 0, -2});
     @Override
@@ -177,7 +180,7 @@ public class Shooter extends RobotModuleBase {
         final Vector2D targetRelativePositionToRobot;
         if (aimingSystem == null
                 || (targetRelativePositionToRobot = aimingSystem.getRelativePositionToTarget(projectileSpeed)) == null)
-            return 0;
+            return Math.toRadians(defaultShootingAngle);
         final double distanceToTarget = targetRelativePositionToRobot.getMagnitude();
         return Math.toRadians(armPositionDegreesToTargetDistanceLookUpTable.getYPrediction(distanceToTarget));
     }

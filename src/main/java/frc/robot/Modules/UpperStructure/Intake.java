@@ -36,7 +36,7 @@ public abstract class Intake extends RobotModuleBase {
      * this will terminate the current intake process and stop the motors, until the next time startIntake() or
      * */
     public void turnOffIntake(RobotServiceBase operatorService) {
-        if (!isOwner(operatorService))
+        if (!isOwner(operatorService) || currentStatus == IntakeModuleStatus.HOLDING)
             return;
         this.currentStatus = IntakeModuleStatus.YIELD;
     }
@@ -67,6 +67,10 @@ public abstract class Intake extends RobotModuleBase {
 
     public boolean isCurrentTaskComplete() {
         return currentStatus == IntakeModuleStatus.YIELD;
+    }
+
+    public IntakeModuleStatus getCurrentStatus() {
+        return this.currentStatus;
     }
 
     public abstract boolean isNoteInsideIntake();

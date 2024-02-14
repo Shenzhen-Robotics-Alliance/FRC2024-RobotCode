@@ -5,6 +5,7 @@
  public class Rev2mDistanceSensorEncapsulation implements DistanceSensor {
      private static final Rev2mDistanceSensor rev2mDistanceSensorInstance = new Rev2mDistanceSensor(Rev2mDistanceSensor.Port.kOnboard);
      public Rev2mDistanceSensorEncapsulation() {
+         rev2mDistanceSensorInstance.setMeasurementPeriod(0.02);
          setEnabled(true);
      }
      @Override

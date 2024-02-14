@@ -18,6 +18,7 @@ import frc.robot.Utils.RobotConfigReader;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.CheckedOutputStream;
 
 /**
  * based on the pilot chassis, we add auto-aiming, shoot and intake functions in this service
@@ -100,6 +101,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
     public void reset() {
         super.reset();
         this.currentStatus = Status.MANUALLY_DRIVING;
+        updateConfigs();
+        activateControlUpperStructure(); // TODO use sendable chooser
     }
 
 
@@ -110,8 +113,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
     /** only calculated once when the task is initiated */
     private double currentVisionTaskETA;
     private long timeTaskStartedMillis;
-    /** whether the launch process is already running, reset to false at the start of a task */
-    private boolean launchStartedInCurrentTask;
     @Override
     public void periodic() {
         super.periodic();
@@ -123,43 +124,62 @@ public class VisionAidedPilotChassis extends PilotChassis {
             case AMPLIFIER -> amplifierTarget;
         };
 
+        if (pilotController.keyOnHold(rotationAutoPilotButton))
+            chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
+                            intake.isNoteInsideIntake() ? getAprilTagTargetRotation(currentAimingTargetClass, currentAimingTarget) : getNoteRotation()),
+                    this);
+        if (copilotGamePad.getXButton())
+            this.currentStatus = Status.MANUALLY_DRIVING;
+
         switch (currentStatus) {
             case MANUALLY_DRIVING -> {
                 shooter.setShooterMode(Shooter.ShooterMode.DISABLED, this);
                 arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
-                if (copilotGamePad.getXButton()) intake.startSplit(this); // in case if the Note is stuck
-                else intake.turnOffIntake(this);
-
+                if (copilotGamePad.getRightBumper())
+                    intake.startSplit(this); // in case if the Note is stuck
+                else
+                    intake.turnOffIntake(this);
                 if (pilotController.keyOnPress(translationAutoPilotButton))
                     currentStatus = intake.isNoteInsideIntake() ?  Status.SEARCHING_FOR_SHOOT_TARGET : Status.SEARCHING_FOR_NOTE;
-                else if (pilotController.keyOnHold(rotationAutoPilotButton))
-                    chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
-                            intake.isNoteInsideIntake() ? getNoteRotation() : getAprilTagTargetRotation(currentAimingTargetClass, currentAimingTarget)),
-                            this);
             }
             case SEARCHING_FOR_SHOOT_TARGET -> {
                 updateChassisPositionWhenTaskStarted();
 
-                shooter.setShooterMode(Shooter.ShooterMode.SHOOT, this);
-                arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, this);
+                shooter.setShooterMode(
+                        switch (currentAimingTargetClass) {
+                            case SPEAKER -> Shooter.ShooterMode.SHOOT;
+                            case AMPLIFIER -> Shooter.ShooterMode.AMPLIFY;
+                        }, this);
+                arm.setTransformerDesiredPosition(switch (currentAimingTargetClass) {
+                    case SPEAKER -> TransformableArm.TransformerPosition.SHOOT_NOTE;
+                    case AMPLIFIER -> TransformableArm.TransformerPosition.SCORE_AMPLIFIER;
+                }, this);
                 intake.turnOffIntake(this);
 
-                if (!pilotController.keyOnHold(translationAutoPilotButton))
-                    currentStatus = Status.MANUALLY_DRIVING;
-                else if (currentAimingTarget.isVisible())
+
+                System.out.println("<-- AP | searching for shoot target... --> ");
+                if (currentAimingTarget.isVisible())
                     switch (currentAimingTargetClass) {
                         case SPEAKER -> initiateGoToSpeakerTargetProcess();
                         case AMPLIFIER -> initiateGoToAmplifierProcess();
                     }
+                else if (!pilotController.keyOnHold(translationAutoPilotButton) && arm.transformerInPosition() && shooter.shooterReady()) {
+                    System.out.println("<-- AP | translational AP button released, launch begins -->"); // TODO why does the launch process just start
+                    intake.startLaunch(this);
+                }
+                if (!intake.isNoteInsideIntake()) {
+                    currentStatus = Status.MANUALLY_DRIVING;
+                    System.out.println("<-- AP | note gone when searching for shoot target, exiting... --->");
+                }
             }
             case SEARCHING_FOR_NOTE -> {
                 updateChassisPositionWhenTaskStarted();
 
                 shooter.setShooterMode(Shooter.ShooterMode.DISABLED, this);
-                arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
-                intake.turnOffIntake(this);
+                arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, this);
+                intake.startIntake(this);
 
-                if (!pilotController.keyOnHold(translationAutoPilotButton))
+                if (!pilotController.keyOnHold(translationAutoPilotButton) || intake.isNoteInsideIntake())
                     currentStatus = Status.MANUALLY_DRIVING;
                 else if (noteTarget.isVisible())
                     initiateGrabNoteProcess();
@@ -183,13 +203,13 @@ public class VisionAidedPilotChassis extends PilotChassis {
      * @return the facing of the chassis such that it faces the target, or the default value if unseen. In radian, zero is to front.
      * */
     private double getAprilTagTargetRotation(VisionTargetClass currentAimingTargetClass, AprilTagReferredTarget currentAimingTarget) {
-        final Vector2D targetPosition2D = currentAimingTarget.getTargetFieldPositionWithAprilTags(objectUnseenTimeOut);
-        if (targetPosition2D == null)
+        final Vector2D targetFieldPosition = currentAimingTarget.getTargetFieldPositionWithAprilTags(objectUnseenTimeOut);
+        if (targetFieldPosition == null)
             return switch (currentAimingTargetClass) {
                 case SPEAKER -> speakerDefaultRotation;
                 case AMPLIFIER -> amplifyingDefaultFacing;
             };
-        return Vector2D.displacementToTarget(chassis.positionEstimator.getRobotPosition2D(), targetPosition2D).getHeading() - Math.toRadians(90);
+        return Vector2D.displacementToTarget(chassis.positionEstimator.getRobotPosition2D(), targetFieldPosition).getHeading() - Math.toRadians(90);
     }
 
     /**
@@ -199,7 +219,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         final int pov = copilotGamePad.getPOV();
         if (pov == -1)
             return grabbingNoteDefaultFacing;
-        return AngleUtils.simplifyAngle(Math.toRadians(pov + 180));
+        return AngleUtils.simplifyAngle(Math.toRadians(180 - pov));
     }
 
     private void initiateGoToSpeakerTargetProcess() {
@@ -208,7 +228,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
         currentStatus = Status.REACHING_TO_SHOOT_TARGET;
         final double length = getPathToSpeakerTarget().getLength(10);
         currentVisionTaskETA = length / chassisSpeedLimitWhenAutoAim;
-        launchStartedInCurrentTask = false;
         timeTaskStartedMillis = System.currentTimeMillis();
     }
 
@@ -226,10 +245,9 @@ public class VisionAidedPilotChassis extends PilotChassis {
         chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
                 getAprilTagTargetRotation(VisionTargetClass.SPEAKER, speakerTarget)), this);
 
-        if (!launchStartedInCurrentTask && shooter.shooterReady() && shooter.targetInRange() && arm.transformerInPosition() && chassis.isCurrentRotationalTaskFinished()) {
+        if (intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && shooter.shooterReady() && shooter.targetInRange() && arm.transformerInPosition() && chassis.isCurrentRotationalTaskFinished()) {
             // start shooting
             intake.startLaunch(this);
-            launchStartedInCurrentTask = true;
         }
         if (timeSinceTaskStarted > currentVisionTaskETA + objectUnseenTimeOut/1000.0 || !intake.isNoteInsideIntake() || !pilotController.keyOnHold(translationAutoPilotButton))
             currentStatus = Status.MANUALLY_DRIVING; // finished or cancelled
@@ -258,8 +276,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
 
     private void initiateGoToAmplifierProcess() {
         if (!updateTargetPositionIfSeen(amplifierTarget)) return; // failed if unseen
-
-        launchStartedInCurrentTask = false;
         currentStatus = Status.REACHING_TO_SHOOT_TARGET;
     }
 
@@ -276,10 +292,9 @@ public class VisionAidedPilotChassis extends PilotChassis {
         chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
                 getAprilTagTargetRotation(VisionTargetClass.AMPLIFIER, amplifierTarget)), this);
 
-        if (!launchStartedInCurrentTask && chassis.isCurrentRotationalTaskFinished() && chassis.isCurrentTranslationalTaskFinished()) {
+        if (intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && chassis.isCurrentRotationalTaskFinished() && chassis.isCurrentTranslationalTaskFinished()) {
             // start shooting
             intake.startLaunch(this);
-            launchStartedInCurrentTask = true;
         }
         if (!intake.isNoteInsideIntake() || !pilotController.keyOnHold(translationAutoPilotButton))
             currentStatus = Status.MANUALLY_DRIVING; // finished or cancelled
@@ -368,7 +383,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
         /* TODO read from robotConfig */
         objectUnseenTimeOut = 1000;
         grabbingNoteDistance = 0.25;
-        speakerDefaultRotation = 0;
         chassisSpeedLimitWhenAutoAim = 5;
         shootingSweetSpot = new Vector2D(new double[] {0, -2.5});
         shootingProcessEndingPointUpdatableRange = 0.5;
@@ -376,12 +390,14 @@ public class VisionAidedPilotChassis extends PilotChassis {
         switch (alliance) {
             case Red -> {
                 amplifyingPositionToAmplifier = new Vector2D(new double[] {0, -0.4});
+                speakerDefaultRotation = Math.toRadians(180);
                 amplifyingDefaultFacing = Math.toRadians(-90);
                 grabbingNoteDefaultFacing = Math.toRadians(-120);
                 defaultShootProcessEndingPoint = new Vector2D(new double[] {0, -shootingProcessEndingPointUpdatableRange});
             }
             case Blue -> {
                 amplifyingPositionToAmplifier = new Vector2D(new double[] {0, 0.4});
+                speakerDefaultRotation = Math.toRadians(180);
                 amplifyingDefaultFacing = Math.toRadians(90);
                 grabbingNoteDefaultFacing = Math.toRadians(120);
                 defaultShootProcessEndingPoint = new Vector2D(new double[] {0, shootingProcessEndingPointUpdatableRange});
@@ -395,5 +411,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
     public void activateControlUpperStructure() {
         shooter.gainOwnerShip(this);
         intake.gainOwnerShip(this);
+        arm.gainOwnerShip(this);
     }
 }

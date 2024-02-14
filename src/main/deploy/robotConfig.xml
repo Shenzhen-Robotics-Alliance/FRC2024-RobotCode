@@ -104,13 +104,13 @@
     <!-- robot module configs goes here -->
     <shooter>
         <shooterMotorEncoderTicksPerRevolution>2048</shooterMotorEncoderTicksPerRevolution>
-        <speedControllerProportionGain>1</speedControllerProportionGain>
+        <speedControllerProportionGain>1.05</speedControllerProportionGain>
         <speedControllerFeedForwardGain>0.55</speedControllerFeedForwardGain>
         <speedControllerFrictionGain>0.02</speedControllerFrictionGain>
         <speedControllerFeedForwardDelay>0</speedControllerFeedForwardDelay>
         <speedControllerMaximumSpeed>6650</speedControllerMaximumSpeed>
         <speedControllerTimeNeededToAccelerateToMaxSpeed>0.8</speedControllerTimeNeededToAccelerateToMaxSpeed>
-        <flyWheelSpeedErrorTolerance>0.07</flyWheelSpeedErrorTolerance>
+        <flyWheelSpeedErrorTolerance>0.06</flyWheelSpeedErrorTolerance>
         <shooter1Port>15</shooter1Port>
         <shooter2Port>16</shooter2Port>
         <shooter1Reversed>0</shooter1Reversed>
@@ -123,8 +123,8 @@
 <!--        <launchPower>0.75</launchPower>-->
 <!--        <intakePower>0.65</intakePower>-->
 <!--        <revertPower>-0.65</revertPower>-->
-        <launchPower>0.65</launchPower>
-        <intakePower>0.4</intakePower>
+        <launchPower>0.6</launchPower>
+        <intakePower>0.35</intakePower>
         <revertPower>-0.3</revertPower>
         <distanceSensorThreshold>30</distanceSensorThreshold>
         <splitTime>0.4</splitTime>
@@ -201,7 +201,6 @@
         <translationAutoPilotButton type="int">2</translationAutoPilotButton>
         <rotationAutoPilotButton type="int">1</rotationAutoPilotButton>
         <lockChassisButtonPort type="int">3</lockChassisButtonPort>
-
     </control-RM_POCKET>
     <control-RM_BOXER>
         <controllerPort type="int">0</controllerPort>

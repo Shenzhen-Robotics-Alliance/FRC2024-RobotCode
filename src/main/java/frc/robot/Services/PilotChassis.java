@@ -122,6 +122,7 @@ public class PilotChassis extends RobotServiceBase {
         /* read and process pilot's translation input */
         final Vector2D translationInput = pilotController.getTranslationalStickValue();
         final int translationAutoPilotButton = (int)robotConfig.getConfig(controllerName, "translationAutoPilotButton");
+        final int rotationAutoPilotButton = (int) robotConfig.getConfig(controllerName, "rotationAutoPilotButton");
         SwerveBasedChassis.ChassisTaskTranslation chassisTranslationalTask = new SwerveBasedChassis.ChassisTaskTranslation(
                 SwerveBasedChassis.ChassisTaskTranslation.TaskType.SET_VELOCITY,
                 /* if autopilot is on, we scale the input down by a factor so that we can search for the target */
@@ -139,7 +140,7 @@ public class PilotChassis extends RobotServiceBase {
         /* when there is rotational input or there has been rotational input in the previous 0.3 seconds, we record the current heading of the chassis */
         if (pilotController.getRotationalStickValue() != 0)
             lastRotationalInputTimeMillis = System.currentTimeMillis();
-        if (System.currentTimeMillis() - lastRotationalInputTimeMillis < robotConfig.getConfig("chassis", "timeLockRotationAfterRotationalInputStops") * 1000)
+        if (pilotController.keyOnHold(rotationAutoPilotButton) || System.currentTimeMillis() - lastRotationalInputTimeMillis < robotConfig.getConfig("chassis", "timeLockRotationAfterRotationalInputStops") * 1000)
             desiredHeading = chassis.getChassisHeading();
         else /* or, when there is no rotational input, we stay at the previous rotation */
             chassisRotationalTask = new SwerveBasedChassis.ChassisTaskRotation(
@@ -151,7 +152,8 @@ public class PilotChassis extends RobotServiceBase {
 
         /* calls to the chassis module and pass the desired motion */
         chassis.setTranslationalTask(chassisTranslationalTask, this);
-        chassis.setRotationalTask(chassisRotationalTask, this);
+        if (!pilotController.keyOnHold(rotationAutoPilotButton))
+            chassis.setRotationalTask(chassisRotationalTask, this);
 
         /* lock the chassis if needed */
         final int lockChassisButtonPort = (int) robotConfig.getConfig(controllerName, "lockChassisButtonPort");

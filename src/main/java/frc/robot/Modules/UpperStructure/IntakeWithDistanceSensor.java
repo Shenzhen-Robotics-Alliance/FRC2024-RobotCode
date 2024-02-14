@@ -13,6 +13,8 @@ public class IntakeWithDistanceSensor extends Intake {
     private final Encoder intakeEncoder;
     private final DistanceSensor intakeDistanceSensor;
     private final RobotConfigReader robotConfig;
+
+    private long previousNoteSeenTimeMillis = 0;
     public IntakeWithDistanceSensor(Motor intakeMotor, Encoder intakeEncoder, DistanceSensor intakeDistanceSensor, RobotConfigReader robotConfig) {
         super();
         this.intakeMotor = intakeMotor;
@@ -29,6 +31,9 @@ public class IntakeWithDistanceSensor extends Intake {
 
     @Override
     protected void periodic(double dt) {
+        if (intakeDistanceSensor.getDistanceCM() <= distanceSensorThreshold)
+            previousNoteSeenTimeMillis = System.currentTimeMillis();
+
         intakeMotor.setPower(decidedIntakeMotorPower(dt), this);
         EasyShuffleBoard.putNumber("intake", "note sensor reading (CM)", intakeDistanceSensor.getDistanceCM());
         // System.out.println("intake note sensor reading (CM): " + intakeDistanceSensor.getDistanceCM());
@@ -44,12 +49,13 @@ public class IntakeWithDistanceSensor extends Intake {
                 return intakePower;
             }
             case HOLDING -> {
-                if (!isNoteInsideIntake())
+                if (!isNoteInsideIntake()) {
+                    System.out.println("<-- Intake | note gone when hollding, updating to disabled... -->");
                     return updateStatusToDisabled();
+                }
                 intakeWheelPositionController.startNewTask(new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, intakeWheelHoldingPosition));
                 final double holdPower = intakeWheelPositionController.getMotorPower(intakeEncoder.getEncoderPosition(), intakeEncoder.getEncoderVelocity(), 0); // dt does not matter
                 EasyShuffleBoard.putNumber("intake", "holding power", holdPower);
-                // System.out.println("intake holding power: " + holdPower);
                 return holdPower;
             }
             case LAUNCHING -> {
@@ -91,10 +97,10 @@ public class IntakeWithDistanceSensor extends Intake {
         final double intakeMotorEncoderTicksPerSecondAtNormalPower = 74000;
         EnhancedPIDController.PIDProfile intakeMotorPIDProfile = new EnhancedPIDController.StaticPIDProfile(
                 Double.POSITIVE_INFINITY,
-                0.35,
+                0.45,
                 0.02,
                 intakeMotorEncoderTicksPerSecondAtNormalPower * 0.3,
-                intakeMotorEncoderTicksPerSecondAtNormalPower * 0.02,
+                intakeMotorEncoderTicksPerSecondAtNormalPower * 0.01,
                 0.1,
                 0,
                 0);
@@ -146,6 +152,6 @@ public class IntakeWithDistanceSensor extends Intake {
 
     @Override
     public boolean isNoteInsideIntake() {
-        return intakeDistanceSensor.getDistanceCM() <= distanceSensorThreshold;
+        return System.currentTimeMillis() - previousNoteSeenTimeMillis < 500;
     }
 }

@@ -592,7 +592,7 @@ public class EnhancedPIDController {
             /** whether the trapezoid is a triangle */
             boolean isTriangle = distanceTravelledDuringAccelerating * 2 > totalDistance; // it is a triangle whenever there is no enough distance to fully accelerate and decelerate
             /* if it is triangle */
-            System.out.println("schedule is triangle: " + isTriangle);
+            // System.out.println("schedule is triangle: " + isTriangle);
             if (isTriangle) {
                 this.checkPoints = new CheckPoint[3];
 
