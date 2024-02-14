@@ -37,9 +37,16 @@ public class ArmGravityController implements MechanismController {
      * current schedule created time is the time when the last big movement is ordered
      * */
     private long previousTimeMillis, currentScheduleCreatedTime;
+
+    private final double startingPosition;
+
     public ArmGravityController(ArmProfile armProfile) {
+        this(armProfile, 0);
+    }
+    public ArmGravityController(ArmProfile armProfile, double startingPosition) {
         this.profile = armProfile;
         this.enhancedPIDController = new EnhancedPIDController(armProfile.staticPIDProfile);
+        this.startingPosition = startingPosition;
     }
 
     /**
@@ -58,8 +65,8 @@ public class ArmGravityController implements MechanismController {
         if (newDesiredPosition == desiredPosition) return;
 
 
-        if (currentSchedule == null) // TODO set a default position
-            this.currentSchedule = new EnhancedPIDController.TrapezoidPathSchedule(profile.dynamicalPIDProfile, new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, newDesiredPosition), 0, 0);
+        if (currentSchedule == null)
+            this.currentSchedule = new EnhancedPIDController.TrapezoidPathSchedule(profile.dynamicalPIDProfile, new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, newDesiredPosition), startingPosition, 0);
         else {
             final double scheduleTimer = (System.currentTimeMillis() - currentScheduleCreatedTime) / 1000.0;
             this.currentSchedule = new EnhancedPIDController.TrapezoidPathSchedule(profile.dynamicalPIDProfile, new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, newDesiredPosition), currentSchedule.getCurrentPathPosition(scheduleTimer), currentSchedule.getCurrentSpeed(scheduleTimer));

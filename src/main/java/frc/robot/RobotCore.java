@@ -149,15 +149,14 @@ public class RobotCore {
                 this.shooter = new Shooter(shooterMechanisms, aimingSystem, robotConfig); modules.add(shooter);
 
 
-                final TalonFXMotor armMotor = new TalonFXMotor(new TalonFX(25) ,robotConfig.getConfig("arm/armMotorReversed")!=0);
+                final TalonFXMotor armMotor = new TalonFXMotor(new TalonFX((int)robotConfig.getConfig("arm/armMotorPort")) ,robotConfig.getConfig("arm/armMotorReversed")!=0);
                 final DCAbsolutePositionEncoder armEncoder = new DCAbsolutePositionEncoder(1, robotConfig.getConfig("arm/armEncoderReversed")!=0);
                 this.transformableArm = new TransformableArm(armMotor, armEncoder, shooter, robotConfig); modules.add(transformableArm);
-                final MotorsSet intakeMotors = new MotorsSet(
-                        new Motor[] {
-                                new TalonFXMotor(new TalonFX(13), true),
-                                new TalonFXMotor(new TalonFX(14), true)
-                        });
-                this.intake = new IntakeWithDistanceSensor(intakeMotors, new TalonFXMotor(new TalonFX(14), true), new Rev2mDistanceSensorEncapsulation(), robotConfig); modules.add(intake);
+                final TalonFXMotor[] intakeMotors = new TalonFXMotor[] {
+                        new TalonFXMotor(new TalonFX((int)robotConfig.getConfig("intake/intakeMotor1Port")), robotConfig.getConfig("intake/intakeMotor1Reversed") != 0),
+                        new TalonFXMotor(new TalonFX((int)robotConfig.getConfig("intake/intakeMotor2Port")), robotConfig.getConfig("intake/intakeMotor2Reversed") != 0)
+                };
+                this.intake = new IntakeWithDistanceSensor(new MotorsSet(intakeMotors), intakeMotors[0], new Rev2mDistanceSensorEncapsulation(), robotConfig); modules.add(intake);
         }
 
         private SwerveWheel createSwerveWheel(String name, int id, Vector2D wheelInstallationPosition) {

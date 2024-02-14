@@ -120,6 +120,10 @@
 
     </shooter>
     <intake>
+        <intakeMotor1Port>13</intakeMotor1Port>
+        <intakeMotor1Reversed>1</intakeMotor1Reversed>
+        <intakeMotor2Port>14</intakeMotor2Port>
+        <intakeMotor2Reversed>1</intakeMotor2Reversed>
 <!--        <launchPower>0.75</launchPower>-->
 <!--        <intakePower>0.65</intakePower>-->
 <!--        <revertPower>-0.65</revertPower>-->
@@ -134,6 +138,9 @@
         <!-- positive should be towards lower point -->
         <armMotorReversed>1</armMotorReversed>
         <armEncoderReversed>0</armEncoderReversed>
+
+        <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
+        <encoderZeroPositionRadians>5.854</encoderZeroPositionRadians>
 
         <!-- arm positions -->
         <position-DEFAULT>98</position-DEFAULT> <!-- 60 -->
@@ -156,9 +163,6 @@
         <inAdvanceTime>0.25</inAdvanceTime>
         <errorToleranceAsInPosition>4.5</errorToleranceAsInPosition>
 
-        <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
-        <encoderZeroPositionRadians>5.854</encoderZeroPositionRadians>
-
         <!-- lookup table -->
         <encoderPosition0>0</encoderPosition0>
         <gravityTorque0>0.07</gravityTorque0>
@@ -172,7 +176,7 @@
         <encoderPosition3>62</encoderPosition3>
         <gravityTorque3>0</gravityTorque3>
         <!-- lowest position -->
-        <encoderPosition4>100</encoderPosition4>
+        <encoderPosition4>115</encoderPosition4>
         <gravityTorque4>-0.05</gravityTorque4>
     </arm>
 
