@@ -110,7 +110,7 @@
         <speedControllerFeedForwardDelay>0</speedControllerFeedForwardDelay>
         <speedControllerMaximumSpeed>6650</speedControllerMaximumSpeed>
         <speedControllerTimeNeededToAccelerateToMaxSpeed>0.8</speedControllerTimeNeededToAccelerateToMaxSpeed>
-        <flyWheelSpeedErrorTolerance>0.06</flyWheelSpeedErrorTolerance>
+        <flyWheelSpeedErrorTolerance>0.05</flyWheelSpeedErrorTolerance>
         <shooter1Port>15</shooter1Port>
         <shooter2Port>16</shooter2Port>
         <shooter1Reversed>0</shooter1Reversed>
@@ -257,12 +257,12 @@
         <pilotControllerZAxisSensitivity>-60</pilotControllerZAxisSensitivity>
         <!-- the minimum amount of stick input to respond to, in percentage -->
         <pilotStickThresholdWhenOtherAxisUnused>5</pilotStickThresholdWhenOtherAxisUnused>
-        <pilotStickThresholdWhenOtherAxisFull>8</pilotStickThresholdWhenOtherAxisFull>
+        <pilotStickThresholdWhenOtherAxisFull>15</pilotStickThresholdWhenOtherAxisFull>
         <pilotTranslationalAxisExponent>1.6</pilotTranslationalAxisExponent>
-        <pilotRotationalAxisExponent>2</pilotRotationalAxisExponent>
+        <pilotRotationalAxisExponent>1.8</pilotRotationalAxisExponent>
 
-        <translationAutoPilotButton type="int">2</translationAutoPilotButton>
+        <translationAutoPilotButton type="int">6</translationAutoPilotButton>
         <lockChassisButtonPort type="int">10</lockChassisButtonPort>
-        <rotationAutoPilotButton type="int">9</rotationAutoPilotButton>
+        <rotationAutoPilotButton type="int">5</rotationAutoPilotButton>
     </control-XBOX>
 </robotConfig>

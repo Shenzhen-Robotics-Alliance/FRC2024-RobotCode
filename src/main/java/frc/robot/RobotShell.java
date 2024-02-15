@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.AutoStagePrograms.AprilTagCameraAutomaticMeasuring;
 import frc.robot.AutoStagePrograms.AutoStageProgram;
+import frc.robot.Drivers.Visions.JetsonDetectionAppClient;
 import frc.robot.Services.*;
 import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.SequentialCommandSegment;
@@ -44,15 +45,26 @@ public class RobotShell extends TimedRobot {
     @Override
     public void autonomousInit() {
         // System.out.println("<-- Robot Shell | autonomous init -->");
-        startAutoStage(new AprilTagCameraAutomaticMeasuring(
-                robotCore.aprilTagDetectionAppClient,
-                4,
-                130,
-                180,
-                300,
-                70,
-                new Vector2D(new double[] {0, -155})
-        )); // TODO use sendable chooser
+        startAutoStage(
+//                new AprilTagCameraAutomaticMeasuring(
+//                    new JetsonDetectionAppClient("NoteDetector", "10.55.16.109", 8889, new double[] {1280, 720}),
+//                    1,
+//                    -30,
+//                    -25,
+//                    -100,
+//                    50,
+//                    new Vector2D(new double[] {0, 25})
+//                )
+                new AprilTagCameraAutomaticMeasuring(
+                        robotCore.aprilTagDetectionAppClient,
+                        4,
+                        130,
+                        180,
+                        300,
+                        70,
+                        new Vector2D(new double[] {0, -155})
+                )
+        ); // TODO use sendable chooser
     }
 
     @Override
@@ -92,7 +104,7 @@ public class RobotShell extends TimedRobot {
     public void testInit() {
         // System.out.println("<-- Robot Shell | test init -->");
         if (robotTest == null)
-            this.robotTest = new DCEncoderCalibration();
+            this.robotTest = new SimpleDistanceSensorTest();
         robotTest.testStart();
     }
 

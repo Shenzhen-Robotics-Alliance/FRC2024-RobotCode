@@ -1,5 +1,5 @@
 from jetson_inference import detectNet
-from jetson_utils import videoSource, videoOutput, cudaAllocMapped, cudaToNumpy
+from jetson_utils import videoSource, videoOutput, cudaAllocMapped, cudaToNumpy, cudaFromNumpy
 import cv2
 import numpy as np
 from time import time, sleep
@@ -8,24 +8,31 @@ from http.server import SimpleHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
 from time import time, sleep
 
-net = detectNet("ssd-mobilenet-v1", model="/home/iron-maple/Documents/jetson-vision/DetectNet-CUDA/NoteDetection-mobilenet.onnx", labels="/home/iron-maple/Documents/jetson-vision/DetectNet-CUDA/labels.txt", input_blob="input_0", output_cvg="scores", output_bbox="boxes", threshold=0.92)
-camera = videoSource("/dev/video0") # V4L2 port0
 # display_window = videoOutput("display://0")
 
 server_port = 8889
 
 running = True
-frame_bytes = None
+frame = cv2.imread("./no_result.png")
 new_frame_ready = False
 detection_results_ready = False
 fps = 0
 detection_results = "<no results yet>"
-import threading
+
+camera = videoSource("/dev/video1", argv="--flip-method=rotate-180")
+net = detectNet("ssd-mobilenet-v2", model="/home/iron-maple/Documents/jetson-vision/DetectNet-CUDA/NoteDetection-mobilenet.onnx", labels="/home/iron-maple/Documents/jetson-vision/DetectNet-CUDA/labels.txt", input_blob="input_0", output_cvg="scores", output_bbox="boxes", threshold=0.92)
+# net = detectNet("ssd-mobilenet-v2", threshold=0.8)
 def generate_frames():
-    global frame_bytes, new_frame_ready, detection_results_ready, fps, detection_results
-    print("generate frames activated")
+    global frame, new_frame_ready, detection_results_ready, fps, detection_results
+    print("<-- DetectNetServer | generate frames activated -->")
     while running:
+        print("<-- DetectNetServer | generate frames running -->")
         img = camera.Capture()
+
+        # flip it with opencv
+        numpy_img = cudaToNumpy(img)
+        img_flipped = cv2.rotate(numpy_img, cv2.ROTATE_180)
+        img = cudaFromNumpy(img_flipped)
 
         detections = net.Detect(img, width=1280, height=720)
         
@@ -43,13 +50,11 @@ def generate_frames():
         
         raw_frame = cudaToNumpy(img)
         frame = cv2.cvtColor(cv2.resize(raw_frame, (320, 240)), cv2.COLOR_BGR2RGB)
-        ret, buffer = cv2.imencode('.jpg', frame)
-        frame_bytes = buffer.tobytes()
         new_frame_ready = True
         detection_results_ready = True
         fps = net.GetNetworkFPS()
         # display_window.Render(img) # this can't work if there is line "import cv2"
-        # print(f"<-- detect net running, FPS: {net.GetNetworkFPS()} -->")
+        print(f"<-- DetectNetServer | detect net running, FPS: {net.GetNetworkFPS()} -->")
         
         
 # MJPEG Streaming Server
@@ -57,7 +62,7 @@ update_rate = 24
 class StreamingHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         global new_frame_ready, detection_results_ready, detection_results
-        print(f"<--client visited {self.path} -->")
+        print(f"<-- DetectNetServer | client visited {self.path} -->")
         if self.path == "/":
             # Return the main page (index.html)
             self.send_response(200)
@@ -76,26 +81,39 @@ class StreamingHandler(SimpleHTTPRequestHandler):
             self.send_header('Content-type', 'multipart/x-mixed-replace; boundary=frame')
             self.end_headers()
             while running:
-                while (not new_frame_ready) and running:
-                    sleep(0.02)
+                # while (not new_frame_ready) and running:
+                #     print("<-- DetectNetServer | waiting for new frame... -->")
+                #     sleep(0.02)
+                sleep(1/update_rate)
+
+                if (frame is None):
+                    print("<-- DetectNetServer | frame is none -->")
+                    continue
+                ret, buffer = cv2.imencode('.jpg', frame)
+                frame_bytes = buffer.tobytes()
+                print("<-- DetectNetServer | feeding frame... -->")
                 try:
                     self.send_frame(frame_bytes)
-                except ConnectionResetError:
+                except (ConnectionResetError, BrokenPipeError):
                     print("client disconnected")
                     return
-                new_frame_ready = True
+                new_frame_ready = False
         elif self.path == '/results':
             self.send_response(200)
             self.send_header('Content-type', 'text/plain')
             self.end_headers()
             while running:
-                while (not detection_results_ready) and running:
-                    sleep(0.05)
+                # while (not detection_results_ready) and running:
+                #     print("<-- DetectNetServer | waiting for new results -->")
+                #     sleep(0.02)
+                sleep(1/update_rate)
                 detection_results_ready = False
+                if detection_results is None:
+                    return
                 try:
                     self.wfile.write(detection_results.encode())
-                except (ConnectionResetError, ConnectionAbortedError):
-                    print("client disconnected")
+                except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
+                    print("<-- DetectNetServer | client disconnected -->")
                     return
                 
 
@@ -111,18 +129,18 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     pass
 
 # Start the HTTP server in a separate thread
-print("<-- starting inspector server... -->")
+print("<-- DetectNetServer | starting inspector server... -->")
 httpd = ThreadedHTTPServer(('0.0.0.0', server_port), StreamingHandler)
 server_thread = threading.Thread(target=httpd.serve_forever)
 server_thread.daemon = True
 server_thread.start()
-print("<-- inspector server started -->")
+print("<-- DetectNetServer |  inspector server started -->")
 
 try:
     generate_frames()
 except KeyboardInterrupt:
     pass
 running = False
-print("shutdown by user")
+print("<-- DetectNetServer | shutdown by user -->")
 httpd.shutdown()
 server_thread.join()

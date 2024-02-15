@@ -3,6 +3,7 @@ package frc.robot.AutoStagePrograms;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.Visions.RawObjectDetectionCamera;
 import frc.robot.Modules.PositionReader.PositionEstimator;
+import frc.robot.Modules.UpperStructure.TransformableArm;
 import frc.robot.RobotCore;
 import frc.robot.Utils.MathUtils.BezierCurve;
 import frc.robot.Utils.MathUtils.Rotation2D;
@@ -47,6 +48,7 @@ public class AprilTagCameraAutomaticMeasuring implements AutoStageProgram{
         final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
 
         commandSegments.add(commandFactory.justDoIt(camera::startRecognizing));
+        commandSegments.add(commandFactory.justDoIt(() -> robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, null)));
 
         Vector2D robotPreviousPosition = robotInitialPositionToAprilTag;
         final double unitSpace = maxHorizontalDistance / (horizontalDistanceLevelsCount-1);

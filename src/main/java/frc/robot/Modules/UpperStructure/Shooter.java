@@ -144,7 +144,7 @@ public class Shooter extends RobotModuleBase {
 
     /* TODO the following constants, move then to robotConfig and tune them */
     /** when the target is unseen */
-    private static final double defaultShootingRPM = 6400;
+    private static final double defaultShootingRPM = 6700;
     private static final double amplifyingRPM = 1200;
     private static final double idleRPM = -200;
     private static final double projectileSpeed = 10;

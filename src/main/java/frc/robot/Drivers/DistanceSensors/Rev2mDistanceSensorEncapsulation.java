@@ -20,7 +20,13 @@
 
      @Override
      public void setEnabled(boolean enabled) {
+         final String start = enabled ? "starting" : "stopping", end = enabled ? "started" : "stopped";
+         System.out.println("Rev2m Distance Sensor | " + start + " round robbin...");
          rev2mDistanceSensorInstance.setEnabled(enabled);
+         System.out.println("Rev2m Distance Sensor | " + "round robbin " + end);
+
+         System.out.println("Rev2m Distance Sensor | " + start + " automatic mode...");
          rev2mDistanceSensorInstance.setAutomaticMode(enabled);
+         System.out.println("Rev2m Distance Sensor | " + "automatic mode " + end);
      }
  }

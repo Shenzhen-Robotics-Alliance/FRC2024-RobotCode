@@ -135,7 +135,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
             case MANUALLY_DRIVING -> {
                 shooter.setShooterMode(Shooter.ShooterMode.DISABLED, this);
                 arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
-                if (copilotGamePad.getRightBumper())
+                if (copilotGamePad.getBButton())
                     intake.startSplit(this); // in case if the Note is stuck
                 else
                     intake.turnOffIntake(this);
