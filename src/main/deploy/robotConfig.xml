@@ -103,6 +103,11 @@
 
     <!-- robot module configs goes here -->
     <shooter>
+        <shooter1Port>15</shooter1Port>
+        <shooter2Port>16</shooter2Port>
+        <shooter1Reversed>0</shooter1Reversed>
+        <shooter2Reversed>0</shooter2Reversed>
+
         <shooterMotorEncoderTicksPerRevolution>2048</shooterMotorEncoderTicksPerRevolution>
         <speedControllerProportionGain>1.05</speedControllerProportionGain>
         <speedControllerFeedForwardGain>0.55</speedControllerFeedForwardGain>
@@ -111,22 +116,48 @@
         <speedControllerMaximumSpeed>6500</speedControllerMaximumSpeed>
         <speedControllerTimeNeededToAccelerateToMaxSpeed>0.8</speedControllerTimeNeededToAccelerateToMaxSpeed>
         <flyWheelSpeedErrorTolerance>0.05</flyWheelSpeedErrorTolerance>
-        <shooter1Port>15</shooter1Port>
-        <shooter2Port>16</shooter2Port>
-        <shooter1Reversed>0</shooter1Reversed>
-        <shooter2Reversed>0</shooter2Reversed>
+
+        <defaultShootingRPM>5000</defaultShootingRPM>
+        <defaultShootingAngle>2</defaultShootingAngle>
+        <amplifyRPM>500</amplifyRPM>
+        <idleRPM>-100</idleRPM>
+        <projectileSpeed>8</projectileSpeed>
+        <shootingRange>5</shootingRange>
 
         <!-- shooting lookup table -->
+        <targetDistance0>1.5</targetDistance0>
+        <shooterRPM0>5000</shooterRPM0>
+        <armAngle0>6.5</armAngle0>
 
+        <targetDistance1>2</targetDistance1>
+        <shooterRPM1>5400</shooterRPM1>
+        <armAngle1>0</armAngle1>
+
+        <targetDistance2>2.5</targetDistance2>
+        <shooterRPM2>5800</shooterRPM2>
+        <armAngle2>-7</armAngle2>
+
+        <targetDistance3>3</targetDistance3>
+        <shooterRPM3>6200</shooterRPM3>
+        <armAngle3>-12.5</armAngle3>
+
+        <targetDistance4>3.5</targetDistance4>
+        <shooterRPM4>6400</shooterRPM4>
+        <armAngle4>-14</armAngle4>
+
+        <targetDistance5>4</targetDistance5>
+        <shooterRPM5>6500</shooterRPM5>
+        <armAngle5>-16</armAngle5>
+
+        <targetDistance6>5</targetDistance6>
+        <shooterRPM6>6500</shooterRPM6>
+        <armAngle6>-18</armAngle6>
     </shooter>
     <intake>
-        <intakeMotor1Port>13</intakeMotor1Port>
+        <intakeMotor1Port>14</intakeMotor1Port>
         <intakeMotor1Reversed>1</intakeMotor1Reversed>
         <intakeMotor2Port>14</intakeMotor2Port>
         <intakeMotor2Reversed>1</intakeMotor2Reversed>
-<!--        <launchPower>0.75</launchPower>-->
-<!--        <intakePower>0.65</intakePower>-->
-<!--        <revertPower>-0.65</revertPower>-->
         <launchPower>0.6</launchPower>
         <intakePower>0.35</intakePower>
         <revertPower>-0.3</revertPower>

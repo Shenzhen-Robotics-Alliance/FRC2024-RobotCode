@@ -7,6 +7,7 @@ import frc.robot.Utils.ComputerVisionUtils.AprilTagReferredTarget;
 import frc.robot.Utils.EasyShuffleBoard;
 import frc.robot.Utils.MathUtils.LookUpTable;
 import frc.robot.Utils.MathUtils.Rotation2D;
+import frc.robot.Utils.MathUtils.StatisticsUtils;
 import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 import frc.robot.Utils.MechanismControllers.FlyWheelSpeedController;
@@ -14,9 +15,10 @@ import frc.robot.Utils.RobotConfigReader;
 import frc.robot.Utils.RobotModuleOperatorMarker;
 import frc.robot.Utils.TimeUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class Shooter extends RobotModuleBase {
     public enum ShooterMode {
@@ -33,6 +35,7 @@ public class Shooter extends RobotModuleBase {
     private final double shooterReadyErrorBound;
     private final RobotConfigReader robotConfig;
     private double specifiedRPM;
+    private double aimingSystemDecidedRPM;
     private ShooterMode currentMode;
     public Shooter(EncoderMotorMechanism[] shooters, RobotConfigReader robotConfig) {
         this(shooters, null, robotConfig);
@@ -94,17 +97,17 @@ public class Shooter extends RobotModuleBase {
 
     @Override
     protected void periodic(double dt) {
-        AtomicReference<Double> desiredEncoderVelocity = new AtomicReference<>((double) 0);
         try {
-            TimeUtils.executeWithTimeOut(() -> desiredEncoderVelocity.set(decideRPM() / encoderVelocityToRPM), 500);
+            TimeUtils.executeWithTimeOut(() -> aimingSystemDecidedRPM = getShooterSpeedWithAimingSystem(), 500);
         } catch (TimeoutException e) {
             throw new RuntimeException("timeout while deciding RPM");
         }
+        final double desiredEncoderVelocity = decideRPM();
 
         try {
             TimeUtils.executeWithTimeOut(() -> {
                 for (int shooterID = 0; shooterID < shooters.length; shooterID++) {
-                    speedControllers[shooterID].setDesiredSpeed(desiredEncoderVelocity.get());
+                    speedControllers[shooterID].setDesiredSpeed(desiredEncoderVelocity);
                     EasyShuffleBoard.putNumber("shooter", "motor " + shooterID + " actual speed", shooters[shooterID].getEncoderVelocity() * encoderVelocityToRPM);
                 }
             }, 500);
@@ -113,7 +116,7 @@ public class Shooter extends RobotModuleBase {
         }
 
 
-        EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", desiredEncoderVelocity.get() * encoderVelocityToRPM);
+        EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", desiredEncoderVelocity * encoderVelocityToRPM);
 
         try {
             TimeUtils.executeWithTimeOut(() -> {
@@ -130,7 +133,7 @@ public class Shooter extends RobotModuleBase {
     private double decideRPM() {
         // System.out.println("shooter current mode: " + currentMode.name());
         return switch (currentMode) {
-            case SHOOT -> getShooterSpeedWithAimingSystem();
+            case SHOOT -> aimingSystemDecidedRPM;
             case AMPLIFY -> amplifyingRPM;
             case SPECIFIED_RPM -> specifiedRPM;
             default -> idleRPM; // idle
@@ -163,23 +166,31 @@ public class Shooter extends RobotModuleBase {
             shooter.disableMotor(this);
     }
 
-    /* TODO the following constants, move then to robotConfig and tune them */
-    /** when the target is unseen */
-    // private static final double defaultShootingRPM = 6300;
-    private static final double defaultShootingRPM = 5000;
-    private static final double amplifyingRPM = 1200;
-    // private static final double idleRPM = -200;
-    private static final double idleRPM = -50;
-    private static final double projectileSpeed = 10;
-    private static final double shootingRange = 6;
-    private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5}, new double[] {5000, 5400, 5800, 6200, 6400, 6500, 6500});
-
-    private static final double defaultShootingAngle = 2;
+    private double defaultShootingRPM, amplifyingRPM, idleRPM, projectileSpeed, shootingRange;
+    private LookUpTable shooterRPMToTargetDistanceLookUpTable;
 
     /** the desired arm position for aiming, in degrees and in reference to the default shooting position of the arm, which is specified in the arm configs */
-    private static final LookUpTable armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5}, new double[] {6.5, 0, -7, -12.5, -14, -16, -20});
+    private LookUpTable armPositionDegreesToTargetDistanceLookUpTable;
     @Override
     public void updateConfigs() {
+        final List<Double> speakerTargetDistances = new ArrayList<>(), shooterRPMs = new ArrayList<>(), armAngles = new ArrayList<>();
+        int i = 0; while (true) {
+            try {
+                speakerTargetDistances.add(Math.toRadians(robotConfig.getConfig("shooter", "targetDistance" + i)));
+                shooterRPMs.add(robotConfig.getConfig("shooter", "shooterRPM"+ i));
+                armAngles.add(robotConfig.getConfig("shooter", "armAngle"+ i));
+                i++;
+            } catch (NullPointerException end) { break; }
+        }
+        this.shooterRPMToTargetDistanceLookUpTable = new LookUpTable(StatisticsUtils.toArray(speakerTargetDistances), StatisticsUtils.toArray(shooterRPMs));
+        this.armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(StatisticsUtils.toArray(speakerTargetDistances), StatisticsUtils.toArray(armAngles));
+
+        this.defaultShootingRPM = robotConfig.getConfig("shooter", "defaultShootingRPM");
+        this.amplifyingRPM = robotConfig.getConfig("shooter", "amplifyingRPM");
+        this.idleRPM = robotConfig.getConfig("shooter", "idleRPM");
+        this.projectileSpeed = robotConfig.getConfig("shooter", "projectileSpeed");
+        this.shootingRange = robotConfig.getConfig("shooter", "shootingRange");
+
         final FlyWheelSpeedController.FlyWheelSpeedControllerProfile speedControllerProfile = new FlyWheelSpeedController.FlyWheelSpeedControllerProfile(
                 robotConfig.getConfig("shooter", "speedControllerProportionGain"),
                 robotConfig.getConfig("shooter", "speedControllerFeedForwardGain"),
@@ -201,7 +212,7 @@ public class Shooter extends RobotModuleBase {
         final Vector2D targetRelativePositionToRobot;
         if (aimingSystem == null
                 || (targetRelativePositionToRobot = aimingSystem.getRelativePositionToTarget(projectileSpeed)) == null)
-            return Math.toRadians(defaultShootingAngle);
+            return 0;
         final double distanceToTarget = targetRelativePositionToRobot.getMagnitude();
         return Math.toRadians(armPositionDegreesToTargetDistanceLookUpTable.getYPrediction(distanceToTarget));
     }

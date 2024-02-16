@@ -98,7 +98,6 @@ public class RobotShell extends TimedRobot {
     @Override
     public void disabledPeriodic() {
         // System.out.println("<-- Robot Shell | disabled periodic -->");
-        // TODO if the robot is left unused for a long time, let the motors sing
     }
 
     private SimpleRobotTest robotTest = null;
@@ -106,7 +105,7 @@ public class RobotShell extends TimedRobot {
     public void testInit() {
         // System.out.println("<-- Robot Shell | test init -->");
         if (robotTest == null)
-            this.robotTest = new ShooterSpeedTest();
+            this.robotTest = new SimpleDistanceSensorTest();
         robotTest.testStart();
     }
 
