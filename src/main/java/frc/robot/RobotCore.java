@@ -46,6 +46,8 @@ import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
  * note that services are not included in this field
  * */
 public class RobotCore {
+        private static final long printTimeIfTimeMillisExceeds = 100; // TODO find out why there are performance problem by setting this to 5
+
         public final RobotConfigReader robotConfig;
         public final SwerveWheel frontLeftWheel, backLeftWheel, frontRightWheel, backRightWheel;
         public final SimpleGyro gyro;
@@ -135,11 +137,11 @@ public class RobotCore {
                 final DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Red); // default to red
                 if (alliance == DriverStation.Alliance.Red) {
                         speakerTargetAprilTagReferences.put(4, new Vector2D(new double[] {0,0}));
-                        speakerTargetAprilTagReferences.put(3, new Vector2D(new double[] {0.565,0}));
+                        speakerTargetAprilTagReferences.put(3, new Vector2D(new double[] {-0.5,0}));
                         amplifierTargetAprilTagReferences.put(5, new Vector2D(new double[] {0, 0}));
                 } else {
                         speakerTargetAprilTagReferences.put(7, new Vector2D(new double[] {0,0}));
-                        speakerTargetAprilTagReferences.put(8, new Vector2D(new double[] {-0.565,0}));
+                        speakerTargetAprilTagReferences.put(8, new Vector2D(new double[] {-0.5,0}));
                         amplifierTargetAprilTagReferences.put(6, new Vector2D(new double[] {0, 0}));
                 }
                 noteTargetReferences.put(1, new Vector2D()); // the id of note is always 0, and the note is itself the reference so the relative position is (0,0)
@@ -306,6 +308,10 @@ public class RobotCore {
                 modulesUpdatingThreads = new ArrayList<>();
                 for (RobotModuleBase module: modules)
                         modulesUpdatingThreads.add(module.getPeriodicUpdateThread());
+
+                modulesUpdatingThreads.add(new Thread(this::updateAprilTagCameraContinuously));
+                modulesUpdatingThreads.add(new Thread(this::updateNoteCameraContinuously));
+
                 for (Thread thread: modulesUpdatingThreads)
                         thread.start();
         }
@@ -315,40 +321,67 @@ public class RobotCore {
          * */
         private long t = System.currentTimeMillis();
         public void updateRobot() {
-                for (RobotServiceBase service: services)
-//                        service.periodic();
-                {
+                for (RobotServiceBase service: services) {
                         long dt = System.currentTimeMillis();
                         service.periodic();
-//                        if (System.currentTimeMillis()-dt>10)
-//                                System.out.println("service " + service.serviceName + " update time (ms): " + (System.currentTimeMillis() - dt));
+                        if (System.currentTimeMillis()-dt > printTimeIfTimeMillisExceeds)
+                                System.out.println("service " + service.serviceName + " update time (ms): " + (System.currentTimeMillis() - dt));
                 }
 
-                /* TODO the following can be running in another thread to save main thread performance   */
-                if (aprilTagPositionTrackingCamera != null)
-                        aprilTagPositionTrackingCamera.update(positionReader.getRobotPosition2D(), new Rotation2D(positionReader.getRobotRotation()));
-                if (notePositionTrackingCamera != null)
-                        notePositionTrackingCamera.update(positionReader.getRobotPosition2D(), new Rotation2D(positionReader.getRobotRotation()));
                 if (!useMultiThreads)
                         for (RobotModuleBase module:modules)
                                 module.periodic();
 
-                // printChassisDebugMessages();
-                long dt = System.currentTimeMillis();
-                printAprilTagCameraResultsToDashboard();
-                printNoteDetectionCameraResultsToDashboard();
                 printChassisDebugMessagesToDashboard();
-//                if (System.currentTimeMillis()-dt>10)
-//                        System.out.println("print april tag camera time (ms): " + (System.currentTimeMillis() - dt));
 
-                dt = System.currentTimeMillis();
+
+                long dt = System.currentTimeMillis();
                 robotConfig.updateTuningConfigsFromDashboard();
-//                if (System.currentTimeMillis()-dt>10)
-//                        System.out.println("update config time (ms): " + (System.currentTimeMillis() - dt));
+                if (System.currentTimeMillis()-dt > printTimeIfTimeMillisExceeds)
+                        System.out.println("update config time (ms): " + (System.currentTimeMillis() - dt));
 
                 /* monitor the program's performance */
                 SmartDashboard.putNumber("robot main thread delay", System.currentTimeMillis()-t);
                 t = System.currentTimeMillis();
+        }
+
+        private void updateAprilTagCameraContinuously() {
+                while (true) {
+                        if (!wasEnabled) {
+                                Time.sleep(50);
+                                continue;
+                        }
+                        long dt = System.currentTimeMillis();
+                        if (aprilTagPositionTrackingCamera != null)
+                                aprilTagPositionTrackingCamera.update(positionReader.getRobotPosition2D(), new Rotation2D(positionReader.getRobotRotation()));
+                        if (System.currentTimeMillis()-dt > printTimeIfTimeMillisExceeds)
+                                System.out.println("update april tag camera time (ms): " + (System.currentTimeMillis() - dt));
+
+                        printAprilTagCameraResultsToDashboard();
+
+
+                        if (System.currentTimeMillis()-dt > printTimeIfTimeMillisExceeds)
+                                System.out.println("print april camera messages time (ms): " + (System.currentTimeMillis() - dt));
+                }
+        }
+
+        private void updateNoteCameraContinuously() {
+                while (true) {
+                        if (!wasEnabled) {
+                                Time.sleep(50);
+                                continue;
+                        }
+                        long dt = System.currentTimeMillis();
+                        if (notePositionTrackingCamera != null)
+                                notePositionTrackingCamera.update(positionReader.getRobotPosition2D(), new Rotation2D(positionReader.getRobotRotation()));
+                        if (System.currentTimeMillis()-dt > printTimeIfTimeMillisExceeds)
+                                System.out.println("update note camera time (ms): " + (System.currentTimeMillis() - dt));
+
+                        dt=System.currentTimeMillis();
+                        printNoteDetectionCameraResultsToDashboard();
+                        if (System.currentTimeMillis()-dt > printTimeIfTimeMillisExceeds)
+                                System.out.println("print note camera messages time (ms): " + (System.currentTimeMillis() - dt));
+                }
         }
 
         private void printChassisDebugMessagesToDashboard() {

@@ -16,7 +16,7 @@ import java.util.List;
 
 public class RobotShell extends TimedRobot {
     private static final int updateFreq = 128;
-    public static final boolean activateShuffleboard = true;
+    public static final boolean activateShuffleboard = false;
     public RobotShell() {
         super(1.0/updateFreq);
     }
@@ -131,9 +131,9 @@ public class RobotShell extends TimedRobot {
         final TransformableIntakeAndShooterService intakeAndShooterService = new TransformableIntakeAndShooterService(robotCore.intake, robotCore.shooter, robotCore.transformableArm, robotCore.robotConfig, new XboxController(1));
         final VisionAidedPilotChassis visionAidedPilotChassis = new VisionAidedPilotChassis(robotCore.chassisModule, robotCore.shooter, robotCore.intake, robotCore.transformableArm, robotCore.speakerTarget, robotCore.amplifierTarget, robotCore.noteTarget, new XboxController(1), robotCore.robotConfig);
 
-//        services.add(intakeAndShooterService);
-//        services.add(pilotChassis);
-        services.add(visionAidedPilotChassis);
+        services.add(intakeAndShooterService);
+        services.add(pilotChassis);
+//        services.add(visionAidedPilotChassis);
 
         robotCore.startStage(services);
     }

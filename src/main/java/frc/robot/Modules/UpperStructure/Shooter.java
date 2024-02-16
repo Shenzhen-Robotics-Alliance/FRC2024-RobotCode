@@ -149,12 +149,12 @@ public class Shooter extends RobotModuleBase {
     private static final double idleRPM = -200;
     private static final double projectileSpeed = 10;
     private static final double shootingRange = 6;
-    private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5}, new double[] {6200, 6500, 6500, 6500, 6500});
+    private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7}, new double[] {4700, 4800, 5100, 5300, 5500, 5700, 5900, 6100, 6300, 6500});
 
     private static final double defaultShootingAngle = 2;
 
     /** the desired arm position for aiming, in degrees and in reference to the default shooting position of the arm, which is specified in the arm configs */
-    private static final LookUpTable armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5}, new double[] {12, 6.5, 3.5, 0, -2});
+    private static final LookUpTable armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7}, new double[] {6.5, 6.5, 3.5, 0, -2, -2, -2, -2, -2, -2});
     @Override
     public void updateConfigs() {
         final FlyWheelSpeedController.FlyWheelSpeedControllerProfile speedControllerProfile = new FlyWheelSpeedController.FlyWheelSpeedControllerProfile(

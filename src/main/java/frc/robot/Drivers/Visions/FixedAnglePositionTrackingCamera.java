@@ -38,8 +38,8 @@ public class FixedAnglePositionTrackingCamera implements TargetFieldPositionTrac
             final double targetDistance = cameraProfile.getDistanceFromYPixel(targetRaw.y, targetHeight) / 100.0f,
                     targetDirection = cameraProfile.getTargetAngleRadianFromXPixel(targetRaw.x);
 
-            System.out.println("<-- Fixed Angle Camera | target distance: " + targetDistance + " -->");
-            System.out.println("<-- Fixed Angle Camera | target angle: " + (Math.toDegrees(targetDirection)-90) + " -->");
+//            System.out.println("<-- Fixed Angle Camera | target distance: " + targetDistance + " -->");
+//            System.out.println("<-- Fixed Angle Camera | target angle: " + (Math.toDegrees(targetDirection)-90) + " -->");
 
             final Vector2D relativePositionToCamera = new Vector2D(targetDirection ,targetDistance).multiplyBy(cameraFacing),
                     fieldPositionDifferenceFromCamera = relativePositionToCamera.multiplyBy(robotRotation),
