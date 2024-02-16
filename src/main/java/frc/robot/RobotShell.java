@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RobotShell extends TimedRobot {
-    private static final int updateFreq = 128;
+    private static final int updateFreq = 64;
     public static final boolean activateShuffleboard = false;
     public RobotShell() {
         super(1.0/updateFreq);
@@ -106,7 +106,7 @@ public class RobotShell extends TimedRobot {
     public void testInit() {
         // System.out.println("<-- Robot Shell | test init -->");
         if (robotTest == null)
-            this.robotTest = new SimpleDistanceSensorTest();
+            this.robotTest = new ShooterSpeedTest();
         robotTest.testStart();
     }
 

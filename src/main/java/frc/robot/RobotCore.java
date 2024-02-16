@@ -332,6 +332,10 @@ public class RobotCore {
                         for (RobotModuleBase module:modules)
                                 module.periodic();
 
+                for (RobotModuleBase module:modules)
+                        if (System.currentTimeMillis() - module.getPreviousUpdateTimeMillis() > 500) // TODO see why the modules are running slow by setting this to 10
+                                System.out.println("<-- WARNING!!!! | Module " + module.moduleName + " HAVEN'T BEEN RESPONDING for " + (System.currentTimeMillis() - module.getPreviousUpdateTimeMillis()) + " ms -->");
+
                 printChassisDebugMessagesToDashboard();
 
 
@@ -409,7 +413,9 @@ public class RobotCore {
                 EasyShuffleBoard.putNumber("apriltag", "target absolute field position Y", speakerFieldPosition.getY());
                 EasyShuffleBoard.putNumber("apriltag", "target relative position to robot X", speakerRelativePositionToRobot.getX());
                 EasyShuffleBoard.putNumber("apriltag", "target relative position to robot Y", speakerRelativePositionToRobot.getY());
-                EasyShuffleBoard.putNumber("apriltag", "target distance from camera (CM)", speakerRelativePositionToRobot.getMagnitude());
+                EasyShuffleBoard.putNumber("apriltag", "target distance from camera (M)", speakerRelativePositionToRobot.getMagnitude());
+
+                SmartDashboard.putNumber("target distance from camera (M)", speakerRelativePositionToRobot.getMagnitude());
         }
 
         private void printNoteDetectionCameraResultsToDashboard() {

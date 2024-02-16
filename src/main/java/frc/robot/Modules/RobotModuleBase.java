@@ -145,4 +145,8 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
     public boolean isOwner(RobotModuleOperatorMarker operator) {
         return operator == null || operator == owner;
     }
+
+    public long getPreviousUpdateTimeMillis() {
+        return previousTimeMillis;
+    }
 }

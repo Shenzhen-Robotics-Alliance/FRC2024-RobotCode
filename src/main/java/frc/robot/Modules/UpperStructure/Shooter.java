@@ -99,9 +99,8 @@ public class Shooter extends RobotModuleBase {
 
         EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", decideRPM());
 
-        for (EncoderMotorMechanism shooter : shooters) {
+        for (EncoderMotorMechanism shooter : shooters)
             shooter.updateWithController(this);
-        }
 
         // System.out.println("<-- (shooter periodic) -->");
     }
@@ -149,12 +148,12 @@ public class Shooter extends RobotModuleBase {
     private static final double idleRPM = -200;
     private static final double projectileSpeed = 10;
     private static final double shootingRange = 6;
-    private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7}, new double[] {4700, 4800, 5100, 5300, 5500, 5700, 5900, 6100, 6300, 6500});
+    private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7}, new double[] {5000, 5200, 5600, 5800, 5800, 6000, 6200, 6300, 6400, 6500});
 
     private static final double defaultShootingAngle = 2;
 
     /** the desired arm position for aiming, in degrees and in reference to the default shooting position of the arm, which is specified in the arm configs */
-    private static final LookUpTable armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7}, new double[] {6.5, 6.5, 3.5, 0, -2, -2, -2, -2, -2, -2});
+    private static final LookUpTable armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7}, new double[] {6.5, 0, -6, -8, -9, -10, -12, -14, -16, -17});
     @Override
     public void updateConfigs() {
         final FlyWheelSpeedController.FlyWheelSpeedControllerProfile speedControllerProfile = new FlyWheelSpeedController.FlyWheelSpeedControllerProfile(
