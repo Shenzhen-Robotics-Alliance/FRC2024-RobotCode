@@ -337,7 +337,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
                 grabbingProcessEndPointFromNoteDeviation =
                 pilotSpecifyingGrabbingProcessEndPoint ?
                         new Vector2D(pilotController.getTranslationalStickValue().getHeading(), grabbingNoteDistance) :
-                        new Vector2D(new double[] {0, -grabbingNoteDistance}).multiplyBy(new Rotation2D(grabbingNoteDefaultFacing)), // by default, we move backwards in relative to the robot, but we need to convert this to in relative to field by rotating it.
+                        new Vector2D(new double[] {0, -grabbingNoteDistance}).multiplyBy(new Rotation2D(getNoteRotation())), // by default, we move backwards in relative to the robot, but we need to convert this to in relative to field by rotating it.
                 /* the position of the ending point of the path of the grabbing task, relative to the speaker */
                 grabbingProcessEndingPoint = currentVisualTargetLastSeenPosition.addBy(grabbingProcessEndPointFromNoteDeviation),
                 grabbingProcessEndingAnotherPoint = currentVisualTargetLastSeenPosition.addBy(grabbingProcessEndPointFromNoteDeviation.multiplyBy(-1));
@@ -382,7 +382,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
 
         /* TODO read from robotConfig */
         objectUnseenTimeOut = 1000;
-        grabbingNoteDistance = 0.25;
+        grabbingNoteDistance = 0.3;
         chassisSpeedLimitWhenAutoAim = 5;
         shootingSweetSpot = new Vector2D(new double[] {0, -2.5});
         shootingProcessEndingPointUpdatableRange = 0.5;
