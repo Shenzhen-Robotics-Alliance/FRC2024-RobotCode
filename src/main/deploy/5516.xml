@@ -45,7 +45,15 @@
         <steerCorrectionPowerRateAtZeroWheelSpeed type="double">1</steerCorrectionPowerRateAtZeroWheelSpeed>
         <steerCorrectionPowerFullWheelSpeed type="double">1</steerCorrectionPowerFullWheelSpeed>
 
+
+
+        <!-- the configuration for rotation controller -->
         <timeLockRotationAfterRotationalInputStops>0.45</timeLockRotationAfterRotationalInputStops>
+        <robotRotationalErrorTolerance type="double">2</robotRotationalErrorTolerance> <!-- in degrees -->
+        <robotRotationalErrorStartDecelerate type="double">50</robotRotationalErrorStartDecelerate> <!-- in degrees -->
+        <robotRotationMaximumCorrectionPower type="double">0.7</robotRotationMaximumCorrectionPower>
+        <robotRotationMinimumCorrectionPower type="double">0.03</robotRotationMinimumCorrectionPower>
+        <robotRotationFeedForwardTime type="double">0.35</robotRotationFeedForwardTime> <!-- in seconds -->
 
         <robotMaximumSpeed type="double">5</robotMaximumSpeed>
         <timeNeededToFullyAccelerate type="double">0.25</timeNeededToFullyAccelerate>

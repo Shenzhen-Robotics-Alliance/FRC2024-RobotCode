@@ -144,21 +144,19 @@ public class Shooter extends RobotModuleBase {
 
     /* TODO the following constants, move then to robotConfig and tune them */
     /** when the target is unseen */
-    private static final double defaultShootingRPM = 6700;
+    private static final double defaultShootingRPM = 6300;
     private static final double amplifyingRPM = 1200;
     private static final double idleRPM = -200;
     private static final double projectileSpeed = 10;
     private static final double shootingRange = 6;
-    private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5}, new double[] {6200, 6500, 6650, 6650, 6650});
+    private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5}, new double[] {6200, 6500, 6500, 6500, 6500});
 
-    private static final double defaultShootingAngle = 6;
+    private static final double defaultShootingAngle = 2;
 
     /** the desired arm position for aiming, in degrees and in reference to the default shooting position of the arm, which is specified in the arm configs */
     private static final LookUpTable armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5}, new double[] {12, 6.5, 3.5, 0, -2});
     @Override
     public void updateConfigs() {
-
-
         final FlyWheelSpeedController.FlyWheelSpeedControllerProfile speedControllerProfile = new FlyWheelSpeedController.FlyWheelSpeedControllerProfile(
                 robotConfig.getConfig("shooter", "speedControllerProportionGain"),
                 robotConfig.getConfig("shooter", "speedControllerFeedForwardGain"),
