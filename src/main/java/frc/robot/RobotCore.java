@@ -9,14 +9,12 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.CANcoder;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.DistanceSensors.Rev2mDistanceSensorEncapsulation;
 import frc.robot.Drivers.Encoders.CanCoder;
 import frc.robot.Drivers.Encoders.DCAbsolutePositionEncoder;
 import frc.robot.Drivers.IMUs.PigeonsIMU;
 import frc.robot.Drivers.IMUs.SimpleGyro;
-import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Drivers.Motors.MotorsSet;
 import frc.robot.Drivers.Motors.TalonFXMotor;
 import frc.robot.Drivers.Visions.FixedAnglePositionTrackingCamera;
@@ -32,7 +30,6 @@ import frc.robot.Modules.UpperStructure.IntakeWithDistanceSensor;
 import frc.robot.Modules.UpperStructure.Shooter;
 import frc.robot.Modules.UpperStructure.TransformableArm;
 import frc.robot.Services.RobotServiceBase;
-import frc.robot.Services.TransformableIntakeAndShooterService;
 import frc.robot.Utils.*;
 import frc.robot.Utils.ComputerVisionUtils.AprilTagReferredTarget;
 import frc.robot.Utils.ComputerVisionUtils.FixedAngleCameraProfile;
@@ -332,9 +329,9 @@ public class RobotCore {
                         for (RobotModuleBase module:modules)
                                 module.periodic();
 
-                for (RobotModuleBase module:modules)
-                        if (System.currentTimeMillis() - module.getPreviousUpdateTimeMillis() > 500) // TODO see why the modules are running slow by setting this to 10
-                                System.out.println("<-- WARNING!!!! | Module " + module.moduleName + " HAVEN'T BEEN RESPONDING for " + (System.currentTimeMillis() - module.getPreviousUpdateTimeMillis()) + " ms -->");
+//                for (RobotModuleBase module:modules)
+//                        if (System.currentTimeMillis() - module.getPreviousUpdateTimeMillis() > 500) // TODO see why the modules are running slow by setting this to 10
+//                                System.out.println("<-- WARNING!!!! | Module " + module.moduleName + " HAVEN'T BEEN RESPONDING for " + (System.currentTimeMillis() - module.getPreviousUpdateTimeMillis()) + " ms -->");
 
                 printChassisDebugMessagesToDashboard();
 
@@ -352,7 +349,7 @@ public class RobotCore {
         private void updateAprilTagCameraContinuously() {
                 while (true) {
                         if (!wasEnabled) {
-                                Time.sleep(50);
+                                TimeUtils.sleep(50);
                                 continue;
                         }
                         long dt = System.currentTimeMillis();
@@ -372,7 +369,7 @@ public class RobotCore {
         private void updateNoteCameraContinuously() {
                 while (true) {
                         if (!wasEnabled) {
-                                Time.sleep(50);
+                                TimeUtils.sleep(50);
                                 continue;
                         }
                         long dt = System.currentTimeMillis();

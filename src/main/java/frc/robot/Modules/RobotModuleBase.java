@@ -2,7 +2,7 @@ package frc.robot.Modules;
 
 import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Utils.RobotModuleOperatorMarker;
-import frc.robot.Utils.Time;
+import frc.robot.Utils.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,13 +55,13 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
         if (!enabled) {
             for (Motor motor:motors)
                 motor.disableMotor(getMarker());
-            Time.sleep(50);
+            TimeUtils.sleep(50);
             return;
         }
         long newTimeMillis = System.currentTimeMillis();
         if (newTimeMillis == previousTimeMillis) {
             /* in case of dt=0 */
-            Time.sleep(1);
+            TimeUtils.sleep(1);
             newTimeMillis = System.currentTimeMillis();
         }
         updateConfigs();
@@ -82,7 +82,7 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
                     periodic();
 
                     while (System.currentTimeMillis() - t< periodMS)
-                        Time.sleep(1);
+                        TimeUtils.sleep(1);
                     // System.out.println("module <" + moduleName + "> update frequency: " + 1000.0f/(System.currentTimeMillis() - t));
                     t = System.currentTimeMillis();
                 }

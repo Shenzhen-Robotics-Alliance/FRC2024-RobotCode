@@ -132,9 +132,9 @@ public class ArmGravityController implements MechanismController {
          * @param maxAcceleration                       the maximum instant acceleration that the mechanism can achieve with the max power
          * @param maxVelocity                           the restriction on the velocity of the mechanism
          */
-        public ArmProfile(double maxPowerAllowed, double errorStartDecelerate, double errorTolerance, double feedForwardTime, double integralCoefficient, double maxAcceleration, double maxVelocity, double inAdvanceTime, LookUpTable gravityTorqueEquilibriumMotorPowerLookUpTable) {
-            this.dynamicalPIDProfile = new EnhancedPIDController.DynamicalPIDProfile(Double.POSITIVE_INFINITY, maxPowerAllowed, 0, errorTolerance, integralCoefficient, 0, maxAcceleration, maxVelocity);
-            this.staticPIDProfile = new EnhancedPIDController.StaticPIDProfile(Math.PI * 2, maxPowerAllowed, 0, errorStartDecelerate, errorTolerance, feedForwardTime, integralCoefficient, 0);
+        public ArmProfile(double maxPowerAllowed, double errorStartDecelerate, double minPowerToMove, double errorTolerance, double feedForwardTime, double integralCoefficient, double maxAcceleration, double maxVelocity, double inAdvanceTime, LookUpTable gravityTorqueEquilibriumMotorPowerLookUpTable) {
+            this.dynamicalPIDProfile = new EnhancedPIDController.DynamicalPIDProfile(Double.POSITIVE_INFINITY, maxPowerAllowed, minPowerToMove, errorTolerance, integralCoefficient, 0, maxAcceleration, maxVelocity);
+            this.staticPIDProfile = new EnhancedPIDController.StaticPIDProfile(Math.PI * 2, maxPowerAllowed, minPowerToMove, errorStartDecelerate, errorTolerance, feedForwardTime, integralCoefficient, 0);
             this.gravityTorqueEquilibriumMotorPowerLookUpTable = gravityTorqueEquilibriumMotorPowerLookUpTable;
             this.inAdvanceTime = inAdvanceTime;
         }

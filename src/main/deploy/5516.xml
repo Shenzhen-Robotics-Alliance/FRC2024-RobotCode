@@ -89,7 +89,7 @@
         <position-SCORE_AMPLIFIER>2</position-SCORE_AMPLIFIER>
 
         <!-- software limit -->
-        <lowerPositionLimit>45</lowerPositionLimit>
+        <lowerPositionLimit>25</lowerPositionLimit>
         <upperPositionLimit>95</upperPositionLimit>
 
         <!-- lookup table -->
@@ -102,5 +102,17 @@
         <gravityTorque3>0</gravityTorque3>
         <!-- lowest position -->
         <gravityTorque4>0</gravityTorque4>
+
+        <!-- arm PID -->
+        <maximumPower>0.65</maximumPower>
+        <errorStartDecelerate>35</errorStartDecelerate>
+        <minPowerToMove>0.04</minPowerToMove>
+        <errorTolerance>1</errorTolerance>
+        <feedForwardTime>0.08</feedForwardTime>
+        <errorAccumulationProportion>0</errorAccumulationProportion>
+        <maxAcceleration>180</maxAcceleration>
+        <maxVelocity>150</maxVelocity>
+        <inAdvanceTime>0.25</inAdvanceTime>
+        <errorToleranceAsInPosition>3.6</errorToleranceAsInPosition>
     </arm>
 </robotConfig>

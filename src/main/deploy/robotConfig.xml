@@ -155,6 +155,7 @@
         <!-- arm PID -->
         <maximumPower>0.65</maximumPower>
         <errorStartDecelerate>35</errorStartDecelerate>
+        <minPowerToMove>0</minPowerToMove>
         <errorTolerance>1</errorTolerance>
         <feedForwardTime>0.06</feedForwardTime>
         <errorAccumulationProportion>0</errorAccumulationProportion>

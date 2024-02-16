@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.Visions.RawObjectDetectionCamera;
 import frc.robot.Utils.MathUtils.StatisticsUtils;
-import frc.robot.Utils.Time;
+import frc.robot.Utils.TimeUtils;
 
 public class FixedAngleCameraHorizontalProfileMeasureProcess {
     private static final int horizontalDistanceLevelsCount = 3;
@@ -44,7 +44,7 @@ public class FixedAngleCameraHorizontalProfileMeasureProcess {
     int i =0;
     public void measuringPeriodic() {
         if (finished) {
-            Time.sleep(50);
+            TimeUtils.sleep(50);
             return;
         }
 
@@ -70,7 +70,7 @@ public class FixedAngleCameraHorizontalProfileMeasureProcess {
         RawObjectDetectionCamera.ObjectTargetRaw targetRaw;
         if ((targetRaw = camera.getRawTargetsByID(targetID)) == null) {
             System.out.println("<-- Profile Measuring | target not seen, please try again -->");
-            Time.sleep(200);
+            TimeUtils.sleep(200);
             return;
         }
 
@@ -80,7 +80,7 @@ public class FixedAngleCameraHorizontalProfileMeasureProcess {
         angleSamples[i++] = Math.atan(horizontalDistanceToCenter / distance);
         System.out.println("<-- target successfully recorded: " + targetRaw + "-->");
         nextSample();
-        Time.sleep(200);
+        TimeUtils.sleep(200);
     }
 
     private void nextSample() {

@@ -54,7 +54,7 @@ public class TransformableArm extends RobotModuleBase {
         super.motors.add(armLifterMotor);
         this.armEncoder = armEncoder;
         this.armLifterMechanism = new EncoderMotorMechanism(armEncoder, armLifterMotor);
-        this.armController = new ArmGravityController(new ArmGravityController.ArmProfile(0, 0, 0, 0,0,0,0 ,0,null), armLifterMechanism.getEncoderPosition());
+        this.armController = new ArmGravityController(new ArmGravityController.ArmProfile(0, 0, 0, 0,0,0,0 ,0,0, null), armLifterMechanism.getEncoderPosition());
         this.armLifterMechanism.setController(armController);
         this.robotConfig = robotConfig;
     }
@@ -124,6 +124,7 @@ public class TransformableArm extends RobotModuleBase {
         this.armController.updateArmProfile(new ArmGravityController.ArmProfile(
                 robotConfig.getConfig("arm", "maximumPower"),
                 Math.toRadians(robotConfig.getConfig("arm", "errorStartDecelerate")),
+                robotConfig.getConfig("arm", "minPowerToMove"),
                 Math.toRadians(robotConfig.getConfig("arm", "errorTolerance")),
                 robotConfig.getConfig("arm", "feedForwardTime"),
                 robotConfig.getConfig("arm", "errorAccumulationProportion"),
@@ -172,7 +173,8 @@ public class TransformableArm extends RobotModuleBase {
     }
 
     public boolean transformerInPosition() {
-        System.out.println("transformer error: " + Math.toDegrees(Math.abs(armEncoder.getEncoderPosition() - desiredEncoderPosition)) + ", tolerance: " + Math.toDegrees(errorAsArmReady));
+        // TODO: bug over here, sometimes the required is 75, the default shooting angle
+        System.out.println("transformer error: " + Math.toDegrees(Math.abs(armEncoder.getEncoderPosition() - desiredEncoderPosition)) + ", tolerance: " + Math.toDegrees(errorAsArmReady) + ", required: " + Math.toDegrees(desiredEncoderPosition) + ", actual: " + Math.toDegrees(armEncoder.getEncoderPosition()));
         return Math.abs(armEncoder.getEncoderPosition() - desiredEncoderPosition) < errorAsArmReady;
     }
 }

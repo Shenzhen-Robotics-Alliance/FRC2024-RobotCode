@@ -12,8 +12,11 @@ import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 import frc.robot.Utils.MechanismControllers.FlyWheelSpeedController;
 import frc.robot.Utils.RobotConfigReader;
 import frc.robot.Utils.RobotModuleOperatorMarker;
+import frc.robot.Utils.TimeUtils;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Shooter extends RobotModuleBase {
     public enum ShooterMode {
@@ -91,16 +94,35 @@ public class Shooter extends RobotModuleBase {
 
     @Override
     protected void periodic(double dt) {
-        final double desiredEncoderVelocity = decideRPM() / encoderVelocityToRPM;
-        for (int shooterID = 0; shooterID < shooters.length; shooterID++) {
-            speedControllers[shooterID].setDesiredSpeed(desiredEncoderVelocity);
-            EasyShuffleBoard.putNumber("shooter", "motor " + shooterID + " actual speed", shooters[shooterID].getEncoderVelocity() * encoderVelocityToRPM);
+        AtomicReference<Double> desiredEncoderVelocity = new AtomicReference<>((double) 0);
+        try {
+            TimeUtils.executeWithTimeOut(() -> desiredEncoderVelocity.set(decideRPM() / encoderVelocityToRPM), 500);
+        } catch (TimeoutException e) {
+            throw new RuntimeException("timeout while deciding RPM");
         }
 
-        EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", decideRPM());
+        try {
+            TimeUtils.executeWithTimeOut(() -> {
+                for (int shooterID = 0; shooterID < shooters.length; shooterID++) {
+                    speedControllers[shooterID].setDesiredSpeed(desiredEncoderVelocity.get());
+                    EasyShuffleBoard.putNumber("shooter", "motor " + shooterID + " actual speed", shooters[shooterID].getEncoderVelocity() * encoderVelocityToRPM);
+                }
+            }, 500);
+        } catch (TimeoutException e) {
+            throw new RuntimeException("timeout while setting desired speed of shooter");
+        }
 
-        for (EncoderMotorMechanism shooter : shooters)
-            shooter.updateWithController(this);
+
+        EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", desiredEncoderVelocity.get() * encoderVelocityToRPM);
+
+        try {
+            TimeUtils.executeWithTimeOut(() -> {
+                for (EncoderMotorMechanism shooter : shooters)
+                    shooter.updateWithController(this);
+            }, 500);
+        } catch (TimeoutException e) {
+            throw new RuntimeException("timeout while updating shooters with controller");
+        }
 
         // System.out.println("<-- (shooter periodic) -->");
     }
@@ -143,17 +165,19 @@ public class Shooter extends RobotModuleBase {
 
     /* TODO the following constants, move then to robotConfig and tune them */
     /** when the target is unseen */
-    private static final double defaultShootingRPM = 6300;
+    // private static final double defaultShootingRPM = 6300;
+    private static final double defaultShootingRPM = 5000;
     private static final double amplifyingRPM = 1200;
-    private static final double idleRPM = -200;
+    // private static final double idleRPM = -200;
+    private static final double idleRPM = -50;
     private static final double projectileSpeed = 10;
     private static final double shootingRange = 6;
-    private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7}, new double[] {5000, 5200, 5600, 5800, 5800, 6000, 6200, 6300, 6400, 6500});
+    private static final LookUpTable shooterRPMToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5}, new double[] {5000, 5400, 5800, 6200, 6400, 6500, 6500});
 
     private static final double defaultShootingAngle = 2;
 
     /** the desired arm position for aiming, in degrees and in reference to the default shooting position of the arm, which is specified in the arm configs */
-    private static final LookUpTable armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7}, new double[] {6.5, 0, -6, -8, -9, -10, -12, -14, -16, -17});
+    private static final LookUpTable armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(new double[] {1.5, 2, 2.5, 3, 3.5, 4, 5}, new double[] {6.5, 0, -7, -12.5, -14, -16, -20});
     @Override
     public void updateConfigs() {
         final FlyWheelSpeedController.FlyWheelSpeedControllerProfile speedControllerProfile = new FlyWheelSpeedController.FlyWheelSpeedControllerProfile(

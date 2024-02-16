@@ -5,13 +5,12 @@ import frc.robot.Drivers.Visions.RawObjectDetectionCamera;
 import frc.robot.Modules.PositionReader.PositionEstimator;
 import frc.robot.Modules.UpperStructure.TransformableArm;
 import frc.robot.RobotCore;
-import frc.robot.Utils.MathUtils.BezierCurve;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.StatisticsUtils;
 import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.SequentialCommandFactory;
 import frc.robot.Utils.SequentialCommandSegment;
-import frc.robot.Utils.Time;
+import frc.robot.Utils.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +108,7 @@ public class AprilTagCameraAutomaticMeasuring implements AutoStageProgram{
         long t0 = System.currentTimeMillis();
         while (camera.getRawTargetsByID(targetID) == null && System.currentTimeMillis() - t0 < 500) {
             camera.update();
-            Time.sleep(100);
+            TimeUtils.sleep(100);
         }
         RawObjectDetectionCamera.ObjectTargetRaw targetRaw;
         if ((targetRaw = camera.getRawTargetsByID(targetID)) == null) {

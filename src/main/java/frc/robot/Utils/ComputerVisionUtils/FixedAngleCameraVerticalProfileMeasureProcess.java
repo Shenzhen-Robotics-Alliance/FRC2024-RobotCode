@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.Visions.RawObjectDetectionCamera;
 import frc.robot.Utils.MathUtils.StatisticsUtils;
-import frc.robot.Utils.Time;
+import frc.robot.Utils.TimeUtils;
 
 public class FixedAngleCameraVerticalProfileMeasureProcess {
     private final RawObjectDetectionCamera camera;
@@ -40,7 +40,7 @@ public class FixedAngleCameraVerticalProfileMeasureProcess {
 
     public void measuringPeriodic() {
         if (finished) {
-            Time.sleep(50);
+            TimeUtils.sleep(50);
             return;
         }
 
@@ -66,14 +66,14 @@ public class FixedAngleCameraVerticalProfileMeasureProcess {
         RawObjectDetectionCamera.ObjectTargetRaw targetRaw;
         if ((targetRaw = camera.getRawTargetsByID(targetID)) == null) {
             System.out.println("<-- Profile Measuring | target not seen, please try again -->");
-            Time.sleep(200);
+            TimeUtils.sleep(200);
             return;
         }
 
         pixelYSamples[currentSample] = targetRaw.y;
         System.out.println("<-- target successfully recorded: " + targetRaw + "-->");
         nextSample();
-        Time.sleep(200);
+        TimeUtils.sleep(200);
     }
 
     private void nextSample() {

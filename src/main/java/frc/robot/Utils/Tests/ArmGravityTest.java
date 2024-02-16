@@ -16,6 +16,7 @@ public class ArmGravityTest implements SimpleRobotTest {
     private final ArmGravityController testArmGravityController = new ArmGravityController(new ArmGravityController.ArmProfile(
             0.5,
             Math.toRadians(40) / radianPerEncoderTick,
+            0,
             Math.toRadians(2) / radianPerEncoderTick,
             0.06,
             0,
