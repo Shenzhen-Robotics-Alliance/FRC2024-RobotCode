@@ -34,6 +34,8 @@
         <backRightWheelZeroPosition type = "double">-2.329</backRightWheelZeroPosition>
     </hardware>
     <chassis>
+        <wheelGearRatio type="double">6.75</wheelGearRatio>
+
         <!-- profiled translational velocity controller -->
         <translationalTaskUpdatableRange type="double">0.1</translationalTaskUpdatableRange>
         <ignoredAccelerateTime type="double">0.08</ignoredAccelerateTime>

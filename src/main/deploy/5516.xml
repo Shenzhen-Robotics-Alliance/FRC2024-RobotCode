@@ -35,11 +35,8 @@
         <backRightWheelZeroPosition type = "double">-2.431</backRightWheelZeroPosition>
     </hardware>
     <chassis>
-        <!-- all units are in meters -->
-        <wheelDiameter type="double">0.1016</wheelDiameter>
-        <wheelGearRatio type="double">6.12</wheelGearRatio>
-        <encoderValuePerMotorRevolution type="double">2048</encoderValuePerMotorRevolution>
-        <!-- override existing -->
+        <wheelGearRatio type="double">8.14</wheelGearRatio>
+        <!-- override existing steer wheel PID -->
         <steerWheelErrorTolerance type = "double">1</steerWheelErrorTolerance> <!-- the amount of error to ignore, in degrees -->
         <steerWheelErrorStartDecelerate type = "double">80</steerWheelErrorStartDecelerate> <!-- the amount of error where the motors should try to correct using full motor speed, in degrees -->
         <steerWheelMaximumPower type = "double">0.75</steerWheelMaximumPower> <!-- use this value as the full speed -->
@@ -47,6 +44,8 @@
         <steerWheelFeedForwardTime type = "double">0</steerWheelFeedForwardTime>
         <steerCorrectionPowerRateAtZeroWheelSpeed type="double">1</steerCorrectionPowerRateAtZeroWheelSpeed>
         <steerCorrectionPowerFullWheelSpeed type="double">1</steerCorrectionPowerFullWheelSpeed>
+
+        <timeLockRotationAfterRotationalInputStops>0.45</timeLockRotationAfterRotationalInputStops>
 
         <robotMaximumSpeed type="double">5</robotMaximumSpeed>
         <timeNeededToFullyAccelerate type="double">0.25</timeNeededToFullyAccelerate>
