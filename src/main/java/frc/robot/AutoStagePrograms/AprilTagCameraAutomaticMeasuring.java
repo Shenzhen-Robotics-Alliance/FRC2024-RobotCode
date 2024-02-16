@@ -27,13 +27,18 @@ public class AprilTagCameraAutomaticMeasuring implements AutoStageProgram{
     private static final int verticalDistanceLevelsCount = 4;
 
     private final List<Double> pixelXSamples, angleXSamples, pixelYSamples, angleYSamples;
+    private final Rotation2D cameraFacing;
     public AprilTagCameraAutomaticMeasuring(RawObjectDetectionCamera camera, int targetID, double targetHeight, double minDistance, double maxDistance, double maxHorizontalDistance, Vector2D robotInitialPositionToTarget) {
+        this(camera, targetID, targetHeight, new Rotation2D(0), minDistance, maxDistance, maxHorizontalDistance, robotInitialPositionToTarget);
+    }
+    public AprilTagCameraAutomaticMeasuring(RawObjectDetectionCamera camera, int targetID, double targetHeight, Rotation2D cameraFacing, double minDistance, double maxDistance, double maxHorizontalDistance, Vector2D robotInitialPositionToTarget) {
         this.camera = camera;
         this.targetID = targetID;
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
         this.maxHorizontalDistance = maxHorizontalDistance;
         this.targetHeightFromCamera = targetHeight;
+        this.cameraFacing = cameraFacing;
 
         this.robotInitialPositionToAprilTag = robotInitialPositionToTarget.multiplyBy(1/100.0);
 
@@ -79,11 +84,11 @@ public class AprilTagCameraAutomaticMeasuring implements AutoStageProgram{
     }
 
     private Vector2D toFieldPosition(Vector2D aprilTagNavigatedPosition) {
-        return aprilTagNavigatedPosition.addBy(robotInitialPositionToAprilTag.multiplyBy(-1));
+        return aprilTagNavigatedPosition.multiplyBy(cameraFacing).addBy(robotInitialPositionToAprilTag.multiplyBy(-1));
     }
 
     private Vector2D getAprilTagRelativePositionFromRobotView(Vector2D robotFieldPosition) {
-        return robotFieldPosition.addBy(robotInitialPositionToAprilTag).multiplyBy(-1);
+        return robotFieldPosition.addBy(robotInitialPositionToAprilTag).multiplyBy(-1).multiplyBy(cameraFacing.getReversal());
     }
 
     private void putDataOnDashBoard() {

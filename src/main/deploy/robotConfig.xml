@@ -40,7 +40,7 @@
     <chassis>
         <!-- all units are in meters -->
         <wheelDiameter type="double">0.1016</wheelDiameter>
-        <wheelGearRatio type="double">6.12</wheelGearRatio>
+        <wheelGearRatio type="double">8.14</wheelGearRatio>
         <encoderValuePerMotorRevolution type="double">2048</encoderValuePerMotorRevolution>
 
         <!-- PID coefficients for steer wheels -->

@@ -132,7 +132,7 @@ class StreamingHandler(SimpleHTTPRequestHandler):
                     ret, buffer = cv2.imencode('.jpg', frame_resized)
                     frame_bytes = buffer.tobytes()
                     self.send_frame(frame_bytes)
-                except ConnectionResetError:
+                except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
                     print("client disconnected")
                     lock.release()
                     return
@@ -148,7 +148,7 @@ class StreamingHandler(SimpleHTTPRequestHandler):
                 detection_results_ready = False
                 try:
                     self.wfile.write(detection_results.encode())
-                except (ConnectionResetError, ConnectionAbortedError):
+                except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
                     print("client disconnected")
                     return
                 

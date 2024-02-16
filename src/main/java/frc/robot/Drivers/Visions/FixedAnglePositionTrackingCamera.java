@@ -13,10 +13,15 @@ public class FixedAnglePositionTrackingCamera implements TargetFieldPositionTrac
     private final RawObjectDetectionCamera camera;
     private final FixedAngleCameraProfile cameraProfile;
     private final double[] targetHeights;
+    private final Rotation2D cameraFacing;
     public FixedAnglePositionTrackingCamera(RawObjectDetectionCamera camera, FixedAngleCameraProfile cameraProfile, double[] targetHeights) {
+        this(camera, cameraProfile, targetHeights, new Rotation2D(0)); // by default, the camera faces front
+    }
+    public FixedAnglePositionTrackingCamera(RawObjectDetectionCamera camera, FixedAngleCameraProfile cameraProfile, double[] targetHeights, Rotation2D cameraFacing) {
         this.camera = camera;
         this.cameraProfile = cameraProfile;
         this.targetHeights = targetHeights;
+        this.cameraFacing = cameraFacing;
 
         targets = new ArrayList<>();
         visibleTargets = new ArrayList<>();
@@ -32,9 +37,11 @@ public class FixedAnglePositionTrackingCamera implements TargetFieldPositionTrac
             double targetHeight = targetRaw.id < targetHeights.length ? targetHeights[targetRaw.id] : targetHeights[0];
             final double targetDistance = cameraProfile.getDistanceFromYPixel(targetRaw.y, targetHeight) / 100.0f,
                     targetDirection = cameraProfile.getTargetAngleRadianFromXPixel(targetRaw.x);
-            // System.out.println("<-- Fixed Angle Camera | target distance: " + targetDistance + " -->");
-            // System.out.println("<-- Fixed Angle Camera | target angle: " + (Math.toDegrees(targetDirection)-90) + " -->");
-            final Vector2D relativePositionToCamera = new Vector2D(targetDirection ,targetDistance),
+
+            System.out.println("<-- Fixed Angle Camera | target distance: " + targetDistance + " -->");
+            System.out.println("<-- Fixed Angle Camera | target angle: " + (Math.toDegrees(targetDirection)-90) + " -->");
+
+            final Vector2D relativePositionToCamera = new Vector2D(targetDirection ,targetDistance).multiplyBy(cameraFacing),
                     fieldPositionDifferenceFromCamera = relativePositionToCamera.multiplyBy(robotRotation),
                     targetFieldPosition2D =  robotPositionInField2D.addBy(fieldPositionDifferenceFromCamera);
             final TargetOnField target = new TargetOnField(targetRaw.id, targetFieldPosition2D);

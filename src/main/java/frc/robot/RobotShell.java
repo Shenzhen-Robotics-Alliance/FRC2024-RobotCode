@@ -6,6 +6,7 @@ import frc.robot.AutoStagePrograms.AprilTagCameraAutomaticMeasuring;
 import frc.robot.AutoStagePrograms.AutoStageProgram;
 import frc.robot.Drivers.Visions.JetsonDetectionAppClient;
 import frc.robot.Services.*;
+import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.SequentialCommandSegment;
 import frc.robot.Utils.Tests.*;
@@ -46,24 +47,25 @@ public class RobotShell extends TimedRobot {
     public void autonomousInit() {
         // System.out.println("<-- Robot Shell | autonomous init -->");
         startAutoStage(
-//                new AprilTagCameraAutomaticMeasuring(
-//                    new JetsonDetectionAppClient("NoteDetector", "10.55.16.109", 8889, new double[] {1280, 720}),
-//                    1,
-//                    -30,
-//                    -25,
-//                    -100,
-//                    50,
-//                    new Vector2D(new double[] {0, 25})
-//                )
                 new AprilTagCameraAutomaticMeasuring(
-                        robotCore.aprilTagDetectionAppClient,
-                        4,
-                        130,
-                        180,
-                        300,
-                        70,
-                        new Vector2D(new double[] {0, -155})
+                    new JetsonDetectionAppClient("NoteDetector", "10.55.16.109", 8889, new double[] {1280, 720}),
+                    1,
+                    -30,
+                    new Rotation2D(Math.PI),
+                    25,
+                    100,
+                    50,
+                    new Vector2D(new double[] {0, 25})
                 )
+//                new AprilTagCameraAutomaticMeasuring(
+//                        robotCore.aprilTagDetectionAppClient,
+//                        4,
+//                        130,
+//                        180,
+//                        300,
+//                        70,
+//                        new Vector2D(new double[] {0, -155})
+//                )
         ); // TODO use sendable chooser
     }
 

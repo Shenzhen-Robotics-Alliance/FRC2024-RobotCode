@@ -123,11 +123,12 @@ public class RobotCore {
                 notePositionTrackingCamera = new FixedAnglePositionTrackingCamera(
                         noteDetectionAppClient,
                         new FixedAngleCameraProfile(
-                                1.132,
-                                0.00197,
-                                0.00166
+                                -1.43,
+                                -0.0021,
+                                -0.0021
                         ),
-                        new double[] {-30, -30, -30}
+                        new double[] {-30, -30, -30},
+                        new Rotation2D(Math.PI)
                 );
 
                 final Map<Integer, Vector2D> speakerTargetAprilTagReferences = new HashMap<>(), amplifierTargetAprilTagReferences = new HashMap<>(), noteTargetReferences = new HashMap<>();
@@ -392,8 +393,8 @@ public class RobotCore {
                         return;
                 }
                 final Vector2D noteRelativePositionToRobot = Vector2D.displacementToTarget(positionReader.getRobotPosition2D(), notePosition);
-                EasyShuffleBoard.putNumber("note-detection", "target absolute field position X", noteRelativePositionToRobot.getX());
-                EasyShuffleBoard.putNumber("note-detection", "target absolute field position Y", noteRelativePositionToRobot.getY());
+                EasyShuffleBoard.putNumber("note-detection", "target absolute field position X", notePosition.getX());
+                EasyShuffleBoard.putNumber("note-detection", "target absolute field position Y", notePosition.getY());
                 EasyShuffleBoard.putNumber("note-detection", "target relative position to robot X", noteRelativePositionToRobot.getX());
                 EasyShuffleBoard.putNumber("note-detection", "target relative position to robot Y", noteRelativePositionToRobot.getY());
                 EasyShuffleBoard.putNumber("note-detection", "target distance from camera (CM)", noteRelativePositionToRobot.getMagnitude());
