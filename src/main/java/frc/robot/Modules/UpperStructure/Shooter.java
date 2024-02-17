@@ -29,7 +29,7 @@ public class Shooter extends RobotModuleBase {
     }
 
     private final EncoderMotorMechanism[] shooters;
-    private final FlyWheelSpeedController[] speedControllers;
+    private final FlyWheelSpeedController flyWheelSpeedController;
     private final AimingSystem aimingSystem;
     private final double encoderVelocityToRPM;
     private final double shooterReadyErrorBound;
@@ -46,13 +46,11 @@ public class Shooter extends RobotModuleBase {
         this.aimingSystem = aimingSystem;
         this.robotConfig = robotConfig;
         super.motors.addAll(Arrays.asList(shooters));
-        speedControllers = new FlyWheelSpeedController[shooters.length];
-        for (int shooterID = 0; shooterID < shooters.length; shooterID++) {
-            speedControllers[shooterID] = new FlyWheelSpeedController(
-                    new FlyWheelSpeedController.FlyWheelSpeedControllerProfile(0,0,0,0,0,0)
-            );
-            shooters[shooterID].setController(speedControllers[shooterID]);
-        }
+        flyWheelSpeedController = new FlyWheelSpeedController(
+                new FlyWheelSpeedController.FlyWheelSpeedControllerProfile(0,0,0,0,0,0));
+        for (EncoderMotorMechanism shooter:shooters)
+            shooter.setController(flyWheelSpeedController);
+
         this.encoderVelocityToRPM = 60.0 / robotConfig.getConfig("shooter", "shooterMotorEncoderTicksPerRevolution");
         this.shooterReadyErrorBound = robotConfig.getConfig("shooter", "flyWheelSpeedErrorTolerance") * robotConfig.getConfig("shooter", "speedControllerMaximumSpeed");
     }
@@ -136,18 +134,14 @@ public class Shooter extends RobotModuleBase {
 
         final double desiredEncoderVelocity = decideRPM() / encoderVelocityToRPM;
 
-         for (int shooterID = 0; shooterID < shooters.length; shooterID++) {
-             speedControllers[shooterID].setDesiredSpeed(desiredEncoderVelocity);
-             EasyShuffleBoard.putNumber("shooter", "motor " + shooterID + " actual speed", shooters[shooterID].getEncoderVelocity() * encoderVelocityToRPM);
-         }
+        flyWheelSpeedController.setDesiredSpeed(desiredEncoderVelocity);
+        for (int shooterID = 0; shooterID < shooters.length; shooterID++)
+            EasyShuffleBoard.putNumber("shooter", "motor " + shooterID + " actual speed", shooters[shooterID].getEncoderVelocity() * encoderVelocityToRPM);
 
-
-        EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", desiredEncoderVelocity * encoderVelocityToRPM);
+        EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", decideRPM());
 
         for (EncoderMotorMechanism shooter : shooters)
             shooter.updateWithController(this);
-
-        // System.out.println("<-- (shooter periodic) -->");
     }
 
     private double decideRPM() {
@@ -196,7 +190,7 @@ public class Shooter extends RobotModuleBase {
         final List<Double> speakerTargetDistances = new ArrayList<>(), shooterRPMs = new ArrayList<>(), armAngles = new ArrayList<>();
         int i = 0; while (true) {
             try {
-                speakerTargetDistances.add(Math.toRadians(robotConfig.getConfig("shooter", "targetDistance" + i)));
+                speakerTargetDistances.add(robotConfig.getConfig("shooter", "targetDistance" + i));
                 shooterRPMs.add(robotConfig.getConfig("shooter", "shooterRPM"+ i));
                 armAngles.add(robotConfig.getConfig("shooter", "armAngle"+ i));
                 i++;
@@ -219,8 +213,7 @@ public class Shooter extends RobotModuleBase {
                 robotConfig.getConfig("shooter", "speedControllerMaximumSpeed") / this.encoderVelocityToRPM,
                 robotConfig.getConfig("shooter", "speedControllerTimeNeededToAccelerateToMaxSpeed")
         );
-        for (FlyWheelSpeedController speedController:speedControllers)
-            speedController.setProfile(speedControllerProfile);
+        flyWheelSpeedController.setProfile(speedControllerProfile);
     }
 
     /**
