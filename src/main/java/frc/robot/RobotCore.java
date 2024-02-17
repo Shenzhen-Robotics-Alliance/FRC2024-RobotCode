@@ -43,7 +43,7 @@ import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
  * note that services are not included in this field
  * */
 public class RobotCore {
-        private static final long printTimeIfTimeMillisExceeds = 100; // TODO find out why there are performance problem by setting this to 5
+        private static final long printTimeIfTimeMillisExceeds = 500; // TODO find out why there are performance problem by setting this to 5
 
         public final RobotConfigReader robotConfig;
         public final SwerveWheel frontLeftWheel, backLeftWheel, frontRightWheel, backRightWheel;
@@ -258,9 +258,8 @@ public class RobotCore {
                 configsToTune.add("arm/position-SHOOT_NOTE");
                 configsToTune.add("arm/position-SCORE_AMPLIFIER");
 
-                configsToTune.add("shooter/targetDistance0");
-                configsToTune.add("shooter/shooterRPM0");
-                configsToTune.add("shooter/armAngle0");
+                configsToTune.add("shooter/shooterRPM5");
+                configsToTune.add("shooter/armAngle5");
         }
 
         /**
@@ -333,9 +332,9 @@ public class RobotCore {
                         for (RobotModuleBase module:modules)
                                 module.periodic();
 
-//                for (RobotModuleBase module:modules)
-//                        if (System.currentTimeMillis() - module.getPreviousUpdateTimeMillis() > 500) // TODO see why the modules are running slow by setting this to 10
-//                                System.out.println("<-- WARNING!!!! | Module " + module.moduleName + " HAVEN'T BEEN RESPONDING for " + (System.currentTimeMillis() - module.getPreviousUpdateTimeMillis()) + " ms -->");
+                for (RobotModuleBase module:modules)
+                        if (System.currentTimeMillis() - module.getPreviousUpdateTimeMillis() > printTimeIfTimeMillisExceeds) // TODO see why the modules are running slow by setting this to 10
+                                System.out.println("<-- WARNING!!!! | Module " + module.moduleName + " HAVEN'T BEEN RESPONDING for " + (System.currentTimeMillis() - module.getPreviousUpdateTimeMillis()) + " ms -->");
 
                 printChassisDebugMessagesToDashboard();
 

@@ -93,56 +93,51 @@ public class Shooter extends RobotModuleBase {
         updateConfigs();
     }
 
-//    @Override
-//    protected void periodic(double dt) {
-//        try {
-//            TimeUtils.executeWithTimeOut(() -> aimingSystemDecidedRPM = getShooterSpeedWithAimingSystem(), 500);
-//        } catch (TimeoutException e) {
-//            throw new RuntimeException("timeout while deciding RPM");
-//        }
-//        final double desiredEncoderVelocity = decideRPM() / encoderVelocityToRPM;
-//
-//        try {
-//            TimeUtils.executeWithTimeOut(() -> {
-//                for (int shooterID = 0; shooterID < shooters.length; shooterID++) {
-//                    speedControllers[shooterID].setDesiredSpeed(desiredEncoderVelocity);
-//                    EasyShuffleBoard.putNumber("shooter", "motor " + shooterID + " actual speed", shooters[shooterID].getEncoderVelocity() * encoderVelocityToRPM);
-//                }
-//            }, 500);
-//        } catch (TimeoutException e) {
-//            throw new RuntimeException("timeout while setting desired speed of shooter");
-//        }
-//
-//
-//        EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", desiredEncoderVelocity * encoderVelocityToRPM);
-//
-//        try {
-//            TimeUtils.executeWithTimeOut(() -> {
-//                for (EncoderMotorMechanism shooter : shooters)
-//                    shooter.updateWithController(this);
-//            }, 500);
-//        } catch (TimeoutException e) {
-//            throw new RuntimeException("timeout while updating shooters with controller");
-//        }
-//
-//        // System.out.println("<-- (shooter periodic) -->");
-//    }
-
     @Override
     protected void periodic(double dt) {
-        aimingSystemDecidedRPM = getShooterSpeedWithAimingSystem();
-
+        try {
+            TimeUtils.executeWithTimeOut(() -> aimingSystemDecidedRPM = getShooterSpeedWithAimingSystem(), 500);
+        } catch (TimeoutException e) {
+            throw new RuntimeException("timeout while deciding RPM");
+        }
         final double desiredEncoderVelocity = decideRPM() / encoderVelocityToRPM;
 
-        flyWheelSpeedController.setDesiredSpeed(desiredEncoderVelocity);
-        for (int shooterID = 0; shooterID < shooters.length; shooterID++)
-            EasyShuffleBoard.putNumber("shooter", "motor " + shooterID + " actual speed", shooters[shooterID].getEncoderVelocity() * encoderVelocityToRPM);
+        try {
+            TimeUtils.executeWithTimeOut(() -> {
+                flyWheelSpeedController.setDesiredSpeed(desiredEncoderVelocity);
+            }, 500);
+        } catch (TimeoutException e) {
+            throw new RuntimeException("timeout while setting desired speed of shooter");
+        }
 
-        EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", decideRPM());
 
-        for (EncoderMotorMechanism shooter : shooters)
-            shooter.updateWithController(this);
+        EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", desiredEncoderVelocity * encoderVelocityToRPM);
+
+        try {
+            TimeUtils.executeWithTimeOut(() -> {
+                for (EncoderMotorMechanism shooter : shooters)
+                    shooter.updateWithController(this);
+            }, 500);
+        } catch (TimeoutException e) {
+            throw new RuntimeException("timeout while updating shooters with controller");
+        }
     }
+
+//    @Override
+//    protected void periodic(double dt) {
+//        aimingSystemDecidedRPM = getShooterSpeedWithAimingSystem();
+//
+//        final double desiredEncoderVelocity = decideRPM() / encoderVelocityToRPM;
+//
+//        flyWheelSpeedController.setDesiredSpeed(desiredEncoderVelocity);
+//        for (int shooterID = 0; shooterID < shooters.length; shooterID++)
+//            EasyShuffleBoard.putNumber("shooter", "motor " + shooterID + " actual speed", shooters[shooterID].getEncoderVelocity() * encoderVelocityToRPM);
+//
+//        EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", decideRPM());
+//
+//        for (EncoderMotorMechanism shooter : shooters)
+//            shooter.updateWithController(this);
+//    }
 
     private double decideRPM() {
         // System.out.println("shooter current mode: " + currentMode.name());
@@ -188,7 +183,7 @@ public class Shooter extends RobotModuleBase {
     @Override
     public void updateConfigs() {
         final List<Double> speakerTargetDistances = new ArrayList<>(), shooterRPMs = new ArrayList<>(), armAngles = new ArrayList<>();
-        int i = 0; while (true) {
+        int i = 0; while (i < 100) {
             try {
                 speakerTargetDistances.add(robotConfig.getConfig("shooter", "targetDistance" + i));
                 shooterRPMs.add(robotConfig.getConfig("shooter", "shooterRPM"+ i));

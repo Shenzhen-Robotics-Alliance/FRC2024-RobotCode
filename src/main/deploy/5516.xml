@@ -93,18 +93,23 @@
         <upperPositionLimit>95</upperPositionLimit>
 
         <!-- lookup table -->
-        <gravityTorque0>0</gravityTorque0>
+        <encoderPosition0>0</encoderPosition0>
+        <gravityTorque0>0.04</gravityTorque0>
         <!-- the upper balanced point -->
+        <encoderPosition1>20</encoderPosition1>
         <gravityTorque1>0</gravityTorque1>
         <!-- midway between the upper balance point and the lower balance point  -->
-        <gravityTorque2>0</gravityTorque2>
+        <encoderPosition0>40</encoderPosition0>
+        <gravityTorque2>-0.02</gravityTorque2>
         <!-- lower balance point (aka. default position) -->
-        <gravityTorque3>0</gravityTorque3>
+        <encoderPosition3>70</encoderPosition3>
+        <gravityTorque3>-0.06</gravityTorque3>
         <!-- lowest position -->
-        <gravityTorque4>0</gravityTorque4>
+        <encoderPosition4>90</encoderPosition4>
+        <gravityTorque4>-0.01</gravityTorque4>
 
         <!-- arm PID -->
-        <maximumPower>0.65</maximumPower>
+        <maximumPower>0.7</maximumPower>
         <errorStartDecelerate>35</errorStartDecelerate>
         <minPowerToMove>0.04</minPowerToMove>
         <errorTolerance>1</errorTolerance>
@@ -113,6 +118,6 @@
         <maxAcceleration>180</maxAcceleration>
         <maxVelocity>150</maxVelocity>
         <inAdvanceTime>0.25</inAdvanceTime>
-        <errorToleranceAsInPosition>3.6</errorToleranceAsInPosition>
+        <errorToleranceAsInPosition>4</errorToleranceAsInPosition>
     </arm>
 </robotConfig>

@@ -49,7 +49,7 @@ public class TransformableArm extends RobotModuleBase {
      * @param robotConfig the config xml file
      */
     public TransformableArm(Motor armLifterMotor, Encoder armEncoder, Shooter shooterModule, RobotConfigReader robotConfig) {
-        super("Transformable-Intake", 128);
+        super("Arm", 128);
         this.shooterModule = shooterModule;
         super.motors.add(armLifterMotor);
         this.armEncoder = armEncoder;
@@ -111,7 +111,7 @@ public class TransformableArm extends RobotModuleBase {
     @Override
     public void updateConfigs() {
         final List<Double> encoderPositions = new ArrayList<>(), gravityTorques = new ArrayList<>();
-        int i = 0; while (true) {
+        int i = 0; while (i < 100) {
             try {
                 encoderPositions.add(Math.toRadians(robotConfig.getConfig("arm", "encoderPosition" + i)));
                 gravityTorques.add(robotConfig.getConfig("arm", "gravityTorque"+ i));

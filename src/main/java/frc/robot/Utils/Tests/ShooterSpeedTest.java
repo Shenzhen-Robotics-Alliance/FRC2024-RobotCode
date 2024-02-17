@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Drivers.Motors.TalonFXMotor;
 
 public class ShooterSpeedTest implements SimpleRobotTest {
-    private final TalonFXMotor testShooterMotor = new TalonFXMotor(new TalonFX(15), true);
+    private final TalonFXMotor testShooterMotor = new TalonFXMotor(new TalonFX(13), true);
     private final XboxController xboxController = new XboxController(1);
     @Override
     public void testStart() {
