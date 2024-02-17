@@ -11,8 +11,7 @@ public class TimeUtils {
         }
     }
 
-    public static void executeWithTimeOut(Runnable command, long timeOutMillis) throws TimeoutException {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
+    public static void executeWithTimeOut(ExecutorService executor, Runnable command, long timeOutMillis) throws TimeoutException {
         Future<?> future = executor.submit(command);
         try {
             // Wait for the task to complete (timeout: TIMEOUT_MS)

@@ -108,13 +108,13 @@ public class RobotCore {
 
                 /* TODO: the following into robot config */
                 aprilTagDetectionAppClient = new JetsonDetectionAppClient("AprilTagDetector", "10.55.16.109", 8888);
-                final double[] targetHeights = new double[] {130, 130, 130, 130, 130, 130};
+                final double[] targetHeights = new double[] {86, 86, 86, 86, 86, 86};
                 aprilTagPositionTrackingCamera = new FixedAnglePositionTrackingCamera(
                         aprilTagDetectionAppClient,
                         new FixedAngleCameraProfile(
-                                0.4621,
-                                -0.00264,
-                                -0.0024
+                                0.38,
+                                -0.0024,
+                                -0.0020
                         ),
                         targetHeights
                 );
@@ -122,9 +122,9 @@ public class RobotCore {
                 notePositionTrackingCamera = new FixedAnglePositionTrackingCamera(
                         noteDetectionAppClient,
                         new FixedAngleCameraProfile(
-                                -1.43,
-                                -0.0021,
-                                -0.0021
+                                -1.10,
+                                -0.0017,
+                                -0.0017
                         ),
                         new double[] {-30, -30, -30},
                         new Rotation2D(Math.PI)

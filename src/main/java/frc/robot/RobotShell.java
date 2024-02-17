@@ -60,11 +60,11 @@ public class RobotShell extends TimedRobot {
 //                new AprilTagCameraAutomaticMeasuring(
 //                        robotCore.aprilTagDetectionAppClient,
 //                        4,
-//                        130,
-//                        180,
+//                        86,
+//                        140,
 //                        300,
 //                        70,
-//                        new Vector2D(new double[] {0, -155})
+//                        new Vector2D(new double[] {0, -120})
 //                )
         ); // TODO use sendable chooser
     }

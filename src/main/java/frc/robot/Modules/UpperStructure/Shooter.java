@@ -18,6 +18,8 @@ import frc.robot.Utils.TimeUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
 public class Shooter extends RobotModuleBase {
@@ -93,19 +95,18 @@ public class Shooter extends RobotModuleBase {
         updateConfigs();
     }
 
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     @Override
     protected void periodic(double dt) {
         try {
-            TimeUtils.executeWithTimeOut(() -> aimingSystemDecidedRPM = getShooterSpeedWithAimingSystem(), 500);
+            TimeUtils.executeWithTimeOut(executor, () -> aimingSystemDecidedRPM = getShooterSpeedWithAimingSystem(), 500);
         } catch (TimeoutException e) {
             throw new RuntimeException("timeout while deciding RPM");
         }
         final double desiredEncoderVelocity = decideRPM() / encoderVelocityToRPM;
 
         try {
-            TimeUtils.executeWithTimeOut(() -> {
-                flyWheelSpeedController.setDesiredSpeed(desiredEncoderVelocity);
-            }, 500);
+            TimeUtils.executeWithTimeOut(executor, () -> flyWheelSpeedController.setDesiredSpeed(desiredEncoderVelocity), 500);
         } catch (TimeoutException e) {
             throw new RuntimeException("timeout while setting desired speed of shooter");
         }
@@ -114,7 +115,7 @@ public class Shooter extends RobotModuleBase {
         EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", desiredEncoderVelocity * encoderVelocityToRPM);
 
         try {
-            TimeUtils.executeWithTimeOut(() -> {
+            TimeUtils.executeWithTimeOut(executor, () -> {
                 for (EncoderMotorMechanism shooter : shooters)
                     shooter.updateWithController(this);
             }, 500);

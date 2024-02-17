@@ -2,6 +2,7 @@ package frc.robot.Utils.ComputerVisionUtils;
 
 import frc.robot.Drivers.Visions.TargetFieldPositionTracker;
 import frc.robot.Utils.MathUtils.Vector2D;
+import frc.robot.Utils.Tests.ShooterSpeedTest;
 
 import java.util.Map;
 
@@ -20,6 +21,7 @@ public class AprilTagReferredTarget {
     }
 
     public Vector2D getTargetFieldPositionWithVisibleAprilTags() {
+        // System.out.println("<-- ATRT | referring vision target... -->");
         int visibleTargetCount = 0;
         Vector2D targetFieldPosition = new Vector2D();
         for (int id:aprilTagReferences.keySet()) {
@@ -27,12 +29,17 @@ public class AprilTagReferredTarget {
                 continue;
             TargetFieldPositionTracker.TargetOnField target = targetTracker.getTargetByID(id);
 
+            // System.out.println("<-- ATRT | reference tag " + id + " position: " + target.fieldPosition + " --> ");
+
             /* the target's field position is equal the current reference's position minus the reference's relative position to target */
             final Vector2D targetFieldPositionEstimatedByCurrentReference = target.fieldPosition.addBy(aprilTagReferences.get(id).multiplyBy(-1));
+            // System.out.println("<-- ATRT | target position inferred: " + targetFieldPositionEstimatedByCurrentReference + " -->");
             targetFieldPosition = targetFieldPosition.addBy(targetFieldPositionEstimatedByCurrentReference);
             visibleTargetCount++;
         }
         if (visibleTargetCount == 0) return null;
+
+        // System.out.println("<-- ATRT | vision target referred -->");
 
         return targetFieldPosition.multiplyBy(1.0/visibleTargetCount);
     }

@@ -158,20 +158,15 @@ public class VisionAidedPilotChassis extends PilotChassis {
                 intake.turnOffIntake(this);
 
 
-                System.out.println("<-- AP | searching for shoot target... --> ");
                 if (currentAimingTarget.isVisible())
                     switch (currentAimingTargetClass) {
                         case SPEAKER -> initiateGoToSpeakerTargetProcess();
                         case AMPLIFIER -> initiateGoToAmplifierProcess();
                     }
-                else if (!pilotController.keyOnHold(translationAutoPilotButton) && arm.transformerInPosition() && shooter.shooterReady()) {
-                    System.out.println("<-- AP | translational AP button released, launch begins -->"); // TODO why does the launch process just start
+                else if (!pilotController.keyOnHold(translationAutoPilotButton) && arm.transformerInPosition() && shooter.shooterReady())
                     intake.startLaunch(this);
-                }
-                if (!intake.isNoteInsideIntake()) {
+                if (!intake.isNoteInsideIntake())
                     currentStatus = Status.MANUALLY_DRIVING;
-                    System.out.println("<-- AP | note gone when searching for shoot target, exiting... --->");
-                }
             }
             case SEARCHING_FOR_NOTE -> {
                 updateChassisPositionWhenTaskStarted();
@@ -204,7 +199,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
      * @return the facing of the chassis such that it faces the target, or the default value if unseen. In radian, zero is to front.
      * */
     private double getAprilTagTargetRotation(VisionTargetClass currentAimingTargetClass, AprilTagReferredTarget currentAimingTarget) {
-        final Vector2D targetFieldPosition = currentAimingTarget.getTargetFieldPositionWithAprilTags(objectUnseenTimeOut);
+        final Vector2D targetFieldPosition = currentAimingTarget.getTargetFieldPositionWithAprilTags(objectUnseenTimeOut * 10);
         if (targetFieldPosition == null)
             return switch (currentAimingTargetClass) {
                 case SPEAKER -> speakerDefaultRotation;
@@ -342,7 +337,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         final Vector2D
                 /* the position of the ending point of the path of the grabbing task, relative to the note target  */
                 grabbingProcessEndPointFromNoteDeviation =
-                new Vector2D(new double[] {0, -grabbingNoteDistance}).multiplyBy(new Rotation2D(currentIntakeTaskFacing)), // by default, we move backwards in relative to the robot, but we need to convert this to in relative to field by rotating it.
+                new Vector2D(new double[] {intakeCenterHorizontalBiasFromCamera, -grabbingNoteDistance}).multiplyBy(new Rotation2D(currentIntakeTaskFacing)), // by default, we move backwards in relative to the robot, but we need to convert this to in relative to field by rotating it.
                 /* the position of the ending point of the path of the grabbing task, relative to the speaker */
                 grabbingProcessEndingPoint = currentVisualTargetLastSeenPosition.addBy(grabbingProcessEndPointFromNoteDeviation),
                 grabbingProcessEndingAnotherPoint = currentVisualTargetLastSeenPosition.addBy(grabbingProcessEndPointFromNoteDeviation.multiplyBy(-1));
@@ -358,9 +353,9 @@ public class VisionAidedPilotChassis extends PilotChassis {
      * @return whether the position have been updated
      * */
     private boolean updateTargetPositionIfSeen(AprilTagReferredTarget target) {
-        if (!target.isVisible())
-            return false;
-        currentVisualTargetLastSeenPosition = target.getTargetFieldPositionWithVisibleAprilTags();
+        final Vector2D targetFieldPosition = target.getTargetFieldPositionWithVisibleAprilTags();
+        if (targetFieldPosition == null) return false;
+        this.currentVisualTargetLastSeenPosition = targetFieldPosition;
         return true;
     }
 
@@ -373,6 +368,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
     private double grabbingNoteDefaultFacing;
     /** the amount of distance to travel when intake is sucking the note */
     private double grabbingNoteDistance;
+    private double intakeCenterHorizontalBiasFromCamera;
     private double chassisSpeedLimitWhenAutoAim; // m/s
     private Vector2D shootingSweetSpot;
     /** the pilot can specify the spot of shooting, by this amount of distance away from the sweet spot */
@@ -387,6 +383,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
 
         /* TODO read from robotConfig */
         objectUnseenTimeOut = 1000;
+        this.intakeCenterHorizontalBiasFromCamera = 0;
         grabbingNoteDistance = 0.3;
         chassisSpeedLimitWhenAutoAim = 5;
         shootingSweetSpot = new Vector2D(new double[] {0, -2.5});

@@ -7,6 +7,8 @@ import frc.robot.Utils.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -17,6 +19,7 @@ import java.util.concurrent.TimeoutException;
  * @version 0.1
  */
 public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
+    private final ExecutorService periodicExecutor = Executors.newSingleThreadExecutor();
     /** the name of the module */
     public final String moduleName;
 
@@ -83,7 +86,7 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
                 while (true) {
                     if (RobotShell.isFormalCompetition)
                         try {
-                            TimeUtils.executeWithTimeOut(() -> periodic(), 500);
+                            TimeUtils.executeWithTimeOut(periodicExecutor, () -> periodic(), 500);
                         } catch (TimeoutException e) {
                             System.out.println("<-- RobotModuleBase | WARNING!!! Module " + moduleName + " timeout while updating, restarting... ->");
                             onReset();
@@ -91,6 +94,7 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
                         }
                     else
                         periodic();
+                    periodic();
 
                     while (System.currentTimeMillis() - t< periodMS)
                         TimeUtils.sleep(1);
