@@ -1,11 +1,13 @@
 package frc.robot.Modules;
 
 import frc.robot.Drivers.Motors.Motor;
+import frc.robot.RobotShell;
 import frc.robot.Utils.RobotModuleOperatorMarker;
 import frc.robot.Utils.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 /**
  * The template for the classes that controls the different modules of the
@@ -79,7 +81,16 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
             public void run() {
                 System.out.println("<-- start of the update thread of " + moduleName + "-->");
                 while (true) {
-                    periodic();
+                    if (RobotShell.isFormalCompetition)
+                        try {
+                            TimeUtils.executeWithTimeOut(() -> periodic(), 500);
+                        } catch (TimeoutException e) {
+                            System.out.println("<-- RobotModuleBase | WARNING!!! Module " + moduleName + " timeout while updating, restarting... ->");
+                            onReset();
+                            continue;
+                        }
+                    else
+                        periodic();
 
                     while (System.currentTimeMillis() - t< periodMS)
                         TimeUtils.sleep(1);

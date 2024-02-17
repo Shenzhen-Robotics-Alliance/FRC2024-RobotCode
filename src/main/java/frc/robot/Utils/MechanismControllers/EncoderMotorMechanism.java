@@ -80,9 +80,14 @@ public class EncoderMotorMechanism implements Encoder, Motor {
         this.controller = controller;
     }
 
-    public void updateWithController(RobotModuleBase operatorModule) {
-        if (controller == null) motor.disableMotor(operatorModule);
-        else setPower(controller.getMotorPower(encoder.getEncoderVelocity(), encoder.getEncoderPosition()), operatorModule);
+    public double updateWithController(RobotModuleBase operatorModule) {
+        if (controller == null) {
+            motor.disableMotor(operatorModule);
+            return 0;
+        }
+        final double power = controller.getMotorPower(encoder.getEncoderVelocity(), encoder.getEncoderPosition());
+        setPower(power, operatorModule);
+        return power;
     }
 
     /**
