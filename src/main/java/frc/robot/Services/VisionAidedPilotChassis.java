@@ -112,6 +112,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
     private Vector2D currentVisualTargetLastSeenPosition;
     /** only calculated once when the task is initiated */
     private double currentVisionTaskETA;
+    private double currentIntakeTaskFacing;
     private long timeTaskStartedMillis;
     @Override
     public void periodic() {
@@ -182,7 +183,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
                 if (!pilotController.keyOnHold(translationAutoPilotButton) || intake.isNoteInsideIntake())
                     currentStatus = Status.MANUALLY_DRIVING;
                 else if (noteTarget.isVisible())
-                    initiateGrabNoteProcess();
+                    initiateGrabNoteProcess(pilotController.keyOnHold(rotationAutoPilotButton));
             }
             case REACHING_TO_SHOOT_TARGET -> {
                 intake.turnOffIntake(this);
@@ -300,9 +301,17 @@ public class VisionAidedPilotChassis extends PilotChassis {
             currentStatus = Status.MANUALLY_DRIVING; // finished or cancelled
     }
 
-    private void initiateGrabNoteProcess() {
+    private void initiateGrabNoteProcess(boolean useRotationAutoPilotRotationAsIntakeFacing) {
         if (!updateTargetPositionIfSeen(noteTarget)) return; // fails if note not seen
 
+        /*
+        * of the pilot is holding the rotation AP button, we use the rotation AP as the note facing
+        * otherwise, we use the current chassis facing
+        * the robot will face this direction during the whole moving process
+         * */
+        this.currentIntakeTaskFacing = useRotationAutoPilotRotationAsIntakeFacing ?
+                getNoteRotation() :
+                chassis.positionEstimator.getRobotRotation();
         chassisPositionWhenCurrentVisionTaskStarted = chassis.positionEstimator.getRobotPosition2D();
         currentStatus = Status.GRABBING_NOTE;
         final double length = getPathToNoteTarget().getLength(10);
@@ -323,21 +332,17 @@ public class VisionAidedPilotChassis extends PilotChassis {
         chassis.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION,
                 currentPath.getPositionWithLERP(timeSinceTaskStarted / currentVisionTaskETA)), this);
         chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
-                getNoteRotation()), this);
+                currentIntakeTaskFacing), this);
 
         if (!pilotController.keyOnHold(translationAutoPilotButton) || intake.isNoteInsideIntake())
             currentStatus = Status.MANUALLY_DRIVING;
     }
 
     private BezierCurve getPathToNoteTarget() {
-        // only specify when significant command is sent by the pilot
-        final boolean pilotSpecifyingGrabbingProcessEndPoint = pilotController.getTranslationalStickValue().getMagnitude() > 0.4;
         final Vector2D
                 /* the position of the ending point of the path of the grabbing task, relative to the note target  */
                 grabbingProcessEndPointFromNoteDeviation =
-                pilotSpecifyingGrabbingProcessEndPoint ?
-                        new Vector2D(pilotController.getTranslationalStickValue().getHeading(), grabbingNoteDistance) :
-                        new Vector2D(new double[] {0, -grabbingNoteDistance}).multiplyBy(new Rotation2D(getNoteRotation())), // by default, we move backwards in relative to the robot, but we need to convert this to in relative to field by rotating it.
+                new Vector2D(new double[] {0, -grabbingNoteDistance}).multiplyBy(new Rotation2D(currentIntakeTaskFacing)), // by default, we move backwards in relative to the robot, but we need to convert this to in relative to field by rotating it.
                 /* the position of the ending point of the path of the grabbing task, relative to the speaker */
                 grabbingProcessEndingPoint = currentVisualTargetLastSeenPosition.addBy(grabbingProcessEndPointFromNoteDeviation),
                 grabbingProcessEndingAnotherPoint = currentVisualTargetLastSeenPosition.addBy(grabbingProcessEndPointFromNoteDeviation.multiplyBy(-1));
