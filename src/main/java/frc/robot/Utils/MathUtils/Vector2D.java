@@ -72,7 +72,7 @@ public class Vector2D {
     }
 
     public double getHeading() {
-        if (vector[0] != 0) // when x is non-zero
+        if (Math.abs(vector[0]) >= 1e-4) // when x is non-zero
             return AngleUtils.simplifyAngle(Math.atan2(vector[1], vector[0])); // arc-tangent will just do the job for us
 
         /* deal with zero x situations */

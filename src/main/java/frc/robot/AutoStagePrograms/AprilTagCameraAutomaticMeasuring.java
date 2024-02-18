@@ -19,23 +19,23 @@ public class AprilTagCameraAutomaticMeasuring implements AutoStageProgram{
     private final RawObjectDetectionCamera camera;
     private final Vector2D robotInitialPositionToAprilTag;
     private final int targetID;
-    private final double minDistance, maxDistance, maxHorizontalDistance, targetHeightFromCamera;
+    private final double minDistance, maxDistance, maxHorizontalAngleRadians, targetHeightFromCamera;
 
-    private static final int horizontalDistanceLevelsCount = 3;
-    private static final int horizontalDistanceSamplesCount = horizontalDistanceLevelsCount * 2 - 1;
+    private static final int horizontalAngleLevelsCount = 3;
+    private static final int horizontalAngleSamplesCount = horizontalAngleLevelsCount * 2 - 1;
     private static final int verticalDistanceLevelsCount = 4;
 
     private final List<Double> pixelXSamples, angleXSamples, pixelYSamples, angleYSamples;
     private final Rotation2D cameraFacing;
-    public AprilTagCameraAutomaticMeasuring(RawObjectDetectionCamera camera, int targetID, double targetHeight, double minDistance, double maxDistance, double maxHorizontalDistance, Vector2D robotInitialPositionToTarget) {
-        this(camera, targetID, targetHeight, new Rotation2D(0), minDistance, maxDistance, maxHorizontalDistance, robotInitialPositionToTarget);
+    public AprilTagCameraAutomaticMeasuring(RawObjectDetectionCamera camera, int targetID, double targetHeight, double minDistance, double maxDistance, double maxHorizontalAngleDegrees, Vector2D robotInitialPositionToTarget) {
+        this(camera, targetID, targetHeight, new Rotation2D(0), minDistance, maxDistance, maxHorizontalAngleDegrees, robotInitialPositionToTarget);
     }
-    public AprilTagCameraAutomaticMeasuring(RawObjectDetectionCamera camera, int targetID, double targetHeight, Rotation2D cameraFacing, double minDistance, double maxDistance, double maxHorizontalDistance, Vector2D robotInitialPositionToTarget) {
+    public AprilTagCameraAutomaticMeasuring(RawObjectDetectionCamera camera, int targetID, double targetHeight, Rotation2D cameraFacing, double minDistance, double maxDistance, double maxHorizontalAngleDegrees, Vector2D robotInitialPositionToTarget) {
         this.camera = camera;
         this.targetID = targetID;
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
-        this.maxHorizontalDistance = maxHorizontalDistance;
+        this.maxHorizontalAngleRadians = Math.toRadians(maxHorizontalAngleDegrees);
         this.targetHeightFromCamera = targetHeight;
         this.cameraFacing = cameraFacing;
 
@@ -55,26 +55,37 @@ public class AprilTagCameraAutomaticMeasuring implements AutoStageProgram{
         commandSegments.add(commandFactory.justDoIt(() -> robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, null)));
 
         Vector2D robotPreviousPosition = robotInitialPositionToAprilTag;
-        final double unitSpace = maxHorizontalDistance / (horizontalDistanceLevelsCount-1);
+        Rotation2D robotPreviousFacing = new Rotation2D(0);
+        final double unitAngle = maxHorizontalAngleRadians / (horizontalAngleLevelsCount -1);
         for (int currentDistanceSample = 0; currentDistanceSample < verticalDistanceLevelsCount; currentDistanceSample++) {
-            double horizontalDistance = -maxHorizontalDistance - unitSpace;
+            double horizontalAngleRadian = -maxHorizontalAngleRadians - unitAngle;
             double verticalDistance = minDistance + currentDistanceSample * (maxDistance - minDistance) / verticalDistanceLevelsCount;
-            for (int currentHorizontalDistanceSample = 0; currentHorizontalDistanceSample < horizontalDistanceSamplesCount; currentHorizontalDistanceSample++) {
-                final Vector2D targetedPosition = new Vector2D(new double[] {
-                        -horizontalDistance / 100, -verticalDistance / 100 // notice here the robot moves in meters, so we need to divide it by 100
-                });
-                System.out.println("segment with ending position" + targetedPosition);
-                commandSegments.add(commandFactory.moveFromPointToPointAndStop(
-                        toFieldPosition(robotPreviousPosition),
-                        toFieldPosition(targetedPosition),
-                        () -> System.out.println("moving to position"),
+
+            final Vector2D targetedPosition = new Vector2D(new double[] {
+                    0, -verticalDistance / 100 // notice here the robot moves in meters, so we need to divide it by 100
+            });
+            commandSegments.add(commandFactory.moveFromPointToPointAndStop(
+                    toFieldPosition(robotPreviousPosition),
+                    toFieldPosition(targetedPosition),
+                    () -> System.out.println("moving to position"),
+                    this::putDataOnDashBoard,
+                    () -> {},
+                    robotPreviousFacing, new Rotation2D(horizontalAngleRadian + unitAngle)
+            ));
+
+            System.out.println("<-- scheduling | going to position: " + targetedPosition + " -->");
+
+            robotPreviousPosition = targetedPosition;
+            for (int currentHorizontalDistanceSample = 0; currentHorizontalDistanceSample < horizontalAngleSamplesCount; currentHorizontalDistanceSample++) {
+                System.out.println("<-- scheduling | face rotation: " + Math.toDegrees(horizontalAngleRadian) + " -->");
+                commandSegments.add(commandFactory.faceDirection(
+                        new Rotation2D(horizontalAngleRadian += unitAngle),
+                        () -> System.out.println("turning to rotation: " + Math.toDegrees(robotCore.chassisModule.getCurrentRotationalTask().rotationalValue)),
                         this::putDataOnDashBoard,
-                        () -> targetInPlace(robotCore.positionReader),
-                        new Rotation2D(0), new Rotation2D(0)
+                        () -> targetInPlace(robotCore, robotCore.positionReader)
                 ));
-                robotPreviousPosition = targetedPosition;
-                horizontalDistance += unitSpace;
             }
+            robotPreviousFacing = new Rotation2D(maxHorizontalAngleRadians);
         }
 
         commandSegments.add(commandFactory.justDoIt(this::printResults));
@@ -86,8 +97,11 @@ public class AprilTagCameraAutomaticMeasuring implements AutoStageProgram{
         return aprilTagNavigatedPosition.multiplyBy(cameraFacing).addBy(robotInitialPositionToAprilTag.multiplyBy(-1));
     }
 
-    private Vector2D getAprilTagRelativePositionFromRobotView(Vector2D robotFieldPosition) {
-        return robotFieldPosition.addBy(robotInitialPositionToAprilTag).multiplyBy(-1).multiplyBy(cameraFacing.getReversal());
+    private Vector2D getAprilTagRelativePositionFromRobotView(Vector2D robotFieldPosition, Rotation2D robotFacing) {
+        final Vector2D robotRelativePositionToAprilTag = robotFieldPosition.addBy(robotInitialPositionToAprilTag),
+                aprilTagRelativePositionToRobot = robotRelativePositionToAprilTag.multiplyBy(-1);
+        final Rotation2D cameraRotation = cameraFacing.add(robotFacing);
+        return aprilTagRelativePositionToRobot.multiplyBy(cameraRotation.getReversal());
     }
 
     private void putDataOnDashBoard() {
@@ -104,11 +118,11 @@ public class AprilTagCameraAutomaticMeasuring implements AutoStageProgram{
         SmartDashboard.putNumber("fixed angle camera target Y", y);
     }
 
-    private void targetInPlace(PositionEstimator robotPositionEstimator) {
+    private void targetInPlace(RobotCore robotCore, PositionEstimator robotPositionEstimator) {
         long t0 = System.currentTimeMillis();
         while (camera.getRawTargetsByID(targetID) == null && System.currentTimeMillis() - t0 < 500) {
+            robotCore.updateModules();
             camera.update();
-            TimeUtils.sleep(100);
         }
         RawObjectDetectionCamera.ObjectTargetRaw targetRaw;
         if ((targetRaw = camera.getRawTargetsByID(targetID)) == null) {
@@ -116,7 +130,7 @@ public class AprilTagCameraAutomaticMeasuring implements AutoStageProgram{
             return;
         }
 
-        final Vector2D aprilTagPositionToRobot = getAprilTagRelativePositionFromRobotView(robotPositionEstimator.getRobotPosition2D()).multiplyBy(100); // convert to cm
+        final Vector2D aprilTagPositionToRobot = getAprilTagRelativePositionFromRobotView(robotPositionEstimator.getRobotPosition2D(), robotPositionEstimator.getRobotRotation2D()).multiplyBy(100); // convert to cm
         pixelXSamples.add(targetRaw.x);
         angleXSamples.add(Math.toRadians(90) - aprilTagPositionToRobot.getHeading());
 

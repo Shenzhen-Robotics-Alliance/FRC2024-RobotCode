@@ -380,6 +380,14 @@ public class SwerveBasedChassis extends RobotModuleBase {
         };
     }
 
+    public ChassisTaskTranslation getCurrentTranslationalTask() {
+        return translationalTask;
+    }
+
+    public ChassisTaskRotation getCurrentRotationalTask() {
+        return rotationalTask;
+    }
+
     public static class ChassisTaskTranslation {
         public enum TaskType {
             SET_VELOCITY,

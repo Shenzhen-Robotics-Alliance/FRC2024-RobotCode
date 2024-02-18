@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.AutoStagePrograms.AprilTagCameraAutomaticMeasuring;
 import frc.robot.AutoStagePrograms.AutoStageProgram;
+import frc.robot.AutoStagePrograms.TestAutoStageProgram;
+import frc.robot.AutoStagePrograms.TestTurnToRotationAuto;
 import frc.robot.Drivers.Visions.JetsonDetectionAppClient;
 import frc.robot.Services.*;
 import frc.robot.Utils.MathUtils.Rotation2D;
@@ -16,7 +18,7 @@ import java.util.List;
 
 public class RobotShell extends TimedRobot {
     private static final int updateFreq = 100;
-    public static final boolean isFormalCompetition = true;
+    public static final boolean isFormalCompetition = false;
     public RobotShell() {
         super(1.0/updateFreq);
     }
@@ -47,25 +49,25 @@ public class RobotShell extends TimedRobot {
     public void autonomousInit() {
         // System.out.println("<-- Robot Shell | autonomous init -->");
         startAutoStage(
-                new AprilTagCameraAutomaticMeasuring(
-                    new JetsonDetectionAppClient("NoteDetector", "10.55.16.109", 8889, new double[] {1280, 720}),
-                    1,
-                    -30,
-                    new Rotation2D(Math.PI),
-                    25,
-                    100,
-                    50,
-                    new Vector2D(new double[] {0, 25})
-                )
 //                new AprilTagCameraAutomaticMeasuring(
-//                        robotCore.aprilTagDetectionAppClient,
-//                        4,
-//                        86,
-//                        140,
-//                        300,
-//                        70,
-//                        new Vector2D(new double[] {0, -120})
+//                    robotCore.noteDetectionAppClient,
+//                    1,
+//                    -30,
+//                    new Rotation2D(Math.PI),
+//                    25,
+//                    100,
+//                    60,
+//                    new Vector2D(new double[] {0, 25})
 //                )
+                new AprilTagCameraAutomaticMeasuring(
+                robotCore.aprilTagDetectionAppClient,
+                4,
+                86,
+                140,
+                300,
+                60,
+                new Vector2D(new double[] {0, -116})
+                )
         ); // TODO use sendable chooser
     }
 

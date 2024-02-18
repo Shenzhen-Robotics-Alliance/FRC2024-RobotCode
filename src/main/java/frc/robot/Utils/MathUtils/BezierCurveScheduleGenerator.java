@@ -23,6 +23,6 @@ public class BezierCurveScheduleGenerator {
     }
 
     public double getTimeNeededToFinishRotationalSchedule(double startingRotation, double endingRotation) {
-        return AngleUtils.getActualDifference(startingRotation, endingRotation) / maximumAngularVelocity;
+        return Math.abs(AngleUtils.getActualDifference(startingRotation, endingRotation)) / maximumAngularVelocity;
     }
 }

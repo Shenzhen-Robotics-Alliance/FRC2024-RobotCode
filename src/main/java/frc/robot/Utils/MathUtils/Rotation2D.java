@@ -17,6 +17,10 @@ public class Rotation2D extends Transformation2D {
         return radian;
     }
 
+    public Rotation2D add(Rotation2D anotherRotation2D) {
+        return new Rotation2D(AngleUtils.simplifyAngle(this.getRadian() + anotherRotation2D.getRadian()));
+    }
+
     @Override
     public String toString() {
         return "rotation with radian: " + this.getRadian() + "\nand vector value: " +  super.toString();

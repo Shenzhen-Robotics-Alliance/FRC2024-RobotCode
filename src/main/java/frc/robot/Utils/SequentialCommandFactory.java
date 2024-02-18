@@ -63,6 +63,10 @@ public class SequentialCommandFactory {
         return moveFromPointToPointAndStop(startingPoint, middlePoint, endingPoint, doNothing, doNothing, doNothing);
     }
 
+    public SequentialCommandSegment moveFromPointToPointAndStop(Vector2D startingPoint, Vector2D endingPoint, Rotation2D startingRotation, Rotation2D endingRotation) {
+        return moveFromPointToPointAndStop(startingPoint, endingPoint, doNothing, doNothing, doNothing, startingRotation, endingRotation);
+    }
+
     public SequentialCommandSegment moveFromPointToPointAndStop(Vector2D startingPoint, Vector2D endingPoint) {
         return moveFromPointToPointAndStop(startingPoint, startingPoint.addBy(Vector2D.displacementToTarget(startingPoint, endingPoint).multiplyBy(1.0/2)), endingPoint, doNothing, doNothing, doNothing);
     }
@@ -81,14 +85,35 @@ public class SequentialCommandFactory {
     }
 
     public SequentialCommandSegment moveFromPointToPointAndStop(Vector2D startingPoint, Vector2D endingPoint, Runnable beginning, Runnable periodic, Runnable ending, Rotation2D startingRotation, Rotation2D endingRotation) {
+        return moveFromPointToPointAndStop(startingPoint, endingPoint ,beginning, periodic, ending, () -> startingRotation, () -> endingRotation);
+    }
+
+    public SequentialCommandSegment moveFromPointToPointAndStop(Vector2D startingPoint, Vector2D endingPoint, Runnable beginning, Runnable periodic, Runnable ending, SequentialCommandSegment.RotationFeeder startingRotationFeeder, SequentialCommandSegment.RotationFeeder endingRotationFeeder) {
         return new SequentialCommandSegment(
                 justGo,
                 () -> new BezierCurve(startingPoint, endingPoint),
                 beginning, periodic, ending,
                 chassis::isCurrentTranslationalTaskFinished,
-                () -> startingRotation, () -> endingRotation
+                startingRotationFeeder, endingRotationFeeder
         );
     }
+
+
+    public SequentialCommandSegment faceDirection(Rotation2D direction){
+        return faceDirection(direction, doNothing, doNothing, doNothing);
+    }
+
+    public SequentialCommandSegment faceDirection(Rotation2D direction, Runnable beginning, Runnable periodic, Runnable ending) {
+        return new SequentialCommandSegment(
+                justGo,
+                () -> null,
+                beginning, periodic, ending,
+                chassis::isCurrentRotationalTaskFinished,
+                positionEstimator::getRobotRotation2D,
+                () -> direction
+        );
+    }
+
 
     public SequentialCommandSegment justDoIt(Runnable job) {
         return new SequentialCommandSegment(

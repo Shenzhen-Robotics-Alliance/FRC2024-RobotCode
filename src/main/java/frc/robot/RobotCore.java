@@ -106,9 +106,9 @@ public class RobotCore {
                 aprilTagPositionTrackingCamera = new FixedAnglePositionTrackingCamera(
                         aprilTagDetectionAppClient,
                         new FixedAngleCameraProfile(
-                                0.38,
-                                -0.0024,
-                                -0.0020
+                                0.387,
+                                -0.00168,
+                                -0.0013
                         ),
                         targetHeights
                 );
@@ -127,12 +127,12 @@ public class RobotCore {
                 final Map<Integer, Vector2D> speakerTargetAprilTagReferences = new HashMap<>(), amplifierTargetAprilTagReferences = new HashMap<>(), noteTargetReferences = new HashMap<>();
                 final DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Red); // default to red
                 if (alliance == DriverStation.Alliance.Red) {
-                        speakerTargetAprilTagReferences.put(4, new Vector2D(new double[] {0,0}));
-                        speakerTargetAprilTagReferences.put(3, new Vector2D(new double[] {-0.5,0}));
+                        speakerTargetAprilTagReferences.put(4, new Vector2D(new double[] {0.05,0}));
+                        // speakerTargetAprilTagReferences.put(3, new Vector2D(new double[] {-0.6,0}));
                         amplifierTargetAprilTagReferences.put(5, new Vector2D(new double[] {0, 0}));
                 } else {
-                        speakerTargetAprilTagReferences.put(7, new Vector2D(new double[] {0,0}));
-                        speakerTargetAprilTagReferences.put(8, new Vector2D(new double[] {-0.5,0}));
+                        speakerTargetAprilTagReferences.put(7, new Vector2D(new double[] {0.05,0}));
+                        speakerTargetAprilTagReferences.put(8, new Vector2D(new double[] {-0.6,0}));
                         amplifierTargetAprilTagReferences.put(6, new Vector2D(new double[] {0, 0}));
                 }
                 noteTargetReferences.put(1, new Vector2D()); // the id of note is always 0, and the note is itself the reference so the relative position is (0,0)
@@ -140,7 +140,7 @@ public class RobotCore {
                 amplifierTarget = new AprilTagReferredTarget(aprilTagPositionTrackingCamera, amplifierTargetAprilTagReferences);
 
                 noteTarget = new AprilTagReferredTarget(notePositionTrackingCamera, noteTargetReferences); // we call it april tag referred target but it is actually recognized by detect-net app
-                final Shooter.AimingSystem aimingSystem = new Shooter.AimingSystem(positionReader, speakerTarget, 1000);
+                final Shooter.AimingSystem aimingSystem = new Shooter.AimingSystem(positionReader, speakerTarget, (long) robotConfig.getConfig("vision-autopilot/aimingTimeUnseenToleranceMS"));
                 final EncoderMotorMechanism[] shooterMechanisms = new EncoderMotorMechanism[] {
                         new TalonFXMotor(
                                 new TalonFX((int)robotConfig.getConfig("shooter/shooter1Port")),
@@ -307,8 +307,7 @@ public class RobotCore {
 
                 for (RobotServiceBase service: services)
                         service.periodic();
-                for (RobotModuleBase module:modules)
-                        module.periodic();
+                updateModules();
 
 
 
@@ -320,6 +319,11 @@ public class RobotCore {
                 /* monitor the program's performance */
                 SmartDashboard.putNumber("robot main thread delay", System.currentTimeMillis()-t);
                 t = System.currentTimeMillis();
+        }
+
+        public void updateModules() {
+                for (RobotModuleBase module:modules)
+                        module.periodic();
         }
 
         private void printChassisDebugMessagesToDashboard() {
@@ -395,6 +399,17 @@ public class RobotCore {
                 EasyShuffleBoard.putNumber("apriltag", "target relative position to robot X", speakerRelativePositionToRobot.getX());
                 EasyShuffleBoard.putNumber("apriltag", "target relative position to robot Y", speakerRelativePositionToRobot.getY());
                 EasyShuffleBoard.putNumber("apriltag", "target distance from camera (M)", speakerRelativePositionToRobot.getMagnitude());
+
+                final TargetFieldPositionTracker.TargetOnField aprilTag3 = aprilTagPositionTrackingCamera.getVisibleTargetByID(3),
+                        aprilTag4 = aprilTagPositionTrackingCamera.getVisibleTargetByID(4);
+                if (aprilTag3 != null) {
+                        EasyShuffleBoard.putNumber("apriltag", "Tag 3 position to robot X", aprilTag3.fieldPosition.getX() - chassisCurrentPositionForCameraCalculation.getX());
+                        EasyShuffleBoard.putNumber("apriltag", "Tag 3 position to robot Y", aprilTag3.fieldPosition.getY() - chassisCurrentPositionForCameraCalculation.getY());
+                }
+                if (aprilTag4 != null) {
+                        EasyShuffleBoard.putNumber("apriltag", "Tag 4 position to robot X", aprilTag4.fieldPosition.getX() - chassisCurrentPositionForCameraCalculation.getX());
+                        EasyShuffleBoard.putNumber("apriltag", "Tag 4 position to robot Y", aprilTag4.fieldPosition.getY() - chassisCurrentPositionForCameraCalculation.getY());
+                }
 
                 SmartDashboard.putNumber("target distance from camera (M)", speakerRelativePositionToRobot.getMagnitude());
         }

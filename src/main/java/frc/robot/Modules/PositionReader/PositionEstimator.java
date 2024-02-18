@@ -1,5 +1,6 @@
 package frc.robot.Modules.PositionReader;
 
+import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
 
 public interface PositionEstimator {
@@ -16,6 +17,10 @@ public interface PositionEstimator {
 
     /** get the current facing of the robot */
     double getRobotRotation();
+
+    default Rotation2D getRobotRotation2D() {
+        return new Rotation2D(getRobotRotation());
+    }
 
     /** reset the position of the robot */
     void resetRobotPosition();

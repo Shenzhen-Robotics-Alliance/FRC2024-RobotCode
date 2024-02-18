@@ -249,7 +249,7 @@ public class Shooter extends RobotModuleBase {
 
     public static final class AimingSystem {
         public final PositionEstimator chassisPositionEstimator;
-        public final AprilTagReferredTarget referencingTool;
+        public final AprilTagReferredTarget target;
         public final long timeUnseenTolerance;
 
         /**
@@ -257,7 +257,7 @@ public class Shooter extends RobotModuleBase {
          * */
         public AimingSystem(PositionEstimator chassisPositionEstimator, AprilTagReferredTarget aprilTagReferredTarget, long timeUnseenTolerance) {
             this.chassisPositionEstimator = chassisPositionEstimator;
-            this.referencingTool = aprilTagReferredTarget;
+            this.target = aprilTagReferredTarget;
             this.timeUnseenTolerance = timeUnseenTolerance;
         }
 
@@ -274,7 +274,7 @@ public class Shooter extends RobotModuleBase {
          * @return the relative position to target, in meters, and in reference to the robot; if not seen for too long, return null
           */
         public Vector2D getRelativePositionToTarget(double projectileSpeed) {
-            final Vector2D targetFieldPosition = referencingTool.getTargetFieldPositionWithAprilTags(timeUnseenTolerance);
+            final Vector2D targetFieldPosition = target.getTargetFieldPositionWithAprilTags(timeUnseenTolerance);
             if (targetFieldPosition == null) return null;
             final double distanceToTarget = Vector2D.displacementToTarget(chassisPositionEstimator.getRobotPosition2D(), targetFieldPosition).getMagnitude(),
                     flightTime = distanceToTarget / projectileSpeed;

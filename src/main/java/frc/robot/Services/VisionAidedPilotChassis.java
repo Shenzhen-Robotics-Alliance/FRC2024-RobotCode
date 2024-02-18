@@ -64,7 +64,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
     private final DriverStation.Alliance alliance;
 
 
-
     /**
      * @param chassis
      * @param shooter
@@ -189,6 +188,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
             }
             case GRABBING_NOTE -> proceedGrabNoteProcess(translationAutoPilotButton);
         }
+        // System.out.println("<-- VAPC | current status: " + currentStatus + "-->");
     }
 
     private void updateChassisPositionWhenTaskStarted() {
@@ -199,7 +199,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
      * @return the facing of the chassis such that it faces the target, or the default value if unseen. In radian, zero is to front.
      * */
     private double getAprilTagTargetRotation(VisionTargetClass currentAimingTargetClass, AprilTagReferredTarget currentAimingTarget) {
-        final Vector2D targetFieldPosition = currentAimingTarget.getTargetFieldPositionWithAprilTags(objectUnseenTimeOut * 10);
+        final Vector2D targetFieldPosition = currentAimingTarget.getTargetFieldPositionWithAprilTags(autoFaceTargetTimeUnseenToleranceMS);
         if (targetFieldPosition == null)
             return switch (currentAimingTargetClass) {
                 case SPEAKER -> speakerDefaultRotation;
@@ -228,6 +228,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
     }
 
     private void proceedGoToSpeakerTarget(int translationAutoPilotButton) {
+        System.out.println("<-- going to speaker -->");
         shooter.setShooterMode(Shooter.ShooterMode.SHOOT, this);
         arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, this);
 
@@ -245,7 +246,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
             // start shooting
             intake.startLaunch(this);
         }
-        if (timeSinceTaskStarted > currentVisionTaskETA + objectUnseenTimeOut/1000.0 || !intake.isNoteInsideIntake() || !pilotController.keyOnHold(translationAutoPilotButton))
+        if (timeSinceTaskStarted > currentVisionTaskETA + aimingTimeUnseenToleranceMS/1000.0 || !intake.isNoteInsideIntake() || !pilotController.keyOnHold(translationAutoPilotButton))
             currentStatus = Status.MANUALLY_DRIVING; // finished or cancelled
     }
 
@@ -359,7 +360,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         return true;
     }
 
-    private long objectUnseenTimeOut;
+    private long autoFaceTargetTimeUnseenToleranceMS, aimingTimeUnseenToleranceMS;
     private double speakerDefaultRotation;
     private Vector2D amplifyingPositionToAmplifier;
     /** in radian, zero is front */
@@ -380,12 +381,12 @@ public class VisionAidedPilotChassis extends PilotChassis {
     @Override
     public void updateConfigs() {
         super.updateConfigs();
-
+        autoFaceTargetTimeUnseenToleranceMS = (long) robotConfig.getConfig("vision-autopilot", "autoFaceTargetTimeUnseenToleranceMS");
+        aimingTimeUnseenToleranceMS = (long) robotConfig.getConfig("vision-autopilot", "aimingTimeUnseenToleranceMS");
         /* TODO read from robotConfig */
-        objectUnseenTimeOut = 1000;
         this.intakeCenterHorizontalBiasFromCamera = -0.05;
         grabbingNoteDistance = 0.3;
-        chassisSpeedLimitWhenAutoAim = 5;
+        chassisSpeedLimitWhenAutoAim = 4;
         shootingSweetSpot = new Vector2D(new double[] {0, -2.5});
         shootingProcessEndingPointUpdatableRange = 0.5;
         chassisReactionDelay = 0.4;
