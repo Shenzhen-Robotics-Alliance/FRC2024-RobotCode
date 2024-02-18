@@ -2,10 +2,8 @@ package frc.robot.Services;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Modules.Chassis.SwerveBasedChassis;
-import frc.robot.Utils.EasyShuffleBoard;
 import frc.robot.Utils.PilotController;
 import frc.robot.Utils.RobotConfigReader;
 import frc.robot.Utils.MathUtils.Vector2D;
@@ -106,35 +104,35 @@ public class PilotChassis extends RobotServiceBase {
     private long lastRotationalInputTimeMillis;
     @Override
     public void periodic() {
-        controllerName = "control-" + controllerTypeSendableChooser.getSelected();
+        final ControllerType selectedController = controllerTypeSendableChooser.getSelected();
 
+        controllerName = "control-" + selectedController;
         /* if the controller type is switched, we create a new instance */
-        if (controllerTypeSendableChooser.getSelected() != previousSelectedController)
+        if (selectedController != previousSelectedController)
             pilotController = new PilotController(robotConfig, controllerName);
-        previousSelectedController = controllerTypeSendableChooser.getSelected();
+        previousSelectedController = selectedController;
 
-        pilotController.updateKeys();
+        pilotController.update();
 
         /* set the control and orientation mode for wheel speed */
         chassis.setWheelOutputMode(wheelOutputModeChooser.getSelected(), this);
         chassis.setOrientationMode(orientationModeChooser.getSelected(), this);
 
         /* read and process pilot's translation input */
-        final Vector2D translationInput = pilotController.getTranslationalStickValue();
         final int translationAutoPilotButton = (int)robotConfig.getConfig(controllerName, "translationAutoPilotButton");
         final int rotationAutoPilotButton = (int) robotConfig.getConfig(controllerName, "rotationAutoPilotButton");
         SwerveBasedChassis.ChassisTaskTranslation chassisTranslationalTask = new SwerveBasedChassis.ChassisTaskTranslation(
                 SwerveBasedChassis.ChassisTaskTranslation.TaskType.SET_VELOCITY,
                 /* if autopilot is on, we scale the input down by a factor so that we can search for the target */
-                translationInput.multiplyBy(pilotController.keyOnHold(translationAutoPilotButton) ? robotConfig.getConfig("chassis", "lowSpeedModeTranslationalCommandScale"):1)
+                pilotController.getTranslationalStickValue().multiplyBy(pilotController.keyOnHold(translationAutoPilotButton) ? robotConfig.getConfig("chassis", "lowSpeedModeTranslationalCommandScale"):1)
         );
 
+
         /* read and process the pilot's rotation inputs */
-        final double rotationInput = pilotController.getRotationalStickValue();
         /* turn it into a task */
         SwerveBasedChassis.ChassisTaskRotation chassisRotationalTask = new SwerveBasedChassis.ChassisTaskRotation(
                 SwerveBasedChassis.ChassisTaskRotation.TaskType.SET_VELOCITY,
-                rotationInput
+                pilotController.getRotationalStickValue()
         );
 
         /* when there is rotational input or there has been rotational input in the previous 0.3 seconds, we record the current heading of the chassis */
@@ -148,8 +146,6 @@ public class PilotChassis extends RobotServiceBase {
                     desiredHeading
             );
 
-        SmartDashboard.putNumber("rotation maintenance heading", Math.toDegrees(desiredHeading));
-
         /* calls to the chassis module and pass the desired motion */
         chassis.setTranslationalTask(chassisTranslationalTask, this);
         if (!pilotController.keyOnHold(rotationAutoPilotButton))
@@ -158,6 +154,8 @@ public class PilotChassis extends RobotServiceBase {
         /* lock the chassis if needed */
         final int lockChassisButtonPort = (int) robotConfig.getConfig(controllerName, "lockChassisButtonPort");
         chassis.setChassisLocked(pilotController.keyOnHold(lockChassisButtonPort), this);
+
+        SmartDashboard.putNumber("rotation maintenance heading", Math.toDegrees(desiredHeading));
     }
 
     @Override

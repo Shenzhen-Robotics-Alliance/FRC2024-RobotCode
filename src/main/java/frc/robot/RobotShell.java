@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RobotShell extends TimedRobot {
-    private static final int updateFreq = 64;
-    public static final boolean isFormalCompetition = false;
+    private static final int updateFreq = 100;
+    public static final boolean isFormalCompetition = true;
     public RobotShell() {
         super(1.0/updateFreq);
     }
@@ -26,7 +26,7 @@ public class RobotShell extends TimedRobot {
     @Override
     public void robotInit() {
         // System.out.println("<-- Robot Shell | robot init -->");
-        robotCore = new RobotCore("fasterChassis");
+        robotCore = new RobotCore("5516");
     }
 
     /** called once when the driver station first connects to the robot */

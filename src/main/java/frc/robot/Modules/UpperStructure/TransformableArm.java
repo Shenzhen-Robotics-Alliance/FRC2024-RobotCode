@@ -49,7 +49,7 @@ public class TransformableArm extends RobotModuleBase {
      * @param robotConfig the config xml file
      */
     public TransformableArm(Motor armLifterMotor, Encoder armEncoder, Shooter shooterModule, RobotConfigReader robotConfig) {
-        super("Arm", 128);
+        super("Arm");
         this.shooterModule = shooterModule;
         super.motors.add(armLifterMotor);
         this.armEncoder = armEncoder;

@@ -23,7 +23,7 @@ public class SwerveWheelPositionEstimator extends RobotModuleBase implements Pos
      * dependency object 1, dependency object 2, ...)
      */
     public SwerveWheelPositionEstimator(SwerveWheel[] swerveWheels, SimpleGyro gyro) {
-        super("Position-Estimator", 125);
+        super("Position-Estimator");
         this.swerveWheels = swerveWheels;
         this.wheelAccelerations = new Vector2D[swerveWheels.length];
         this.wheelVelocities = new Vector2D[swerveWheels.length];

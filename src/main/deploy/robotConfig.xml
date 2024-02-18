@@ -1,8 +1,5 @@
 <!-- 5516 -->
 <robotConfig>
-    <system>
-        <chassisModuleUpdateFrequency>128</chassisModuleUpdateFrequency>
-    </system>
     <hardware>
         <chassisOnCanivore>0</chassisOnCanivore>
         <frontLeftWheelDriveMotor type="int">8</frontLeftWheelDriveMotor>

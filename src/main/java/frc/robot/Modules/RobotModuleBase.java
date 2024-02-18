@@ -23,9 +23,6 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
     /** the name of the module */
     public final String moduleName;
 
-    /** the desired update frequency, in hz */
-    public final int desiredUpdateFrequency;
-
     /** if the current module is enabled */
     private boolean enabled = true;
 
@@ -37,16 +34,12 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
 
     private long previousTimeMillis;
 
-    protected RobotModuleBase(String moduleName) {
-        this(moduleName, 64);
-    }
     /**
      * public RobotModule(HashMap<String, RobotModule> dependenciesModules,
      * dependency object 1, dependency object 2, ...)
      */
-    protected RobotModuleBase(String moduleName, int desiredUpdateFrequency) {
+    protected RobotModuleBase(String moduleName) {
         this.moduleName = moduleName;
-        this.desiredUpdateFrequency = desiredUpdateFrequency;
         previousTimeMillis = System.currentTimeMillis();
     }
 
@@ -74,35 +67,6 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
         periodic((newTimeMillis - previousTimeMillis) / 1000.0f);
         this.previousTimeMillis = newTimeMillis;
         // System.out.println("<-- end of base periodic -->");
-    }
-
-    public Thread getPeriodicUpdateThread() {
-        return new Thread(new Runnable() {
-            private long t = System.currentTimeMillis();
-            private final double periodMS = 1000.0f / desiredUpdateFrequency;
-            @Override
-            public void run() {
-                System.out.println("<-- start of the update thread of " + moduleName + "-->");
-                while (true) {
-                    if (RobotShell.isFormalCompetition)
-                        try {
-                            TimeUtils.executeWithTimeOut(periodicExecutor, () -> periodic(), 500);
-                        } catch (TimeoutException e) {
-                            System.out.println("<-- RobotModuleBase | WARNING!!! Module " + moduleName + " timeout while updating, restarting... ->");
-                            onReset();
-                            continue;
-                        }
-                    else
-                        periodic();
-                    periodic();
-
-                    while (System.currentTimeMillis() - t< periodMS)
-                        TimeUtils.sleep(1);
-                    // System.out.println("module <" + moduleName + "> update frequency: " + 1000.0f/(System.currentTimeMillis() - t));
-                    t = System.currentTimeMillis();
-                }
-            }
-        });
     }
 
     private RobotModuleBase getMarker() {

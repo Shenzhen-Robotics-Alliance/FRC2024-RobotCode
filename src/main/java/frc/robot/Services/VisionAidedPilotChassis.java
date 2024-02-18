@@ -383,7 +383,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
 
         /* TODO read from robotConfig */
         objectUnseenTimeOut = 1000;
-        this.intakeCenterHorizontalBiasFromCamera = 0;
+        this.intakeCenterHorizontalBiasFromCamera = -0.05;
         grabbingNoteDistance = 0.3;
         chassisSpeedLimitWhenAutoAim = 5;
         shootingSweetSpot = new Vector2D(new double[] {0, -2.5});

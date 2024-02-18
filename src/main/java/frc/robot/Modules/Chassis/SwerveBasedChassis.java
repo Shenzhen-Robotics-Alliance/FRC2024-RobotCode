@@ -61,7 +61,7 @@ public class SwerveBasedChassis extends RobotModuleBase {
     private final SimpleGyro gyro;
     private final RobotConfigReader robotConfig;
     public SwerveBasedChassis(SwerveWheel[] swerveWheels, SimpleGyro gyro, RobotConfigReader robotConfig, PositionEstimator positionEstimator) {
-        super("SwerveBasedChassis", (int)robotConfig.getConfig("system", "chassisModuleUpdateFrequency"));
+        super("SwerveBasedChassis");
         this.swerveWheels = swerveWheels;
         this.positionEstimator = positionEstimator;
         this.gyro = gyro;
@@ -110,6 +110,10 @@ public class SwerveBasedChassis extends RobotModuleBase {
         processedTranslationalSpeed = processedTranslationalSpeed.multiplyBy(wheelsPowerConstrain/highestWheelSpeed);
         rotationalSpeed *= wheelsPowerConstrain/highestWheelSpeed;
         driveWheels(processedTranslationalSpeed, rotationalSpeed);
+
+        /* set wheels to be locked if asked */
+        for (SwerveWheel swerveWheel:this.swerveWheels)
+            swerveWheel.setWheelLocked(locked, this);
     }
 
     /**
@@ -191,6 +195,7 @@ public class SwerveBasedChassis extends RobotModuleBase {
         this.translationalTask.initiate(new Vector2D());
 
         this.decidedVelocity = new Vector2D();
+        chassisLocked = false;
     }
 
     private Vector2D processTranslationalMotion(double dt) {
@@ -259,17 +264,10 @@ public class SwerveBasedChassis extends RobotModuleBase {
     }
 
     private double processRotationalMotion(double dt) {
-        switch (rotationalTask.taskType) {
-            case SET_VELOCITY: {
-                return processRotationalVelocity(this.rotationalTask.rotationalValue);
-            }
-            case FACE_DIRECTION: {
-                return getRotationalCorrectionSpeed(this.rotationalTask.rotationalValue, dt);
-            }
-            default: {
-                throw new UnsupportedOperationException("bad rotational task type:" + this.rotationalTask.taskType.name());
-            }
-        }
+        return switch (rotationalTask.taskType) {
+            case SET_VELOCITY -> processRotationalVelocity(this.rotationalTask.rotationalValue);
+            case FACE_DIRECTION -> getRotationalCorrectionSpeed(this.rotationalTask.rotationalValue, dt);
+        };
     }
 
     private double processRotationalVelocity(double desiredRotationalVelocity) {
@@ -355,11 +353,11 @@ public class SwerveBasedChassis extends RobotModuleBase {
         this.rotationalTask = rotationalTask;
     }
 
+    private boolean chassisLocked;
     public void setChassisLocked(boolean locked, RobotModuleOperatorMarker operator) {
         if (!this.isOwner(operator))
             return;
-        for (SwerveWheel swerveWheel:this.swerveWheels)
-            swerveWheel.setWheelLocked(locked, this);
+        this.chassisLocked = locked;
     }
 
     public double getChassisHeading() {

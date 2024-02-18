@@ -1,10 +1,8 @@
 package frc.robot.Utils;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Utils.MathUtils.Transformation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
-import frc.robot.Utils.RobotConfigReader;
 
 public class PilotController {
     private final GenericHID rawController;
@@ -16,6 +14,8 @@ public class PilotController {
             stickThresholdWhenOtherAxisUnused, stickThresholdWhenOtherAxisFull,
             translationalAxisExponent, rotationalAxisExponent;
     private final Transformation2D sensitivityTransformation;
+    private Vector2D translationalStickValue = new Vector2D();
+    private double rotationalStickValue = 0;
 
     /**
      * creates a pilot controller
@@ -74,7 +74,7 @@ public class PilotController {
         );
     }
 
-    public Vector2D getTranslationalStickValue() {
+    public void updateTranslationalStickValue() {
         final Vector2D rawUnlimitedTranslationalStickValue = new Vector2D(new double[] {
                 rawController.getRawAxis(xAxisPortID), rawController.getRawAxis(yAxisPortID)}),
                 rawTranslationalStickValue = applyLimit(rawUnlimitedTranslationalStickValue),
@@ -83,20 +83,22 @@ public class PilotController {
         final double translationalStickMagnitudeRaw = translationalStickValue.getMagnitude(),
                 translationalStickMagnitude = applyExponent(translationalStickMagnitudeRaw, translationalAxisExponent);
 
-//        SmartDashboard.putNumber("trans inp raw mag", translationalStickMagnitudeRaw);
-//        SmartDashboard.putNumber("trans inp scaled", translationalStickMagnitude);
-
-        return new Vector2D(translationalStickValue.getHeading(), translationalStickMagnitude)
+        this.translationalStickValue = new Vector2D(translationalStickValue.getHeading(), translationalStickMagnitude)
                 .multiplyBy(sensitivityTransformation);
     }
 
-    public double getRotationalStickValue() {
-//        SmartDashboard.putNumber("rot inp raw mag", rawController.getRawAxis(zAxisPortID));
-//        SmartDashboard.putNumber("rot inp threshold-ed", applyThreshold(rawController.getRawAxis(zAxisPortID), stickThresholdWhenOtherAxisUnused));
-//        SmartDashboard.putNumber("rot inp scaled", applyExponent(applyThreshold(rawController.getRawAxis(zAxisPortID), stickThresholdWhenOtherAxisUnused), rotationalAxisExponent));
-        return applyExponent(
+    public Vector2D getTranslationalStickValue() {
+        return translationalStickValue;
+    }
+
+    public void updateRotationalStickValue() {
+        this.rotationalStickValue = applyExponent(
                 applyThreshold(rawController.getRawAxis(zAxisPortID), stickThresholdWhenOtherAxisUnused),
                 rotationalAxisExponent) * zSensitivity;
+    }
+
+    public double getRotationalStickValue() {
+        return rotationalStickValue;
     }
 
     private Vector2D applyLimit(Vector2D unlimitedStickValue) {
@@ -124,13 +126,16 @@ public class PilotController {
         return Math.copySign(Math.pow(Math.abs(value), exponent), value);
     }
 
-    public void updateKeys() {
+    public void update() {
         for (int keyPort = 1; keyPort < buttonsOnHold.length; keyPort++) {
             final boolean currentStatus = rawController.getRawButton(keyPort);
             this.buttonsOnPress[keyPort] = !buttonsOnHold[keyPort] && currentStatus;
             this.buttonsOnRelease[keyPort] = buttonsOnHold[keyPort] && !currentStatus;
             this.buttonsOnHold[keyPort] = currentStatus;
         }
+
+        updateTranslationalStickValue();
+        updateRotationalStickValue();
     }
 
     public boolean keyOnHold(int keyPort) {

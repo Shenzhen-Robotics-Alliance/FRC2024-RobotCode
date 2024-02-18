@@ -96,7 +96,7 @@ public class SwerveWheel extends RobotModuleBase {
             RobotConfigReader robotConfig,
             int swerveWheelID,
             double motorEncoderBias) {
-        super("swerve module " + swerveWheelID, (int)robotConfig.getConfig("system", "chassisModuleUpdateFrequency"));
+        super("swerve module " + swerveWheelID);
         this.swerveWheelID = swerveWheelID;
         this.wheelPositionVector = wheelPositionVector;
         this.drivingMotor = drivingMotor;
