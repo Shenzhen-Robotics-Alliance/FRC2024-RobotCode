@@ -60,4 +60,9 @@
         <steerCorrectionPowerRateAtZeroWheelSpeed type="double">1</steerCorrectionPowerRateAtZeroWheelSpeed>
         <steerCorrectionPowerFullWheelSpeed type="double">1</steerCorrectionPowerFullWheelSpeed>
     </chassis>
+
+    <shooter>
+        <defaultShootingRPM>4500</defaultShootingRPM>
+        <defaultShootingAngle>-2</defaultShootingAngle>
+    </shooter>
 </robotConfig>
