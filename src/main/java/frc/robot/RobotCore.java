@@ -258,8 +258,7 @@ public class RobotCore {
                 configsToTune.add("arm/position-SHOOT_NOTE");
                 configsToTune.add("arm/position-SCORE_AMPLIFIER");
 
-                configsToTune.add("shooter/shooterRPM5");
-                configsToTune.add("shooter/armAngle5");
+                configsToTune.add("shooter/defaultShootingRPM");
         }
 
         /**
