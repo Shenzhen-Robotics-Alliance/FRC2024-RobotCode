@@ -157,6 +157,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
                 intake.turnOffIntake(this);
 
 
+                if (!currentAimingTarget.isVisible())
+                    System.out.println("<-- VAPC | waiting for " + currentAimingTarget + " to show up -->");
                 if (currentAimingTarget.isVisible())
                     switch (currentAimingTargetClass) {
                         case SPEAKER -> initiateGoToSpeakerTargetProcess();
