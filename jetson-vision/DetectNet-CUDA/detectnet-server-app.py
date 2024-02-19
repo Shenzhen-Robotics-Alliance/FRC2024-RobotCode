@@ -38,13 +38,23 @@ def generate_frames():
         
         detection_results = ""
         # TODO here, find the object with maximum confident
+        maxAreaDetection = None
+        maxArea = 0
         for detection in detections:
             if detection.TrackStatus >= 0:  # actively tracking
                 center = ( (detection.Left + detection.Right)/2 , (detection.Top + detection.Bottom) / 2 )
                 area = (detection.Right - detection.Left) * (detection.Bottom - detection.Top)
-                print(f"id:{detection.ClassID}, center:{center}, area:{area}")
-                detection_results += f"{detection.ClassID} {center[0]} {center[1]} {area}/"
-        if detection_results=="":
+                if area > maxArea and detection.ClassID == 1:
+                    maxAreaDetection = detection
+                    maxArea = area
+        
+        if maxAreaDetection is not None:
+            detection = maxAreaDetection
+            center = ( (detection.Left + detection.Right)/2 , (detection.Top + detection.Bottom) / 2 )
+            area = (detection.Right - detection.Left) * (detection.Bottom - detection.Top)
+            print(f"id:{detection.ClassID}, center:{center}, area:{area}")
+            detection_results += f"{detection.ClassID} {center[0]} {center[1]} {area}/"
+        else:
             detection_results = "no-rst"
         detection_results += "\n"
         
