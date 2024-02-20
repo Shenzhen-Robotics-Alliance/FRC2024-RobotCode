@@ -2,10 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.AutoStagePrograms.AprilTagCameraAutomaticMeasuring;
-import frc.robot.AutoStagePrograms.AutoStageProgram;
-import frc.robot.AutoStagePrograms.TestAutoStageProgram;
-import frc.robot.AutoStagePrograms.TestTurnToRotationAuto;
+import frc.robot.AutoStagePrograms.*;
 import frc.robot.Drivers.Visions.JetsonDetectionAppClient;
 import frc.robot.Services.*;
 import frc.robot.Utils.MathUtils.Rotation2D;
@@ -59,15 +56,16 @@ public class RobotShell extends TimedRobot {
 //                    60,
 //                    new Vector2D(new double[] {0, 25})
 //                )
-                new AprilTagCameraAutomaticMeasuring(
-                robotCore.aprilTagDetectionAppClient,
-                4,
-                86,
-                140,
-                300,
-                60,
-                new Vector2D(new double[] {0, -116})
-                )
+//                new AprilTagCameraAutomaticMeasuring(
+//                robotCore.aprilTagDetectionAppClient,
+//                4,
+//                86,
+//                140,
+//                300,
+//                60,
+//                new Vector2D(new double[] {0, -116})
+//                )
+                new AutonomousTemplateRedDS3()
         ); // TODO use sendable chooser
     }
 

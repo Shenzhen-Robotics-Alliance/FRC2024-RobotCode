@@ -15,7 +15,7 @@ public class TestAutoStageProgram implements AutoStageProgram {
         final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
         final SequentialCommandFactory commandFactory = new SequentialCommandFactory(robotCore);
 
-        commandSegments.add(commandFactory.moveFromPointToPointAndStop(
+        commandSegments.add(commandFactory.moveFromPointToMidPointToPointAndStop(
                 new Vector2D(),
                 new Vector2D(new double[] {0, 3}),
                 new Vector2D(new double[] {2,3}))
