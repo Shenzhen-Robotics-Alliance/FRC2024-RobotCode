@@ -12,13 +12,18 @@ import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 import frc.robot.Utils.RobotConfigReader;
 
 public class ArmSoftwareLimitTest implements SimpleRobotTest {
-    private final TalonFXMotor armMotor = new TalonFXMotor(new TalonFX(25), false);
-    private final Encoder armEncoder = new DCAbsolutePositionEncoder(0);
-    private final EncoderMotorMechanism armMechanism = new EncoderMotorMechanism(armEncoder, armMotor);
+    private final TalonFXMotor armMotor;
+    private final Encoder armEncoder;
+    private final EncoderMotorMechanism armMechanism;
     private final XboxController xboxController = new XboxController(1);
+    public ArmSoftwareLimitTest(RobotConfigReader robotConfig) {
+        armMotor = new TalonFXMotor(new TalonFX((int)robotConfig.getConfig("arm", "armMotorPort")), robotConfig.getConfig("arm", "armMotorReversed")!=0);
+        armEncoder = new DCAbsolutePositionEncoder(0,robotConfig.getConfig("arm", "armEncoderReversed")!=0);
+        armMechanism = new EncoderMotorMechanism(armEncoder, armMotor);
+    }
     @Override
     public void testStart() {
-        final RobotConfigReader robotConfig = new RobotConfigReader();
+        final RobotConfigReader robotConfig = new RobotConfigReader("5516");
         this.armEncoder.setZeroPosition(robotConfig.getConfig("arm", "encoderZeroPositionRadians"));
         armMechanism.setSoftEncoderLimit(Math.toRadians(robotConfig.getConfig("arm", "lowerPositionLimit")), Math.toRadians(robotConfig.getConfig("arm", "upperPositionLimit")));
     }
