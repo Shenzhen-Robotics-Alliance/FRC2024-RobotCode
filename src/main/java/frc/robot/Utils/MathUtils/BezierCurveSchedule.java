@@ -29,6 +29,10 @@ public class BezierCurveSchedule {
         return path.getPositionWithLERP(t);
     }
 
+    public Vector2D getVelocityWithLERP() {
+        return path.getVelocityWithLERP(t);
+    }
+
     public boolean isCurrentPathFinished() {
         return t >= 1;
     }

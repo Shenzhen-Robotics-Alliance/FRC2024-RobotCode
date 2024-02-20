@@ -66,6 +66,8 @@
         <shooter2Port>16</shooter2Port>
         <shooter1Reversed>0</shooter1Reversed>
         <shooter2Reversed>0</shooter2Reversed>
+
+        <defaultShootingRPM>4000</defaultShootingRPM>
     </shooter>
 
     <intake>
@@ -87,7 +89,7 @@
         <!-- arm positions -->
         <position-DEFAULT>98</position-DEFAULT> <!-- 60 -->
         <position-INTAKE>108</position-INTAKE>
-        <position-SHOOT_NOTE>68</position-SHOOT_NOTE>
+        <position-SHOOT_NOTE>88</position-SHOOT_NOTE>
         <position-SCORE_AMPLIFIER>0</position-SCORE_AMPLIFIER>
 
         <!-- software limit -->

@@ -76,20 +76,21 @@
         <wheelsPowerConstrain type="double">1.1</wheelsPowerConstrain>
         <rotationalSpeedMaxSacrifice type="double">0.3</rotationalSpeedMaxSacrifice>
 
-        <timeLockRotationAfterRotationalInputStops>0.3</timeLockRotationAfterRotationalInputStops>
+
         <!-- the configuration for rotation controller -->
-        <robotRotationalErrorTolerance type="double">3</robotRotationalErrorTolerance> <!-- in degrees -->
-        <robotRotationalErrorStartDecelerate type="double">45</robotRotationalErrorStartDecelerate> <!-- in degrees -->
-        <robotRotationMaximumCorrectionPower type="double">0.6</robotRotationMaximumCorrectionPower>
-        <robotRotationMinimumCorrectionPower type="double">0.02</robotRotationMinimumCorrectionPower>
-        <robotRotationFeedForwardTime type="double">0.25</robotRotationFeedForwardTime> <!-- in seconds -->
+        <timeLockRotationAfterRotationalInputStops>0.45</timeLockRotationAfterRotationalInputStops>
+        <robotRotationalErrorTolerance type="double">0</robotRotationalErrorTolerance> <!-- in degrees -->
+        <robotRotationalErrorStartDecelerate type="double">50</robotRotationalErrorStartDecelerate> <!-- in degrees -->
+        <robotRotationMaximumCorrectionPower type="double">0.7</robotRotationMaximumCorrectionPower>
+        <robotRotationMinimumCorrectionPower type="double">0</robotRotationMinimumCorrectionPower>
+        <robotRotationFeedForwardTime type="double">0.35</robotRotationFeedForwardTime> <!-- in seconds -->
 
         <!-- position controller -->
-        <robotPositionErrorTolerance type="double">0.025</robotPositionErrorTolerance> <!-- in meters -->
-        <robotPositionErrorStartDecelerate type="double">0.5</robotPositionErrorStartDecelerate> <!-- in meters -->
-        <robotPositionMaximumCorrectionPower type="double">0.8</robotPositionMaximumCorrectionPower>
+        <robotPositionErrorTolerance type="double">0.02</robotPositionErrorTolerance> <!-- in meters -->
+        <robotPositionErrorStartDecelerate type="double">0.7</robotPositionErrorStartDecelerate> <!-- in meters -->
+        <robotPositionMaximumCorrectionPower type="double">1.05</robotPositionMaximumCorrectionPower>
         <robotPositionMinimumCorrectionPower type="double">0.03</robotPositionMinimumCorrectionPower>
-        <robotPositionFeedForwardTime type="double">0.1</robotPositionFeedForwardTime> <!-- in seconds -->
+        <robotPositionFeedForwardTime type="double">0.3</robotPositionFeedForwardTime> <!-- in seconds -->
         <errorToleranceAsCommandFinished>2</errorToleranceAsCommandFinished>
 
         <!-- the configuration of steer wheels -->
@@ -171,14 +172,11 @@
     </vision-autopilot>
 
     <auto>
-<!--        <autoStageMaxAcceleration type="double">12</autoStageMaxAcceleration>-->
-<!--        <autoStageMaxVelocity type="double">6.5</autoStageMaxVelocity>-->
-        <!-- in deg/s -->
-<!--        <autoStageMaxAngularVelocity type="double">220</autoStageMaxAngularVelocity>-->
+        <autoStageMaxAcceleration type="double">9</autoStageMaxAcceleration>
+        <autoStageMaxVelocity type="double">4.5</autoStageMaxVelocity>
+        <autoStageMaxAngularVelocity type="double">180</autoStageMaxAngularVelocity> <!-- in deg/s -->
 
-        <autoStageMaxAcceleration type="double">8</autoStageMaxAcceleration>
-        <autoStageMaxVelocity type="double">2</autoStageMaxVelocity>
-        <autoStageMaxAngularVelocity type="double">60</autoStageMaxAngularVelocity>
+        <inAdvanceTime>0.3</inAdvanceTime>
     </auto>
     <!-- the config for xbox controller, currently using radio master in replace -->
     <control-RM_POCKET>

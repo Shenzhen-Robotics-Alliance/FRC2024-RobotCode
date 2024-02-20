@@ -3,12 +3,15 @@ package frc.robot.Services;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Modules.Chassis.SwerveBasedChassis;
+import frc.robot.Utils.EasyShuffleBoard;
 import frc.robot.Utils.MathUtils.BezierCurveSchedule;
 import frc.robot.Utils.MathUtils.BezierCurveScheduleGenerator;
+import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.RobotConfigReader;
 import frc.robot.Utils.SequentialCommandSegment;
 
 import java.util.List;
+import java.util.Vector;
 
 /**
  * runs a sequence of command segment
@@ -24,7 +27,7 @@ public class AutoProgramRunner extends RobotServiceBase {
     private SequentialCommandSegment.StaticSequentialCommandSegment currentCommandSegment;
     private BezierCurveSchedule currentPathSchedule;
     private final Timer dt = new Timer();
-    private double currentSegmentRotationScheduleETA, rotationT;
+    private double currentSegmentRotationScheduleETA, rotationT, inAdvanceTime;
 
     public AutoProgramRunner(List<SequentialCommandSegment> commandSegments, SwerveBasedChassis chassis, RobotConfigReader robotConfig) {
         super("Auto-Program-Runner");
@@ -42,30 +45,37 @@ public class AutoProgramRunner extends RobotServiceBase {
     }
 
     @Override
+    public void updateConfigs() {
+        inAdvanceTime = robotConfig.getConfig("auto", "inAdvanceTime");
+    }
+
+    @Override
     public void periodic() {
         updateConfigs();
 
 
         if (currentPathSchedule != null) {
-            final double translationalT = currentPathSchedule.nextCheckPoint(dt.get());
+            final double translationalT = currentPathSchedule.nextCheckPoint(dt.get()),
+                    actualInAdvanceTime = Math.min((1-translationalT)* currentSegmentRotationScheduleETA, inAdvanceTime);
+            final Vector2D inAdvanceSpace =  currentPathSchedule.getVelocityWithLERP().multiplyBy(actualInAdvanceTime);
             robotChassis.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(
                             SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION,
-                            currentPathSchedule.getPositionWithLERP()),
+                            currentPathSchedule.getPositionWithLERP().addBy(inAdvanceSpace)),
                     this);
-            SmartDashboard.putNumber("translational scaled T", translationalT);
-            SmartDashboard.putNumber("auto command position (x)", currentPathSchedule.getPositionWithLERP().getX());
-            SmartDashboard.putNumber("auto command position (y)", currentPathSchedule.getPositionWithLERP().getY());
+            EasyShuffleBoard.putNumber("auto", "segment ID", currentSegmentID);
+            EasyShuffleBoard.putNumber("auto", "translational scaled T", translationalT);
+            EasyShuffleBoard.putNumber("auto", "position (x)", currentPathSchedule.getPositionWithLERP().getX());
+            EasyShuffleBoard.putNumber("auto", "position (y)", currentPathSchedule.getPositionWithLERP().getY());
         }
 
-//        System.out.println("current segment:" + currentSegment);
-//        if (this.commandSegments.get(currentSegment).chassisMovementPath != null)
-//            System.out.println("time scale calculation:" + getTimeScaleWithMaximumVelocityAndAcceleration());
-        SmartDashboard.putNumber("dt(s)", dt.get());
-        if (currentSegmentRotationScheduleETA != -1)
+        if (currentSegmentRotationScheduleETA != -1) {
             robotChassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(
                             SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
                             currentCommandSegment.getCurrentRotationWithLERP(rotationT+=dt.get() / currentSegmentRotationScheduleETA)),
                     this);
+            EasyShuffleBoard.putNumber("auto", "rotation T", rotationT);
+            EasyShuffleBoard.putNumber("auto", "rotation (deg)", Math.toDegrees(currentCommandSegment.getCurrentRotationWithLERP(rotationT)));
+        }
         currentCommandSegment.periodic.run();
 
         if (isCurrentSegmentComplete())
