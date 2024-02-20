@@ -19,8 +19,13 @@ public class AutonomousTemplateRedDS3 implements AutoStageProgram {
             position5 = new Vector2D(new double[]{2.2, 3.5}),
             position6 = new Vector2D(new double[]{1.65, 4.3}),
             position7 = new Vector2D(new double[] {2.2, 5.1}),
-            position8 = new Vector2D(new double[] {2.2+0.55*2, 5.1+0.8*2}),
-            position9 = new Vector2D(new double[] {1.68, 9})
+            position8 = new Vector2D(new double[] {2.2+0.55*2.2, 5.1+0.8*2.2}),
+            position9 = new Vector2D(new double[] {1.68, 9}),
+            position10 = new Vector2D(new double[] {0.1, 8.2}),
+            position11 = new Vector2D(new double[] {0.2, 5.2}),
+            position12 = new Vector2D(new double[] {0.2, 4.6}),
+            position13 = new Vector2D(new double[] {0.7, 4.6}),
+            position14 = new Vector2D(new double[] {0.7, 2})
     ;
     @Override
     public List<SequentialCommandSegment> getCommandSegments(RobotCore robotCore) {
@@ -36,7 +41,7 @@ public class AutonomousTemplateRedDS3 implements AutoStageProgram {
                 new Rotation2D(Math.toRadians(135))
         ));
 
-        /* 2 note on the middle line */
+        /* 2 the rightmost note on the middle line */
         commandSegments.add(commandFactory.moveFromPointToPointAndStop(
                 position1,
                 position2,
@@ -72,6 +77,22 @@ public class AutonomousTemplateRedDS3 implements AutoStageProgram {
                 position7,
                 position8,
                 position9
+        ));
+
+        /* drive back to the front of the stage assemble */
+        commandSegments.add(commandFactory.moveFromPointToMidPointToPoint(
+                position9,
+                position10,
+                position11
+        ));
+
+        /* drive through the stage assemble */
+        commandSegments.add(new SequentialCommandSegment(
+                ()->true,
+                () -> new BezierCurve(position11, position12, position13, position14),
+                ()->{}, ()->{}, ()->{},
+                robotCore.chassisModule::isCurrentTranslationalTaskFinished,
+                () -> new Rotation2D(Math.toRadians(180)), () -> new Rotation2D(Math.toRadians(180))
         ));
 
         return commandSegments;

@@ -52,6 +52,7 @@ public class AutoProgramRunner extends RobotServiceBase {
     @Override
     public void periodic() {
         updateConfigs();
+        robotChassis.setOrientationMode(SwerveBasedChassis.OrientationMode.FIELD, this);
 
 
         if (currentPathSchedule != null) {

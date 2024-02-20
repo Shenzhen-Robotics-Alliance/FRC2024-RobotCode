@@ -85,12 +85,12 @@
         <robotRotationMinimumCorrectionPower type="double">0</robotRotationMinimumCorrectionPower>
         <robotRotationFeedForwardTime type="double">0.35</robotRotationFeedForwardTime> <!-- in seconds -->
 
-        <!-- position controller -->
-        <robotPositionErrorTolerance type="double">0.02</robotPositionErrorTolerance> <!-- in meters -->
-        <robotPositionErrorStartDecelerate type="double">0.7</robotPositionErrorStartDecelerate> <!-- in meters -->
+        <!-- position controller(auto stage) -->
+        <robotPositionErrorTolerance type="double">0.03</robotPositionErrorTolerance> <!-- in meters -->
+        <robotPositionErrorStartDecelerate type="double">1.1</robotPositionErrorStartDecelerate> <!-- in meters -->
         <robotPositionMaximumCorrectionPower type="double">1.05</robotPositionMaximumCorrectionPower>
-        <robotPositionMinimumCorrectionPower type="double">0.03</robotPositionMinimumCorrectionPower>
-        <robotPositionFeedForwardTime type="double">0.3</robotPositionFeedForwardTime> <!-- in seconds -->
+        <robotPositionMinimumCorrectionPower type="double">0.02</robotPositionMinimumCorrectionPower>
+        <robotPositionFeedForwardTime type="double">0.15</robotPositionFeedForwardTime> <!-- in seconds -->
         <errorToleranceAsCommandFinished>2</errorToleranceAsCommandFinished>
 
         <!-- the configuration of steer wheels -->
@@ -177,6 +177,12 @@
         <autoStageMaxAngularVelocity type="double">180</autoStageMaxAngularVelocity> <!-- in deg/s -->
 
         <inAdvanceTime>0.3</inAdvanceTime>
+
+        <!-- low speed, for testing -->
+<!--        <autoStageMaxAcceleration type="double">4</autoStageMaxAcceleration>-->
+<!--        <autoStageMaxVelocity type="double">2</autoStageMaxVelocity>-->
+<!--        <autoStageMaxAngularVelocity type="double">60</autoStageMaxAngularVelocity> &lt;!&ndash; in deg/s &ndash;&gt;-->
+<!--        <inAdvanceTime>0.15</inAdvanceTime>-->
     </auto>
     <!-- the config for xbox controller, currently using radio master in replace -->
     <control-RM_POCKET>

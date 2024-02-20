@@ -43,14 +43,6 @@
         <timeNeededToFullyAccelerate type="double">0.2</timeNeededToFullyAccelerate>
         <robotSpeedActivateSpeedControl type="double">0.1</robotSpeedActivateSpeedControl>
 
-
-        <!-- position controller -->
-        <robotPositionErrorTolerance type="double">0.02</robotPositionErrorTolerance> <!-- in meters -->
-        <robotPositionErrorStartDecelerate type="double">0.5</robotPositionErrorStartDecelerate> <!-- in meters -->
-        <robotPositionMaximumCorrectionPower type="double">0.8</robotPositionMaximumCorrectionPower>
-        <robotPositionMinimumCorrectionPower type="double">0.05</robotPositionMinimumCorrectionPower>
-        <robotPositionFeedForwardTime type="double">0.14</robotPositionFeedForwardTime> <!-- in seconds -->
-
         <!-- PID coefficients for steer wheels -->
         <steerWheelErrorTolerance type = "double">1</steerWheelErrorTolerance> <!-- the amount of error to ignore, in degrees -->
         <steerWheelErrorStartDecelerate type = "double">60</steerWheelErrorStartDecelerate> <!-- the amount of error where the motors should try to correct using full motor speed, in degrees -->
