@@ -35,22 +35,6 @@
     </hardware>
     <chassis>
         <wheelGearRatio type="double">6.75</wheelGearRatio>
-
-        <!-- profiled translational velocity controller -->
-        <translationalTaskUpdatableRange type="double">0.1</translationalTaskUpdatableRange>
-        <ignoredAccelerateTime type="double">0.08</ignoredAccelerateTime>
-        <robotMaximumSpeed type="double">6.5</robotMaximumSpeed>
-        <timeNeededToFullyAccelerate type="double">0.2</timeNeededToFullyAccelerate>
-        <robotSpeedActivateSpeedControl type="double">0.1</robotSpeedActivateSpeedControl>
-
-        <!-- PID coefficients for steer wheels -->
-        <steerWheelErrorTolerance type = "double">1</steerWheelErrorTolerance> <!-- the amount of error to ignore, in degrees -->
-        <steerWheelErrorStartDecelerate type = "double">60</steerWheelErrorStartDecelerate> <!-- the amount of error where the motors should try to correct using full motor speed, in degrees -->
-        <steerWheelMaximumPower type = "double">0.85</steerWheelMaximumPower> <!-- use this value as the full speed -->
-        <steerWheelMinimumPower type = "double">0.03</steerWheelMinimumPower> <!-- this is the minimum amount of motor speed needed to turn the steer, in percentage of the full speed -->
-        <steerWheelFeedForwardTime type = "double">0</steerWheelFeedForwardTime>
-        <steerCorrectionPowerRateAtZeroWheelSpeed type="double">1</steerCorrectionPowerRateAtZeroWheelSpeed>
-        <steerCorrectionPowerFullWheelSpeed type="double">1</steerCorrectionPowerFullWheelSpeed>
     </chassis>
 
     <shooter>

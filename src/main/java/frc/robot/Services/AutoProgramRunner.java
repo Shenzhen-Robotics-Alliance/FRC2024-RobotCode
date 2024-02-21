@@ -132,12 +132,12 @@ public class AutoProgramRunner extends RobotServiceBase {
         final boolean translationalMovementFinished = currentPathSchedule == null || currentPathSchedule.isCurrentPathFinished();
         final boolean rotationalMovementFinished = currentSegmentRotationScheduleETA == -1 || rotationT >= 1;
 
-//        if (!translationalMovementFinished)
-//            System.out.println("<-- Auto Program Runner | waiting for path to finish -->");
-//        else if (!rotationalMovementFinished)
-//            System.out.println("<-- Auto Program Runner | waiting for rotation schedule to finish, t: " + rotationT + " -->");
-//        else if (!currentSegment.isCompleteChecker.isComplete())
-//            System.out.println("<-- Auto Program Runner | waiting for is complete checker to confirm complete -->");
+        if (!translationalMovementFinished)
+            System.out.println("<-- Auto Program Runner | waiting for path to finish -->");
+        else if (!rotationalMovementFinished)
+            System.out.println("<-- Auto Program Runner | waiting for rotation schedule to finish, t: " + rotationT + " -->");
+        else if (!currentSegment.isCompleteChecker.isComplete())
+            System.out.println("<-- Auto Program Runner | waiting for is complete checker to confirm complete -->");
         return translationalMovementFinished
                 && rotationalMovementFinished
                 && currentSegment.isCompleteChecker.isComplete();

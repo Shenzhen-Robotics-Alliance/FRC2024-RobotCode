@@ -130,7 +130,6 @@ public class SwerveBasedChassis extends RobotModuleBase {
 
     @Override
     public void updateConfigs() {
-        double errorToleranceAsCommandFinished = robotConfig.getConfig("chassis/errorToleranceAsCommandFinished");
         this.translationalTaskUpdatableRange = robotConfig.getConfig("chassis/translationalTaskUpdatableRange");
         this.robotMaximumSpeed = robotConfig.getConfig("chassis/robotMaximumSpeed");
         this.timeNeededToFullyAccelerate = robotConfig.getConfig("chassis/timeNeededToFullyAccelerate");
@@ -140,14 +139,14 @@ public class SwerveBasedChassis extends RobotModuleBase {
         this.ignoredAccelerateTime = robotConfig.getConfig("chassis/ignoredAccelerateTime");
 
         double robotRotationalErrorTolerance = Math.toRadians(robotConfig.getConfig("chassis/robotRotationalErrorTolerance"));
-        this.rotationDifferenceAsTaskFinished = robotRotationalErrorTolerance * errorToleranceAsCommandFinished;
+        this.rotationDifferenceAsTaskFinished = Math.toRadians(robotConfig.getConfig("chassis/rotationalErrorAsCommandFinished"));
         double robotRotationalErrorStartDecelerate = Math.toRadians(robotConfig.getConfig("chassis/robotRotationalErrorStartDecelerate"));
         double robotRotationMaximumCorrectionPower = robotConfig.getConfig("chassis/robotRotationMaximumCorrectionPower");
         double robotRotationMinimumCorrectionPower = robotConfig.getConfig("chassis/robotRotationMinimumCorrectionPower");
         double robotRotationFeedForwardTime = robotConfig.getConfig("chassis/robotRotationFeedForwardTime");
 
         double robotPositionErrorTolerance = robotConfig.getConfig("chassis/robotPositionErrorTolerance");
-        this.positionDifferenceAsTaskFinished = robotPositionErrorTolerance * errorToleranceAsCommandFinished;
+        this.positionDifferenceAsTaskFinished = robotConfig.getConfig("chassis/translationalErrorAsCommandFinished");
         double robotPositionErrorStartDecelerate = robotConfig.getConfig("chassis/robotPositionErrorStartDecelerate");
         double robotPositionMaximumCorrectionPower = robotConfig.getConfig("chassis/robotPositionMaximumCorrectionPower");
         double robotPositionMinimumCorrectionPower = robotConfig.getConfig("chassis/robotPositionMinimumCorrectionPower");
@@ -374,6 +373,7 @@ public class SwerveBasedChassis extends RobotModuleBase {
     }
 
     public boolean isCurrentRotationalTaskFinished() {
+        System.out.println("rotational error: " + Math.toDegrees(Math.abs(AngleUtils.getActualDifference(getChassisHeading(), rotationalTask.rotationalValue))) + ", tolerance: " + Math.toDegrees(rotationDifferenceAsTaskFinished));
         return switch (rotationalTask.taskType) {
             case SET_VELOCITY -> rotationalTask.rotationalValue == 0;
             case FACE_DIRECTION -> Math.abs(AngleUtils.getActualDifference(getChassisHeading(), rotationalTask.rotationalValue)) < rotationDifferenceAsTaskFinished;

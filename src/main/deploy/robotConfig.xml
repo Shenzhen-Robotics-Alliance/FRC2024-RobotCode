@@ -43,7 +43,7 @@
         <!-- PID coefficients for steer wheels -->
         <steerWheelErrorTolerance type = "double">1</steerWheelErrorTolerance> <!-- the amount of error to ignore, in degrees -->
         <steerWheelErrorStartDecelerate type = "double">60</steerWheelErrorStartDecelerate> <!-- the amount of error where the motors should try to correct using full motor speed, in degrees -->
-        <steerWheelMaximumPower type = "double">0.65</steerWheelMaximumPower> <!-- use this value as the full speed -->
+        <steerWheelMaximumPower type = "double">0.85</steerWheelMaximumPower> <!-- use this value as the full speed -->
         <steerWheelMinimumPower type = "double">0.03</steerWheelMinimumPower> <!-- this is the minimum amount of motor speed needed to turn the steer, in percentage of the full speed -->
         <steerWheelFeedForwardTime type = "double">0</steerWheelFeedForwardTime>
 <!--        <steerCorrectionPowerRateAtZeroWheelSpeed type="double">0.4</steerCorrectionPowerRateAtZeroWheelSpeed>-->
@@ -65,12 +65,13 @@
         <driveWheelFeedForwardRate type="double">0.3</driveWheelFeedForwardRate> <!-- the proportional term, the amount of feed forward power when there is a 100% speed error -->
         <driveWheelFeedForwardDelay type="double">0</driveWheelFeedForwardDelay> <!-- the amount of delay of the speed-controlling system, in ms, which is the amount of time that the system will "think forward" -->
 
+
         <!-- profiled translational velocity controller -->
-        <translationalTaskUpdatableRange type="double">0.2</translationalTaskUpdatableRange>
-        <ignoredAccelerateTime type="double">0.1</ignoredAccelerateTime>
-        <robotMaximumSpeed type="double">5</robotMaximumSpeed>
-        <timeNeededToFullyAccelerate type="double">0.4</timeNeededToFullyAccelerate>
-        <robotSpeedActivateSpeedControl type="double">10</robotSpeedActivateSpeedControl> // 0.1
+        <translationalTaskUpdatableRange type="double">0.1</translationalTaskUpdatableRange>
+        <ignoredAccelerateTime type="double">0.08</ignoredAccelerateTime>
+        <robotMaximumSpeed type="double">6.5</robotMaximumSpeed>
+        <timeNeededToFullyAccelerate type="double">0.2</timeNeededToFullyAccelerate>
+        <robotSpeedActivateSpeedControl type="double">0.1</robotSpeedActivateSpeedControl>
 
         <!-- smart wheel speed control -->
         <wheelsPowerConstrain type="double">1.1</wheelsPowerConstrain>
@@ -84,14 +85,15 @@
         <robotRotationMaximumCorrectionPower type="double">0.7</robotRotationMaximumCorrectionPower>
         <robotRotationMinimumCorrectionPower type="double">0</robotRotationMinimumCorrectionPower>
         <robotRotationFeedForwardTime type="double">0.35</robotRotationFeedForwardTime> <!-- in seconds -->
+        <rotationalErrorAsCommandFinished>2</rotationalErrorAsCommandFinished>
 
         <!-- position controller(auto stage) -->
-        <robotPositionErrorTolerance type="double">0.03</robotPositionErrorTolerance> <!-- in meters -->
+        <robotPositionErrorTolerance type="double">0.02</robotPositionErrorTolerance> <!-- in meters -->
         <robotPositionErrorStartDecelerate type="double">1.1</robotPositionErrorStartDecelerate> <!-- in meters -->
         <robotPositionMaximumCorrectionPower type="double">1.05</robotPositionMaximumCorrectionPower>
         <robotPositionMinimumCorrectionPower type="double">0.02</robotPositionMinimumCorrectionPower>
         <robotPositionFeedForwardTime type="double">0.15</robotPositionFeedForwardTime> <!-- in seconds -->
-        <errorToleranceAsCommandFinished>2</errorToleranceAsCommandFinished>
+        <translationalErrorAsCommandFinished>0.05</translationalErrorAsCommandFinished>
 
         <!-- the configuration of steer wheels -->
         <maxUnusedTime type="double">1</maxUnusedTime> <!-- the amount of time that the steer wheel will wait when not used until they go back to default position -->

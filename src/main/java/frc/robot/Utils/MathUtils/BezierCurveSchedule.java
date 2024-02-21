@@ -22,7 +22,7 @@ public class BezierCurveSchedule {
         final double currentPointOriginalVelocity = path.getVelocityWithLERP(t).getMagnitude(),
                 currentPointOriginalAcceleration = path.getAccelerationWithLERP(t).getMagnitude(),
                 timeScaleFactor = Math.min(chassisVelocityConstrain / currentPointOriginalVelocity, chassisAccelerationConstrain / currentPointOriginalAcceleration);
-        return t += dt * timeScaleFactor;
+        return t = Math.min(t + dt * timeScaleFactor, 1);
     }
 
     public Vector2D getPositionWithLERP() {

@@ -29,27 +29,13 @@
         <gyroPort type="int">15</gyroPort>
 
         <!-- the zero position of encoders, to measure this value, turn the wheel to the direct front, and see the value of encoder.getRawSensorReading() -->
-        <frontLeftWheelZeroPosition type = "double">0.023</frontLeftWheelZeroPosition>
-        <frontRightWheelZeroPosition type = "double">0.325</frontRightWheelZeroPosition>
-        <backLeftWheelZeroPosition type = "double">-2.973</backLeftWheelZeroPosition>
-        <backRightWheelZeroPosition type = "double">-2.429</backRightWheelZeroPosition>
+        <frontLeftWheelZeroPosition type = "double">-2.235</frontLeftWheelZeroPosition>
+        <frontRightWheelZeroPosition type = "double">1.136</frontRightWheelZeroPosition>
+        <backLeftWheelZeroPosition type = "double">-0.121</backLeftWheelZeroPosition>
+        <backRightWheelZeroPosition type = "double">2.376</backRightWheelZeroPosition>
     </hardware>
     <chassis>
-        <wheelGearRatio type="double">8.14</wheelGearRatio>
-        <!-- override existing steer wheel PID -->
-        <steerWheelErrorTolerance type = "double">1</steerWheelErrorTolerance> <!-- the amount of error to ignore, in degrees -->
-        <steerWheelErrorStartDecelerate type = "double">80</steerWheelErrorStartDecelerate> <!-- the amount of error where the motors should try to correct using full motor speed, in degrees -->
-        <steerWheelMaximumPower type = "double">0.75</steerWheelMaximumPower> <!-- use this value as the full speed -->
-        <steerWheelMinimumPower type = "double">0.01</steerWheelMinimumPower> <!-- this is the minimum amount of motor speed needed to turn the steer, in percentage of the full speed -->
-        <steerWheelFeedForwardTime type = "double">0</steerWheelFeedForwardTime>
-        <steerCorrectionPowerRateAtZeroWheelSpeed type="double">1</steerCorrectionPowerRateAtZeroWheelSpeed>
-        <steerCorrectionPowerFullWheelSpeed type="double">1</steerCorrectionPowerFullWheelSpeed>
-
-
-
-        <robotMaximumSpeed type="double">5</robotMaximumSpeed>
-        <timeNeededToFullyAccelerate type="double">0.25</timeNeededToFullyAccelerate>
-        <robotSpeedActivateSpeedControl type="double">0.1</robotSpeedActivateSpeedControl>
+        <wheelGearRatio type="double">6.75</wheelGearRatio>
     </chassis>
 
     <shooter>
@@ -75,14 +61,14 @@
         <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
         <encoderZeroPositionRadians>2.57</encoderZeroPositionRadians>
 
-        <position-DEFAULT>93</position-DEFAULT>
-        <position-INTAKE>93</position-INTAKE>
+        <position-DEFAULT>90</position-DEFAULT>
+        <position-INTAKE>90</position-INTAKE>
         <position-SHOOT_NOTE>75</position-SHOOT_NOTE>
         <position-SCORE_AMPLIFIER>1</position-SCORE_AMPLIFIER>
 
         <!-- software limit -->
         <lowerPositionLimit>0</lowerPositionLimit>
-        <upperPositionLimit>95</upperPositionLimit>
+        <upperPositionLimit>92</upperPositionLimit>
 
         <!-- lookup table -->
         <encoderPosition0>0</encoderPosition0>

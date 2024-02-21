@@ -53,19 +53,19 @@ public class RobotShell extends TimedRobot {
 //                    new Rotation2D(Math.PI),
 //                    25,
 //                    100,
-//                    60,
+//                    45,
 //                    new Vector2D(new double[] {0, 25})
 //                )
-//                new AprilTagCameraAutomaticMeasuring(
-//                robotCore.aprilTagDetectionAppClient,
-//                4,
-//                86,
-//                140,
-//                300,
-//                60,
-//                new Vector2D(new double[] {0, -116})
-//                )
-                new AutonomousTemplateRedDS3()
+                new AprilTagCameraAutomaticMeasuring(
+                robotCore.aprilTagDetectionAppClient,
+                4,
+                100,
+                140,
+                300,
+                45,
+                new Vector2D(new double[] {0, -110})
+                )
+//                new AutonomousTemplateRedDS3()
         ); // TODO use sendable chooser
     }
 
@@ -105,7 +105,7 @@ public class RobotShell extends TimedRobot {
     public void testInit() {
         // System.out.println("<-- Robot Shell | test init -->");
         if (robotTest == null)
-            this.robotTest = new LEDTest();
+            this.robotTest = new WheelsCalibration(robotCore.robotConfig);
         robotTest.testStart();
     }
 
