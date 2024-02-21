@@ -12,12 +12,11 @@ import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 import frc.robot.Utils.RobotConfigReader;
 
 public class ArmSoftwareLimitTest implements SimpleRobotTest {
-    private final TalonFXMotor armMotor;
     private final Encoder armEncoder;
     private final EncoderMotorMechanism armMechanism;
     private final XboxController xboxController = new XboxController(1);
     public ArmSoftwareLimitTest(RobotConfigReader robotConfig) {
-        armMotor = new TalonFXMotor(new TalonFX((int)robotConfig.getConfig("arm", "armMotorPort")), robotConfig.getConfig("arm", "armMotorReversed")!=0);
+        TalonFXMotor armMotor = new TalonFXMotor(new TalonFX((int) robotConfig.getConfig("arm", "armMotorPort")), robotConfig.getConfig("arm", "armMotorReversed") != 0);
         armEncoder = new DCAbsolutePositionEncoder(0,robotConfig.getConfig("arm", "armEncoderReversed")!=0);
         armMechanism = new EncoderMotorMechanism(armEncoder, armMotor);
     }
