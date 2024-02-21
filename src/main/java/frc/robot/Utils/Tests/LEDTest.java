@@ -1,23 +1,20 @@
 package frc.robot.Utils.Tests;
 
-import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 
 public class LEDTest implements SimpleRobotTest {// a function that can make the light change 3 colors, the light also need to be able to blink
-    PWM testpwm = new PWM(1);//0:, 1:blue, 2:green
-
+    private final Solenoid R = new Solenoid(PneumaticsModuleType.CTREPCM, 0), G = new Solenoid(PneumaticsModuleType.CTREPCM, 1), B = new Solenoid(PneumaticsModuleType.CTREPCM, 2);
+    private final XboxController xboxController = new XboxController(1);
     @Override
     public void testStart() {
-        // TODO Auto-generated method stub
         System.out.println("<-- LED Test | Testing... -->");
-        //testpwm.setAlwaysHighMode();
-        testpwm.close();;
-    
     }
 
     @Override
     public void testPeriodic() {
-        // TODO Auto-generated method stub
-        
+        R.set(xboxController.getAButton());
+        G.set(xboxController.getXButton());
+        B.set(xboxController.getBButton());
     }
-    
 }

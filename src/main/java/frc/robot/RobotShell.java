@@ -105,7 +105,7 @@ public class RobotShell extends TimedRobot {
     public void testInit() {
         // System.out.println("<-- Robot Shell | test init -->");
         if (robotTest == null)
-            this.robotTest = new ArmSoftwareLimitTest(robotCore.robotConfig);
+            this.robotTest = new LEDTest();
         robotTest.testStart();
     }
 
