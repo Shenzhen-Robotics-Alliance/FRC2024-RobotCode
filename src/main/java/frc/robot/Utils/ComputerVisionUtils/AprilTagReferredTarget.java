@@ -59,4 +59,8 @@ public class AprilTagReferredTarget {
     public boolean isVisible() {
         return getTargetFieldPositionWithVisibleAprilTags() != null;
     }
+
+    public boolean isVisible(long timeUnseenTolerance) {
+        return getTargetFieldPositionWithAprilTags(timeUnseenTolerance) != null;
+    }
 }

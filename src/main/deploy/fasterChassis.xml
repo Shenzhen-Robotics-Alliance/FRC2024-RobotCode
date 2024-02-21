@@ -64,7 +64,7 @@
 
         <!-- arm positions -->
         <position-DEFAULT>98</position-DEFAULT> <!-- 60 -->
-        <position-INTAKE>108</position-INTAKE>
+        <position-INTAKE>105</position-INTAKE>
         <position-SHOOT_NOTE>88</position-SHOOT_NOTE>
         <position-SCORE_AMPLIFIER>0</position-SCORE_AMPLIFIER>
 

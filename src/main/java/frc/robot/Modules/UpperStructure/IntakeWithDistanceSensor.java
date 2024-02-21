@@ -36,8 +36,6 @@ public class IntakeWithDistanceSensor extends Intake {
 
         intakeMotor.setPower(decidedIntakeMotorPower(dt), this);
         EasyShuffleBoard.putNumber("intake", "note sensor reading (CM)", intakeDistanceSensor.getDistanceCM());
-        // System.out.println("intake note sensor reading (CM): " + intakeDistanceSensor.getDistanceCM());
-        // System.out.println("intake encoder velocity: " + intakeEncoder.getEncoderVelocity()); // 74000
     }
 
     private double intakeWheelHoldingPosition = 0;
@@ -50,7 +48,7 @@ public class IntakeWithDistanceSensor extends Intake {
             }
             case HOLDING -> {
                 if (!isNoteInsideIntake()) {
-                    System.out.println("<-- Intake | note gone when hollding, updating to disabled... -->");
+                    System.out.println("<-- Intake | note gone when holding, updating to disabled... -->");
                     return updateStatusToDisabled();
                 }
                 intakeWheelPositionController.startNewTask(new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, intakeWheelHoldingPosition));
@@ -105,7 +103,7 @@ public class IntakeWithDistanceSensor extends Intake {
                 0,
                 0);
         intakeWheelPositionController = new EnhancedPIDController(intakeMotorPIDProfile);
-        intakeSensorToReadyPositionDifference = intakeMotorEncoderTicksPerSecondAtNormalPower * 0;
+        intakeSensorToReadyPositionDifference = intakeMotorEncoderTicksPerSecondAtNormalPower * -0.01;
     }
 
     @Override

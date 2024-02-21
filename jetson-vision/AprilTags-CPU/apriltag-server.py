@@ -2,7 +2,7 @@ CAMERA_RESOLUTION = (640, 480)
 CAMERA_FRAMERATE = 60
 STREAMING_RESOLUTION = (320, 240)
 STREAMING_FRAMERATE = 24
-FLIP_IMAGE = 1 # 0 for vertical flip, 1 for horizontal flip, -1 for flip both, None for do not flip
+FLIP_IMAGE = None # 0 for vertical flip, 1 for horizontal flip, -1 for flip both, None for do not flip
 
 '''
 inspection and detection server running together
@@ -17,7 +17,8 @@ from http.server import SimpleHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
 from time import time, sleep
 
-cap = cv2.VideoCapture(0, cv2.CAP_V4L2) # camera port
+# cap = cv2.VideoCapture(0, cv2.CAP_V4L2) # camera port 0 for linux
+cap = cv2.VideoCapture(1) # camera port 0 for windows
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, CAMERA_RESOLUTION[0]) # width
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, CAMERA_RESOLUTION[1]) # height
 cap.set(cv2.CAP_PROP_FPS, CAMERA_FRAMERATE) 
@@ -40,7 +41,9 @@ def generate_frames():
     print("generate frames activated")
     while running:
         dt = time()
+        print("<-- acquiring lock -->")
         lock.acquire()
+        print("<-- capturing -->")
         ret, frame = cap.read()
         if frame is None:
             continue

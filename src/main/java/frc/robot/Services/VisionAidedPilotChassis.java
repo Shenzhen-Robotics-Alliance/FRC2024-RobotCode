@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Drivers.Visions.TargetFieldPositionTracker;
 import frc.robot.Modules.Chassis.SwerveBasedChassis;
 import frc.robot.Modules.UpperStructure.Intake;
 import frc.robot.Modules.UpperStructure.Shooter;
@@ -15,10 +14,6 @@ import frc.robot.Utils.MathUtils.BezierCurve;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.RobotConfigReader;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.zip.CheckedOutputStream;
 
 /**
  * based on the pilot chassis, we add auto-aiming, shoot and intake functions in this service
@@ -157,9 +152,9 @@ public class VisionAidedPilotChassis extends PilotChassis {
                 intake.turnOffIntake(this);
 
 
-                if (!currentAimingTarget.isVisible())
-                    System.out.println("<-- VAPC | waiting for " + currentAimingTarget + " to show up -->");
-                if (currentAimingTarget.isVisible())
+                if (!currentAimingTarget.isVisible(aimingTimeUnseenToleranceMS))
+                    System.out.println("<-- VAPC | waiting for " + currentAimingTargetClass + " to show up -->");
+                if (currentAimingTarget.isVisible(aimingTimeUnseenToleranceMS))
                     switch (currentAimingTargetClass) {
                         case SPEAKER -> initiateGoToSpeakerTargetProcess();
                         case AMPLIFIER -> initiateGoToAmplifierProcess();
@@ -221,7 +216,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
     }
 
     private void initiateGoToSpeakerTargetProcess() {
-        if (updateTargetPositionIfSeen(speakerTarget)) return; // failed when unseen
+        if (!updateTargetPositionIfSeen(speakerTarget)) return; // failed when unseen
 
         currentStatus = Status.REACHING_TO_SHOOT_TARGET;
         final double length = getPathToSpeakerTarget().getLength(10);
@@ -230,7 +225,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
     }
 
     private void proceedGoToSpeakerTarget(int translationAutoPilotButton) {
-        System.out.println("<-- going to speaker -->");
         shooter.setShooterMode(Shooter.ShooterMode.SHOOT, this);
         arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, this);
 
@@ -239,8 +233,13 @@ public class VisionAidedPilotChassis extends PilotChassis {
 
         final double timeSinceTaskStarted = (System.currentTimeMillis() - timeTaskStartedMillis) / 1000.0;
         final BezierCurve currentPath = getPathToSpeakerTarget();
+        /* TODO: test the position constrain */
+        final Vector2D currentPathPositionWithLERP = currentPath.getPositionWithLERP(timeSinceTaskStarted / currentVisionTaskETA),
+                displacementToSpeaker = Vector2D.displacementToTarget(currentPathPositionWithLERP, currentVisualTargetLastSeenPosition);
+        final double yPositionLowerConstrain = Math.abs(displacementToSpeaker.getX()) <= speakerImpactSpacingWidth /2 ?
+                distanceToWallConstrainInFrontOfSpeaker: distanceToWallConstrain;
         chassis.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION,
-                currentPath.getPositionWithLERP(timeSinceTaskStarted / currentVisionTaskETA)), this);
+                new Vector2D(new double[] {currentPathPositionWithLERP.getX(), Math.max(currentPathPositionWithLERP.getY(), yPositionLowerConstrain)})), this);
         chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
                 getAprilTagTargetRotation(VisionTargetClass.SPEAKER, speakerTarget)), this);
 
@@ -248,7 +247,11 @@ public class VisionAidedPilotChassis extends PilotChassis {
             // start shooting
             intake.startLaunch(this);
         }
-        if (timeSinceTaskStarted > currentVisionTaskETA + aimingTimeUnseenToleranceMS/1000.0 || !intake.isNoteInsideIntake() || !pilotController.keyOnHold(translationAutoPilotButton))
+        if (
+                timeSinceTaskStarted > currentVisionTaskETA + aimingTimeUnseenToleranceMS/1000.0
+                        || !intake.isNoteInsideIntake()
+                        || !pilotController.keyOnHold(translationAutoPilotButton)
+                        || !speakerTarget.isVisible(aimingTimeUnseenToleranceMS))
             currentStatus = Status.MANUALLY_DRIVING; // finished or cancelled
     }
 
@@ -257,17 +260,22 @@ public class VisionAidedPilotChassis extends PilotChassis {
         final Vector2D
                 /* the position of the ending point of the path of the shooting task, relative to the shooting sweet-spot  */
                 shootingProcessEndPointFromSweetSpotDeviation = pilotSpecifyingShootingProcessEndPoint ?
-                pilotController.getTranslationalStickValue().multiplyBy(shootingProcessEndingPointUpdatableRange) :
-                defaultShootProcessEndingPoint,
+                new Vector2D(new double[] {pilotController.getTranslationalStickValue().getX(), Math.max(0, pilotController.getTranslationalStickValue().getY())})
+                        .multiplyBy(shootingProcessEndingPointUpdatableRange) :
+                shootProcessEndingPointInReferenceToShootingSweetSpotByDefault,
                 /* the position of the ending point of the path of the shooting task, relative to the speaker  */
                 shootingProcessEndPoint = shootingSweetSpot.addBy(shootingProcessEndPointFromSweetSpotDeviation),
                 /* the middle point of the path, relative to the shooting sweet-spot  */
-                shootingProcessAnotherPoint = shootingSweetSpot.addBy(shootingProcessEndPointFromSweetSpotDeviation.multiplyBy(-1)),
+                shootingProcessAnotherPoint = shootingSweetSpot.addBy(shootingProcessEndPointFromSweetSpotDeviation.multiplyBy(-0.7)), // TODO in config
                 shootingProcessEndPointFieldPosition = shootingProcessEndPoint.addBy(currentVisualTargetLastSeenPosition),
                 shootingProcessAnotherPointFieldPosition = shootingProcessAnotherPoint.addBy(currentVisualTargetLastSeenPosition);
 
         return new BezierCurve(
                 chassisPositionWhenCurrentVisionTaskStarted, // starting from the chassis initial position during task
+                chassisPositionWhenCurrentVisionTaskStarted.addBy(new Vector2D(
+                        Vector2D.displacementToTarget(chassisPositionWhenCurrentVisionTaskStarted, shootingProcessAnotherPointFieldPosition).getHeading(),
+                        Vector2D.displacementToTarget(shootingProcessAnotherPointFieldPosition, shootingProcessEndPointFieldPosition).getMagnitude()
+                        )),
                 shootingProcessAnotherPointFieldPosition, // middle point is the another point
                 shootingProcessEndPointFieldPosition
         );
@@ -310,7 +318,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
         this.currentIntakeTaskFacing = useRotationAutoPilotRotationAsIntakeFacing ?
                 getNoteRotation() :
                 chassis.positionEstimator.getRobotRotation();
-        chassisPositionWhenCurrentVisionTaskStarted = chassis.positionEstimator.getRobotPosition2D();
         currentStatus = Status.GRABBING_NOTE;
         final double length = getPathToNoteTarget().getLength(10);
         currentVisionTaskETA = length / chassisSpeedLimitWhenAutoAim;
@@ -373,11 +380,14 @@ public class VisionAidedPilotChassis extends PilotChassis {
     private double grabbingNoteDistance;
     private double intakeCenterHorizontalBiasFromCamera;
     private double chassisSpeedLimitWhenAutoAim; // m/s
+
+    /** avoid impact */
+    private double speakerImpactSpacingWidth, distanceToWallConstrainInFrontOfSpeaker, distanceToWallConstrain;
     private Vector2D shootingSweetSpot;
     /** the pilot can specify the spot of shooting, by this amount of distance away from the sweet spot */
     private double shootingProcessEndingPointUpdatableRange;
     /** the default shoot process ending point, in reference to the shooting sweet spot */
-    private Vector2D defaultShootProcessEndingPoint;
+    private Vector2D shootProcessEndingPointInReferenceToShootingSweetSpotByDefault;
     /** how many seconds does the chassis need to react */
     private double chassisReactionDelay;
     @Override
@@ -388,24 +398,28 @@ public class VisionAidedPilotChassis extends PilotChassis {
         /* TODO read from robotConfig */
         this.intakeCenterHorizontalBiasFromCamera = -0.05;
         grabbingNoteDistance = 0.3;
-        chassisSpeedLimitWhenAutoAim = 4;
-        shootingSweetSpot = new Vector2D(new double[] {0, -2.5});
-        shootingProcessEndingPointUpdatableRange = 0.5;
+        chassisSpeedLimitWhenAutoAim = 3.6;
+        shootingSweetSpot = new Vector2D(new double[] {0, 1.5});
+        shootingProcessEndingPointUpdatableRange = 1.5;
         chassisReactionDelay = 0.4;
+
+        speakerImpactSpacingWidth = 0.6;
+        distanceToWallConstrainInFrontOfSpeaker = 1.5;
+        distanceToWallConstrain = 0.8;
         switch (alliance) {
             case Red -> {
                 amplifyingPositionToAmplifier = new Vector2D(new double[] {0, -0.4});
                 speakerDefaultRotation = Math.toRadians(180);
                 amplifyingDefaultFacing = Math.toRadians(-90);
                 grabbingNoteDefaultFacing = Math.toRadians(-120);
-                defaultShootProcessEndingPoint = new Vector2D(new double[] {0, -shootingProcessEndingPointUpdatableRange});
+                shootProcessEndingPointInReferenceToShootingSweetSpotByDefault = new Vector2D(new double[] {-shootingProcessEndingPointUpdatableRange, 0});
             }
             case Blue -> {
                 amplifyingPositionToAmplifier = new Vector2D(new double[] {0, 0.4});
                 speakerDefaultRotation = Math.toRadians(180);
                 amplifyingDefaultFacing = Math.toRadians(90);
                 grabbingNoteDefaultFacing = Math.toRadians(120);
-                defaultShootProcessEndingPoint = new Vector2D(new double[] {0, shootingProcessEndingPointUpdatableRange});
+                shootProcessEndingPointInReferenceToShootingSweetSpotByDefault = new Vector2D(new double[] {shootingProcessEndingPointUpdatableRange, 0});
             }
         }
     }

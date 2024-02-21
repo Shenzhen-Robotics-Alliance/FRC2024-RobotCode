@@ -148,9 +148,9 @@
         <armAngle6>-18</armAngle6>
     </shooter>
     <intake>
-        <launchPower>0.7</launchPower>
-        <intakePower>0.6</intakePower>
-        <revertPower>-0.45</revertPower>
+        <launchPower>0.35</launchPower>
+        <intakePower>0.3</intakePower>
+        <revertPower>-0.25</revertPower>
         <distanceSensorThreshold>30</distanceSensorThreshold>
         <splitTime>0.4</splitTime>
     </intake>
@@ -193,8 +193,8 @@
         <yAxisPort type="int">1</yAxisPort>
         <zAxisPort type="int">3</zAxisPort>
 
-        <pilotControllerXAxisSensitivity type="int">100</pilotControllerXAxisSensitivity>
-        <pilotControllerYAxisSensitivity type="int">120</pilotControllerYAxisSensitivity>
+        <pilotControllerXAxisSensitivity type="int">80</pilotControllerXAxisSensitivity>
+        <pilotControllerYAxisSensitivity type="int">80</pilotControllerYAxisSensitivity>
         <pilotControllerZAxisSensitivity type="int">-65</pilotControllerZAxisSensitivity>
         <!-- the minimum amount of stick input to respond to, in percentage -->
         <pilotStickThresholdWhenOtherAxisUnused>5</pilotStickThresholdWhenOtherAxisUnused>
