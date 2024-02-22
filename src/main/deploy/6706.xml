@@ -1,5 +1,6 @@
 <robotConfig>
     <hardware>
+        <chassisOnCanivore>1</chassisOnCanivore>
         <frontLeftWheelDriveMotor type="int">2</frontLeftWheelDriveMotor>
         <frontLeftWheelSteerMotor type="int">1</frontLeftWheelSteerMotor>
         <frontLeftWheelSteerMotorReversed type="int">1</frontLeftWheelSteerMotorReversed>
@@ -32,6 +33,77 @@
         <backLeftWheelZeroPosition type = "double">3.3318</backLeftWheelZeroPosition>
         <backRightWheelZeroPosition type = "double">0.6872</backRightWheelZeroPosition>
     </hardware>
+
+
+    <chassis>
+        <wheelGearRatio type="double">6.75</wheelGearRatio>
+
+        <robotPositionFeedForwardTime type="double">0.05</robotPositionFeedForwardTime>
+    </chassis>
+    <shooter>
+        <shooter1Port>50</shooter1Port>
+        <shooter2Port>50</shooter2Port>
+        <shooter1Reversed>0</shooter1Reversed>
+        <shooter2Reversed>0</shooter2Reversed>
+
+        <defaultShootingRPM>4000</defaultShootingRPM>
+    </shooter>
+
+    <intake>
+        <intakeMotor1Port>50</intakeMotor1Port>
+        <intakeMotor1Reversed>1</intakeMotor1Reversed>
+        <intakeMotor2Port>50</intakeMotor2Port>
+        <intakeMotor2Reversed>1</intakeMotor2Reversed>
+    </intake>
+
+    <arm>
+        <armMotorPort>50</armMotorPort>
+        <!-- positive should be towards lower point -->
+        <armMotorReversed>1</armMotorReversed>
+        <armEncoderReversed>0</armEncoderReversed>
+
+        <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
+        <encoderZeroPositionRadians>5.854</encoderZeroPositionRadians>
+
+        <!-- arm positions -->
+        <position-DEFAULT>98</position-DEFAULT> <!-- 60 -->
+        <position-INTAKE>107</position-INTAKE>
+        <position-SHOOT_NOTE>88</position-SHOOT_NOTE>
+        <position-SCORE_AMPLIFIER>0</position-SCORE_AMPLIFIER>
+
+        <!-- software limit -->
+        <lowerPositionLimit>-0.1</lowerPositionLimit>
+        <upperPositionLimit>115</upperPositionLimit>
+
+        <!-- arm PID -->
+        <maximumPower>0.65</maximumPower>
+        <errorStartDecelerate>35</errorStartDecelerate>
+        <minPowerToMove>0</minPowerToMove>
+        <errorTolerance>1</errorTolerance>
+        <feedForwardTime>0.06</feedForwardTime>
+        <errorAccumulationProportion>0</errorAccumulationProportion>
+        <maxAcceleration>180</maxAcceleration>
+        <maxVelocity>150</maxVelocity>
+        <inAdvanceTime>0.25</inAdvanceTime>
+        <errorToleranceAsInPosition>4.5</errorToleranceAsInPosition>
+
+        <!-- lookup table -->
+        <encoderPosition0>0</encoderPosition0>
+        <gravityTorque0>0.07</gravityTorque0>
+        <!-- the upper balanced point -->
+        <encoderPosition1>17</encoderPosition1>
+        <gravityTorque1>0</gravityTorque1>
+        <!-- midway between the upper balance point and the lower balance point  -->
+        <encoderPosition2>40</encoderPosition2>
+        <gravityTorque2>0.04</gravityTorque2>
+        <!-- lower balance point (aka. default position) -->
+        <encoderPosition3>62</encoderPosition3>
+        <gravityTorque3>0</gravityTorque3>
+        <!-- lowest position -->
+        <encoderPosition4>115</encoderPosition4>
+        <gravityTorque4>-0.05</gravityTorque4>
+    </arm>
+
     <control-RM_BOXER>
         <controllerPort type="int">0</controllerPort>
         <xAxisPort type="int">0</xAxisPort>

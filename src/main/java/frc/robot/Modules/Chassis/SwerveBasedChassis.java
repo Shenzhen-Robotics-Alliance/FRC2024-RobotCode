@@ -80,7 +80,7 @@ public class SwerveBasedChassis extends RobotModuleBase {
         double rotationalSpeed = processRotationalMotion(dt);
 
 
-        SmartDashboard.putNumber("imu yaw:", gyro.getYaw());
+        SmartDashboard.putNumber("imu yaw:", Math.toDegrees(gyro.getYaw()));
 
         double highestWheelSpeed = driveWheels(processedTranslationalSpeed, rotationalSpeed);
         // System.out.println("highest wheel speed:" + highestWheelSpeed);

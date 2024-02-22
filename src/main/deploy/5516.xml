@@ -59,7 +59,7 @@
         <armEncoderReversed>1</armEncoderReversed>
 
         <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
-        <encoderZeroPositionRadians>2.57</encoderZeroPositionRadians>
+        <encoderZeroPositionRadians>0.484</encoderZeroPositionRadians>
 
         <position-DEFAULT>90</position-DEFAULT>
         <position-INTAKE>90</position-INTAKE>

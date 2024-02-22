@@ -71,13 +71,7 @@ public class TransformableArm extends RobotModuleBase {
         EasyShuffleBoard.putNumber("arm", "current desired position in module", desiredEncoderPosition);
         // System.out.println("arm current position: " + desiredPosition);
 
-        long t;
-        t = System.currentTimeMillis();
-
         armController.goToDesiredPosition(desiredEncoderPosition = desiredEncoderPositionTable.get(desiredPosition));
-
-        if (System.currentTimeMillis() - t > 100)
-            System.out.println("<-- update arm controller position complete, dt: " + (System.currentTimeMillis() - t) + " -->");
 
         /* disabled when shooter test */
         if (this.desiredPosition == TransformerPosition.SHOOT_NOTE && shooterModule != null) {
@@ -87,14 +81,9 @@ public class TransformableArm extends RobotModuleBase {
             armController.updateDesiredPosition(desiredEncoderPosition);
         }
 
-        if (System.currentTimeMillis() - t > 100)
-            System.out.println("<-- get shooter angle from aiming system complete, dt: " + (System.currentTimeMillis() - t) + " -->");
-        t = System.currentTimeMillis();
-
         armLifterMechanism.updateWithController(this);
-
-        if (System.currentTimeMillis() - t > 100)
-            System.out.println("<-- update arm with controller complete, dt: " + (System.currentTimeMillis() - t) + " -->");
+        // armLifterMechanism.disableMotor(this);
+        // System.out.println("arm correction power: " + armController.getMotorPower(armLifterMechanism.getEncoderVelocity(), armLifterMechanism.getEncoderPosition()));
     }
 
     /**

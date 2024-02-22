@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AutonomousTemplateRedDS3 implements AutoStageProgram {
-    private static final Vector2D startingPosition = new Vector2D(new double[] {2.9, 0.5}),
+    public static final Vector2D startingPosition = new Vector2D(new double[] {2.9, 0.5}),
             position1 = new Vector2D(new double[] {2.9, 2.9}),
             position2 = new Vector2D(new double[] {3.36, 9}),
             position3 = new Vector2D(new double[]{3.5, 5.8}),

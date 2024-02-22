@@ -29,7 +29,7 @@ public class SimpleGyro {
      * @param yawValue the given current yaw angle, in radians
      */
     public void calibrate(double yawValue) {
-        calibratedYawAngle = getRawYawValue() + yawValue;
+        calibratedYawAngle = getRawYawValue() - yawValue;
     }
 
     /**

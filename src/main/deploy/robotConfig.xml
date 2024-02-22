@@ -75,25 +75,25 @@
 
         <!-- smart wheel speed control -->
         <wheelsPowerConstrain type="double">1.1</wheelsPowerConstrain>
-        <rotationalSpeedMaxSacrifice type="double">0.3</rotationalSpeedMaxSacrifice>
+        <rotationalSpeedMaxSacrifice type="double">0.45</rotationalSpeedMaxSacrifice>
 
 
         <!-- the configuration for rotation controller -->
         <timeLockRotationAfterRotationalInputStops>0.45</timeLockRotationAfterRotationalInputStops>
         <robotRotationalErrorTolerance type="double">0</robotRotationalErrorTolerance> <!-- in degrees -->
         <robotRotationalErrorStartDecelerate type="double">50</robotRotationalErrorStartDecelerate> <!-- in degrees -->
-        <robotRotationMaximumCorrectionPower type="double">0.7</robotRotationMaximumCorrectionPower>
+        <robotRotationMaximumCorrectionPower type="double">0.6</robotRotationMaximumCorrectionPower>
         <robotRotationMinimumCorrectionPower type="double">0</robotRotationMinimumCorrectionPower>
         <robotRotationFeedForwardTime type="double">0.35</robotRotationFeedForwardTime> <!-- in seconds -->
         <rotationalErrorAsCommandFinished>2</rotationalErrorAsCommandFinished>
 
         <!-- position controller(auto stage) -->
         <robotPositionErrorTolerance type="double">0.02</robotPositionErrorTolerance> <!-- in meters -->
-        <robotPositionErrorStartDecelerate type="double">1.1</robotPositionErrorStartDecelerate> <!-- in meters -->
+        <robotPositionErrorStartDecelerate type="double">0.8</robotPositionErrorStartDecelerate> <!-- in meters -->
         <robotPositionMaximumCorrectionPower type="double">1.05</robotPositionMaximumCorrectionPower>
-        <robotPositionMinimumCorrectionPower type="double">0.02</robotPositionMinimumCorrectionPower>
-        <robotPositionFeedForwardTime type="double">0.15</robotPositionFeedForwardTime> <!-- in seconds -->
-        <translationalErrorAsCommandFinished>0.05</translationalErrorAsCommandFinished>
+        <robotPositionMinimumCorrectionPower type="double">0.03</robotPositionMinimumCorrectionPower>
+        <robotPositionFeedForwardTime type="double">0.12</robotPositionFeedForwardTime> <!-- in seconds -->
+        <translationalErrorAsCommandFinished>0.06</translationalErrorAsCommandFinished>
 
         <!-- the configuration of steer wheels -->
         <maxUnusedTime type="double">1</maxUnusedTime> <!-- the amount of time that the steer wheel will wait when not used until they go back to default position -->
@@ -174,11 +174,11 @@
     </vision-autopilot>
 
     <auto>
-        <autoStageMaxAcceleration type="double">9</autoStageMaxAcceleration>
-        <autoStageMaxVelocity type="double">4.5</autoStageMaxVelocity>
-        <autoStageMaxAngularVelocity type="double">180</autoStageMaxAngularVelocity> <!-- in deg/s -->
+        <autoStageMaxAcceleration type="double">14</autoStageMaxAcceleration>
+        <autoStageMaxVelocity type="double">4.8</autoStageMaxVelocity>
+        <autoStageMaxAngularVelocity type="double">160</autoStageMaxAngularVelocity> <!-- in deg/s -->
 
-        <inAdvanceTime>0.3</inAdvanceTime>
+        <inAdvanceTime>0.4</inAdvanceTime>
 
         <!-- low speed, for testing -->
 <!--        <autoStageMaxAcceleration type="double">4</autoStageMaxAcceleration>-->

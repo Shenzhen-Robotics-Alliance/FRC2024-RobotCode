@@ -233,6 +233,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
 
         final double timeSinceTaskStarted = (System.currentTimeMillis() - timeTaskStartedMillis) / 1000.0;
         final BezierCurve currentPath = getPathToSpeakerTarget();
+
         /* TODO: test the position constrain */
         final Vector2D currentPathPositionWithLERP = currentPath.getPositionWithLERP(timeSinceTaskStarted / currentVisionTaskETA),
                 displacementToSpeaker = Vector2D.displacementToTarget(currentPathPositionWithLERP, currentVisualTargetLastSeenPosition);
