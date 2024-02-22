@@ -116,7 +116,7 @@
         <amplifyRPM>500</amplifyRPM>
         <idleRPM>-100</idleRPM>
         <projectileSpeed>8</projectileSpeed>
-        <shootingRange>5</shootingRange>
+        <shootingRange>4</shootingRange>
 
         <!-- shooting lookup table -->
         <targetDistance0>1.5</targetDistance0>

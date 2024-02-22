@@ -32,7 +32,7 @@ public class Shooter extends RobotModuleBase {
 
     private final EncoderMotorMechanism[] shooters;
     private final FlyWheelSpeedController flyWheelSpeedController;
-    private final AimingSystem aimingSystem;
+    public final AimingSystem aimingSystem;
     private final double encoderVelocityToRPM;
     private final double shooterReadyErrorBound;
     private final RobotConfigReader robotConfig;
@@ -220,7 +220,7 @@ public class Shooter extends RobotModuleBase {
     public double getArmPositionWithAimingSystem() {
         final Vector2D targetRelativePositionToRobot;
         if (aimingSystem == null
-                || (targetRelativePositionToRobot = aimingSystem.getRelativePositionToTarget(projectileSpeed)) == null)
+                || (targetRelativePositionToRobot = aimingSystem.getRelativePositionToTarget(getProjectileSpeed())) == null)
             return 0;
         final double distanceToTarget = targetRelativePositionToRobot.getMagnitude();
         return Math.toRadians(armPositionDegreesToTargetDistanceLookUpTable.getYPrediction(distanceToTarget));
@@ -229,15 +229,15 @@ public class Shooter extends RobotModuleBase {
     public boolean targetInRange() {
         final Vector2D targetRelativePositionToRobot;
         if (aimingSystem == null
-                || (targetRelativePositionToRobot = aimingSystem.getRelativePositionToTarget(projectileSpeed)) == null)
+                || (targetRelativePositionToRobot = aimingSystem.getRelativePositionToTarget(getProjectileSpeed())) == null)
             return false;
         return targetRelativePositionToRobot.getMagnitude() < shootingRange;
     }
 
-    private double getShooterSpeedWithAimingSystem() {
+    public double getShooterSpeedWithAimingSystem() {
         final Vector2D targetRelativePositionToRobot;
         if (aimingSystem == null
-                || (targetRelativePositionToRobot = aimingSystem.getRelativePositionToTarget(projectileSpeed)) == null)
+                || (targetRelativePositionToRobot = aimingSystem.getRelativePositionToTarget(getProjectileSpeed())) == null)
             return defaultShootingRPM;
         final double distanceToTarget = targetRelativePositionToRobot.getMagnitude();
 
@@ -247,10 +247,15 @@ public class Shooter extends RobotModuleBase {
         return shooterRPMToTargetDistanceLookUpTable.getYPrediction(distanceToTarget);
     }
 
+    public double getProjectileSpeed() {
+        return projectileSpeed;
+    }
+
     public static final class AimingSystem {
         public final PositionEstimator chassisPositionEstimator;
         public final AprilTagReferredTarget target;
         public final long timeUnseenTolerance;
+        public Vector2D defaultTargetFieldPosition = null;
 
         /**
          * @param timeUnseenTolerance the amount of time, in ms, that we can accept the target to be gone
@@ -274,7 +279,8 @@ public class Shooter extends RobotModuleBase {
          * @return the relative position to target, in meters, and in reference to the robot; if not seen for too long, return null
           */
         public Vector2D getRelativePositionToTarget(double projectileSpeed) {
-            final Vector2D targetFieldPosition = target.getTargetFieldPositionWithAprilTags(timeUnseenTolerance);
+            final Vector2D targetFieldPositionByCamera = target.getTargetFieldPositionWithAprilTags(timeUnseenTolerance),
+                    targetFieldPosition = targetFieldPositionByCamera == null ? defaultTargetFieldPosition : targetFieldPositionByCamera;
             if (targetFieldPosition == null) return null;
             final double distanceToTarget = Vector2D.displacementToTarget(chassisPositionEstimator.getRobotPosition2D(), targetFieldPosition).getMagnitude(),
                     flightTime = distanceToTarget / projectileSpeed;
