@@ -9,6 +9,7 @@ import frc.robot.Modules.UpperStructure.Intake;
 import frc.robot.Modules.UpperStructure.Shooter;
 import frc.robot.Modules.UpperStructure.TransformableArm;
 import frc.robot.Utils.ComputerVisionUtils.AprilTagReferredTarget;
+import frc.robot.Utils.EasyShuffleBoard;
 import frc.robot.Utils.MathUtils.*;
 import frc.robot.Utils.RobotConfigReader;
 
@@ -227,20 +228,27 @@ public class VisionAidedPilotChassis extends PilotChassis {
         arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, this);
 
         /* if seen, update the position */
-        updateTargetPositionIfSeen(speakerTarget);
+        // updateTargetPositionIfSeen(speakerTarget);
 
         final double timeSinceTaskStarted = (System.currentTimeMillis() - timeTaskStartedMillis) / 1000.0;
         final BezierCurve currentPath = getPathToSpeakerTarget();
 
-        /* TODO: test the position constrain */
+
         final Vector2D currentPathPositionWithLERP = currentPath.getPositionWithLERP(autoApproachSpeedCurve.getScaledT(timeSinceTaskStarted / currentVisionTaskETA)),
                 displacementToSpeaker = Vector2D.displacementToTarget(currentPathPositionWithLERP, currentVisualTargetLastSeenPosition);
         final double yPositionLowerConstrain = Math.abs(displacementToSpeaker.getX()) <= speakerImpactSpacingWidth /2 ?
                 distanceToWallConstrainInFrontOfSpeaker: distanceToWallConstrain;
         chassis.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION,
-                new Vector2D(new double[] {currentPathPositionWithLERP.getX(), Math.max(currentPathPositionWithLERP.getY(), yPositionLowerConstrain)})), this);
+                new Vector2D(new double[] {currentPathPositionWithLERP.getX(), Math.max(currentPathPositionWithLERP.getY(), currentVisualTargetLastSeenPosition.getY() + yPositionLowerConstrain)})), this);
         chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
-                getAprilTagTargetRotation(VisionTargetClass.SPEAKER, speakerTarget)), this);
+                /* TODO: facing is not accurate, tune this */
+                shooter.aimingSystem.getRelativePositionToTarget(shooter.getProjectileSpeed(), currentVisualTargetLastSeenPosition).getHeading() - Math.toRadians(90)), this);
+
+        EasyShuffleBoard.putNumber("auto-aim","original t", timeSinceTaskStarted / currentVisionTaskETA);
+        EasyShuffleBoard.putNumber("auto-aim","scaled t", autoApproachSpeedCurve.getScaledT(timeSinceTaskStarted / currentVisionTaskETA));
+        EasyShuffleBoard.putNumber("auto-aim", "eta", currentVisionTaskETA);
+        EasyShuffleBoard.putNumber("auto-aim", "target position (x)", new Vector2D(new double[] {currentPathPositionWithLERP.getX(), Math.max(currentPathPositionWithLERP.getY(), currentVisualTargetLastSeenPosition.getY() + yPositionLowerConstrain)}).getX());
+        EasyShuffleBoard.putNumber("auto-aim", "target position (y)", new Vector2D(new double[] {currentPathPositionWithLERP.getX(), Math.max(currentPathPositionWithLERP.getY(), currentVisualTargetLastSeenPosition.getY() + yPositionLowerConstrain)}).getY());
 
         if (intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && shooter.shooterReady() && shooter.targetInRange() && arm.transformerInPosition() && chassis.isCurrentRotationalTaskFinished()) {
             // start shooting
@@ -269,6 +277,13 @@ public class VisionAidedPilotChassis extends PilotChassis {
                 shootingProcessEndPointFieldPosition = shootingProcessEndPoint.addBy(currentVisualTargetLastSeenPosition),
                 shootingProcessAnotherPointFieldPosition = shootingProcessAnotherPoint.addBy(currentVisualTargetLastSeenPosition);
 
+
+        System.out.println("speaker path: "
+                + chassisPositionWhenCurrentVisionTaskStarted
+                + chassisPositionWhenCurrentVisionTaskStarted.addBy(new Vector2D(Vector2D.displacementToTarget(chassisPositionWhenCurrentVisionTaskStarted, shootingProcessAnotherPointFieldPosition).getHeading(), Vector2D.displacementToTarget(shootingProcessAnotherPointFieldPosition, shootingProcessEndPointFieldPosition).getMagnitude()))
+                + shootingProcessAnotherPointFieldPosition
+                + shootingProcessEndPointFieldPosition
+        );
         return new BezierCurve(
                 chassisPositionWhenCurrentVisionTaskStarted, // starting from the chassis initial position during task
                 chassisPositionWhenCurrentVisionTaskStarted.addBy(new Vector2D(
@@ -397,9 +412,9 @@ public class VisionAidedPilotChassis extends PilotChassis {
         /* TODO read from robotConfig */
         this.intakeCenterHorizontalBiasFromCamera = -0.05;
         grabbingNoteDistance = 0.3;
-        chassisSpeedLimitWhenAutoAim = 3.6;
+        chassisSpeedLimitWhenAutoAim = 4;
         shootingSweetSpot = new Vector2D(new double[] {0, 1.5});
-        shootingProcessEndingPointUpdatableRange = 1.5;
+        shootingProcessEndingPointUpdatableRange = 2;
         chassisReactionDelay = 0.4;
 
         speakerImpactSpacingWidth = 0.6;

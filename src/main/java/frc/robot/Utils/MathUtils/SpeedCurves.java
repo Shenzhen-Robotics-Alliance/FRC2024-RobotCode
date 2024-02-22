@@ -43,12 +43,16 @@ public class SpeedCurves {
 
         @Override
         public double getScaledT(double originalT) {
+            if (originalT <= 0)
+                return 0;
+            else if (originalT >= 1)
+                return 1;
             return super.getYPrediction(originalT);
         }
     }
 
     public static final CubicBezierSpeedCurve
-            slowDown = new CubicBezierSpeedCurve(0.2, 0.8, 0.8, 0.2),
+            slowDown = new CubicBezierSpeedCurve(0.1, 0.6, 0.7, 0.2),
             easeIn = new CubicBezierSpeedCurve(0.42, 0, 1, 1),
             easeOut = new CubicBezierSpeedCurve(0, 0, 0.58, 1),
             easeInOut = new CubicBezierSpeedCurve(0.42, 0, 0.58, 1);

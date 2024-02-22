@@ -282,13 +282,14 @@ public class Shooter extends RobotModuleBase {
             final Vector2D targetFieldPositionByCamera = target.getTargetFieldPositionWithAprilTags(timeUnseenTolerance),
                     targetFieldPosition = targetFieldPositionByCamera == null ? defaultTargetFieldPosition : targetFieldPositionByCamera;
             if (targetFieldPosition == null) return null;
+            return getRelativePositionToTarget(projectileSpeed, targetFieldPosition);
+        }
+
+        public Vector2D getRelativePositionToTarget(double projectileSpeed, Vector2D targetFieldPosition) {
             final double distanceToTarget = Vector2D.displacementToTarget(chassisPositionEstimator.getRobotPosition2D(), targetFieldPosition).getMagnitude(),
                     flightTime = distanceToTarget / projectileSpeed;
-            final Vector2D chassisPositionAfterFlightTime = chassisPositionEstimator.getRobotPosition2D().addBy(chassisPositionEstimator.getRobotVelocity2D().multiplyBy(flightTime)),
-                    targetPositionToRobot = Vector2D.displacementToTarget(chassisPositionAfterFlightTime, targetFieldPosition);
-            return targetPositionToRobot.multiplyBy(
-                    new Rotation2D(chassisPositionEstimator.getRobotRotation()).getReversal()
-            );
+            final Vector2D chassisPositionAfterFlightTime = chassisPositionEstimator.getRobotPosition2D().addBy(chassisPositionEstimator.getRobotVelocity2D().multiplyBy(flightTime));
+            return Vector2D.displacementToTarget(chassisPositionAfterFlightTime, targetFieldPosition);
         }
     }
 }
