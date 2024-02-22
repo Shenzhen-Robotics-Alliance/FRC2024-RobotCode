@@ -2,6 +2,7 @@ package frc.robot.Utils;
 import frc.robot.Utils.MathUtils.AngleUtils;
 import frc.robot.Utils.MathUtils.BezierCurve;
 import frc.robot.Utils.MathUtils.Rotation2D;
+import frc.robot.Utils.MathUtils.SpeedCurves;
 
 /**
  *  Instead of using static paths and rotation goals, we make them dynamic.
@@ -14,7 +15,11 @@ public class SequentialCommandSegment {
     public final IsCompleteChecker isCompleteChecker;
     public final InitiateCondition initiateCondition;
     public final RotationFeeder startingRotationFeeder, endingRotationFeeder;
-    public SequentialCommandSegment(InitiateCondition initiateCondition,  BezierCurveFeeder pathFeeder, Runnable beginning, Runnable periodic, Runnable ending, IsCompleteChecker isCompleteChecker, RotationFeeder startingRotation, RotationFeeder endingRotation) {
+    public final SpeedCurves.SpeedCurve speedCurve;
+    public SequentialCommandSegment (InitiateCondition initiateCondition, BezierCurveFeeder pathFeeder, Runnable beginning, Runnable periodic, Runnable ending, IsCompleteChecker isCompleteChecker, RotationFeeder startingRotation, RotationFeeder endingRotation) {
+        this(initiateCondition, pathFeeder, beginning, periodic, ending, isCompleteChecker, startingRotation, endingRotation, SpeedCurves.originalSpeed);
+    }
+    public SequentialCommandSegment(InitiateCondition initiateCondition, BezierCurveFeeder pathFeeder, Runnable beginning, Runnable periodic, Runnable ending, IsCompleteChecker isCompleteChecker, RotationFeeder startingRotation, RotationFeeder endingRotation, SpeedCurves.SpeedCurve speedCurve) {
         this.chassisMovementPathFeeder = pathFeeder;
 
         this.beginning = beginning;
@@ -26,6 +31,7 @@ public class SequentialCommandSegment {
 
         this.startingRotationFeeder = startingRotation;
         this.endingRotationFeeder = endingRotation;
+        this.speedCurve = speedCurve;
     }
 
     public double getStartingRotation() {
@@ -57,7 +63,8 @@ public class SequentialCommandSegment {
         return new StaticSequentialCommandSegment(
                 chassisMovementPathFeeder.getBezierCurve(),
                 beginning,periodic,ending,isCompleteChecker,
-                startingRotationFeeder.getRotation(),endingRotationFeeder.getRotation()
+                startingRotationFeeder.getRotation(),endingRotationFeeder.getRotation(),
+                this.speedCurve
         );
     }
     /**
@@ -68,7 +75,8 @@ public class SequentialCommandSegment {
         public final Runnable beginning, periodic, ending;
         public final IsCompleteChecker isCompleteChecker;
         public final Rotation2D startingRotation, endingRotation;
-        public StaticSequentialCommandSegment(BezierCurve chassisMovementPath, Runnable beginning, Runnable periodic, Runnable ending, IsCompleteChecker isCompleteChecker, Rotation2D startingRotation, Rotation2D endingRotation) {
+        public final SpeedCurves.SpeedCurve speedCurve;
+        public StaticSequentialCommandSegment(BezierCurve chassisMovementPath, Runnable beginning, Runnable periodic, Runnable ending, IsCompleteChecker isCompleteChecker, Rotation2D startingRotation, Rotation2D endingRotation, SpeedCurves.SpeedCurve speedCurve) {
             this.chassisMovementPath = chassisMovementPath;
             this.beginning = beginning;
             this.periodic = periodic;
@@ -76,11 +84,13 @@ public class SequentialCommandSegment {
             this.isCompleteChecker = isCompleteChecker;
             this.startingRotation = startingRotation;
             this.endingRotation = endingRotation;
+            this.speedCurve = speedCurve;
         }
 
         public double getCurrentRotationWithLERP(double t) {
             if (startingRotation == null || endingRotation == null)
                 throw new IllegalStateException("cannot obtain current rotation when the starting or ending rotation is not specified");
+            t = speedCurve.getScaledT(t);
             if (t<0) t=0;
             else if (t>1) t=1;
             return AngleUtils.simplifyAngle(startingRotation.getRadian() + AngleUtils.getActualDifference(startingRotation.getRadian(), endingRotation.getRadian())*t);

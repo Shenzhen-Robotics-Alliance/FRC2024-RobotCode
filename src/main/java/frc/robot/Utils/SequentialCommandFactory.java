@@ -7,6 +7,7 @@ import frc.robot.Utils.MathUtils.BezierCurve;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
 
+// TODO speed curves
 public class SequentialCommandFactory {
     private final SwerveBasedChassis chassis;
     private final PositionEstimator positionEstimator;

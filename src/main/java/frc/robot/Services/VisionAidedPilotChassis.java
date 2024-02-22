@@ -9,10 +9,7 @@ import frc.robot.Modules.UpperStructure.Intake;
 import frc.robot.Modules.UpperStructure.Shooter;
 import frc.robot.Modules.UpperStructure.TransformableArm;
 import frc.robot.Utils.ComputerVisionUtils.AprilTagReferredTarget;
-import frc.robot.Utils.MathUtils.AngleUtils;
-import frc.robot.Utils.MathUtils.BezierCurve;
-import frc.robot.Utils.MathUtils.Rotation2D;
-import frc.robot.Utils.MathUtils.Vector2D;
+import frc.robot.Utils.MathUtils.*;
 import frc.robot.Utils.RobotConfigReader;
 
 /**
@@ -224,6 +221,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         timeTaskStartedMillis = System.currentTimeMillis();
     }
 
+    private static final SpeedCurves.SpeedCurve autoApproachSpeedCurve = SpeedCurves.slowDown;
     private void proceedGoToSpeakerTarget(int translationAutoPilotButton) {
         shooter.setShooterMode(Shooter.ShooterMode.SHOOT, this);
         arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, this);
@@ -235,7 +233,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         final BezierCurve currentPath = getPathToSpeakerTarget();
 
         /* TODO: test the position constrain */
-        final Vector2D currentPathPositionWithLERP = currentPath.getPositionWithLERP(timeSinceTaskStarted / currentVisionTaskETA),
+        final Vector2D currentPathPositionWithLERP = currentPath.getPositionWithLERP(autoApproachSpeedCurve.getScaledT(timeSinceTaskStarted / currentVisionTaskETA)),
                 displacementToSpeaker = Vector2D.displacementToTarget(currentPathPositionWithLERP, currentVisualTargetLastSeenPosition);
         final double yPositionLowerConstrain = Math.abs(displacementToSpeaker.getX()) <= speakerImpactSpacingWidth /2 ?
                 distanceToWallConstrainInFrontOfSpeaker: distanceToWallConstrain;
