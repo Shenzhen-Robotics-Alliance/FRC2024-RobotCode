@@ -53,7 +53,6 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
         if (!enabled) {
             for (Motor motor:motors)
                 motor.disableMotor(getMarker());
-            TimeUtils.sleep(50);
             return;
         }
         long newTimeMillis = System.currentTimeMillis();

@@ -22,13 +22,22 @@ public class TestAutoShooting implements AutoStageProgram {
         commandSegments.add(commandFactory.moveFromPointToMidPointToPoint(
                 new Vector2D(new double[] {0, 0}),
                 new Vector2D(new double[] {0, 2.3}),
-                new Vector2D(new double[] {0.4, 2.3-0.4}),
+                new Vector2D(new double[] {0.8, 2.3-0.8}),
                 aimBot.prepareToShoot(new Vector2D(new double[] {2, -0.8})), ()->{}, () ->{},
                 new Rotation2D(Math.toRadians(-90)),
                 new Rotation2D(Math.toRadians(-150))
         ));
+
+//        commandSegments.add(new SequentialCommandSegment(
+//                () -> true,
+//                () -> new BezierCurve(new Vector2D(new double[] {0.8, 2.3-0.8}), new Vector2D(new double[] {1.2, 2.3-1.2}), new Vector2D(new double[] {2, 2.5}), new Vector2D(new double[] {2, 3.1})),
+//                () -> {}, () -> {}, () -> {},
+//                robotCore.chassisModule::isCurrentRotationalTaskFinished,
+//                () -> new Rotation2D(Math.toRadians(-180)), () -> new Rotation2D(Math.toRadians(-180))
+//        ));
+
         commandSegments.add(aimBot.shootWhileMoving(
-                new BezierCurve(new Vector2D(new double[] {0.4, 2.3-0.4}), new Vector2D(new double[] {0.8, 2.3-0.8}), new Vector2D(new double[] {2, 2.5}), new Vector2D(new double[] {2, 3.5})),
+                new BezierCurve(new Vector2D(new double[] {0.8, 2.3-0.8}), new Vector2D(new double[] {1.2, 2.3-1.2}), new Vector2D(new double[] {2, 2.5}), new Vector2D(new double[] {2, 3.1})),
                 new Vector2D(new double[] {2, -0.8}),
                 6000
         ));

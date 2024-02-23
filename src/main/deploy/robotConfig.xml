@@ -115,42 +115,42 @@
         <defaultShootingRPM>5600</defaultShootingRPM>
         <amplifyRPM>500</amplifyRPM>
         <idleRPM>-100</idleRPM>
-        <projectileSpeed>12</projectileSpeed>
+        <projectileSpeed>8</projectileSpeed>
         <shootingRange>4</shootingRange>
 
         <!-- shooting lookup table -->
         <targetDistance0>1.5</targetDistance0>
-        <shooterRPM0>4200</shooterRPM0>
-        <armAngle0>7</armAngle0>
+        <shooterRPM0>3000</shooterRPM0>
+        <armAngle0>0</armAngle0>
 
         <targetDistance1>2</targetDistance1>
-        <shooterRPM1>5000</shooterRPM1>
-        <armAngle1>-4</armAngle1>
+        <shooterRPM1>3800</shooterRPM1>
+        <armAngle1>-13</armAngle1>
 
         <targetDistance2>2.5</targetDistance2>
-        <shooterRPM2>5800</shooterRPM2>
-        <armAngle2>-11</armAngle2>
+        <shooterRPM2>4600</shooterRPM2>
+        <armAngle2>-17</armAngle2>
 
         <targetDistance3>3</targetDistance3>
-        <shooterRPM3>5800</shooterRPM3>
-        <armAngle3>-12</armAngle3>
+        <shooterRPM3>5400</shooterRPM3>
+        <armAngle3>-20.5</armAngle3>
 
         <targetDistance4>3.5</targetDistance4>
-        <shooterRPM4>5800</shooterRPM4>
-        <armAngle4>-15</armAngle4>
+        <shooterRPM4>6000</shooterRPM4>
+        <armAngle4>-22</armAngle4>
 
         <targetDistance5>4</targetDistance5>
         <shooterRPM5>6000</shooterRPM5>
-        <armAngle5>-18</armAngle5>
+        <armAngle5>-23</armAngle5>
 
         <targetDistance6>5</targetDistance6>
         <shooterRPM6>6000</shooterRPM6>
-        <armAngle6>-18</armAngle6>
+        <armAngle6>-25</armAngle6>
     </shooter>
     <intake>
-        <launchPower>0.35</launchPower>
-        <intakePower>0.3</intakePower>
-        <revertPower>-0.25</revertPower>
+        <launchPower>0.45</launchPower>
+        <intakePower>0.4</intakePower>
+        <revertPower>-0.35</revertPower>
         <distanceSensorThreshold>30</distanceSensorThreshold>
         <splitTime>0.4</splitTime>
     </intake>

@@ -249,8 +249,8 @@ public class RobotCore {
                 configsToTune.add("arm/position-SHOOT_NOTE");
                 configsToTune.add("arm/position-SCORE_AMPLIFIER");
 
-                configsToTune.add("shooter/shooterRPM0");
-                configsToTune.add("shooter/armAngle0");
+                configsToTune.add("shooter/shooterRPM5");
+                configsToTune.add("shooter/armAngle5");
         }
 
         /**
@@ -334,16 +334,6 @@ public class RobotCore {
                 SmartDashboard.putNumber("velocity y", positionReader.getRobotVelocity2D().getValue()[1]);
         }
 
-        private void updateAprilTagCameraContinuously() {
-                while (true) {
-                        if (!wasEnabled) {
-                                TimeUtils.sleep(50);
-                                continue;
-                        }
-                        updateAprilTagCamera();
-                }
-        }
-
         private void updateAprilTagCamera() {
                 long dt = System.currentTimeMillis();
                 if (aprilTagPositionTrackingCamera != null)
@@ -356,16 +346,6 @@ public class RobotCore {
 
                 if (System.currentTimeMillis()-dt > printTimeIfTimeMillisExceeds)
                         System.out.println("print april camera messages time (ms): " + (System.currentTimeMillis() - dt));
-        }
-
-        private void updateNoteCameraContinuously() {
-                while (true) {
-                        if (!wasEnabled) {
-                                TimeUtils.sleep(50);
-                                continue;
-                        }
-                        updateNoteCamera();
-                }
         }
 
         private void updateNoteCamera() {

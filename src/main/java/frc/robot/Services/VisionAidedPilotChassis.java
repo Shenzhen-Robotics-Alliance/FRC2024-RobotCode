@@ -56,6 +56,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
     private final XboxController copilotGamePad;
     private final DriverStation.Alliance alliance;
 
+    private static final boolean speakerAutoApproach = false;
+
 
     /**
      * @param chassis
@@ -152,7 +154,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
 
                 if (!currentAimingTarget.isVisible(aimingTimeUnseenToleranceMS))
                     System.out.println("<-- VAPC | waiting for " + currentAimingTargetClass + " to show up -->");
-                if (currentAimingTarget.isVisible(aimingTimeUnseenToleranceMS))
+                if (currentAimingTarget.isVisible(aimingTimeUnseenToleranceMS) && speakerAutoApproach)
                     switch (currentAimingTargetClass) {
                         case SPEAKER -> initiateGoToSpeakerTargetProcess();
                         case AMPLIFIER -> initiateGoToAmplifierProcess();

@@ -64,7 +64,7 @@ public class AutoStageVisionAimBot {
                     robotCore.chassisModule.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(
                             SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION, robotCore.shooter.aimingSystem.getRobotFacing(robotCore.shooter.getProjectileSpeed())), null);
 
-                    if (robotCore.intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && robotCore.shooter.shooterReady() && robotCore.shooter.targetInRange() && robotCore.transformableArm.transformerInPosition())
+                    if (robotCore.shooter.shooterReady() && robotCore.shooter.targetInRange() && robotCore.transformableArm.transformerInPosition())
                         robotCore.intake.startLaunch(null);
                 },
                 () -> {
