@@ -61,10 +61,8 @@ public class AutoStageVisionAimBot {
                     robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, null);
                     robotCore.shooter.setShooterMode(Shooter.ShooterMode.SHOOT, null);
                     robotCore.shooter.aimingSystem.defaultTargetFieldPosition = assumedSpeakerPosition;
-                    final Vector2D relativeFieldPositionToTarget = robotCore.shooter.aimingSystem.getRelativePositionToTarget(robotCore.shooter.getProjectileSpeed());
-                    assert relativeFieldPositionToTarget != null;
                     robotCore.chassisModule.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(
-                            SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION, relativeFieldPositionToTarget.getHeading()), null);
+                            SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION, robotCore.shooter.aimingSystem.getRobotFacing(robotCore.shooter.getProjectileSpeed())), null);
 
                     if (robotCore.intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && robotCore.shooter.shooterReady() && robotCore.shooter.targetInRange() && robotCore.transformableArm.transformerInPosition())
                         robotCore.intake.startLaunch(null);
@@ -78,5 +76,25 @@ public class AutoStageVisionAimBot {
                 () -> timer.get() * 1000 > timeOutMillis || !robotCore.intake.isNoteInsideIntake(),
                 () -> null, () -> null
         );
+    }
+
+    public Runnable prepareToShoot() {
+        return () -> {
+            robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, null);
+            robotCore.shooter.setShooterMode(Shooter.ShooterMode.SHOOT, null);
+        };
+    }
+
+    public Runnable prepareToShoot(Vector2D defaultTargetPosition) {
+        return () -> {
+            robotCore.shooter.aimingSystem.defaultTargetFieldPosition = defaultTargetPosition;
+            prepareToShoot().run();
+        };
+    }
+
+    public Runnable prepareToIntake() {
+        return () -> {
+            robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, null);
+        };
     }
 }

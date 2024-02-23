@@ -292,6 +292,11 @@ public class Shooter extends RobotModuleBase {
             return Vector2D.displacementToTarget(chassisPositionAfterFlightTime, targetFieldPosition);
         }
 
+        public double getRobotFacing(double projectileSpeed) {
+            final Vector2D targetFieldPositionByCamera = target.getTargetFieldPositionWithAprilTags(timeUnseenTolerance),
+                    targetFieldPosition = targetFieldPositionByCamera == null ? defaultTargetFieldPosition : targetFieldPositionByCamera;
+            return getRelativePositionToTarget(projectileSpeed, targetFieldPosition).getHeading() - Math.toRadians(90);
+        }
         public double getRobotFacing(double projectileSpeed, Vector2D targetLastSeenPosition) {
             return getRelativePositionToTarget(projectileSpeed, targetLastSeenPosition).getHeading() - Math.toRadians(90);
         }

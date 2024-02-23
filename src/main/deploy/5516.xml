@@ -72,19 +72,19 @@
 
         <!-- lookup table -->
         <encoderPosition0>0</encoderPosition0>
-        <gravityTorque0>0.03</gravityTorque0>
+        <gravityTorque0>0</gravityTorque0>
         <!-- the upper balanced point -->
-        <encoderPosition1>17</encoderPosition1>
-        <gravityTorque1>0</gravityTorque1>
+        <encoderPosition1>25</encoderPosition1>
+        <gravityTorque1>-0.01</gravityTorque1>
         <!-- midway between the upper balance point and the lower balance point  -->
-        <encoderPosition2>40</encoderPosition2>
-        <gravityTorque2>0.02</gravityTorque2>
+        <encoderPosition2>50</encoderPosition2>
+        <gravityTorque2>-0.02</gravityTorque2>
         <!-- lower balance point (aka. default position) -->
-        <encoderPosition3>62</encoderPosition3>
-        <gravityTorque3>0</gravityTorque3>
+        <encoderPosition3>75</encoderPosition3>
+        <gravityTorque3>-0.03</gravityTorque3>
         <!-- lowest position -->
-        <encoderPosition4>115</encoderPosition4>
-        <gravityTorque4>-0.03</gravityTorque4>
+        <encoderPosition4>100</encoderPosition4>
+        <gravityTorque4>-0.05</gravityTorque4>
 
         <!-- arm PID (Override robotConfig) -->
         <maximumPower>0.4</maximumPower>
@@ -98,4 +98,12 @@
         <inAdvanceTime>0.25</inAdvanceTime>
         <errorToleranceAsInPosition>4</errorToleranceAsInPosition>
     </arm>
+
+    <auto>
+        <autoStageMaxAcceleration type="double">7</autoStageMaxAcceleration>
+        <autoStageMaxVelocity type="double">2.4</autoStageMaxVelocity>
+        <autoStageMaxAngularVelocity type="double">120</autoStageMaxAngularVelocity> <!-- in deg/s -->
+
+        <inAdvanceTime>0.2</inAdvanceTime>
+    </auto>
 </robotConfig>
