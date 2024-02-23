@@ -162,6 +162,7 @@
         <errorTolerance>1</errorTolerance>
         <feedForwardTime>0.06</feedForwardTime>
         <errorAccumulationProportion>0</errorAccumulationProportion>
+        <errorAccumulationLimit>0</errorAccumulationLimit>
         <maxAcceleration>180</maxAcceleration>
         <maxVelocity>120</maxVelocity>
         <inAdvanceTime>0.25</inAdvanceTime>

@@ -61,21 +61,21 @@
         <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
         <encoderZeroPositionRadians>6.175</encoderZeroPositionRadians>
 
-        <position-DEFAULT>96</position-DEFAULT>
-        <position-INTAKE>96</position-INTAKE>
+        <position-DEFAULT>92</position-DEFAULT>
+        <position-INTAKE>92</position-INTAKE>
         <position-SHOOT_NOTE>75</position-SHOOT_NOTE>
         <position-SCORE_AMPLIFIER>1</position-SCORE_AMPLIFIER>
 
         <!-- software limit -->
         <lowerPositionLimit>0</lowerPositionLimit>
-        <upperPositionLimit>98</upperPositionLimit>
+        <upperPositionLimit>95.1</upperPositionLimit>
 
         <!-- lookup table -->
         <encoderPosition0>0</encoderPosition0>
         <gravityTorque0>0</gravityTorque0>
         <!-- the upper balanced point -->
         <encoderPosition1>25</encoderPosition1>
-        <gravityTorque1>-0.01</gravityTorque1>
+        <gravityTorque1>0</gravityTorque1>
         <!-- midway between the upper balance point and the lower balance point  -->
         <encoderPosition2>50</encoderPosition2>
         <gravityTorque2>-0.02</gravityTorque2>
@@ -83,20 +83,29 @@
         <encoderPosition3>75</encoderPosition3>
         <gravityTorque3>-0.03</gravityTorque3>
         <!-- lowest position -->
-        <encoderPosition4>100</encoderPosition4>
+        <encoderPosition4>98</encoderPosition4>
         <gravityTorque4>-0.05</gravityTorque4>
 
         <!-- arm PID (Override robotConfig) -->
-        <maximumPower>0.4</maximumPower>
-        <errorStartDecelerate>30</errorStartDecelerate>
+        <maximumPower>0.85</maximumPower>
+        <errorStartDecelerate>25</errorStartDecelerate>
         <minPowerToMove>0.04</minPowerToMove>
-        <errorTolerance>1</errorTolerance>
+        <errorTolerance>2</errorTolerance>
         <feedForwardTime>0</feedForwardTime>
         <errorAccumulationProportion>0</errorAccumulationProportion>
+        <errorAccumulationLimit>10</errorAccumulationLimit>
         <maxAcceleration>180</maxAcceleration>
         <maxVelocity>120</maxVelocity>
         <inAdvanceTime>0.25</inAdvanceTime>
-        <errorToleranceAsInPosition>4</errorToleranceAsInPosition>
+        <errorToleranceAsInPosition>3</errorToleranceAsInPosition>
+
+        <!-- simple arm controller -->
+        <maxPowerWhenMovingUp>0.65</maxPowerWhenMovingUp>
+        <maxPowerWhenMovingDown>0.1</maxPowerWhenMovingDown>
+        <errorStartDecelerate>35</errorStartDecelerate>
+        <powerNeededToMoveUp>0.1</powerNeededToMoveUp>
+        <powerNeededToMoveDown>0.04</powerNeededToMoveDown>
+        <errorTolerance>3</errorTolerance>
     </arm>
 
     <auto>

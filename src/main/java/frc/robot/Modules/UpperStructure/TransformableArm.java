@@ -9,6 +9,7 @@ import frc.robot.Utils.MathUtils.LookUpTable;
 import frc.robot.Utils.MathUtils.StatisticsUtils;
 import frc.robot.Utils.MechanismControllers.ArmGravityController;
 import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
+import frc.robot.Utils.MechanismControllers.SimpleArmController;
 import frc.robot.Utils.RobotConfigReader;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class TransformableArm extends RobotModuleBase {
     private final Encoder armEncoder;
     private final Shooter shooterModule;
     private final ArmGravityController armController;
+    private SimpleArmController simpleArmController;
     private double errorAsArmReady = 0;
     private final RobotConfigReader robotConfig;
     public enum TransformerPosition {
@@ -54,8 +56,8 @@ public class TransformableArm extends RobotModuleBase {
         super.motors.add(armLifterMotor);
         this.armEncoder = armEncoder;
         this.armLifterMechanism = new EncoderMotorMechanism(armEncoder, armLifterMotor);
-        this.armController = new ArmGravityController(new ArmGravityController.ArmProfile(0, 0, 0, 0,0,0,0 ,0,0, null), armLifterMechanism.getEncoderPosition());
-        this.armLifterMechanism.setController(armController);
+        this.armController = new ArmGravityController(new ArmGravityController.ArmProfile(0, 0, 0, 0,0,0,0 , 0,0,0, null), armLifterMechanism.getEncoderPosition());
+        this.simpleArmController = new SimpleArmController(0, 0, Math.PI, 0, 0, 0);
         this.robotConfig = robotConfig;
     }
 
@@ -67,6 +69,10 @@ public class TransformableArm extends RobotModuleBase {
 
     @Override
     protected void periodic(double dt) {
+        // this.armLifterMechanism.setController(armController);
+        EasyShuffleBoard.putNumber("arm", "mechanism actual position", Math.toDegrees(armLifterMechanism.getEncoderPosition()));
+        this.armLifterMechanism.setController(simpleArmController); // TODO use sendable chooser
+
         EasyShuffleBoard.putNumber("arm", "module dt", (int)(dt*1000));
         EasyShuffleBoard.putNumber("arm", "current desired position in module", desiredEncoderPosition);
         // System.out.println("arm current position: " + desiredPosition);
@@ -81,9 +87,11 @@ public class TransformableArm extends RobotModuleBase {
             armController.updateDesiredPosition(desiredEncoderPosition);
         }
 
+        simpleArmController.desiredPosition = desiredEncoderPosition;
+
         armLifterMechanism.updateWithController(this);
         // armLifterMechanism.disableMotor(this);
-        // System.out.println("arm correction power: " + armController.getMotorPower(armLifterMechanism.getEncoderVelocity(), armLifterMechanism.getEncoderPosition()));
+        // System.out.println("arm correction power: " + simpleArmController.getMotorPower(armLifterMechanism.getEncoderVelocity(), armLifterMechanism.getEncoderPosition()));
     }
 
     /**
@@ -117,11 +125,24 @@ public class TransformableArm extends RobotModuleBase {
                 Math.toRadians(robotConfig.getConfig("arm", "errorTolerance")),
                 robotConfig.getConfig("arm", "feedForwardTime"),
                 robotConfig.getConfig("arm", "errorAccumulationProportion"),
+                Math.toRadians(robotConfig.getConfig("arm", "errorAccumulationLimit")),
                 Math.toRadians(robotConfig.getConfig("arm", "maxAcceleration")),
                 Math.toRadians(robotConfig.getConfig("arm", "maxVelocity")),
                 robotConfig.getConfig("arm", "inAdvanceTime"),
                 gravityTorqueLookUpTable
         ));
+
+        try {
+            this.simpleArmController = new SimpleArmController(
+                    robotConfig.getConfig("arm", "maxPowerWhenMovingUp"),
+                    robotConfig.getConfig("arm", "maxPowerWhenMovingDown"),
+                    Math.toRadians(robotConfig.getConfig("arm", "errorStartDecelerate")),
+                    robotConfig.getConfig("arm", "powerNeededToMoveUp"),
+                    robotConfig.getConfig("arm", "powerNeededToMoveDown"),
+                    Math.toRadians(robotConfig.getConfig("arm", "errorTolerance"))
+            );
+        } catch (NullPointerException ignored) {}
+
 
         for (TransformerPosition transformerPosition:TransformerPosition.values())
             desiredEncoderPositionTable.put(transformerPosition, Math.toRadians(robotConfig.getConfig("arm", "position-"+transformerPosition.name())));

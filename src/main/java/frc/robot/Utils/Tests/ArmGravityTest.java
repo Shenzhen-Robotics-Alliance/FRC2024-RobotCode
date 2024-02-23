@@ -20,6 +20,7 @@ public class ArmGravityTest implements SimpleRobotTest {
             Math.toRadians(2) / radianPerEncoderTick,
             0.06,
             0,
+            0,
             Math.toRadians(240) / radianPerEncoderTick,
             Math.toRadians(150) / radianPerEncoderTick,
             0.2,

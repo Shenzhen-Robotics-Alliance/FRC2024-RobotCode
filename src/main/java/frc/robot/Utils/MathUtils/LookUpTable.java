@@ -28,7 +28,7 @@ public class LookUpTable {
         return yValues[yValues.length-1];
     }
 
-    private double linearInterpretation(double x1, double y1, double x2, double y2, double x) {
+    public static double linearInterpretation(double x1, double y1, double x2, double y2, double x) {
         return y1 + (x-x1) * (y2-y1) / (x2-x1);
     }
 }
