@@ -1,5 +1,6 @@
 package frc.robot.Utils;
 
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Modules.PositionReader.PositionEstimator;
 import frc.robot.Modules.Chassis.SwerveBasedChassis;
 import frc.robot.RobotCore;
@@ -37,6 +38,24 @@ public class SequentialCommandFactory {
             positionEstimator.setRobotRotation(robotStartingRotation2D.getRadian());
             positionEstimator.setRobotPosition(robotStartingPosition);
         });
+    }
+
+    public SequentialCommandSegment moveToPoint(Vector2D destination) {
+        return moveToPoint(destination, doNothing, doNothing, doNothing);
+    }
+
+    public SequentialCommandSegment moveToPoint(Vector2D destination, Runnable beginning, Runnable periodic, Runnable ending) {
+        return moveToPointIf(justGo, destination, beginning, periodic, ending);
+    }
+
+    public SequentialCommandSegment moveToPointIf(SequentialCommandSegment.InitiateCondition initiateCondition, Vector2D destination, Runnable beginning, Runnable periodic, Runnable ending) {
+        return new SequentialCommandSegment(
+                initiateCondition,
+                () -> new BezierCurve(positionEstimator.getRobotPosition2D(), destination),
+                beginning, periodic, ending,
+                chassis::isCurrentTranslationalTaskFinished,
+                maintainCurrentRotation, maintainCurrentRotation
+        );
     }
 
     public SequentialCommandSegment moveToPointAndStop(Vector2D destination) {
@@ -164,6 +183,35 @@ public class SequentialCommandFactory {
         );
     }
 
+    public SequentialCommandSegment lockChassis() {
+        return lockChassisFor(99999);
+    }
+    public SequentialCommandSegment lockChassisFor(long timeMillis) {
+        final Timer timer = new Timer(); timer.start();
+        return new SequentialCommandSegment(
+                justGo,
+                () -> null,
+                () -> {
+                    chassis.setChassisLocked(true, null);
+                    timer.reset();
+                },
+                doNothing,
+                doNothing,
+                () -> timer.hasElapsed(timeMillis / 1000.0),
+                weDoNotCareAboutRotation, weDoNotCareAboutRotation
+        );
+    }
+    public SequentialCommandSegment lockChassisIfAndUntil(SequentialCommandSegment.InitiateCondition initiateCondition, SequentialCommandSegment.IsCompleteChecker isCompleteChecker) {
+        return new SequentialCommandSegment(
+                initiateCondition,
+                () -> null,
+                () -> chassis.setChassisLocked(true, null),
+                doNothing,
+                doNothing,
+                isCompleteChecker,
+                weDoNotCareAboutRotation, weDoNotCareAboutRotation
+        );
+    }
 
     public SequentialCommandSegment justDoIt(Runnable job) {
         return new SequentialCommandSegment(
