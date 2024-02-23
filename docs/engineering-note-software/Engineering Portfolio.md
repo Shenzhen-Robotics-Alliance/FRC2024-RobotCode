@@ -5,22 +5,32 @@ Team 5516 *"IRON MAPLE"*, presents.
 
 
 ## Self-developed Swerve Drive Library
-In recent years of FRC, swerve drivies are dominating the competitions. And teams can run swerve wheels without having to code it. Wpilib have provided an open-to-use programming library that can drive the swerves. However, we didn't use any of the libraries, we have re-written the whole chassis kinematics library down from the ground. We even coded our own linear algebra library and PID library in order to power the swerves. 
+In recent years of FRC, swerve drivies are so common that the FIRST official have developed a swerve drive code library (named WPI-Swerve-Lib).  This way, teams can power swerves without having to figure out the maths and kinematics behind.  However, this library still has a lot of problems and do not reach our standard. To push the performance, handling and reliability of our chassis to its extreme, we have coded our own swerve drive library, which took us 4 months to complete.
 
-
-We did this not only becuase we think that we should know how the swerve kinematics work, but also for that the Wpi swerve drive library is not good enough, there are a lot of details that need improvements. 
 Here are some of the improvements that we have made:
-    1. smart wheel direction control
-    2. wheel power constraining system
-    3. dynamic swerve PID
-    4. chassis acceleration constrain
-    5. curve-based position estimator
-    6. x-formation lock
-    7. xml-based chassis configuration
-    8. enhanced controller stick dead-banding and exponential controlling
+    1. Smart Wheel Direction Control
+    2. Wheel Power Constraining
+    3. Dynamic Steering PID
+    4. Chassis Acceleration Constraining
+    5. Curve-Based Position Estimator
+    6. X-Formation Lock
+    7. xml-based chassis configurator
+    8. Enhanced Controller Stick Dead-Banding and Stick Value Curves
+    9. Enhanced Path-Planning with Speed Curves 
+    10. 
+The detailed improvements are too long to be presented in this document, please refer to 
+
+## Vision Co-processor and Cameras
+With Navigation Tags provided all over the field and a very recognizable GamePice, it is very obvious that computer vision can bring significant advantages to the performance of robots this year.
+
+Once again, we used a self-developed Computer Vision System over the one Wpi provided. The system is conposed of a "Jetson Nano" AI micro-computer, capable of running complex AI-vision networks. Two cameras are attached to it: the one facing front measures the position of the Navigation Tags, and the one facing back senses the GamePiece.
+
+In order to recognize the GamePieces, we collected datasets on our field to train a custom AI-object-detection network. In comparison to the OpenCV applications running on Resbarry PIs, our Vision Network stands out by its accuracy and reliability. OpenCV applications recognizes the GamePiece mainly by color, and is therefore very dependent to the light intensity of the environment. In comparison, our AI-model recoginizes the GamePiece by its unique shape and appearance, despite lightings and surroundings. 
+
+[Picture: AI-Object-Detection can tell the difference between an orance, an Robot LED status light and the GamePiece, while OpenCV confuses the three for their similarity in color]
+
+The system is connected to the robotRIO via ethernet, a python application we wrote (see here) processes the images and send them through a web server.
 
 
-## Vision Sensors and Co-processor
-In this year's competition, AprilTags are provided all over the field to aid navigation and the Gamepiece itself is designed to be very recognizable by cameras. It is clear that computer vision is a crucial part of the game. Most teams uses Resbarry Pi loaded with firmwares that WPILIB have already provided. However, we decided to set up our own Computer Vision System and code it down from the ground. The heart of the system is a Jetson-Nano AI computer by NVIDIA, it is capable of running complex AI-vision networks, that are more accurate, reliable and better in performance than the openCV programs running on Resbarry Pi.  We have trained our own object-detection-network that can recoginize not only the game piece but also opponent robots. This will provide us  
 
 ## Auto-Pilot System
