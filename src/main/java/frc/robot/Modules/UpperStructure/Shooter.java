@@ -291,5 +291,9 @@ public class Shooter extends RobotModuleBase {
             final Vector2D chassisPositionAfterFlightTime = chassisPositionEstimator.getRobotPosition2D().addBy(chassisPositionEstimator.getRobotVelocity2D().multiplyBy(flightTime));
             return Vector2D.displacementToTarget(chassisPositionAfterFlightTime, targetFieldPosition);
         }
+
+        public double getRobotFacing(double projectileSpeed, Vector2D targetLastSeenPosition) {
+            return getRelativePositionToTarget(projectileSpeed, targetLastSeenPosition).getHeading() - Math.toRadians(90);
+        }
     }
 }

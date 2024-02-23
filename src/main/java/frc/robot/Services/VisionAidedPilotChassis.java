@@ -184,6 +184,13 @@ public class VisionAidedPilotChassis extends PilotChassis {
             case GRABBING_NOTE -> proceedGrabNoteProcess(translationAutoPilotButton);
         }
         // System.out.println("<-- VAPC | current status: " + currentStatus + "-->");
+
+        final Vector2D speakerPosition = shooter.aimingSystem.getRelativePositionToTarget(shooter.getProjectileSpeed());
+        if (speakerPosition != null) {
+            EasyShuffleBoard.putNumber("auto-aim", "aiming system relative pos (x)", speakerPosition.getX());
+            EasyShuffleBoard.putNumber("auto-aim", "aiming system relative pos (y)", speakerPosition.getY());
+        }
+
     }
 
     private void updateChassisPositionWhenTaskStarted() {
@@ -228,7 +235,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, this);
 
         /* if seen, update the position */
-        // updateTargetPositionIfSeen(speakerTarget);
+        updateTargetPositionIfSeen(speakerTarget);
 
         final double timeSinceTaskStarted = (System.currentTimeMillis() - timeTaskStartedMillis) / 1000.0;
         final BezierCurve currentPath = getPathToSpeakerTarget();
@@ -242,13 +249,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
                 new Vector2D(new double[] {currentPathPositionWithLERP.getX(), Math.max(currentPathPositionWithLERP.getY(), currentVisualTargetLastSeenPosition.getY() + yPositionLowerConstrain)})), this);
         chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
                 /* TODO: facing is not accurate, tune this */
-                shooter.aimingSystem.getRelativePositionToTarget(shooter.getProjectileSpeed(), currentVisualTargetLastSeenPosition).getHeading() - Math.toRadians(90)), this);
-
-        EasyShuffleBoard.putNumber("auto-aim","original t", timeSinceTaskStarted / currentVisionTaskETA);
-        EasyShuffleBoard.putNumber("auto-aim","scaled t", autoApproachSpeedCurve.getScaledT(timeSinceTaskStarted / currentVisionTaskETA));
-        EasyShuffleBoard.putNumber("auto-aim", "eta", currentVisionTaskETA);
-        EasyShuffleBoard.putNumber("auto-aim", "target position (x)", new Vector2D(new double[] {currentPathPositionWithLERP.getX(), Math.max(currentPathPositionWithLERP.getY(), currentVisualTargetLastSeenPosition.getY() + yPositionLowerConstrain)}).getX());
-        EasyShuffleBoard.putNumber("auto-aim", "target position (y)", new Vector2D(new double[] {currentPathPositionWithLERP.getX(), Math.max(currentPathPositionWithLERP.getY(), currentVisualTargetLastSeenPosition.getY() + yPositionLowerConstrain)}).getY());
+                shooter.aimingSystem.getRobotFacing(shooter.getProjectileSpeed(), currentVisualTargetLastSeenPosition)), this);
 
         if (intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && shooter.shooterReady() && shooter.targetInRange() && arm.transformerInPosition() && chassis.isCurrentRotationalTaskFinished()) {
             // start shooting
@@ -277,13 +278,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
                 shootingProcessEndPointFieldPosition = shootingProcessEndPoint.addBy(currentVisualTargetLastSeenPosition),
                 shootingProcessAnotherPointFieldPosition = shootingProcessAnotherPoint.addBy(currentVisualTargetLastSeenPosition);
 
-
-        System.out.println("speaker path: "
-                + chassisPositionWhenCurrentVisionTaskStarted
-                + chassisPositionWhenCurrentVisionTaskStarted.addBy(new Vector2D(Vector2D.displacementToTarget(chassisPositionWhenCurrentVisionTaskStarted, shootingProcessAnotherPointFieldPosition).getHeading(), Vector2D.displacementToTarget(shootingProcessAnotherPointFieldPosition, shootingProcessEndPointFieldPosition).getMagnitude()))
-                + shootingProcessAnotherPointFieldPosition
-                + shootingProcessEndPointFieldPosition
-        );
         return new BezierCurve(
                 chassisPositionWhenCurrentVisionTaskStarted, // starting from the chassis initial position during task
                 chassisPositionWhenCurrentVisionTaskStarted.addBy(new Vector2D(
@@ -396,7 +390,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
     private double chassisSpeedLimitWhenAutoAim; // m/s
 
     /** avoid impact */
-    private double speakerImpactSpacingWidth, distanceToWallConstrainInFrontOfSpeaker, distanceToWallConstrain;
+    private double speakerImpactSpacingWidth, distanceToWallConstrainInFrontOfSpeaker, distanceToWallConstrain, positionToSpeakerXConstrain;
     private Vector2D shootingSweetSpot;
     /** the pilot can specify the spot of shooting, by this amount of distance away from the sweet spot */
     private double shootingProcessEndingPointUpdatableRange;
@@ -414,7 +408,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         grabbingNoteDistance = 0.3;
         chassisSpeedLimitWhenAutoAim = 4;
         shootingSweetSpot = new Vector2D(new double[] {0, 1.5});
-        shootingProcessEndingPointUpdatableRange = 2;
+        shootingProcessEndingPointUpdatableRange = 1.4;
         chassisReactionDelay = 0.4;
 
         speakerImpactSpacingWidth = 0.6;

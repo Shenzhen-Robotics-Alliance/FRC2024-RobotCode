@@ -106,9 +106,9 @@ public class RobotCore {
                 aprilTagPositionTrackingCamera = new FixedAnglePositionTrackingCamera(
                         aprilTagDetectionAppClient,
                         new FixedAngleCameraProfile(
-                                0.360,
-                                -0.00173,
-                                -0.00160
+                                0.385,
+                                -0.00180,
+                                -0.00179
                         ),
                         targetHeights
                 );
@@ -155,7 +155,7 @@ public class RobotCore {
 
 
                 final TalonFXMotor armMotor = new TalonFXMotor(new TalonFX((int)robotConfig.getConfig("arm/armMotorPort")) ,robotConfig.getConfig("arm/armMotorReversed")!=0);
-                final DCAbsolutePositionEncoder armEncoder = new DCAbsolutePositionEncoder(1, robotConfig.getConfig("arm/armEncoderReversed")!=0);
+                final DCAbsolutePositionEncoder armEncoder = new DCAbsolutePositionEncoder(0, robotConfig.getConfig("arm/armEncoderReversed")!=0);
                 this.transformableArm = new TransformableArm(armMotor, armEncoder, shooter, robotConfig); modules.add(transformableArm);
                 final TalonFXMotor[] intakeMotors = new TalonFXMotor[] {
                         new TalonFXMotor(new TalonFX((int)robotConfig.getConfig("intake/intakeMotor1Port")), robotConfig.getConfig("intake/intakeMotor1Reversed") != 0),

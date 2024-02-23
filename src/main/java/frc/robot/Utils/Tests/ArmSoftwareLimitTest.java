@@ -17,7 +17,7 @@ public class ArmSoftwareLimitTest implements SimpleRobotTest {
     private final XboxController xboxController = new XboxController(1);
     public ArmSoftwareLimitTest(RobotConfigReader robotConfig) {
         TalonFXMotor armMotor = new TalonFXMotor(new TalonFX((int) robotConfig.getConfig("arm", "armMotorPort")), robotConfig.getConfig("arm", "armMotorReversed") != 0);
-        armEncoder = new DCAbsolutePositionEncoder(0,robotConfig.getConfig("arm", "armEncoderReversed")!=0);
+        armEncoder = new DCAbsolutePositionEncoder(1,robotConfig.getConfig("arm", "armEncoderReversed")!=0);
         armMechanism = new EncoderMotorMechanism(armEncoder, armMotor);
     }
     @Override

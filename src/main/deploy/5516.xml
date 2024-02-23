@@ -29,10 +29,10 @@
         <gyroPort type="int">15</gyroPort>
 
         <!-- the zero position of encoders, to measure this value, turn the wheel to the direct front, and see the value of encoder.getRawSensorReading() -->
-        <frontLeftWheelZeroPosition type = "double">-2.684</frontLeftWheelZeroPosition>
-        <frontRightWheelZeroPosition type = "double">1.138</frontRightWheelZeroPosition>
-        <backLeftWheelZeroPosition type = "double">1.00</backLeftWheelZeroPosition>
-        <backRightWheelZeroPosition type = "double">3.02</backRightWheelZeroPosition>
+        <frontLeftWheelZeroPosition type = "double">-2.038</frontLeftWheelZeroPosition>
+        <frontRightWheelZeroPosition type = "double">1.135</frontRightWheelZeroPosition>
+        <backLeftWheelZeroPosition type = "double">0.796</backLeftWheelZeroPosition>
+        <backRightWheelZeroPosition type = "double">-2.517</backRightWheelZeroPosition>
     </hardware>
     <chassis>
         <wheelGearRatio type="double">6.75</wheelGearRatio>
@@ -59,16 +59,16 @@
         <armEncoderReversed>1</armEncoderReversed>
 
         <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
-        <encoderZeroPositionRadians>0.484</encoderZeroPositionRadians>
+        <encoderZeroPositionRadians>6.175</encoderZeroPositionRadians>
 
-        <position-DEFAULT>90</position-DEFAULT>
-        <position-INTAKE>90</position-INTAKE>
+        <position-DEFAULT>96</position-DEFAULT>
+        <position-INTAKE>96</position-INTAKE>
         <position-SHOOT_NOTE>75</position-SHOOT_NOTE>
         <position-SCORE_AMPLIFIER>1</position-SCORE_AMPLIFIER>
 
         <!-- software limit -->
         <lowerPositionLimit>0</lowerPositionLimit>
-        <upperPositionLimit>92</upperPositionLimit>
+        <upperPositionLimit>98</upperPositionLimit>
 
         <!-- lookup table -->
         <encoderPosition0>0</encoderPosition0>
