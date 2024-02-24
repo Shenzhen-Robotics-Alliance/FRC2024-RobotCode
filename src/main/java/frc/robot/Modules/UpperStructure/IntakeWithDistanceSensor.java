@@ -80,11 +80,12 @@ public class IntakeWithDistanceSensor extends Intake {
     }
 
     private EnhancedPIDController intakeWheelPositionController;
-    private double intakePower, launchPower, revertPower, distanceSensorThreshold, splitTime,
+    private double intakePower, intakeAidingMotorPower, launchPower, revertPower, distanceSensorThreshold, splitTime,
     /** the difference, in encoder ticks, between the position at which the note sensor is triggered and the desired note position */
             intakeSensorToReadyPositionDifference;
     @Override
     public void updateConfigs() {
+        // this.intakeAidingMotorPower = robotConfig.getConfig("intake", "intakeAidPower");
         this.intakePower = robotConfig.getConfig("intake", "intakePower");
         this.revertPower = robotConfig.getConfig("intake", "revertPower");
         this.launchPower = robotConfig.getConfig("intake", "launchPower");
@@ -112,6 +113,9 @@ public class IntakeWithDistanceSensor extends Intake {
         this.currentStatus = IntakeModuleStatus.YIELD;
         intakeMotor.gainOwnerShip(this);
         intakeMotor.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE, this);
+
+//        intakeAidingMotor.gainOwnerShip(this);
+//        intakeAidingMotor.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.RELAX, this);
         timeSinceSplitProcessStarted = 0;
     }
 

@@ -27,7 +27,16 @@ public class AutoStageVisionAimBot {
         timer.start();
         return new SequentialCommandSegment(
                 initiateCondition,
-                () -> null,
+                () -> {
+                    final double intakeDistance = 0.2;
+                    final Vector2D
+                            intakeProcessPath = new Vector2D(new double[] {0, -intakeDistance}),
+                            noteFieldPositionByCamera = robotCore.noteTarget.getTargetFieldPositionWithAprilTags(timeUnseenToleranceMillis),
+                            noteFieldPosition = noteFieldPositionByCamera == null ? assumedNotePosition : noteFieldPositionByCamera,
+                            pathAnotherPoint = noteFieldPosition.addBy(intakeProcessPath.multiplyBy(desiredRobotRotation).multiplyBy(-1)),
+                            pathEndPoint = noteFieldPosition.addBy(intakeProcessPath.multiplyBy(desiredRobotRotation));
+                    return new BezierCurve(robotCore.positionReader.getRobotPosition2D(), pathAnotherPoint, pathEndPoint);
+                },
                 timer::reset,
                 () -> {
                     robotCore.intake.startIntake(null);
@@ -93,8 +102,6 @@ public class AutoStageVisionAimBot {
     }
 
     public Runnable prepareToIntake() {
-        return () -> {
-            robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, null);
-        };
+        return () -> robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, null);
     }
 }

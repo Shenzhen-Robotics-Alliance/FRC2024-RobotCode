@@ -113,31 +113,31 @@
         <flyWheelSpeedErrorTolerance>0.05</flyWheelSpeedErrorTolerance>
 
         <defaultShootingRPM>5600</defaultShootingRPM>
-        <amplifyRPM>500</amplifyRPM>
+        <amplifyRPM>1200</amplifyRPM>
         <idleRPM>-100</idleRPM>
         <projectileSpeed>8</projectileSpeed>
         <shootingRange>4</shootingRange>
 
         <!-- shooting lookup table -->
         <targetDistance0>1.5</targetDistance0>
-        <shooterRPM0>3000</shooterRPM0>
-        <armAngle0>0</armAngle0>
+        <shooterRPM0>3500</shooterRPM0>
+        <armAngle0>-2</armAngle0>
 
         <targetDistance1>2</targetDistance1>
-        <shooterRPM1>3800</shooterRPM1>
+        <shooterRPM1>4000</shooterRPM1>
         <armAngle1>-13</armAngle1>
 
         <targetDistance2>2.5</targetDistance2>
         <shooterRPM2>4600</shooterRPM2>
-        <armAngle2>-17</armAngle2>
+        <armAngle2>-19</armAngle2>
 
         <targetDistance3>3</targetDistance3>
-        <shooterRPM3>5400</shooterRPM3>
-        <armAngle3>-20.5</armAngle3>
+        <shooterRPM3>5800</shooterRPM3>
+        <armAngle3>-29</armAngle3>
 
         <targetDistance4>3.5</targetDistance4>
         <shooterRPM4>6000</shooterRPM4>
-        <armAngle4>-22</armAngle4>
+        <armAngle4>-32</armAngle4>
 
         <targetDistance5>4</targetDistance5>
         <shooterRPM5>6000</shooterRPM5>
@@ -175,7 +175,7 @@
     </vision-autopilot>
 
     <auto>
-        <autoStageMaxAcceleration type="double">14</autoStageMaxAcceleration>
+        <autoStageMaxAcceleration type="double">12</autoStageMaxAcceleration>
         <autoStageMaxVelocity type="double">4.8</autoStageMaxVelocity>
         <autoStageMaxAngularVelocity type="double">160</autoStageMaxAngularVelocity> <!-- in deg/s -->
 

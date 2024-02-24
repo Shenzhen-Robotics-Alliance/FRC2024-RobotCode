@@ -49,12 +49,12 @@ public class RobotShell extends TimedRobot {
 //                new AprilTagCameraAutomaticMeasuring(
 //                    robotCore.noteDetectionAppClient,
 //                    1,
-//                    -30,
+//                    -60,
 //                    new Rotation2D(Math.PI),
-//                    25,
+//                    50,
 //                    100,
-//                    45,
-//                    new Vector2D(new double[] {0, 25})
+//                    40,
+//                    new Vector2D(new double[] {0, 43})
 //                )
 //                new AprilTagCameraAutomaticMeasuring(
 //                robotCore.aprilTagDetectionAppClient,
@@ -65,7 +65,8 @@ public class RobotShell extends TimedRobot {
 //                30,
 //                new Vector2D(new double[] {0, -110})
 //                )
-                new TestAutoShooting()
+//                new TestAutoShooting()
+                new RedDS2()
         ); // TODO use sendable chooser
     }
 

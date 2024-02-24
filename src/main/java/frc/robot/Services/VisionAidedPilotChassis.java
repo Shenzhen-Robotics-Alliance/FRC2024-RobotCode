@@ -129,11 +129,14 @@ public class VisionAidedPilotChassis extends PilotChassis {
         switch (currentStatus) {
             case MANUALLY_DRIVING -> {
                 shooter.setShooterMode(Shooter.ShooterMode.DISABLED, this);
-                arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
-                if (copilotGamePad.getBButton())
+                if (copilotGamePad.getBButton()) {
                     intake.startSplit(this); // in case if the Note is stuck
-                else
+                    arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SPLIT, this);
+                }
+                else {
                     intake.turnOffIntake(this);
+                    arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
+                }
                 if (pilotController.keyOnPress(translationAutoPilotButton))
                     currentStatus = intake.isNoteInsideIntake() ?  Status.SEARCHING_FOR_SHOOT_TARGET : Status.SEARCHING_FOR_NOTE;
             }
@@ -159,8 +162,9 @@ public class VisionAidedPilotChassis extends PilotChassis {
                         case SPEAKER -> initiateGoToSpeakerTargetProcess();
                         case AMPLIFIER -> initiateGoToAmplifierProcess();
                     }
-                else if (!pilotController.keyOnHold(translationAutoPilotButton) && arm.transformerInPosition() && shooter.shooterReady())
-                    intake.startLaunch(this);
+                else if (!pilotController.keyOnHold(translationAutoPilotButton))
+                    if ((arm.transformerInPosition() && shooter.shooterReady()) || currentAimingTargetClass == VisionTargetClass.AMPLIFIER)
+                        intake.startLaunch(this);
                 if (!intake.isNoteInsideIntake())
                     currentStatus = Status.MANUALLY_DRIVING;
             }
@@ -266,6 +270,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
     }
 
     private BezierCurve getPathToSpeakerTarget() {
+        if (Vector2D.displacementToTarget(chassisPositionWhenCurrentVisionTaskStarted, shootingSweetSpot).getMagnitude() < 1.2)
+            return new BezierCurve(shootingSweetSpot, shootingSweetSpot);
         final boolean pilotSpecifyingShootingProcessEndPoint = pilotController.getTranslationalStickValue().getMagnitude() > 0.4; // only when significant movement
         final Vector2D
                 /* the position of the ending point of the path of the shooting task, relative to the shooting sweet-spot  */
@@ -407,7 +413,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         aimingTimeUnseenToleranceMS = (long) robotConfig.getConfig("vision-autopilot", "aimingTimeUnseenToleranceMS");
         /* TODO read from robotConfig */
         this.intakeCenterHorizontalBiasFromCamera = -0.05;
-        grabbingNoteDistance = 0.3;
+        grabbingNoteDistance = 0.15;
         chassisSpeedLimitWhenAutoAim = 4;
         shootingSweetSpot = new Vector2D(new double[] {0, 1.5});
         shootingProcessEndingPointUpdatableRange = 1.4;

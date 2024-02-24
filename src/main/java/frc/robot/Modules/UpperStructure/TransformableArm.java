@@ -5,6 +5,7 @@ import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Modules.RobotModuleBase;
 import frc.robot.Services.RobotServiceBase;
 import frc.robot.Utils.EasyShuffleBoard;
+import frc.robot.Utils.MathUtils.AngleUtils;
 import frc.robot.Utils.MathUtils.LookUpTable;
 import frc.robot.Utils.MathUtils.StatisticsUtils;
 import frc.robot.Utils.MechanismControllers.ArmGravityController;
@@ -30,6 +31,7 @@ public class TransformableArm extends RobotModuleBase {
         DEFAULT,
         /** the position at which the intake spinner can touch the ground  */
         INTAKE,
+        SPLIT,
         /** the position where the shooter points at the target, notice that the specific position is determined by the aiming system */
         SHOOT_NOTE,
         /** the position where the shooter points at the amplifier */
@@ -184,7 +186,7 @@ public class TransformableArm extends RobotModuleBase {
 
     public boolean transformerInPosition() {
         // TODO: bug over here, sometimes the required is 75, the default shooting angle
-        System.out.println("transformer error: " + Math.toDegrees(Math.abs(armEncoder.getEncoderPosition() - desiredEncoderPosition)) + ", tolerance: " + Math.toDegrees(errorAsArmReady) + ", required: " + Math.toDegrees(desiredEncoderPosition) + ", actual: " + Math.toDegrees(armEncoder.getEncoderPosition()));
-        return Math.abs(armEncoder.getEncoderPosition() - desiredEncoderPosition) < errorAsArmReady;
+        System.out.println("transformer error: " + Math.toDegrees(Math.abs(AngleUtils.getActualDifference(armEncoder.getEncoderPosition(), desiredEncoderPosition))) + ", tolerance: " + Math.toDegrees(errorAsArmReady) + ", required: " + Math.toDegrees(desiredEncoderPosition) + ", actual: " + Math.toDegrees(armEncoder.getEncoderPosition()));
+        return Math.abs(AngleUtils.getActualDifference(armEncoder.getEncoderPosition(), desiredEncoderPosition)) < errorAsArmReady;
     }
 }

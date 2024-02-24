@@ -116,9 +116,9 @@ public class RobotCore {
                 notePositionTrackingCamera = new FixedAnglePositionTrackingCamera(
                         noteDetectionAppClient,
                         new FixedAngleCameraProfile(
-                                -1.10,
-                                -0.0019,
-                                -0.0017
+                                -1.135,
+                                -0.0018,
+                                -0.00133
                         ),
                         new double[] {-30, -30, -30},
                         new Rotation2D(Math.PI)
@@ -161,6 +161,7 @@ public class RobotCore {
                         new TalonFXMotor(new TalonFX((int)robotConfig.getConfig("intake/intakeMotor1Port")), robotConfig.getConfig("intake/intakeMotor1Reversed") != 0),
                         new TalonFXMotor(new TalonFX((int)robotConfig.getConfig("intake/intakeMotor2Port")), robotConfig.getConfig("intake/intakeMotor2Reversed") != 0)
                 };
+
                 this.intake = new IntakeWithDistanceSensor(new MotorsSet(intakeMotors), intakeMotors[0], new Rev2mDistanceSensorEncapsulation(), robotConfig); modules.add(intake);
         }
 
@@ -249,6 +250,16 @@ public class RobotCore {
                 configsToTune.add("arm/position-SHOOT_NOTE");
                 configsToTune.add("arm/position-SCORE_AMPLIFIER");
 
+                configsToTune.add("shooter/shooterRPM0");
+                configsToTune.add("shooter/armAngle0");
+                configsToTune.add("shooter/shooterRPM1");
+                configsToTune.add("shooter/armAngle1");
+                configsToTune.add("shooter/shooterRPM2");
+                configsToTune.add("shooter/armAngle2");
+                configsToTune.add("shooter/shooterRPM3");
+                configsToTune.add("shooter/armAngle3");
+                configsToTune.add("shooter/shooterRPM4");
+                configsToTune.add("shooter/armAngle4");
                 configsToTune.add("shooter/shooterRPM5");
                 configsToTune.add("shooter/armAngle5");
         }
