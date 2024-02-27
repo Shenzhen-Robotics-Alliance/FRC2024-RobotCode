@@ -38,7 +38,7 @@
         <wheelGearRatio type="double">6.75</wheelGearRatio>
 
         <!-- smart wheel speed control -->
-        <wheelsPowerConstrain type="double">0.2</wheelsPowerConstrain>
+        <wheelsPowerConstrain type="double">0.6</wheelsPowerConstrain>
     </chassis>
 
     <shooter>
@@ -105,18 +105,18 @@
 
         <!-- simple arm controller -->
         <maxPowerWhenMovingUp>0.65</maxPowerWhenMovingUp>
-        <maxPowerWhenMovingDown>0.2</maxPowerWhenMovingDown>
-        <errorStartDecelerate>38</errorStartDecelerate>
-        <powerNeededToMoveUp>0.2</powerNeededToMoveUp>
-        <powerNeededToMoveDown>0.08</powerNeededToMoveDown>
+        <maxPowerWhenMovingDown>0.45</maxPowerWhenMovingDown>
+        <errorStartDecelerate>25</errorStartDecelerate>
+        <powerNeededToMoveUp>0.22</powerNeededToMoveUp>
+        <powerNeededToMoveDown>0.1</powerNeededToMoveDown>
         <errorTolerance>2</errorTolerance>
     </arm>
 
     <auto>
 
-        <autoStageMaxAcceleration type="double">2.5</autoStageMaxAcceleration>
-        <autoStageMaxVelocity type="double">1</autoStageMaxVelocity>
-        <autoStageMaxAngularVelocity type="double">35</autoStageMaxAngularVelocity> <!-- in deg/s -->
+        <autoStageMaxAcceleration type="double">7.5</autoStageMaxAcceleration>
+        <autoStageMaxVelocity type="double">3</autoStageMaxVelocity>
+        <autoStageMaxAngularVelocity type="double">90</autoStageMaxAngularVelocity> <!-- in deg/s -->
 
         <inAdvanceTime>0.05</inAdvanceTime>
     </auto>

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class RedDS2 implements AutoStageProgram {
     public static final Vector2D
-            assumedSpeakerPosition = new Vector2D(new double[] {1.45, -0.2}),
+            assumedSpeakerPosition = new Vector2D(new double[] {1.45, 0}),
             allianceFrontNotePosition = new Vector2D(new double[] {0, 2.9}),
             allianceRighterNotePosition = new Vector2D(new double[] {1.45, 2.9}),
             midLineLefterNotePosition = new Vector2D(new double[] {-1.68, 8.27}),
@@ -35,8 +35,8 @@ public class RedDS2 implements AutoStageProgram {
 
         /* the note in front */
         commandSegments.add(commandFactory.justDoIt(aimBot.prepareToIntake()));
-        commandSegments.add(commandFactory.moveToPoint(AutonomousTemplateRedDS2.position1));
-        commandSegments.add(aimBot.grabNote(allianceFrontNotePosition, new Rotation2D(Math.toRadians(-135)), 2000));
+        commandSegments.add(commandFactory.moveToPointIf(() -> true, AutonomousTemplateRedDS2.position1, ()->{}, () -> {}, () ->{}, new Rotation2D(Math.toRadians(180))));
+        commandSegments.add(aimBot.grabNote(allianceFrontNotePosition, new Rotation2D(Math.toRadians(180)), 2000));
 
         /* shoot the gabbed note */
         commandSegments.add(aimBot.shootWhileMoving(

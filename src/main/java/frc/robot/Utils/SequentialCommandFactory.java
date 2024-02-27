@@ -58,6 +58,16 @@ public class SequentialCommandFactory {
         );
     }
 
+    public SequentialCommandSegment moveToPointIf(SequentialCommandSegment.InitiateCondition initiateCondition, Vector2D destination, Runnable beginning, Runnable periodic, Runnable ending, Rotation2D endingRotation) {
+        return new SequentialCommandSegment(
+                initiateCondition,
+                () -> new BezierCurve(positionEstimator.getRobotPosition2D(), destination),
+                beginning, periodic, ending,
+                chassis::isCurrentTranslationalTaskFinished,
+                maintainCurrentRotation, () -> endingRotation
+        );
+    }
+
     public SequentialCommandSegment moveToPointAndStop(Vector2D destination) {
         return moveToPointAndStopIf(justGo, destination);
     }
