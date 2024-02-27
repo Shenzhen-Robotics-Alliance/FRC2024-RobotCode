@@ -1,4 +1,5 @@
 # FRC 2024 Competition Robot *"PHANTOM"*
+***
 Team 5516 *"IRON MAPLE"*, presents.
 [合影，机器特写]
 
@@ -38,11 +39,17 @@ The first step of developing the auto-driving function is, ofcourse, helping the
 #### Hardware Setups
 The heart of our system is a "Jetson Nano" AI-micro-computer. It is similar to the Resbarry Pi used in the WPILib-version of On-Bot Computer Vision, except that it is equiped with high-performance NPU, that can run complex AI-vision networks. Two cameras are attached to it, watching the most important game pieces in the competition: the one facing front measures the position of the Navigation Tags on both the Speaker and the Amplifier, and the one facing back senses the GamePiece.
 
+[Jetson Nano, Two Cameras]
+
 #### GamePieces Detection through AI-DetectNet
 
 In order to recognize the GamePieces, we collected datasets on our field to train a custom AI-object-detection network. In comparison to OpenCV applications that WPILib provided, which recognizes the GamePiece mainly by its color, our Vision Network stands out for its accuracy and reliability. Since the AI-model recoginizes the GamePiece by its unique shape and appearance, it is not dependent to lighting environment and will not confound the target with objects with similar colors. 
 
-[Picture: AI-Object-Detection can tell the difference between an orance, an Robot LED status light and the GamePiece, while OpenCV confuses the three for their similarity in color]
+![](./images/AI-DetectNet.png)
+<div style="display: flex;">
+    <img src="image1.png" alt="Alt Text 1" style="width: 50%;">
+    <img src="image2.png" alt="Alt Text 2" style="width: 50%;">
+</div>
 
 #### Hardware-Accelerated AprilTags Detection
 
