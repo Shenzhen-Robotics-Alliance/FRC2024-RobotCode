@@ -1,5 +1,6 @@
 package frc.robot.Services;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Modules.Chassis.SwerveBasedChassis;
@@ -59,7 +60,7 @@ public class AutoProgramRunner extends RobotServiceBase {
 
         if (currentPathSchedule != null) {
             final double translationalT = currentPathSchedule.nextCheckPoint(dt.get()),
-                    actualInAdvanceTime = Math.min((1-translationalT)* currentSegmentRotationScheduleETA, inAdvanceTime);
+                    actualInAdvanceTime = MathUtil.clamp(inAdvanceTime, 0, (1-translationalT)* currentSegmentRotationScheduleETA);
             final Vector2D inAdvanceSpace =  currentPathSchedule.getVelocityWithLERP().multiplyBy(actualInAdvanceTime);
             robotChassis.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(
                             SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION,
@@ -110,8 +111,10 @@ public class AutoProgramRunner extends RobotServiceBase {
         this.currentSegmentID = segmentID;
         currentCommandSegment = this.commandSegments.get(segmentID).embodyCurrentCommandSegment();
 
-        if (!currentCommandSegment.initiateCondition.initiateOrSkip())
+        if (!currentCommandSegment.initiateCondition.initiateOrSkip()) {
+            System.out.println("skipping segment: " + segmentID);
             nextSegment();
+        }
 
         currentCommandSegment.beginning.run();
 
@@ -136,12 +139,12 @@ public class AutoProgramRunner extends RobotServiceBase {
         final boolean translationalMovementFinished = currentPathSchedule == null || currentPathSchedule.isCurrentPathFinished();
         final boolean rotationalMovementFinished = currentSegmentRotationScheduleETA == -1 || rotationT >= 1;
 
-        if (!translationalMovementFinished)
-            System.out.println("<-- Auto Program Runner | waiting for path to finish -->");
-        else if (!rotationalMovementFinished)
-            System.out.println("<-- Auto Program Runner | waiting for rotation schedule to finish, t: " + rotationT + " -->");
-        else if (!currentSegment.isCompleteChecker.isComplete())
-            System.out.println("<-- Auto Program Runner | waiting for is complete checker to confirm complete -->");
+//        if (!translationalMovementFinished)
+//            System.out.println("<-- Auto Program Runner | waiting for path to finish -->");
+//        else if (!rotationalMovementFinished)
+//            System.out.println("<-- Auto Program Runner | waiting for rotation schedule to finish, t: " + rotationT + " -->");
+//        else if (!currentSegment.isCompleteChecker.isComplete())
+//            System.out.println("<-- Auto Program Runner | waiting for is complete checker to confirm complete -->");
         return translationalMovementFinished
                 && rotationalMovementFinished
                 && currentSegment.isCompleteChecker.isComplete();

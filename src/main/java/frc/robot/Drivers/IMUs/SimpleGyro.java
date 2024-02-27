@@ -29,7 +29,7 @@ public class SimpleGyro {
      * @param yawValue the given current yaw angle, in radians
      */
     public void calibrate(double yawValue) {
-        calibratedYawAngle = getRawYawValue() - yawValue;
+        calibratedYawAngle = AngleUtils.getActualDifference(yawValue, getRawYawValue());
     }
 
     /**
@@ -37,7 +37,7 @@ public class SimpleGyro {
      * @return the yaw angle. in radian, counter-clockwise is positive
      *  */
     public double getYaw() {
-        return getRawYawValue() - calibratedYawAngle;
+        return AngleUtils.simplifyAngle(AngleUtils.getActualDifference(calibratedYawAngle,getRawYawValue()));
     }
 
     public double getRawYawValue() {

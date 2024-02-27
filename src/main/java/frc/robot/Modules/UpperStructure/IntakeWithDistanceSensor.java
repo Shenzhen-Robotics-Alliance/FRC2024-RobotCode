@@ -31,11 +31,15 @@ public class IntakeWithDistanceSensor extends Intake {
 
     @Override
     protected void periodic(double dt) {
-        if (intakeDistanceSensor.getDistanceCM() <= distanceSensorThreshold)
-            previousNoteSeenTimeMillis = System.currentTimeMillis();
+        updateNoteStatus();
 
         intakeMotor.setPower(decidedIntakeMotorPower(dt), this);
         EasyShuffleBoard.putNumber("intake", "note sensor reading (CM)", intakeDistanceSensor.getDistanceCM());
+    }
+
+    private void updateNoteStatus() {
+        if (intakeDistanceSensor.getDistanceCM() <= distanceSensorThreshold)
+            previousNoteSeenTimeMillis = System.currentTimeMillis();
     }
 
     private double intakeWheelHoldingPosition = 0;
@@ -114,9 +118,8 @@ public class IntakeWithDistanceSensor extends Intake {
         intakeMotor.gainOwnerShip(this);
         intakeMotor.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE, this);
 
-//        intakeAidingMotor.gainOwnerShip(this);
-//        intakeAidingMotor.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.RELAX, this);
         timeSinceSplitProcessStarted = 0;
+        updateNoteStatus();
     }
 
     @Override

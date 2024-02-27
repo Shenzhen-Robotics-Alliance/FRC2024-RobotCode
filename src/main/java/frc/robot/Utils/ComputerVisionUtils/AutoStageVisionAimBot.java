@@ -60,12 +60,12 @@ public class AutoStageVisionAimBot {
         return shootWhileMoving(robotCore.intake::isNoteInsideIntake, chassisMovementPath, assumedSpeakerPosition, timeOutMillis);
     }
     public SequentialCommandSegment shootWhileMoving(SequentialCommandSegment.InitiateCondition initiateCondition, BezierCurve chassisMovementPath, Vector2D assumedSpeakerPosition, long timeOutMillis) {
-        final Timer timer = new Timer();
-        timer.start();
+        final Timer timeSinceTaskStarted = new Timer(), timeSinceNoteGone = new Timer();
+        timeSinceTaskStarted.start(); timeSinceNoteGone.start();
         return new SequentialCommandSegment(
                 initiateCondition,
                 () -> chassisMovementPath,
-                timer::reset,
+                timeSinceTaskStarted::reset,
                 () -> {
                     robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, null);
                     robotCore.shooter.setShooterMode(Shooter.ShooterMode.SHOOT, null);
@@ -73,8 +73,10 @@ public class AutoStageVisionAimBot {
                     robotCore.chassisModule.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(
                             SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION, robotCore.shooter.aimingSystem.getRobotFacing(robotCore.shooter.getProjectileSpeed())), null);
 
-                    if (robotCore.shooter.shooterReady() && robotCore.shooter.targetInRange() && robotCore.transformableArm.transformerInPosition())
+                    if (robotCore.intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && robotCore.shooter.shooterReady() && robotCore.shooter.targetInRange() && robotCore.transformableArm.transformerInPosition())
                         robotCore.intake.startLaunch(null);
+                    if (robotCore.intake.isNoteInsideIntake())
+                        timeSinceNoteGone.reset();
                 },
                 () -> {
                     robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, null);
@@ -82,7 +84,7 @@ public class AutoStageVisionAimBot {
                     robotCore.intake.turnOffIntake(null);
                     robotCore.shooter.aimingSystem.defaultTargetFieldPosition = null;
                 },
-                () -> timer.get() * 1000 > timeOutMillis || !robotCore.intake.isNoteInsideIntake(),
+                () -> timeSinceTaskStarted.get() * 1000 > timeOutMillis || timeSinceNoteGone.get() > 0.3,
                 () -> null, () -> null
         );
     }

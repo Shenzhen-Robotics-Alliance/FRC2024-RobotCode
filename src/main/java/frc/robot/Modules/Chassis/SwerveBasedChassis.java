@@ -75,6 +75,8 @@ public class SwerveBasedChassis extends RobotModuleBase {
 
     @Override
     protected void periodic(double dt) {
+        EasyShuffleBoard.putNumber("chassis", "chassis task (x)", translationalTask.translationValue.getX());
+        EasyShuffleBoard.putNumber("chassis", "chassis task (y)", translationalTask.translationValue.getY());
         Vector2D processedTranslationalSpeed = processTranslationalMotion(dt);
         // SmartDashboard.putNumber("decided vel(x)", processedTranslationalSpeed.getValue()[0]);
         double rotationalSpeed = processRotationalMotion(dt);
@@ -198,18 +200,14 @@ public class SwerveBasedChassis extends RobotModuleBase {
     }
 
     private Vector2D processTranslationalMotion(double dt) {
-        switch (translationalTask.taskType) {
-            case SET_VELOCITY:
-                return processTranslationalVelocityControl( // process the speed control after
-                        processOrientation(this.translationalTask.translationValue), dt
-                );
-            case GO_TO_POSITION:
-                return processOrientation(
-                        processTranslationalPositionControl(this.translationalTask.translationValue)
-                );
-            default:
-                throw new UnsupportedOperationException("unsupported translational task type:" + this.translationalTask.taskType.name());
-        }
+        return switch (translationalTask.taskType) {
+            case SET_VELOCITY -> processTranslationalVelocityControl( // process the speed control after
+                    orientationMode == OrientationMode.FIELD ? processOrientation(translationalTask.translationValue) : translationalTask.translationValue, dt
+            );
+            case GO_TO_POSITION -> processOrientation(
+                    processTranslationalPositionControl(this.translationalTask.translationValue)
+            );
+        };
     }
 
     private Vector2D decidedVelocity;
@@ -242,8 +240,6 @@ public class SwerveBasedChassis extends RobotModuleBase {
     }
 
     private Vector2D processOrientation(Vector2D desiredVelocity) {
-        if (this.orientationMode == OrientationMode.ROBOT)
-            return desiredVelocity;
         return desiredVelocity.multiplyBy(
                 new Rotation2D(gyro.getYaw())
                         .getReversal());
