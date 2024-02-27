@@ -2,6 +2,7 @@ package frc.robot.AutoStagePrograms;
 
 import frc.robot.RobotCore;
 import frc.robot.Utils.MathUtils.BezierCurve;
+import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.SequentialCommandFactory;
 import frc.robot.Utils.SequentialCommandSegment;
 import frc.robot.Utils.MathUtils.Vector2D;
@@ -13,13 +14,11 @@ public class TestAutoStageProgram implements AutoStageProgram {
     @Override
     public List<SequentialCommandSegment> getCommandSegments(RobotCore robotCore) {
         final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
-        final SequentialCommandFactory commandFactory = new SequentialCommandFactory(robotCore);
+        final SequentialCommandFactory commandFactory = new SequentialCommandFactory(robotCore, new Vector2D(new double[] {0, 0.4}), new Rotation2D(Math.toRadians(-90)));
 
-        commandSegments.add(commandFactory.moveFromPointToMidPointToPointAndStop(
-                new Vector2D(),
-                new Vector2D(new double[] {0, 3}),
-                new Vector2D(new double[] {2,3}))
-        );
+        commandSegments.add(commandFactory.justDoIt(() -> System.out.println(robotCore.positionReader.getRobotPosition2D())));
+        commandSegments.add(commandFactory.calibratePositionEstimator());
+        commandSegments.add(commandFactory.justDoIt(() -> System.out.println(robotCore.positionReader.getRobotPosition2D())));
         return commandSegments;
     }
 }

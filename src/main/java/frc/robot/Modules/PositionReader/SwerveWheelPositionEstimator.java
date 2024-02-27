@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.IMUs.SimpleGyro;
 import frc.robot.Modules.RobotModuleBase;
 import frc.robot.Modules.Chassis.SwerveWheel;
+import frc.robot.Utils.ChassisUnit;
 import frc.robot.Utils.EasyShuffleBoard;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
@@ -16,6 +17,7 @@ public class SwerveWheelPositionEstimator extends RobotModuleBase implements Pos
     protected final Vector2D[] wheelPositions;
     protected final Vector2D[] wheelVelocities;
     protected final Vector2D[] wheelAccelerations;
+    private final double[] encodersPreviousReadings;
     protected Timer dt = new Timer();
 
     /**
@@ -28,6 +30,7 @@ public class SwerveWheelPositionEstimator extends RobotModuleBase implements Pos
         this.wheelAccelerations = new Vector2D[swerveWheels.length];
         this.wheelVelocities = new Vector2D[swerveWheels.length];
         this.wheelPositions = new Vector2D[swerveWheels.length];
+        this.encodersPreviousReadings = new double[swerveWheels.length];
         this.gyro = gyro;
     }
 
@@ -42,7 +45,9 @@ public class SwerveWheelPositionEstimator extends RobotModuleBase implements Pos
             Vector2D wheelVelocity = swerveWheels[wheelID].getModuleVelocity2D(); // gain the velocity of each module, in vector
             wheelVelocity = wheelVelocity.multiplyBy(new Rotation2D(gyro.getYaw())); // apply rotation according to the imu
 
-            wheelPositions[wheelID] = wheelPositions[wheelID].addBy(wheelVelocity.multiplyBy(dt)); // apply integration to time
+            wheelPositions[wheelID] = wheelPositions[wheelID].addBy(
+                    new Vector2D(swerveWheels[wheelID].getSteerHeading() + gyro.getYaw(), swerveWheels[wheelID].getWheelDrivingEncoderValue(ChassisUnit.METER) - encodersPreviousReadings[wheelID]));
+            encodersPreviousReadings[wheelID] = swerveWheels[wheelID].getWheelDrivingEncoderValue(ChassisUnit.METER);
 
             wheelAccelerations[wheelID] = wheelVelocity
                     .addBy(wheelVelocities[wheelID].multiplyBy(-1))
@@ -62,6 +67,7 @@ public class SwerveWheelPositionEstimator extends RobotModuleBase implements Pos
         for (int wheelID = 0; wheelID < swerveWheels.length; wheelID++) {
             wheelVelocities[wheelID] = new Vector2D();
             wheelAccelerations[wheelID] = new Vector2D();
+            encodersPreviousReadings[wheelID] = swerveWheels[wheelID].getWheelDrivingEncoderValue(ChassisUnit.METER);
         }
         dt.start();
         dt.reset();

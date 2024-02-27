@@ -51,6 +51,8 @@ public class AutoProgramRunner extends RobotServiceBase {
 
     @Override
     public void periodic() {
+        if (currentSegmentID == -1)
+            initiateSegment(0);
         updateConfigs();
         robotChassis.setOrientationMode(SwerveBasedChassis.OrientationMode.FIELD, this);
 
@@ -92,22 +94,24 @@ public class AutoProgramRunner extends RobotServiceBase {
 
     @Override
     public void reset() {
-        this.currentSegmentID = 0;
+        this.currentSegmentID = -1;
         robotChassis.gainOwnerShip(this);
-        initiateSegment(0);
         updateConfigs();
     }
 
     private void nextSegment() {
         this.commandSegments.get(currentSegmentID).ending.run();
 
-        if (currentSegmentID +1 >= commandSegments.size())
-            return;
-        initiateSegment(++currentSegmentID);
+        if (currentSegmentID+1 < commandSegments.size())
+            initiateSegment(currentSegmentID+1);
     }
 
     private void initiateSegment(int segmentID) {
+        this.currentSegmentID = segmentID;
         currentCommandSegment = this.commandSegments.get(segmentID).embodyCurrentCommandSegment();
+
+        if (!currentCommandSegment.initiateCondition.initiateOrSkip())
+            nextSegment();
 
         currentCommandSegment.beginning.run();
 

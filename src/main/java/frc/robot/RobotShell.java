@@ -65,7 +65,6 @@ public class RobotShell extends TimedRobot {
 //                30,
 //                new Vector2D(new double[] {0, -110})
 //                )
-//                new TestAutoShooting()
                 new RedDS2()
         ); // TODO use sendable chooser
     }

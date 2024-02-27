@@ -254,9 +254,9 @@
         <yAxisPort type="int">5</yAxisPort>
         <zAxisPort type="int">0</zAxisPort>
 
-        <pilotControllerXAxisSensitivity>70</pilotControllerXAxisSensitivity>
-        <pilotControllerYAxisSensitivity>-70</pilotControllerYAxisSensitivity>
-        <pilotControllerZAxisSensitivity>-40</pilotControllerZAxisSensitivity>
+        <pilotControllerXAxisSensitivity>40</pilotControllerXAxisSensitivity>
+        <pilotControllerYAxisSensitivity>-40</pilotControllerYAxisSensitivity>
+        <pilotControllerZAxisSensitivity>-20</pilotControllerZAxisSensitivity>
         <!-- the minimum amount of stick input to respond to, in percentage -->
         <pilotStickThresholdWhenOtherAxisUnused>5</pilotStickThresholdWhenOtherAxisUnused>
         <pilotStickThresholdWhenOtherAxisFull>10</pilotStickThresholdWhenOtherAxisFull>

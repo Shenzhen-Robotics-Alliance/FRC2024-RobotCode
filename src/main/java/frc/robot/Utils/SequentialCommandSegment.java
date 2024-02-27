@@ -62,7 +62,7 @@ public class SequentialCommandSegment {
     public StaticSequentialCommandSegment embodyCurrentCommandSegment() {
         return new StaticSequentialCommandSegment(
                 chassisMovementPathFeeder.getBezierCurve(),
-                beginning,periodic,ending,isCompleteChecker,
+                beginning,periodic,ending,initiateCondition, isCompleteChecker,
                 startingRotationFeeder.getRotation(),endingRotationFeeder.getRotation(),
                 this.speedCurve
         );
@@ -73,14 +73,16 @@ public class SequentialCommandSegment {
     public static final class StaticSequentialCommandSegment {
         public final BezierCurve chassisMovementPath;
         public final Runnable beginning, periodic, ending;
+        public final InitiateCondition initiateCondition;
         public final IsCompleteChecker isCompleteChecker;
         public final Rotation2D startingRotation, endingRotation;
         public final SpeedCurves.SpeedCurve speedCurve;
-        public StaticSequentialCommandSegment(BezierCurve chassisMovementPath, Runnable beginning, Runnable periodic, Runnable ending, IsCompleteChecker isCompleteChecker, Rotation2D startingRotation, Rotation2D endingRotation, SpeedCurves.SpeedCurve speedCurve) {
+        public StaticSequentialCommandSegment(BezierCurve chassisMovementPath, Runnable beginning, Runnable periodic, Runnable ending, InitiateCondition initiateCondition, IsCompleteChecker isCompleteChecker, Rotation2D startingRotation, Rotation2D endingRotation, SpeedCurves.SpeedCurve speedCurve) {
             this.chassisMovementPath = chassisMovementPath;
             this.beginning = beginning;
             this.periodic = periodic;
             this.ending = ending;
+            this.initiateCondition = initiateCondition;
             this.isCompleteChecker = isCompleteChecker;
             this.startingRotation = startingRotation;
             this.endingRotation = endingRotation;
