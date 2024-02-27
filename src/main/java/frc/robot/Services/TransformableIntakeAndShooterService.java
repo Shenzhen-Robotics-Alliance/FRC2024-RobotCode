@@ -115,7 +115,7 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
                 * the intake module will just split for 0.5s so we just wait for it to finish
                 * */
                 shooterModule.setShooterMode(Shooter.ShooterMode.DISABLED, this);
-                transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
+                transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SPLIT, this);
                 if (intakeModule.isCurrentTaskComplete())
                     this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION;
             }

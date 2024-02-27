@@ -9,23 +9,17 @@ import frc.robot.Utils.RobotModuleOperatorMarker;
 public class LEDStatusLights extends RobotModuleBase {
     public enum LEDStatus {
         OFF,
-        SEEING_NOTE,
-        GRABBING_NOTE,
-        HOLDING_NOTE,
-        SHOOTING_NOTE,
-        VISION_MALFUNCTION,
-        NOTE_SENSOR_MALFUNCTION
+        BLINK,
+        ON
     }
-    private static final double hz = 6;
+    private static final double hz = 10;
 
-    private LEDStatus currentStatus;
+    private LEDStatus currentStatus = LEDStatus.OFF;
     final Timer t = new Timer();
-    private final Solenoid
-            redLight = new Solenoid(PneumaticsModuleType.CTREPCM, 0),
-            greenLight = new Solenoid(PneumaticsModuleType.CTREPCM, 1),
-            blue = new Solenoid(PneumaticsModuleType.CTREPCM, 2);
-    public LEDStatusLights() {
+    private final Solenoid light;
+    public LEDStatusLights(int channel) {
         super("LED-Status-Lights");
+        this.light = new Solenoid(PneumaticsModuleType.CTREPCM, channel);
     }
 
     @Override
@@ -36,41 +30,9 @@ public class LEDStatusLights extends RobotModuleBase {
     @Override
     protected void periodic(double dt) {
         switch (currentStatus) {
-            case OFF -> {
-                redLight.set(false);
-                greenLight.set(false);
-                blue.set(false);
-            }
-            case SEEING_NOTE -> {
-                redLight.set(false);
-                greenLight.set(false);
-                blue.set(true);
-            }
-            case GRABBING_NOTE -> {
-                redLight.set(false);
-                greenLight.set(false);
-                blue.set(blink());
-            }
-            case HOLDING_NOTE -> {
-                redLight.set(false);
-                greenLight.set(true);
-                blue.set(false);
-            }
-            case SHOOTING_NOTE -> {
-                redLight.set(false);
-                greenLight.set(blink());
-                blue.set(false);
-            }
-            case VISION_MALFUNCTION -> {
-                redLight.set(true);
-                greenLight.set(false);
-                blue.set(false);
-            }
-            case NOTE_SENSOR_MALFUNCTION -> {
-                redLight.set(blink());
-                greenLight.set(false);
-                blue.set(false);
-            }
+            case ON -> light.set(true);
+            case OFF -> light.set(false);
+            case BLINK -> light.set(blink());
         }
     }
 
@@ -102,16 +64,6 @@ public class LEDStatusLights extends RobotModuleBase {
     public void setCurrentStatus(LEDStatus ledStatus, RobotModuleOperatorMarker operator) {
         if (!isOwner(operator))
             return;
-        switch (ledStatus) {
-            case OFF, SEEING_NOTE, GRABBING_NOTE, HOLDING_NOTE, SHOOTING_NOTE -> {
-                if (this.currentStatus == LEDStatus.NOTE_SENSOR_MALFUNCTION || this.currentStatus == LEDStatus.VISION_MALFUNCTION)
-                    return;
-            }
-            case NOTE_SENSOR_MALFUNCTION -> {
-                if (this.currentStatus == LEDStatus.VISION_MALFUNCTION)
-                    return;
-            }
-        }
         this.currentStatus = ledStatus;
     }
 }

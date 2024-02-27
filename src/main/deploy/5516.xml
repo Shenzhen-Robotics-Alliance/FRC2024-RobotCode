@@ -64,15 +64,15 @@
         <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
         <encoderZeroPositionRadians>4.752</encoderZeroPositionRadians>
 
-        <position-DEFAULT>96</position-DEFAULT>
-        <position-INTAKE>96</position-INTAKE>
+        <position-DEFAULT>100</position-DEFAULT>
+        <position-INTAKE>100</position-INTAKE>
         <position-SPLIT>70</position-SPLIT>
         <position-SHOOT_NOTE>82</position-SHOOT_NOTE>
         <position-SCORE_AMPLIFIER>1</position-SCORE_AMPLIFIER>
 
         <!-- software limit -->
         <lowerPositionLimit>0</lowerPositionLimit>
-        <upperPositionLimit>101</upperPositionLimit>
+        <upperPositionLimit>104</upperPositionLimit>
 
         <!-- lookup table -->
         <encoderPosition0>0</encoderPosition0>
