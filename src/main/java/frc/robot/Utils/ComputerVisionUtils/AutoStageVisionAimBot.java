@@ -79,7 +79,7 @@ public class AutoStageVisionAimBot {
                     robotCore.intake.turnOffIntake(null);
                     robotCore.shooter.aimingSystem.defaultTargetFieldPosition = null;
                 },
-                () -> timeSinceTaskStarted.get() * 1000 > timeOutMillis || timeSinceNoteGone.get() > 0.3,
+                () -> timeSinceTaskStarted.get() * 1000 > timeOutMillis || timeSinceNoteGone.get() > 0.1,
                 () -> null, () -> null
         );
     }

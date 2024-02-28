@@ -64,8 +64,10 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
 
     @Override
     public void periodic() {
-        if (copilotController.getBackButton())
+        if (copilotController.getBackButton()) {
+            reset();
             gainOwnerShipsToModules();
+        }
         /* read the xbox input */
         final boolean
                 START_GRAB_BUTTON = copilotController.getRightTriggerAxis() > 0.75,

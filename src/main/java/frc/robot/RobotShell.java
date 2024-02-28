@@ -133,7 +133,7 @@ public class RobotShell extends TimedRobot {
 
         services.add(intakeAndShooterService);
         services.add(pilotChassis);
-//        services.add(visionAidedPilotChassis);
+        services.add(visionAidedPilotChassis);
 
         robotCore.startStage(services);
     }

@@ -4,7 +4,7 @@ Team 5516 *"IRON MAPLE"*, presents.
 [合影，机器特写]
 
 ## Overview
-Our robot this year highlights its self-driving capability. A variety of sensors and algorithms, which will be introduced in detail, are implemented so that robot can complete the majority of tasks on field **BY ITSELF**. This engineering portfolio is highly focused on how we achived these auto-piloting functions.  Other aspects are only introduced in brief,  and in-depth discussions are in *the annexes*.
+Our robot this year highlights its self-driving capability. A variety of sensors and algorithms, which will be introduced in detail, are implemented so that robot can complete the majority of tasks on field **BY ITSELF**. This engineering portfolio is highly focused on how we achived these auto-piloting functions.  Other aspects are only introduced **in brief**,  and in-depth discussions are in *the annexes*.
 
 ## Hardware Components (in brief)
 Our robot is built upon a -inch, square-shaped chassis with four swerve modules on it. It is customly designed to be smaller for easier shipment.
@@ -63,9 +63,11 @@ A python application we wrote(see here) sends the results continously through a 
 The server also streams the images to a webpage, so that we can see the results of the detection live on the computer during tests or practises.
 
 #### Calculating Precise Target Positions
+Not only can our system detect the Notes/AprilTags, it can also measure the precise relative position from the robot to the targets.
+If we know the FOV, height and pitch angle of the camera, the relative position can be determined very easlily using trigonometry. However, measuring these parameters by hand is not an easy task and might be inaccurate.
 
 #### Camera Auto-Calibration Process
-
+Our solution is measuring the 
 
 
 ## Auto-Pilot System

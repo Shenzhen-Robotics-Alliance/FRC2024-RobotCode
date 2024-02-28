@@ -73,7 +73,7 @@ public class TransformableArm extends RobotModuleBase {
     protected void periodic(double dt) {
         // this.armLifterMechanism.setController(armController);
         EasyShuffleBoard.putNumber("arm", "mechanism actual position", Math.toDegrees(armLifterMechanism.getEncoderPosition()));
-        this.armLifterMechanism.setController(simpleArmController); // TODO use sendable chooser
+        this.armLifterMechanism.setController(simpleArmController);
 
         EasyShuffleBoard.putNumber("arm", "module dt", (int)(dt*1000));
         EasyShuffleBoard.putNumber("arm", "current desired position in module", desiredEncoderPosition);

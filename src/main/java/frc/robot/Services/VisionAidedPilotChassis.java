@@ -96,6 +96,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
         super.reset();
         this.currentStatus = Status.MANUALLY_DRIVING;
         updateConfigs();
+
+        activateControlUpperStructure();
     }
 
 
@@ -109,8 +111,10 @@ public class VisionAidedPilotChassis extends PilotChassis {
     private long timeTaskStartedMillis;
     @Override
     public void periodic() {
-        if (copilotGamePad.getStartButton())
+        if (copilotGamePad.getStartButton()) {
+            reset();
             activateControlUpperStructure();
+        }
 
         super.periodic();
         final int translationAutoPilotButton = (int)robotConfig.getConfig(super.controllerName, "translationAutoPilotButton"),

@@ -105,7 +105,8 @@ public class Shooter extends RobotModuleBase {
         flyWheelSpeedController.setDesiredSpeed(desiredEncoderVelocity);
 
         EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", desiredEncoderVelocity * encoderVelocityToRPM);
-        EasyShuffleBoard.putNumber("shooter", "flyWheel 0 actual RPM", shooters[0].getEncoderVelocity() * encoderVelocityToRPM);
+        for (int i = 0; i<shooters.length; i++)
+            EasyShuffleBoard.putNumber("shooter", "flyWheel " + i + " actual RPM", shooters[i].getEncoderVelocity() * encoderVelocityToRPM);
 
         for (EncoderMotorMechanism shooter : shooters)
             shooter.updateWithController(this);
@@ -229,7 +230,7 @@ public class Shooter extends RobotModuleBase {
     public double getShooterSpeedWithAimingSystem(double additionalInAdvanceTime) {
         final Vector2D targetRelativePositionToRobot;
         if (aimingSystem == null
-                || (targetRelativePositionToRobot = aimingSystem.getRelativePositionToTarget(getProjectileSpeed())) == null)
+                || (targetRelativePositionToRobot = aimingSystem.getRelativePositionToTarget(getProjectileSpeed(), additionalInAdvanceTime)) == null)
             return defaultShootingRPM;
         final double distanceToTarget = targetRelativePositionToRobot.getMagnitude();
 

@@ -41,7 +41,6 @@ public class FlyWheelSpeedController implements MechanismController {
     }
 
     public double getCorrectionPower(double currentSpeed) {
-        currentSpeed = Math.abs(currentSpeed);
         final double correctionSpeed = simpleFeedForwardSpeedController.getSpeedControlPower(
                 currentSpeed / profile.maximumSpeed,
                 getCurrentTargetSpeedWithLERP() / profile.maximumSpeed
