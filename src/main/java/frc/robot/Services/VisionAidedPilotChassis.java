@@ -96,7 +96,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
         super.reset();
         this.currentStatus = Status.MANUALLY_DRIVING;
         updateConfigs();
-        activateControlUpperStructure(); // TODO use sendable chooser
     }
 
 
@@ -110,6 +109,9 @@ public class VisionAidedPilotChassis extends PilotChassis {
     private long timeTaskStartedMillis;
     @Override
     public void periodic() {
+        if (copilotGamePad.getStartButton())
+            activateControlUpperStructure();
+
         super.periodic();
         final int translationAutoPilotButton = (int)robotConfig.getConfig(super.controllerName, "translationAutoPilotButton"),
                 rotationAutoPilotButton = (int)robotConfig.getConfig(super.controllerName, "rotationAutoPilotButton");
@@ -254,7 +256,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
         chassis.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION,
                 new Vector2D(new double[] {currentPathPositionWithLERP.getX(), Math.max(currentPathPositionWithLERP.getY(), currentVisualTargetLastSeenPosition.getY() + yPositionLowerConstrain)})), this);
         chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
-                /* TODO: facing is not accurate, tune this */
                 shooter.aimingSystem.getRobotFacing(shooter.getProjectileSpeed(), currentVisualTargetLastSeenPosition)), this);
 
         if (intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && shooter.shooterReady() && shooter.targetInRange() && arm.transformerInPosition() && chassis.isCurrentRotationalTaskFinished()) {

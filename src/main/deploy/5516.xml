@@ -108,7 +108,7 @@
         <maxPowerWhenMovingDown>0.45</maxPowerWhenMovingDown>
         <errorStartDecelerate>28</errorStartDecelerate>
         <powerNeededToMoveUp>0.26</powerNeededToMoveUp>
-        <powerNeededToMoveDown>0.12</powerNeededToMoveDown>
+        <powerNeededToMoveDown>0.08</powerNeededToMoveDown>
         <errorTolerance>2</errorTolerance>
     </arm>
     <auto>

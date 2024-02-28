@@ -83,10 +83,11 @@ public class TransformableArm extends RobotModuleBase {
 
         /* disabled when shooter test */
         if (this.desiredPosition == TransformerPosition.SHOOT_NOTE && shooterModule != null) {
-            desiredEncoderPosition = desiredEncoderPositionTable.get(TransformerPosition.SHOOT_NOTE) + shooterModule.getArmPositionWithAimingSystem();
+            desiredEncoderPosition = desiredEncoderPositionTable.get(TransformerPosition.SHOOT_NOTE) + shooterModule.getArmPositionWithAimingSystem(shooterModule.getAdditionalInAdvanceTime());
             desiredEncoderPosition = Math.max(Math.toRadians(robotConfig.getConfig("arm", "lowerPositionLimit")), desiredEncoderPosition);
             desiredEncoderPosition = Math.min(Math.toRadians(robotConfig.getConfig("arm", "upperPositionLimit")), desiredEncoderPosition);
             armController.updateDesiredPosition(desiredEncoderPosition);
+            desiredEncoderPosition = desiredEncoderPositionTable.get(TransformerPosition.SHOOT_NOTE) + shooterModule.getArmPositionWithAimingSystem(0);
         }
 
         simpleArmController.desiredPosition = desiredEncoderPosition;

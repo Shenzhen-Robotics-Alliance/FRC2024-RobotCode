@@ -33,7 +33,6 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
         ACTION_CANCELLED
     }
     private IntakeAndShooterStatus currentStatus;
-    private boolean currentTaskComplete;
     /**
      * initialization of intake and shooter service
      * a transformable mechanism that can intake and move up to shoot
@@ -55,10 +54,9 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
     @Override
     public void reset() {
         this.currentStatus = IntakeAndShooterStatus.AT_DEFAULT_POSITION;
-        gainOwnerShipsToModules(); // TODO sendable chooser to choose between this and vision chassis
     }
 
-    private void gainOwnerShipsToModules() {
+    public void gainOwnerShipsToModules() {
         this.intakeModule.gainOwnerShip(this);
         this.shooterModule.gainOwnerShip(this);
         this.transformerModule.gainOwnerShip(this);
@@ -66,6 +64,8 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
 
     @Override
     public void periodic() {
+        if (copilotController.getBackButton())
+            gainOwnerShipsToModules();
         /* read the xbox input */
         final boolean
                 START_GRAB_BUTTON = copilotController.getRightTriggerAxis() > 0.75,
@@ -211,12 +211,5 @@ public class TransformableIntakeAndShooterService extends RobotServiceBase {
     @Override
     public void onDestroy() {
 
-    }
-
-    /**
-     * @return whether the current task is satisfied
-     * */
-    public boolean isCurrentTaskComplete() {
-        return currentTaskComplete;
     }
 }

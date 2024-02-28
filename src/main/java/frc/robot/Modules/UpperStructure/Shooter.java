@@ -76,11 +76,12 @@ public class Shooter extends RobotModuleBase {
     }
 
     public boolean shooterReady() {
-        final double decidedRPM = decideRPM();
-        if (decidedRPM == 0) return false;
+        if (this.currentMode != ShooterMode.SHOOT)
+            return false;
+        final double desiredShootingSpeed = getShooterSpeedWithAimingSystem(0);
         double maxErrorRPM = 0;
         for (EncoderMotorMechanism shooter:shooters)
-            maxErrorRPM = Math.max(Math.abs(shooter.getEncoderVelocity() * encoderVelocityToRPM - decidedRPM), maxErrorRPM);
+            maxErrorRPM = Math.max(Math.abs(shooter.getEncoderVelocity() * encoderVelocityToRPM - desiredShootingSpeed), maxErrorRPM);
         System.out.println("shooter speed error (rpm): " + maxErrorRPM + ", tolerance: " + shooterReadyErrorBound);
         return maxErrorRPM < shooterReadyErrorBound;
     }
@@ -95,34 +96,19 @@ public class Shooter extends RobotModuleBase {
         updateConfigs();
     }
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
     @Override
     protected void periodic(double dt) {
-        try {
-            TimeUtils.executeWithTimeOut(executor, () -> aimingSystemDecidedRPM = getShooterSpeedWithAimingSystem(), 500);
-        } catch (TimeoutException e) {
-            throw new RuntimeException("timeout while deciding RPM");
-        }
+        aimingSystemDecidedRPM = getShooterSpeedWithAimingSystem(additionalInAdvanceTime);
         final double desiredEncoderVelocity = decideRPM() / encoderVelocityToRPM;
 
-        try {
-            TimeUtils.executeWithTimeOut(executor, () -> flyWheelSpeedController.setDesiredSpeed(desiredEncoderVelocity), 500);
-        } catch (TimeoutException e) {
-            throw new RuntimeException("timeout while setting desired speed of shooter");
-        }
-
+        flyWheelSpeedController.setDesiredSpeed(desiredEncoderVelocity);
 
         EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", desiredEncoderVelocity * encoderVelocityToRPM);
         EasyShuffleBoard.putNumber("shooter", "flyWheel 0 actual RPM", shooters[0].getEncoderVelocity() * encoderVelocityToRPM);
 
-        try {
-            TimeUtils.executeWithTimeOut(executor, () -> {
-                for (EncoderMotorMechanism shooter : shooters)
-                    shooter.updateWithController(this);
-            }, 500);
-        } catch (TimeoutException e) {
-            throw new RuntimeException("timeout while updating shooters with controller");
-        }
+        for (EncoderMotorMechanism shooter : shooters)
+            shooter.updateWithController(this);
     }
 
 //    @Override
@@ -177,7 +163,7 @@ public class Shooter extends RobotModuleBase {
             shooter.disableMotor(this);
     }
 
-    private double defaultShootingRPM, amplifyingRPM, idleRPM, projectileSpeed, shootingRange;
+    private double defaultShootingRPM, amplifyingRPM, idleRPM, projectileSpeed, shootingRange, additionalInAdvanceTime;
     private LookUpTable shooterRPMToTargetDistanceLookUpTable;
 
     /** the desired arm position for aiming, in degrees and in reference to the default shooting position of the arm, which is specified in the arm configs */
@@ -201,6 +187,7 @@ public class Shooter extends RobotModuleBase {
         this.idleRPM = robotConfig.getConfig("shooter", "idleRPM");
         this.projectileSpeed = robotConfig.getConfig("shooter", "projectileSpeed");
         this.shootingRange = robotConfig.getConfig("shooter", "shootingRange");
+        this.additionalInAdvanceTime = robotConfig.getConfig("shooter", "additionalInAdvanceTime");
 
         final FlyWheelSpeedController.FlyWheelSpeedControllerProfile speedControllerProfile = new FlyWheelSpeedController.FlyWheelSpeedControllerProfile(
                 robotConfig.getConfig("shooter", "speedControllerProportionGain"),
@@ -213,15 +200,19 @@ public class Shooter extends RobotModuleBase {
         flyWheelSpeedController.setProfile(speedControllerProfile);
     }
 
+    public double getAdditionalInAdvanceTime() {
+        return additionalInAdvanceTime;
+    }
+
     /**
      * gets the aiming angle from the aiming system, so that the arm knows where to go
      * @return the arm position to shoot, in radian and in reference to default shooting position specified in arm configs, positive direction is towards ground.
      * 0, which is the default position, will be returned if target unseen
      * */
-    public double getArmPositionWithAimingSystem() {
+    public double getArmPositionWithAimingSystem(double additionalInAdvanceTime) {
         final Vector2D targetRelativePositionToRobot;
         if (aimingSystem == null
-                || (targetRelativePositionToRobot = aimingSystem.getRelativePositionToTarget(getProjectileSpeed())) == null)
+                || (targetRelativePositionToRobot = aimingSystem.getRelativePositionToTarget(getProjectileSpeed(), additionalInAdvanceTime)) == null)
             return 0;
         final double distanceToTarget = targetRelativePositionToRobot.getMagnitude();
         return Math.toRadians(armPositionDegreesToTargetDistanceLookUpTable.getYPrediction(distanceToTarget));
@@ -235,7 +226,7 @@ public class Shooter extends RobotModuleBase {
         return targetRelativePositionToRobot.getMagnitude() < shootingRange;
     }
 
-    public double getShooterSpeedWithAimingSystem() {
+    public double getShooterSpeedWithAimingSystem(double additionalInAdvanceTime) {
         final Vector2D targetRelativePositionToRobot;
         if (aimingSystem == null
                 || (targetRelativePositionToRobot = aimingSystem.getRelativePositionToTarget(getProjectileSpeed())) == null)
@@ -267,29 +258,29 @@ public class Shooter extends RobotModuleBase {
             this.timeUnseenTolerance = timeUnseenTolerance;
         }
 
-        /**
-         * calculate the target's relative position to the robot, ignore flight time
-         * @return the relative position to target, in meters, and in reference to the robot; if not seen for too long, return null
-         * */
-        public Vector2D getRelativePositionToTarget() {
-            return getRelativePositionToTarget(Double.POSITIVE_INFINITY);
+        public Vector2D getRelativePositionToTarget(double projectileSpeed) {
+            return getRelativePositionToTarget(projectileSpeed, 0);
         }
         /**
          * with the target position tracker and the position estimator, calculate the target's relative position to the robot
          * @param projectileSpeed the speed of the projectile, in m/s, this is to reduce the deviation due to flight time
          * @return the relative position to target, in meters, and in reference to the robot; if not seen for too long, return null
           */
-        public Vector2D getRelativePositionToTarget(double projectileSpeed) {
+        public Vector2D getRelativePositionToTarget(double projectileSpeed, double additionalInAdvanceTime) {
             final Vector2D targetFieldPositionByCamera = target.getTargetFieldPositionWithAprilTags(timeUnseenTolerance),
                     targetFieldPosition = targetFieldPositionByCamera == null ? defaultTargetFieldPosition : targetFieldPositionByCamera;
             if (targetFieldPosition == null) return null;
-            return getRelativePositionToTarget(projectileSpeed, targetFieldPosition);
+            return getRelativePositionToTarget(projectileSpeed, targetFieldPosition, additionalInAdvanceTime);
         }
 
         public Vector2D getRelativePositionToTarget(double projectileSpeed, Vector2D targetFieldPosition) {
+            return getRelativePositionToTarget(projectileSpeed, targetFieldPosition, 0);
+        }
+
+        public Vector2D getRelativePositionToTarget(double projectileSpeed, Vector2D targetFieldPosition, double additionalInAdvanceTime) {
             final double distanceToTarget = Vector2D.displacementToTarget(chassisPositionEstimator.getRobotPosition2D(), targetFieldPosition).getMagnitude(),
                     flightTime = distanceToTarget / projectileSpeed;
-            final Vector2D chassisPositionAfterFlightTime = chassisPositionEstimator.getRobotPosition2D().addBy(chassisPositionEstimator.getRobotVelocity2D().multiplyBy(flightTime));
+            final Vector2D chassisPositionAfterFlightTime = chassisPositionEstimator.getRobotPosition2D().addBy(chassisPositionEstimator.getRobotVelocity2D().multiplyBy(flightTime + additionalInAdvanceTime));
             return Vector2D.displacementToTarget(chassisPositionAfterFlightTime, targetFieldPosition);
         }
 
@@ -298,8 +289,9 @@ public class Shooter extends RobotModuleBase {
                     targetFieldPosition = targetFieldPositionByCamera == null ? defaultTargetFieldPosition : targetFieldPositionByCamera;
             return getRelativePositionToTarget(projectileSpeed, targetFieldPosition).getHeading() - Math.toRadians(90);
         }
+
         public double getRobotFacing(double projectileSpeed, Vector2D targetLastSeenPosition) {
-            return getRelativePositionToTarget(projectileSpeed, targetLastSeenPosition).getHeading() - Math.toRadians(90);
+            return getRelativePositionToTarget(projectileSpeed, targetLastSeenPosition, 0).getHeading() - Math.toRadians(90);
         }
     }
 }
