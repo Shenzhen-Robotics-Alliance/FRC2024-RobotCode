@@ -113,6 +113,7 @@ public class Shooter extends RobotModuleBase {
 
 
         EasyShuffleBoard.putNumber("shooter", "Shooter Desired RPM", desiredEncoderVelocity * encoderVelocityToRPM);
+        EasyShuffleBoard.putNumber("shooter", "flyWheel 0 actual RPM", shooters[0].getEncoderVelocity() * encoderVelocityToRPM);
 
         try {
             TimeUtils.executeWithTimeOut(executor, () -> {

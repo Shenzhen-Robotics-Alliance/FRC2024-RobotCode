@@ -64,8 +64,8 @@
         <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
         <encoderZeroPositionRadians>4.752</encoderZeroPositionRadians>
 
-        <position-DEFAULT>100</position-DEFAULT>
-        <position-INTAKE>100</position-INTAKE>
+        <position-DEFAULT>98</position-DEFAULT>
+        <position-INTAKE>98</position-INTAKE>
         <position-SPLIT>70</position-SPLIT>
         <position-SHOOT_NOTE>82</position-SHOOT_NOTE>
         <position-SCORE_AMPLIFIER>1</position-SCORE_AMPLIFIER>
@@ -106,15 +106,15 @@
         <!-- simple arm controller -->
         <maxPowerWhenMovingUp>0.65</maxPowerWhenMovingUp>
         <maxPowerWhenMovingDown>0.45</maxPowerWhenMovingDown>
-        <errorStartDecelerate>25</errorStartDecelerate>
-        <powerNeededToMoveUp>0.22</powerNeededToMoveUp>
-        <powerNeededToMoveDown>0.1</powerNeededToMoveDown>
+        <errorStartDecelerate>28</errorStartDecelerate>
+        <powerNeededToMoveUp>0.26</powerNeededToMoveUp>
+        <powerNeededToMoveDown>0.12</powerNeededToMoveDown>
         <errorTolerance>2</errorTolerance>
     </arm>
 
     <auto>
-        <autoStageMaxAcceleration type="double">5.5</autoStageMaxAcceleration>
-        <autoStageMaxVelocity type="double">2.5</autoStageMaxVelocity>
+        <autoStageMaxAcceleration type="double">7</autoStageMaxAcceleration>
+        <autoStageMaxVelocity type="double">3</autoStageMaxVelocity>
         <autoStageMaxAngularVelocity type="double">90</autoStageMaxAngularVelocity> <!-- in deg/s -->
 
         <inAdvanceTime>0.05</inAdvanceTime>

@@ -104,12 +104,12 @@
     <!-- robot module configs goes here -->
     <shooter>
         <shooterMotorEncoderTicksPerRevolution>2048</shooterMotorEncoderTicksPerRevolution>
-        <speedControllerProportionGain>1.2</speedControllerProportionGain>
-        <speedControllerFeedForwardGain>0.45</speedControllerFeedForwardGain>
+        <speedControllerProportionGain>1.3</speedControllerProportionGain>
+        <speedControllerFeedForwardGain>0</speedControllerFeedForwardGain>
         <speedControllerFrictionGain>0.02</speedControllerFrictionGain>
         <speedControllerFeedForwardDelay>0</speedControllerFeedForwardDelay>
         <speedControllerMaximumSpeed>6150</speedControllerMaximumSpeed>
-        <speedControllerTimeNeededToAccelerateToMaxSpeed>0.8</speedControllerTimeNeededToAccelerateToMaxSpeed>
+        <speedControllerTimeNeededToAccelerateToMaxSpeed>0.7</speedControllerTimeNeededToAccelerateToMaxSpeed>
         <flyWheelSpeedErrorTolerance>0.05</flyWheelSpeedErrorTolerance>
 
         <defaultShootingRPM>5600</defaultShootingRPM>

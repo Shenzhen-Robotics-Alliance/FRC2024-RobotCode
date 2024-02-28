@@ -250,18 +250,21 @@ public class RobotCore {
                 configsToTune.add("arm/position-SHOOT_NOTE");
                 configsToTune.add("arm/position-SCORE_AMPLIFIER");
 
-                configsToTune.add("shooter/shooterRPM0");
-                configsToTune.add("shooter/armAngle0");
-                configsToTune.add("shooter/shooterRPM1");
-                configsToTune.add("shooter/armAngle1");
-                configsToTune.add("shooter/shooterRPM2");
-                configsToTune.add("shooter/armAngle2");
-                configsToTune.add("shooter/shooterRPM3");
-                configsToTune.add("shooter/armAngle3");
-                configsToTune.add("shooter/shooterRPM4");
-                configsToTune.add("shooter/armAngle4");
-                configsToTune.add("shooter/shooterRPM5");
-                configsToTune.add("shooter/armAngle5");
+                configsToTune.add("shooter/defaultShootingRPM");
+                configsToTune.add("shooter/speedControllerProportionGain");
+                configsToTune.add("shooter/speedControllerFeedForwardGain");
+//                configsToTune.add("shooter/shooterRPM0");
+//                configsToTune.add("shooter/armAngle0");
+//                configsToTune.add("shooter/shooterRPM1");
+//                configsToTune.add("shooter/armAngle1");
+//                configsToTune.add("shooter/shooterRPM2");
+//                configsToTune.add("shooter/armAngle2");
+//                configsToTune.add("shooter/shooterRPM3");
+//                configsToTune.add("shooter/armAngle3");
+//                configsToTune.add("shooter/shooterRPM4");
+//                configsToTune.add("shooter/armAngle4");
+//                configsToTune.add("shooter/shooterRPM5");
+//                configsToTune.add("shooter/armAngle5");
         }
 
         /**
