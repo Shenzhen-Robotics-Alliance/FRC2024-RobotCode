@@ -185,7 +185,6 @@ public class TransformableArm extends RobotModuleBase {
     }
 
     public boolean transformerInPosition() {
-        // TODO: bug over here, sometimes the required is 75, the default shooting angle
         System.out.println("transformer error: " + Math.toDegrees(Math.abs(AngleUtils.getActualDifference(armEncoder.getEncoderPosition(), desiredEncoderPosition))) + ", tolerance: " + Math.toDegrees(errorAsArmReady) + ", required: " + Math.toDegrees(desiredEncoderPosition) + ", actual: " + Math.toDegrees(armEncoder.getEncoderPosition()));
         return Math.abs(AngleUtils.getActualDifference(armEncoder.getEncoderPosition(), desiredEncoderPosition)) < errorAsArmReady;
     }

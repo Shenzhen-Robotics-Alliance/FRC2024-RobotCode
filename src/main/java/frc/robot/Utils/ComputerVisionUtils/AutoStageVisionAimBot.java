@@ -39,18 +39,13 @@ public class AutoStageVisionAimBot {
                 },
                 timer::reset,
                 () -> {
-                    robotCore.intake.startIntake(null);
                     robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, null);
                     robotCore.shooter.setShooterMode(Shooter.ShooterMode.DISABLED, null);
-                },
-                () -> {
+                    if (robotCore.transformableArm.transformerInPosition())
+                        robotCore.intake.startIntake(null);
                     robotCore.chassisModule.setOrientationMode(SwerveBasedChassis.OrientationMode.FIELD, null);
-                    final Vector2D noteFieldPosition2D = robotCore.noteTarget.getTargetFieldPositionWithAprilTags(timeUnseenToleranceMillis),
-                            desiredFieldPosition = noteFieldPosition2D == null ? assumedNotePosition : noteFieldPosition2D;
-                    robotCore.chassisModule.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(
-                            SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION, desiredFieldPosition
-                    ), null);
                 },
+                () -> robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, null),
                 () -> timer.get() * 1000 > timeOutMillis || robotCore.intake.isNoteInsideIntake(),
                 () -> desiredRobotRotation, () -> desiredRobotRotation
         );
