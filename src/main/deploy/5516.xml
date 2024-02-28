@@ -113,9 +113,8 @@
     </arm>
 
     <auto>
-
-        <autoStageMaxAcceleration type="double">7.5</autoStageMaxAcceleration>
-        <autoStageMaxVelocity type="double">3</autoStageMaxVelocity>
+        <autoStageMaxAcceleration type="double">5.5</autoStageMaxAcceleration>
+        <autoStageMaxVelocity type="double">2.5</autoStageMaxVelocity>
         <autoStageMaxAngularVelocity type="double">90</autoStageMaxAngularVelocity> <!-- in deg/s -->
 
         <inAdvanceTime>0.05</inAdvanceTime>

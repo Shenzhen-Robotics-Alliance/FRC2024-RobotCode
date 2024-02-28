@@ -19,7 +19,7 @@ public class AutonomousTemplateRedDS2 implements AutoStageProgram {
             position5 = new Vector2D(new double[] {-1, 5.2}),
             position6 = new Vector2D(new double[] {-0.8, 6.5}),
             position7 = new Vector2D(new double[] {-1, 8.2}),
-            position8 = new Vector2D(new double[] {-1.68, 9}),
+            position8 = new Vector2D(new double[] {-1.2, 8.5}),
             position10 = new Vector2D(new double[] {1.2, 2.5-0.8}),
             position11 = new Vector2D(new double[] {1.7, 2.5}),
             position12 = new Vector2D(new double[] {1.7, 3}),
