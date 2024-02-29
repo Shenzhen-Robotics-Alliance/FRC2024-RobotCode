@@ -47,12 +47,19 @@ public class Vector2D {
         return getValue()[1];
     }
 
+    @Deprecated
     public void update(double[] newVector) {
         this.vector = newVector;
     }
 
+    @Deprecated
     public void update(int index, double newValue) {
         this.vector[index] = newValue;
+    }
+
+    @Deprecated
+    public void update(Vector2D target) {
+        update(target.vector);
     }
 
     /** apply a given transformation to this vector */

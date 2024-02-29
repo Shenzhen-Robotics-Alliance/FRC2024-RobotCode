@@ -29,6 +29,7 @@ public class AutoStageVisionAimBot {
     public SequentialCommandSegment grabNote(SequentialCommandSegment.InitiateCondition initiateCondition, Vector2D assumedNotePosition, Rotation2D desiredRobotRotation, long timeOutMillis, boolean accelerateShooters) {
         final Timer timer = new Timer();
         timer.start();
+        final Vector2D noteLastSeenPosition = assumedNotePosition;
         return new SequentialCommandSegment(
                 initiateCondition,
                 () -> null,
@@ -40,20 +41,19 @@ public class AutoStageVisionAimBot {
                         robotCore.intake.startIntake(null);
                     robotCore.chassisModule.setOrientationMode(SwerveBasedChassis.OrientationMode.FIELD, null);
 
-                    final double intakeDistance = 0.2, intakeTime = 0.6;
+                    /* TODO: in robot config */
+                    final double intakeDistance = 0.2, intakeTime = 0.6, positionDifferenceTolerance = 0.1;
                     final Vector2D
-                            intakeProcessPath = new Vector2D(new double[] {0, -intakeDistance}),
                             noteFieldPositionByCamera = robotCore.noteTarget.getTargetFieldPositionWithAprilTags(timeUnseenToleranceMillis),
-                            noteFieldPosition = noteFieldPositionByCamera == null ? assumedNotePosition : noteFieldPositionByCamera,
-                            pathAnotherPoint = noteFieldPosition.addBy(intakeProcessPath.multiplyBy(desiredRobotRotation).multiplyBy(-1)),
-                            pathEndPoint = noteFieldPosition.addBy(intakeProcessPath.multiplyBy(desiredRobotRotation));
+                            intakeProcessPath = new Vector2D(new double[] {0, -intakeDistance}),
+                            pathAnotherPoint = noteLastSeenPosition.addBy(intakeProcessPath.multiplyBy(desiredRobotRotation).multiplyBy(-1)),
+                            pathEndPoint = noteLastSeenPosition.addBy(intakeProcessPath.multiplyBy(desiredRobotRotation));
                     final BezierCurve pathCurve = new BezierCurve(robotCore.positionReader.getRobotPosition2D(), pathAnotherPoint, pathEndPoint);
                     final Vector2D currentDesiredPosition = pathCurve.getPositionWithLERP(timer.get() / intakeTime);
-                    if (noteFieldPositionByCamera == null)
-                        System.out.println("<-- note field position not found -->");
-                    else
-                        System.out.println("<-- updated note field position to be: " + noteFieldPositionByCamera + " -->");
                     robotCore.chassisModule.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION, currentDesiredPosition), null);
+
+                    if (noteFieldPositionByCamera != null && Vector2D.displacementToTarget(noteLastSeenPosition, noteFieldPositionByCamera).getMagnitude() > positionDifferenceTolerance)
+                        noteLastSeenPosition.update(noteLastSeenPosition);
                 },
                 () -> robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, null),
                 () -> timer.get() * 1000 > timeOutMillis || robotCore.intake.isNoteInsideIntake(),
@@ -64,6 +64,7 @@ public class AutoStageVisionAimBot {
     public SequentialCommandSegment shootWhileMoving(BezierCurve chassisMovementPath, Vector2D assumedSpeakerPosition, long timeOutMillis) {
         return shootWhileMoving(robotCore.intake::isNoteInsideIntake, chassisMovementPath, assumedSpeakerPosition, timeOutMillis);
     }
+
     public SequentialCommandSegment shootWhileMoving(SequentialCommandSegment.InitiateCondition initiateCondition, BezierCurve chassisMovementPath, Vector2D assumedSpeakerPosition, long timeOutMillis) {
         final Timer timeSinceTaskStarted = new Timer(), timeSinceNoteGone = new Timer();
         timeSinceTaskStarted.start(); timeSinceNoteGone.start();

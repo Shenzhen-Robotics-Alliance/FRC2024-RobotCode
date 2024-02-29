@@ -4,6 +4,7 @@ import frc.robot.RobotCore;
 import frc.robot.Utils.ComputerVisionUtils.AutoStageVisionAimBot;
 import frc.robot.Utils.MathUtils.BezierCurve;
 import frc.robot.Utils.MathUtils.Rotation2D;
+import frc.robot.Utils.MathUtils.SpeedCurves;
 import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.SequentialCommandFactory;
 import frc.robot.Utils.SequentialCommandSegment;
@@ -84,7 +85,7 @@ public class RedDS2 implements AutoStageProgram {
         commandSegments.add(aimBot.grabNote(() -> true, allianceRighterNotePosition, new Rotation2D(Math.toRadians(180)), 2000, true));
         /* shoot still right here */
         commandSegments.add(aimBot.shootWhileMoving(
-                new BezierCurve(AutonomousTemplateRedDS2.position12, AutonomousTemplateRedDS2.position4),
+                new BezierCurve(AutonomousTemplateRedDS2.position12, AutonomousTemplateRedDS2.position12.addBy(new Vector2D(new double[] {0, 1}))),
                 assumedSpeakerPosition,
                 4000
         ));
@@ -92,7 +93,7 @@ public class RedDS2 implements AutoStageProgram {
         /* move back, crossing stage */
         commandSegments.add(new SequentialCommandSegment(
                 () -> true,
-                () -> new BezierCurve(AutonomousTemplateRedDS2.position4, AutonomousTemplateRedDS2.position13, AutonomousTemplateRedDS2.position14),
+                () -> new BezierCurve(AutonomousTemplateRedDS2.position12.addBy(new Vector2D(new double[] {0, 1})), AutonomousTemplateRedDS2.position4, AutonomousTemplateRedDS2.position13, AutonomousTemplateRedDS2.position14),
                 () -> {}, () -> {}, () -> {},
                 () -> true,
                 () -> new Rotation2D(Math.toRadians(-180)), () -> new Rotation2D(Math.toRadians(-180))
@@ -119,12 +120,20 @@ public class RedDS2 implements AutoStageProgram {
         ));
         /* shoot */
         commandSegments.add(aimBot.shootWhileMoving(
-                new BezierCurve(AutonomousTemplateRedDS2.position16, AutonomousTemplateRedDS2.position12, AutonomousTemplateRedDS2.position17, AutonomousTemplateRedDS2.position18),
+                new BezierCurve(AutonomousTemplateRedDS2.position16, AutonomousTemplateRedDS2.position12, AutonomousTemplateRedDS2.position17),
                 assumedSpeakerPosition,
                 3000
         ));
 
         /* grab the right note on middle line */
+        commandSegments.add(new SequentialCommandSegment(
+                () -> true,
+                () -> new BezierCurve(AutonomousTemplateRedDS2.position17, AutonomousTemplateRedDS2.position18, AutonomousTemplateRedDS2.position19, AutonomousTemplateRedDS2.position20),
+                ()->{}, ()->{}, ()->{},
+                () -> true,
+                () -> new Rotation2D(Math.toRadians(-180)), () -> new Rotation2D(Math.toRadians(-180)),
+                SpeedCurves.easeOut
+        ));
         commandSegments.add(commandFactory.moveFromPointToMidPointToPoint(
                 AutonomousTemplateRedDS2.position18, AutonomousTemplateRedDS2.position19, AutonomousTemplateRedDS2.position20, new Rotation2D(Math.toRadians(-180)), new Rotation2D(Math.toRadians(-180))
         ));
