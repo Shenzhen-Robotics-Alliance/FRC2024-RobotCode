@@ -36,9 +36,9 @@
     </hardware>
     <chassis>
         <wheelGearRatio type="double">6.75</wheelGearRatio>
-
         <!-- smart wheel speed control -->
         <wheelsPowerConstrain type="double">0.85</wheelsPowerConstrain>
+<!--        <wheelsPowerConstrain type="double">0.65</wheelsPowerConstrain>-->
     </chassis>
 
     <shooter>
@@ -67,7 +67,8 @@
         <position-DEFAULT>98</position-DEFAULT>
         <position-INTAKE>98</position-INTAKE>
         <position-SPLIT>70</position-SPLIT>
-        <position-SHOOT_NOTE>72</position-SHOOT_NOTE>
+<!--        <position-SHOOT_NOTE>72</position-SHOOT_NOTE>-->
+        <position-SHOOT_NOTE>70</position-SHOOT_NOTE>
         <position-SCORE_AMPLIFIER>1</position-SCORE_AMPLIFIER>
 
         <!-- software limit -->
@@ -112,9 +113,17 @@
         <errorTolerance>2</errorTolerance>
     </arm>
     <auto>
-        <autoStageMaxAcceleration type="double">11</autoStageMaxAcceleration>
-        <autoStageMaxVelocity type="double">4.2</autoStageMaxVelocity>
-        <autoStageMaxAngularVelocity type="double">120</autoStageMaxAngularVelocity> <!-- in deg/s -->
-        <inAdvanceTime>0.3</inAdvanceTime>
+<!--        <autoStageMaxAcceleration type="double">11</autoStageMaxAcceleration>-->
+<!--        <autoStageMaxVelocity type="double">4.2</autoStageMaxVelocity>-->
+<!--        <autoStageMaxAngularVelocity type="double">120</autoStageMaxAngularVelocity> &lt;!&ndash; in deg/s &ndash;&gt;-->
+<!--        <inAdvanceTime>0.3</inAdvanceTime>-->
+        <autoStageMaxAcceleration type="double">9</autoStageMaxAcceleration>
+        <autoStageMaxVelocity type="double">2.4</autoStageMaxVelocity>
+        <autoStageMaxAngularVelocity type="double">45</autoStageMaxAngularVelocity> <!-- in deg/s -->
+        <inAdvanceTime>0.1</inAdvanceTime>
     </auto>
+    <control-RM_POCKET>
+        <pilotControllerXAxisSensitivity type="int">65</pilotControllerXAxisSensitivity>
+        <pilotControllerYAxisSensitivity type="int">65</pilotControllerYAxisSensitivity>
+    </control-RM_POCKET>
 </robotConfig>

@@ -3,10 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.AutoStagePrograms.*;
-import frc.robot.Drivers.Visions.JetsonDetectionAppClient;
 import frc.robot.Services.*;
-import frc.robot.Utils.MathUtils.Rotation2D;
-import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.SequentialCommandSegment;
 import frc.robot.Utils.Tests.*;
 
@@ -65,7 +62,7 @@ public class RobotShell extends TimedRobot {
 //                30,
 //                new Vector2D(new double[] {0, -110})
 //                )
-                new RedDS2()
+                new DriveToFrontGrabNoteFaceFront()
         ); // TODO use sendable chooser
     }
 
@@ -106,7 +103,7 @@ public class RobotShell extends TimedRobot {
     public void testInit() {
         // System.out.println("<-- Robot Shell | test init -->");
         if (robotTest == null)
-            this.robotTest = new ShooterSpeedTest();
+            this.robotTest = new LEDStatusLightsTest();
         robotTest.testStart();
     }
 
@@ -127,12 +124,10 @@ public class RobotShell extends TimedRobot {
     private void startManualStage() {
         final List<RobotServiceBase> services = new ArrayList<>();
 
-        final PilotChassis pilotChassis = new PilotChassis(robotCore.chassisModule, robotCore.robotConfig);
         final TransformableIntakeAndShooterService intakeAndShooterService = new TransformableIntakeAndShooterService(robotCore.intake, robotCore.shooter, robotCore.transformableArm, robotCore.robotConfig, new XboxController(1));
         final VisionAidedPilotChassis visionAidedPilotChassis = new VisionAidedPilotChassis(robotCore.chassisModule, robotCore.shooter, robotCore.intake, robotCore.transformableArm, robotCore.speakerTarget, robotCore.amplifierTarget, robotCore.noteTarget, new XboxController(1), robotCore.robotConfig);
 
         services.add(intakeAndShooterService);
-        services.add(pilotChassis);
         services.add(visionAidedPilotChassis);
 
         robotCore.startStage(services);
