@@ -17,14 +17,16 @@ public class RedDS2 implements AutoStageProgram {
             assumedSpeakerPosition = new Vector2D(new double[] {1.45, 0}),
             allianceFrontNotePosition = new Vector2D(new double[] {0, 2.9}),
             allianceRighterNotePosition = new Vector2D(new double[] {1.45, 2.9}),
-            midLineLefterNotePosition = new Vector2D(new double[] {-1.68, 8.27}),
-            midLineCenterNotePosition = new Vector2D(new double[] {0, 8.27}),
+            midLineLefterNotePosition = new Vector2D(new double[] {-1.68, 8.27}).addBy(new Vector2D(new double[] {0, 0.5})),
+            midLineCenterNotePosition = new Vector2D(new double[] {0.3, 8.27}),
             midLineRighterNotePosition = new Vector2D(new double[] {1.68, 8.27});
     @Override
     public List<SequentialCommandSegment> getCommandSegments(RobotCore robotCore) {
+        final double timeScaleAutoIntake = 0.5;
+        final long intakeTimeOut = 3000;
         final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
         final SequentialCommandFactory commandFactory = new SequentialCommandFactory(robotCore, AutonomousTemplateRedDS2.startingPosition, new Rotation2D(Math.toRadians(-90)));
-        final AutoStageVisionAimBot aimBot = new AutoStageVisionAimBot(robotCore, 2000);
+        final AutoStageVisionAimBot aimBot = new AutoStageVisionAimBot(robotCore, intakeTimeOut);
         commandSegments.add(commandFactory.calibratePositionEstimator());
 
         /* shoot the first note */
@@ -36,8 +38,15 @@ public class RedDS2 implements AutoStageProgram {
 
         /* the note in front */
         commandSegments.add(commandFactory.justDoIt(aimBot.prepareToIntake()));
-        commandSegments.add(commandFactory.moveToPointIf(() -> true, AutonomousTemplateRedDS2.position1, ()->{}, () -> {}, () ->{}, new Rotation2D(Math.toRadians(180))));
-        commandSegments.add(aimBot.grabNote(() -> true, allianceFrontNotePosition, new Rotation2D(Math.toRadians(180)), 2000, false));
+        commandSegments.add(commandFactory.moveToPointIf(
+                () -> true, AutonomousTemplateRedDS2.position1, ()->{}, () -> {}, () ->{}, new Rotation2D(Math.toRadians(180)))
+        );
+        commandSegments.add(aimBot.grabNote(
+                () -> true,
+                allianceFrontNotePosition,
+                new Rotation2D(Math.toRadians(180)),
+                2000,
+                false));
         /* shoot the gabbed note */
         commandSegments.add(aimBot.shootWhileMoving(
                 new BezierCurve(AutonomousTemplateRedDS2.position1, AutonomousTemplateRedDS2.position2, AutonomousTemplateRedDS2.position3),
@@ -54,10 +63,13 @@ public class RedDS2 implements AutoStageProgram {
                 () -> new Rotation2D(Math.toRadians(-180)), () -> new Rotation2D(Math.toRadians(-180))
         ));
         /* the lefter note on the middle line */
-        commandSegments.add(commandFactory.moveFromPointToMidPointToPoint(
-                AutonomousTemplateRedDS2.position6, AutonomousTemplateRedDS2.position7, AutonomousTemplateRedDS2.position8,
-                aimBot.prepareToIntake(), () -> {}, () -> {},
-                new Rotation2D(Math.toRadians(-180)), new Rotation2D(Math.toRadians(-135))
+        commandSegments.add(new SequentialCommandSegment(
+                () -> true,
+                () -> new BezierCurve(AutonomousTemplateRedDS2.position6, AutonomousTemplateRedDS2.position7, AutonomousTemplateRedDS2.position8),
+                aimBot.prepareToIntake(), ()->{}, ()->{},
+                () -> true,
+                () -> new Rotation2D(Math.toRadians(-180)), () -> new Rotation2D(Math.toRadians(-135)),
+                SpeedCurves.easeOut,timeScaleAutoIntake
         ));
         commandSegments.add(aimBot.grabNote(midLineLefterNotePosition, new Rotation2D(Math.toRadians(-135)), 2000));
 
@@ -82,7 +94,7 @@ public class RedDS2 implements AutoStageProgram {
         ));
 
         /* grab the righter note of this alliance */
-        commandSegments.add(aimBot.grabNote(() -> true, allianceRighterNotePosition, new Rotation2D(Math.toRadians(180)), 2000, true));
+        commandSegments.add(aimBot.grabNote(() -> true, allianceRighterNotePosition, new Rotation2D(Math.toRadians(180)), intakeTimeOut, true));
         /* shoot still right here */
         commandSegments.add(aimBot.shootWhileMoving(
                 new BezierCurve(AutonomousTemplateRedDS2.position12, AutonomousTemplateRedDS2.position12.addBy(new Vector2D(new double[] {0, 1}))),
@@ -103,7 +115,16 @@ public class RedDS2 implements AutoStageProgram {
                 AutonomousTemplateRedDS2.position14, AutonomousTemplateRedDS2.position15,
                 new Rotation2D(Math.toRadians(-180)), new Rotation2D(Math.toRadians(-180))
         ));
-        commandSegments.add(aimBot.grabNote(midLineCenterNotePosition, new Rotation2D(Math.toRadians(-180)), 2000));
+        commandSegments.add(new SequentialCommandSegment(
+                () -> true,
+                () -> new BezierCurve(AutonomousTemplateRedDS2.position14, AutonomousTemplateRedDS2.position15),
+                ()->{}, ()->{}, ()->{},
+                () -> true,
+                () -> new Rotation2D(Math.toRadians(-180)), () -> new Rotation2D(Math.toRadians(-180)),
+                SpeedCurves.easeOut,
+                timeScaleAutoIntake
+                ));
+        commandSegments.add(aimBot.grabNote(midLineCenterNotePosition, new Rotation2D(Math.toRadians(-180)), intakeTimeOut));
 
         /* drive back in the same way */
         commandSegments.add(commandFactory.moveFromPointToPoint(
@@ -132,12 +153,12 @@ public class RedDS2 implements AutoStageProgram {
                 ()->{}, ()->{}, ()->{},
                 () -> true,
                 () -> new Rotation2D(Math.toRadians(-180)), () -> new Rotation2D(Math.toRadians(-180)),
-                SpeedCurves.easeOut
+                SpeedCurves.easeOut, timeScaleAutoIntake
         ));
         commandSegments.add(commandFactory.moveFromPointToMidPointToPoint(
                 AutonomousTemplateRedDS2.position18, AutonomousTemplateRedDS2.position19, AutonomousTemplateRedDS2.position20, new Rotation2D(Math.toRadians(-180)), new Rotation2D(Math.toRadians(-180))
         ));
-        commandSegments.add(aimBot.grabNote(midLineRighterNotePosition, new Rotation2D(Math.toRadians(135)), 2000));
+        commandSegments.add(aimBot.grabNote(midLineRighterNotePosition, new Rotation2D(Math.toRadians(135)), intakeTimeOut));
         /* shoot the last note and stop */
         commandSegments.add(aimBot.shootWhileMoving(
                 new BezierCurve(AutonomousTemplateRedDS2.position20, AutonomousTemplateRedDS2.position21, AutonomousTemplateRedDS2.position22),

@@ -8,6 +8,7 @@ import frc.robot.Modules.UpperStructure.TransformableArm;
 import frc.robot.RobotCore;
 import frc.robot.Utils.MathUtils.BezierCurve;
 import frc.robot.Utils.MathUtils.Rotation2D;
+import frc.robot.Utils.MathUtils.SpeedCurves;
 import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.SequentialCommandSegment;
 
@@ -92,7 +93,8 @@ public class AutoStageVisionAimBot {
                 },
                 () -> timeSinceTaskStarted.get() * 1000 > timeOutMillis
                         || timeSinceNoteGone.get() > 0.05,
-                () -> null, () -> null
+                () -> null, () -> null,
+                SpeedCurves.slowDown, 0.6 // TODO in robotConfig
         );
     }
 

@@ -59,7 +59,7 @@ public class AutoProgramRunner extends RobotServiceBase {
 
 
         if (currentPathSchedule != null) {
-            final double translationalT = currentPathSchedule.nextCheckPoint(dt.get()),
+            final double translationalT = currentPathSchedule.nextCheckPoint(dt.get() * currentCommandSegment.timeScale),
                     actualInAdvanceTime = MathUtil.clamp(inAdvanceTime, 0, (1-translationalT)* currentSegmentRotationScheduleETA);
             final Vector2D inAdvanceSpace =  currentPathSchedule.getVelocityWithLERP().multiplyBy(actualInAdvanceTime);
             robotChassis.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(

@@ -16,10 +16,12 @@ public class SequentialCommandSegment {
     public final InitiateCondition initiateCondition;
     public final RotationFeeder startingRotationFeeder, endingRotationFeeder;
     public final SpeedCurves.SpeedCurve speedCurve;
+    public final double timeScale;
     public SequentialCommandSegment (InitiateCondition initiateCondition, BezierCurveFeeder pathFeeder, Runnable beginning, Runnable periodic, Runnable ending, IsCompleteChecker isCompleteChecker, RotationFeeder startingRotation, RotationFeeder endingRotation) {
-        this(initiateCondition, pathFeeder, beginning, periodic, ending, isCompleteChecker, startingRotation, endingRotation, SpeedCurves.originalSpeed);
+        this(initiateCondition, pathFeeder, beginning, periodic, ending, isCompleteChecker, startingRotation, endingRotation, SpeedCurves.originalSpeed, 1);
     }
-    public SequentialCommandSegment(InitiateCondition initiateCondition, BezierCurveFeeder pathFeeder, Runnable beginning, Runnable periodic, Runnable ending, IsCompleteChecker isCompleteChecker, RotationFeeder startingRotation, RotationFeeder endingRotation, SpeedCurves.SpeedCurve speedCurve) {
+
+    public SequentialCommandSegment(InitiateCondition initiateCondition, BezierCurveFeeder pathFeeder, Runnable beginning, Runnable periodic, Runnable ending, IsCompleteChecker isCompleteChecker, RotationFeeder startingRotation, RotationFeeder endingRotation, SpeedCurves.SpeedCurve speedCurve, double timeScale) {
         this.chassisMovementPathFeeder = pathFeeder;
 
         this.beginning = beginning;
@@ -32,22 +34,7 @@ public class SequentialCommandSegment {
         this.startingRotationFeeder = startingRotation;
         this.endingRotationFeeder = endingRotation;
         this.speedCurve = speedCurve;
-    }
-
-    public double getStartingRotation() {
-        return startingRotationFeeder.getRotation().getRadian();
-    }
-
-    public double getEndingRotation() {
-        return endingRotationFeeder.getRotation().getRadian();
-    }
-
-    public double getMaxAngularVelocity() {
-        return Math.abs(AngleUtils.getActualDifference(getStartingRotation(),  getEndingRotation()));
-    }
-
-    public BezierCurve getChassisMovementPath() {
-        return chassisMovementPathFeeder.getBezierCurve();
+        this.timeScale = timeScale;
     }
 
     public interface IsCompleteChecker {boolean isComplete();}
@@ -64,7 +51,7 @@ public class SequentialCommandSegment {
                 chassisMovementPathFeeder.getBezierCurve(),
                 beginning,periodic,ending,initiateCondition, isCompleteChecker,
                 startingRotationFeeder.getRotation(),endingRotationFeeder.getRotation(),
-                this.speedCurve
+                this.speedCurve, this.timeScale
         );
     }
     /**
@@ -77,7 +64,8 @@ public class SequentialCommandSegment {
         public final IsCompleteChecker isCompleteChecker;
         public final Rotation2D startingRotation, endingRotation;
         public final SpeedCurves.SpeedCurve speedCurve;
-        public StaticSequentialCommandSegment(BezierCurve chassisMovementPath, Runnable beginning, Runnable periodic, Runnable ending, InitiateCondition initiateCondition, IsCompleteChecker isCompleteChecker, Rotation2D startingRotation, Rotation2D endingRotation, SpeedCurves.SpeedCurve speedCurve) {
+        public final double timeScale;
+        public StaticSequentialCommandSegment(BezierCurve chassisMovementPath, Runnable beginning, Runnable periodic, Runnable ending, InitiateCondition initiateCondition, IsCompleteChecker isCompleteChecker, Rotation2D startingRotation, Rotation2D endingRotation, SpeedCurves.SpeedCurve speedCurve, double timeScale) {
             this.chassisMovementPath = chassisMovementPath;
             this.beginning = beginning;
             this.periodic = periodic;
@@ -87,12 +75,13 @@ public class SequentialCommandSegment {
             this.startingRotation = startingRotation;
             this.endingRotation = endingRotation;
             this.speedCurve = speedCurve;
+            this.timeScale = timeScale;
         }
 
         public double getCurrentRotationWithLERP(double t) {
             if (startingRotation == null || endingRotation == null)
                 throw new IllegalStateException("cannot obtain current rotation when the starting or ending rotation is not specified");
-            t = speedCurve.getScaledT(t);
+            t = speedCurve.getScaledT(t) * timeScale;
             if (t<0) t=0;
             else if (t>1) t=1;
             return AngleUtils.simplifyAngle(startingRotation.getRadian() + AngleUtils.getActualDifference(startingRotation.getRadian(), endingRotation.getRadian())*t);
