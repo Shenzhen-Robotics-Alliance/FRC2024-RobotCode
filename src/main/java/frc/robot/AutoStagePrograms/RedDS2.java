@@ -36,8 +36,7 @@ public class RedDS2 implements AutoStageProgram {
         /* the note in front */
         commandSegments.add(commandFactory.justDoIt(aimBot.prepareToIntake()));
         commandSegments.add(commandFactory.moveToPointIf(() -> true, AutonomousTemplateRedDS2.position1, ()->{}, () -> {}, () ->{}, new Rotation2D(Math.toRadians(180))));
-        commandSegments.add(aimBot.grabNote(() -> true, allianceFrontNotePosition, new Rotation2D(Math.toRadians(180)), 10000, false));
-        // commandSegments.add(aimBot.grabNote(() -> true, allianceFrontNotePosition, new Rotation2D(Math.toRadians(180)), 2000, true));
+        commandSegments.add(aimBot.grabNote(() -> true, allianceFrontNotePosition, new Rotation2D(Math.toRadians(180)), 2000, false));
         /* shoot the gabbed note */
         commandSegments.add(aimBot.shootWhileMoving(
                 new BezierCurve(AutonomousTemplateRedDS2.position1, AutonomousTemplateRedDS2.position2, AutonomousTemplateRedDS2.position3),

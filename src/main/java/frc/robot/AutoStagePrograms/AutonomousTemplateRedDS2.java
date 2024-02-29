@@ -12,11 +12,11 @@ import java.util.List;
 
 public class AutonomousTemplateRedDS2 implements AutoStageProgram {
     public static final Vector2D startingPosition = new Vector2D(new double[] {0, 0.4}),
-            position1 = new Vector2D(new double[] {0, 1.5}),
+            position1 = new Vector2D(new double[] {0, 1.3}),
             position2 = new Vector2D(new double[] {0.8, 1.7}),
             position3 = new Vector2D(new double[] {0.8, 2.5}),
             position4 = new Vector2D(new double[] {1.5, 5}),
-            position5 = new Vector2D(new double[] {-0.5, 5.3}),
+            position5 = new Vector2D(new double[] {0, 5.3}),
             position6 = new Vector2D(new double[] {-0.7, 6.5}),
             position7 = new Vector2D(new double[] {-1, 8.2}),
             position8 = RedDS2.midLineLefterNotePosition.addBy(new Vector2D(new double[] {0.4, -0.4})),
