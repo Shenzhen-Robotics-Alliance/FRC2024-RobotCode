@@ -67,7 +67,7 @@
         <position-DEFAULT>98</position-DEFAULT>
         <position-INTAKE>98</position-INTAKE>
         <position-SPLIT>70</position-SPLIT>
-        <position-SHOOT_NOTE>82</position-SHOOT_NOTE>
+        <position-SHOOT_NOTE>72</position-SHOOT_NOTE>
         <position-SCORE_AMPLIFIER>1</position-SCORE_AMPLIFIER>
 
         <!-- software limit -->
@@ -105,17 +105,16 @@
 
         <!-- simple arm controller -->
         <maxPowerWhenMovingUp>0.65</maxPowerWhenMovingUp>
-        <maxPowerWhenMovingDown>0.45</maxPowerWhenMovingDown>
-        <errorStartDecelerate>28</errorStartDecelerate>
+        <maxPowerWhenMovingDown>0.35</maxPowerWhenMovingDown>
+        <errorStartDecelerate>20</errorStartDecelerate>
         <powerNeededToMoveUp>0.26</powerNeededToMoveUp>
         <powerNeededToMoveDown>0.08</powerNeededToMoveDown>
         <errorTolerance>2</errorTolerance>
     </arm>
     <auto>
-        <autoStageMaxAcceleration type="double">7</autoStageMaxAcceleration>
-        <autoStageMaxVelocity type="double">3</autoStageMaxVelocity>
-        <autoStageMaxAngularVelocity type="double">90</autoStageMaxAngularVelocity> <!-- in deg/s -->
-
-        <inAdvanceTime>0.1</inAdvanceTime>
+        <autoStageMaxAcceleration type="double">9</autoStageMaxAcceleration>
+        <autoStageMaxVelocity type="double">3.5</autoStageMaxVelocity>
+        <autoStageMaxAngularVelocity type="double">120</autoStageMaxAngularVelocity> <!-- in deg/s -->
+        <inAdvanceTime>0.3</inAdvanceTime>
     </auto>
 </robotConfig>

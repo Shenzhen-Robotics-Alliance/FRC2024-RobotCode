@@ -6,25 +6,21 @@ import frc.robot.Modules.RobotModuleBase;
 import frc.robot.Utils.ComputerVisionUtils.AprilTagReferredTarget;
 import frc.robot.Utils.EasyShuffleBoard;
 import frc.robot.Utils.MathUtils.LookUpTable;
-import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.StatisticsUtils;
 import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 import frc.robot.Utils.MechanismControllers.FlyWheelSpeedController;
 import frc.robot.Utils.RobotConfigReader;
 import frc.robot.Utils.RobotModuleOperatorMarker;
-import frc.robot.Utils.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeoutException;
 
 public class Shooter extends RobotModuleBase {
     public enum ShooterMode {
         DISABLED,
+        PREPARE_TO_SHOOT,
         SHOOT,
         AMPLIFY,
         SPECIFIED_RPM
@@ -134,6 +130,7 @@ public class Shooter extends RobotModuleBase {
             case SHOOT -> aimingSystemDecidedRPM;
             case AMPLIFY -> amplifyingRPM;
             case SPECIFIED_RPM -> specifiedRPM;
+            case PREPARE_TO_SHOOT -> preparingForShootRPM;
             default -> idleRPM; // idle
         };
     }
@@ -164,7 +161,7 @@ public class Shooter extends RobotModuleBase {
             shooter.disableMotor(this);
     }
 
-    private double defaultShootingRPM, amplifyingRPM, idleRPM, projectileSpeed, shootingRange, additionalInAdvanceTime;
+    private double defaultShootingRPM, preparingForShootRPM, amplifyingRPM, idleRPM, projectileSpeed, shootingRange, additionalInAdvanceTime;
     private LookUpTable shooterRPMToTargetDistanceLookUpTable;
 
     /** the desired arm position for aiming, in degrees and in reference to the default shooting position of the arm, which is specified in the arm configs */
@@ -184,6 +181,7 @@ public class Shooter extends RobotModuleBase {
         this.armPositionDegreesToTargetDistanceLookUpTable = new LookUpTable(StatisticsUtils.toArray(speakerTargetDistances), StatisticsUtils.toArray(armAngles));
 
         this.defaultShootingRPM = robotConfig.getConfig("shooter", "defaultShootingRPM");
+        this.preparingForShootRPM = robotConfig.getConfig("shooter", "preparingForShootRPM");
         this.amplifyingRPM = robotConfig.getConfig("shooter", "amplifyRPM");
         this.idleRPM = robotConfig.getConfig("shooter", "idleRPM");
         this.projectileSpeed = robotConfig.getConfig("shooter", "projectileSpeed");

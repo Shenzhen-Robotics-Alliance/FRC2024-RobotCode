@@ -22,7 +22,11 @@ public class AutoStageVisionAimBot {
     public SequentialCommandSegment grabNote(Vector2D assumedNotePosition, Rotation2D desiredRobotRotation, long timeOutMillis) {
         return grabNote(()->true, assumedNotePosition, desiredRobotRotation, timeOutMillis);
     }
+
     public SequentialCommandSegment grabNote(SequentialCommandSegment.InitiateCondition initiateCondition, Vector2D assumedNotePosition, Rotation2D desiredRobotRotation, long timeOutMillis) {
+        return grabNote(initiateCondition, assumedNotePosition, desiredRobotRotation, timeOutMillis, false);
+    }
+    public SequentialCommandSegment grabNote(SequentialCommandSegment.InitiateCondition initiateCondition, Vector2D assumedNotePosition, Rotation2D desiredRobotRotation, long timeOutMillis, boolean accelerateShooters) {
         final Timer timer = new Timer();
         timer.start();
         return new SequentialCommandSegment(
@@ -35,12 +39,16 @@ public class AutoStageVisionAimBot {
                             noteFieldPosition = noteFieldPositionByCamera == null ? assumedNotePosition : noteFieldPositionByCamera,
                             pathAnotherPoint = noteFieldPosition.addBy(intakeProcessPath.multiplyBy(desiredRobotRotation).multiplyBy(-1)),
                             pathEndPoint = noteFieldPosition.addBy(intakeProcessPath.multiplyBy(desiredRobotRotation));
+                    if (noteFieldPositionByCamera == null)
+                        System.out.println("<-- note field position not found -->");
+                    else
+                        System.out.println("<-- updated note field position to be: " + noteFieldPositionByCamera + " -->");
                     return new BezierCurve(robotCore.positionReader.getRobotPosition2D(), pathAnotherPoint, pathEndPoint);
                 },
                 timer::reset,
                 () -> {
                     robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, null);
-                    robotCore.shooter.setShooterMode(Shooter.ShooterMode.DISABLED, null);
+                    robotCore.shooter.setShooterMode(accelerateShooters ? Shooter.ShooterMode.PREPARE_TO_SHOOT : Shooter.ShooterMode.DISABLED, null);
                     if (robotCore.transformableArm.transformerInPosition())
                         robotCore.intake.startIntake(null);
                     robotCore.chassisModule.setOrientationMode(SwerveBasedChassis.OrientationMode.FIELD, null);
@@ -79,7 +87,8 @@ public class AutoStageVisionAimBot {
                     robotCore.intake.turnOffIntake(null);
                     robotCore.shooter.aimingSystem.defaultTargetFieldPosition = null;
                 },
-                () -> timeSinceTaskStarted.get() * 1000 > timeOutMillis || timeSinceNoteGone.get() > 0.1,
+                () -> timeSinceTaskStarted.get() * 1000 > timeOutMillis
+                        || timeSinceNoteGone.get() > 0.05,
                 () -> null, () -> null
         );
     }
@@ -87,7 +96,7 @@ public class AutoStageVisionAimBot {
     public Runnable prepareToShoot() {
         return () -> {
             robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, null);
-            robotCore.shooter.setShooterMode(Shooter.ShooterMode.SHOOT, null);
+            robotCore.shooter.setShooterMode(Shooter.ShooterMode.PREPARE_TO_SHOOT, null);
         };
     }
 

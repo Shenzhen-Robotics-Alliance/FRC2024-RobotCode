@@ -107,7 +107,7 @@ public class RobotCore {
                         aprilTagDetectionAppClient,
                         new FixedAngleCameraProfile(
                                 0.385,
-                                -0.00180,
+                                -0.0018,
                                 -0.00179
                         ),
                         targetHeights
@@ -116,9 +116,9 @@ public class RobotCore {
                 notePositionTrackingCamera = new FixedAnglePositionTrackingCamera(
                         noteDetectionAppClient,
                         new FixedAngleCameraProfile(
-                                -1.135,
+                                -1.0615,
                                 -0.002,
-                                -0.00133
+                                -0.00148
                         ),
                         new double[] {-30, -30, -30},
                         new Rotation2D(Math.PI)
@@ -128,11 +128,11 @@ public class RobotCore {
                 final DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Red); // default to red
                 if (alliance == DriverStation.Alliance.Red) {
                         speakerTargetAprilTagReferences.put(4, new Vector2D(new double[] {0.05,0}));
-                        // speakerTargetAprilTagReferences.put(3, new Vector2D(new double[] {-0.6,0}));
+                        speakerTargetAprilTagReferences.put(3, new Vector2D(new double[] {-0.5,0}));
                         amplifierTargetAprilTagReferences.put(5, new Vector2D(new double[] {0, 0}));
                 } else {
                         speakerTargetAprilTagReferences.put(7, new Vector2D(new double[] {0.05,0}));
-                        speakerTargetAprilTagReferences.put(8, new Vector2D(new double[] {-0.6,0}));
+                        speakerTargetAprilTagReferences.put(8, new Vector2D(new double[] {-0.5,0}));
                         amplifierTargetAprilTagReferences.put(6, new Vector2D(new double[] {0, 0}));
                 }
                 noteTargetReferences.put(1, new Vector2D()); // the id of note is always 0, and the note is itself the reference so the relative position is (0,0)

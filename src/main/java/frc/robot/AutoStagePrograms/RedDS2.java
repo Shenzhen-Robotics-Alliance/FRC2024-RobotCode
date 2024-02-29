@@ -30,19 +30,19 @@ public class RedDS2 implements AutoStageProgram {
         commandSegments.add(aimBot.shootWhileMoving(
                 new BezierCurve(AutonomousTemplateRedDS2.startingPosition, AutonomousTemplateRedDS2.position1),
                 assumedSpeakerPosition,
-                6000
+                4000
         ));
 
         /* the note in front */
         commandSegments.add(commandFactory.justDoIt(aimBot.prepareToIntake()));
         commandSegments.add(commandFactory.moveToPointIf(() -> true, AutonomousTemplateRedDS2.position1, ()->{}, () -> {}, () ->{}, new Rotation2D(Math.toRadians(180))));
-        commandSegments.add(aimBot.grabNote(allianceFrontNotePosition, new Rotation2D(Math.toRadians(180)), 2000));
-
+        commandSegments.add(aimBot.grabNote(() -> true, allianceFrontNotePosition, new Rotation2D(Math.toRadians(180)), 10000, false));
+        // commandSegments.add(aimBot.grabNote(() -> true, allianceFrontNotePosition, new Rotation2D(Math.toRadians(180)), 2000, true));
         /* shoot the gabbed note */
         commandSegments.add(aimBot.shootWhileMoving(
                 new BezierCurve(AutonomousTemplateRedDS2.position1, AutonomousTemplateRedDS2.position2, AutonomousTemplateRedDS2.position3),
                 assumedSpeakerPosition,
-                6000
+                4000
         ));
 
         /* go over the stage zone */
@@ -53,7 +53,6 @@ public class RedDS2 implements AutoStageProgram {
                 () -> true,
                 () -> new Rotation2D(Math.toRadians(-180)), () -> new Rotation2D(Math.toRadians(-180))
         ));
-
         /* the lefter note on the middle line */
         commandSegments.add(commandFactory.moveFromPointToMidPointToPoint(
                 AutonomousTemplateRedDS2.position6, AutonomousTemplateRedDS2.position7, AutonomousTemplateRedDS2.position8,
@@ -71,36 +70,34 @@ public class RedDS2 implements AutoStageProgram {
         commandSegments.add(new SequentialCommandSegment(
                 () -> true,
                 () -> new BezierCurve(AutonomousTemplateRedDS2.position6, AutonomousTemplateRedDS2.position5, AutonomousTemplateRedDS2.position4, AutonomousTemplateRedDS2.position3),
-                () -> {}, () -> {}, () -> {},
+                aimBot.prepareToShoot(), () -> {}, () -> {},
                 () -> true,
                 () -> new Rotation2D(Math.toRadians(-180)), () -> new Rotation2D(Math.toRadians(-180))
         ));
-
         /* shoot the note */
         commandSegments.add(aimBot.shootWhileMoving(
                 new BezierCurve(AutonomousTemplateRedDS2.position3, AutonomousTemplateRedDS2.position10, AutonomousTemplateRedDS2.position11),
                 assumedSpeakerPosition,
-                3000
+                4000
         ));
 
         /* grab the righter note of this alliance */
-        commandSegments.add(aimBot.grabNote(allianceRighterNotePosition, new Rotation2D(Math.toRadians(180)), 2000));
+        commandSegments.add(aimBot.grabNote(() -> true, allianceRighterNotePosition, new Rotation2D(Math.toRadians(180)), 2000, true));
         /* shoot still right here */
         commandSegments.add(aimBot.shootWhileMoving(
-                null,
+                new BezierCurve(AutonomousTemplateRedDS2.position12, AutonomousTemplateRedDS2.position4),
                 assumedSpeakerPosition,
-                2000
+                4000
         ));
 
         /* move back, crossing stage */
         commandSegments.add(new SequentialCommandSegment(
                 () -> true,
-                () -> new BezierCurve(AutonomousTemplateRedDS2.position12, AutonomousTemplateRedDS2.position4, AutonomousTemplateRedDS2.position13, AutonomousTemplateRedDS2.position14),
+                () -> new BezierCurve(AutonomousTemplateRedDS2.position4, AutonomousTemplateRedDS2.position13, AutonomousTemplateRedDS2.position14),
                 () -> {}, () -> {}, () -> {},
                 () -> true,
                 () -> new Rotation2D(Math.toRadians(-180)), () -> new Rotation2D(Math.toRadians(-180))
         ));
-
         /* grab the center note on middle line */
         commandSegments.add(commandFactory.moveFromPointToPoint(
                 AutonomousTemplateRedDS2.position14, AutonomousTemplateRedDS2.position15,
@@ -121,7 +118,6 @@ public class RedDS2 implements AutoStageProgram {
                 () -> true,
                 () -> new Rotation2D(Math.toRadians(-180)), () -> new Rotation2D(Math.toRadians(-180))
         ));
-
         /* shoot */
         commandSegments.add(aimBot.shootWhileMoving(
                 new BezierCurve(AutonomousTemplateRedDS2.position16, AutonomousTemplateRedDS2.position12, AutonomousTemplateRedDS2.position17, AutonomousTemplateRedDS2.position18),
@@ -134,7 +130,6 @@ public class RedDS2 implements AutoStageProgram {
                 AutonomousTemplateRedDS2.position18, AutonomousTemplateRedDS2.position19, AutonomousTemplateRedDS2.position20, new Rotation2D(Math.toRadians(-180)), new Rotation2D(Math.toRadians(-180))
         ));
         commandSegments.add(aimBot.grabNote(midLineRighterNotePosition, new Rotation2D(Math.toRadians(135)), 2000));
-
         /* shoot the last note and stop */
         commandSegments.add(aimBot.shootWhileMoving(
                 new BezierCurve(AutonomousTemplateRedDS2.position20, AutonomousTemplateRedDS2.position21, AutonomousTemplateRedDS2.position22),

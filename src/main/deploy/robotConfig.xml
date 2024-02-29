@@ -112,34 +112,35 @@
         <speedControllerTimeNeededToAccelerateToMaxSpeed>0.7</speedControllerTimeNeededToAccelerateToMaxSpeed>
         <flyWheelSpeedErrorTolerance>0.05</flyWheelSpeedErrorTolerance>
 
-        <additionalInAdvanceTime>0.4</additionalInAdvanceTime>
+        <additionalInAdvanceTime>0.3</additionalInAdvanceTime>
 
-        <defaultShootingRPM>5600</defaultShootingRPM>
+        <defaultShootingRPM>5200</defaultShootingRPM>
         <amplifyRPM>1200</amplifyRPM>
         <idleRPM>0</idleRPM>
+        <preparingForShootRPM>2000</preparingForShootRPM>
         <projectileSpeed>8</projectileSpeed>
         <shootingRange>4</shootingRange>
 
         <!-- shooting lookup table -->
         <targetDistance0>1.5</targetDistance0>
         <shooterRPM0>3500</shooterRPM0>
-        <armAngle0>-2</armAngle0>
+        <armAngle0>8</armAngle0>
 
         <targetDistance1>2</targetDistance1>
         <shooterRPM1>4000</shooterRPM1>
-        <armAngle1>-13</armAngle1>
+        <armAngle1>-3</armAngle1>
 
         <targetDistance2>2.5</targetDistance2>
         <shooterRPM2>4600</shooterRPM2>
-        <armAngle2>-19</armAngle2>
+        <armAngle2>-9</armAngle2>
 
         <targetDistance3>3</targetDistance3>
         <shooterRPM3>5800</shooterRPM3>
-        <armAngle3>-29</armAngle3>
+        <armAngle3>-19</armAngle3>
 
         <targetDistance4>3.5</targetDistance4>
         <shooterRPM4>6000</shooterRPM4>
-        <armAngle4>-32</armAngle4>
+        <armAngle4>-22</armAngle4>
 
         <targetDistance5>4</targetDistance5>
         <shooterRPM5>6000</shooterRPM5>
@@ -182,12 +183,6 @@
         <autoStageMaxAngularVelocity type="double">160</autoStageMaxAngularVelocity> <!-- in deg/s -->
 
         <inAdvanceTime>0.4</inAdvanceTime>
-
-        <!-- low speed, for testing -->
-<!--        <autoStageMaxAcceleration type="double">4</autoStageMaxAcceleration>-->
-<!--        <autoStageMaxVelocity type="double">2</autoStageMaxVelocity>-->
-<!--        <autoStageMaxAngularVelocity type="double">60</autoStageMaxAngularVelocity> &lt;!&ndash; in deg/s &ndash;&gt;-->
-<!--        <inAdvanceTime>0.15</inAdvanceTime>-->
     </auto>
     <!-- the config for xbox controller, currently using radio master in replace -->
     <control-RM_POCKET>
