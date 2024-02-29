@@ -31,20 +31,7 @@ public class AutoStageVisionAimBot {
         timer.start();
         return new SequentialCommandSegment(
                 initiateCondition,
-                () -> {
-                    final double intakeDistance = 0.2;
-                    final Vector2D
-                            intakeProcessPath = new Vector2D(new double[] {0, -intakeDistance}),
-                            noteFieldPositionByCamera = robotCore.noteTarget.getTargetFieldPositionWithAprilTags(timeUnseenToleranceMillis),
-                            noteFieldPosition = noteFieldPositionByCamera == null ? assumedNotePosition : noteFieldPositionByCamera,
-                            pathAnotherPoint = noteFieldPosition.addBy(intakeProcessPath.multiplyBy(desiredRobotRotation).multiplyBy(-1)),
-                            pathEndPoint = noteFieldPosition.addBy(intakeProcessPath.multiplyBy(desiredRobotRotation));
-                    if (noteFieldPositionByCamera == null)
-                        System.out.println("<-- note field position not found -->");
-                    else
-                        System.out.println("<-- updated note field position to be: " + noteFieldPositionByCamera + " -->");
-                    return new BezierCurve(robotCore.positionReader.getRobotPosition2D(), pathAnotherPoint, pathEndPoint);
-                },
+                () -> null,
                 timer::reset,
                 () -> {
                     robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, null);
@@ -52,6 +39,21 @@ public class AutoStageVisionAimBot {
                     if (robotCore.transformableArm.transformerInPosition())
                         robotCore.intake.startIntake(null);
                     robotCore.chassisModule.setOrientationMode(SwerveBasedChassis.OrientationMode.FIELD, null);
+
+                    final double intakeDistance = 0.2, intakeTime = 0.6;
+                    final Vector2D
+                            intakeProcessPath = new Vector2D(new double[] {0, -intakeDistance}),
+                            noteFieldPositionByCamera = robotCore.noteTarget.getTargetFieldPositionWithAprilTags(timeUnseenToleranceMillis),
+                            noteFieldPosition = noteFieldPositionByCamera == null ? assumedNotePosition : noteFieldPositionByCamera,
+                            pathAnotherPoint = noteFieldPosition.addBy(intakeProcessPath.multiplyBy(desiredRobotRotation).multiplyBy(-1)),
+                            pathEndPoint = noteFieldPosition.addBy(intakeProcessPath.multiplyBy(desiredRobotRotation));
+                    final BezierCurve pathCurve = new BezierCurve(robotCore.positionReader.getRobotPosition2D(), pathAnotherPoint, pathEndPoint);
+                    final Vector2D currentDesiredPosition = pathCurve.getPositionWithLERP(timer.get() / intakeTime);
+                    if (noteFieldPositionByCamera == null)
+                        System.out.println("<-- note field position not found -->");
+                    else
+                        System.out.println("<-- updated note field position to be: " + noteFieldPositionByCamera + " -->");
+                    robotCore.chassisModule.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION, currentDesiredPosition), null);
                 },
                 () -> robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, null),
                 () -> timer.get() * 1000 > timeOutMillis || robotCore.intake.isNoteInsideIntake(),
