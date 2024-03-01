@@ -110,9 +110,8 @@ public class BlueDS2 implements AutoStageProgram {
         commandSegments.add(new SequentialCommandSegment(
                 () -> true,
                 () -> new BezierCurve(AutonomousTemplateBlueDS2.position6, AutonomousTemplateBlueDS2.position5, AutonomousTemplateBlueDS2.position4, AutonomousTemplateBlueDS2.position3),
-                aimBot.prepareToShoot(), () -> {
-        }, () -> {
-        },
+                // aimBot.prepareToShoot(), () -> {}, () -> {},
+                () -> {}, () -> {}, aimBot.prepareToShoot(),
                 () -> true,
                 () -> new Rotation2D(Math.toRadians(-180)), () -> new Rotation2D(Math.toRadians(-180))
         ));
@@ -163,10 +162,7 @@ public class BlueDS2 implements AutoStageProgram {
         commandSegments.add(new SequentialCommandSegment(
                 () -> true,
                 () -> new BezierCurve(AutonomousTemplateBlueDS2.position15, AutonomousTemplateBlueDS2.position14),
-                () -> {
-                }, () -> {
-        }, () -> {
-        },
+                () -> {}, () -> {}, () -> {},
                 robotCore.transformableArm::transformerInPosition,
                 () -> new Rotation2D(Math.toRadians(-135)), () -> new Rotation2D(Math.toRadians(-180))
         ));
@@ -174,10 +170,7 @@ public class BlueDS2 implements AutoStageProgram {
         commandSegments.add(new SequentialCommandSegment(
                 () -> true,
                 () -> new BezierCurve(AutonomousTemplateBlueDS2.position14, AutonomousTemplateBlueDS2.position13, AutonomousTemplateBlueDS2.position4, AutonomousTemplateBlueDS2.position16),
-                () -> {
-                }, () -> {
-        }, () -> {
-        },
+                () -> {}, () -> {}, aimBot.prepareToShoot(),
                 () -> true,
                 () -> new Rotation2D(Math.toRadians(-180)), () -> new Rotation2D(Math.toRadians(-180))
         ));

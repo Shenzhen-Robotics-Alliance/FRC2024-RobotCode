@@ -95,7 +95,7 @@ public class RedDS2 implements AutoStageProgram {
         commandSegments.add(new SequentialCommandSegment(
                 () -> true,
                 () -> new BezierCurve(AutonomousTemplateRedDS2.position6, AutonomousTemplateRedDS2.position5, AutonomousTemplateRedDS2.position4, AutonomousTemplateRedDS2.position3),
-                aimBot.prepareToShoot(), () -> {}, () -> {},
+                () -> {}, () -> {}, aimBot.prepareToShoot(),
                 () -> true,
                 () -> new Rotation2D(Math.toRadians(-180)), () -> new Rotation2D(Math.toRadians(-180))
         ));
@@ -148,7 +148,7 @@ public class RedDS2 implements AutoStageProgram {
         commandSegments.add(new SequentialCommandSegment(
                 () -> true,
                 () -> new BezierCurve(AutonomousTemplateRedDS2.position14, AutonomousTemplateRedDS2.position13, AutonomousTemplateRedDS2.position4, AutonomousTemplateRedDS2.position16),
-                () -> {}, () -> {}, () -> {},
+                () -> {}, () -> {}, aimBot.prepareToShoot(),
                 () -> true,
                 () -> new Rotation2D(Math.toRadians(-180)), () -> new Rotation2D(Math.toRadians(-180))
         ));
