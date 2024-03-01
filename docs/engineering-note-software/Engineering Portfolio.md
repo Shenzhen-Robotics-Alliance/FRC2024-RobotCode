@@ -8,12 +8,16 @@ Team 5516 *"IRON MAPLE"*, presents.
 </div>
 
 ## Overview
-Our robot this year highlights its self-driving capability. A variety of sensors and algorithms, which will be introduced in detail, are implemented so that robot can complete the majority of tasks on field **BY ITSELF**. This engineering portfolio is highly focused on how we achived these auto-piloting functions.  Other aspects are only introduced **IN BRIEF**,  and in-depth discussions are in *the annexes*.
+This year's robot, "PHANTOM," showcases its autonomous capabilities, employing a suite of sensors and algorithms to independently execute most field tasks. This portfolio concentrates on the development of these autopilot functions, briefly touching on other aspects, with detailed discussions available in the annexes.
 
 ## Hardware Components (in brief)
-Our robot is built upon a -inch, square-shaped chassis with four swerve modules on it. It is customly designed to be smaller for easier shipment.
+"PHANTOM" features a custom-designed, square-shaped chassis with four advanced swerve modules, optimized for easy transportation.
 
-A feeder is installed in the back of the chassis, rollers on the feeder spins to suck the Note from the ground and feed it to the intake & shoot module.
+At the rear, a feeder equipped with rollers collects Notes from the ground, directing them to the intake and shoot module.
+
+The intake & shoot module, mounted on an arm, performs three functions: grabbing Notes from the feeder, shooting Notes to the "Speaker," and directing them to the amplifier when positioned vertically.
+
+A key innovation is our robot's modular design, allowing for disassembly into four parts for convenient transport and reassembly within three hours—a crucial feature for overseas competitions.
 <div style="display: flex;">
     <img src="images/chassis.png" alt="Alt Text 1" style="width:50%">
     <img src="images/feeder1.jpg" alt="Alt Text 1" style="width:50%">
@@ -23,15 +27,8 @@ A feeder is installed in the back of the chassis, rollers on the feeder spins to
     <img src="images/intake and shoot module.jpg" alt="Alt Text 1" style="width:50%">
 </div>
 
-Carried by the arm, the intake & shoot module is a mechanism that can do three jobs. If we lower the arm, the intake can grab notes from the feeder.  Raising the arm higher, the fly wheels can accelerate the Note to shoot it to the "Speaker".  As to amplifier, we raise the arm vertically and shoot the Note down. 
-[拼装前箱子，拼装后机器]
-Another highlight of our robot is its modular design.  Our robot can be seperated to four parts (the chassis, the feeder, the intake & shoot module and the arm) during shipping, and assemled in the hotel room within 3 hours.  This feature has significant enhancement to the portability of our robot, which matters a lot as we have to take it from China. 
-
-
 ## Self-Developed Swerve Drive Library (in brief)
-Swerve drives are so common that the FIRST official have integrated swerve driving code into the basic library of FRC programming (Aka. the WPILib). Teams can use swerves without having to figure out the maths and kinematics behind.  
-
-However, the library still has a lot of small glitches and bugs. It does not reach our standard. To push the performance, handling and reliability of our chassis to its extreme, we have coded our own swerve drive library down from the ground, which took us 4 months to complete.
+Despite the availability of official FRC swerve drive code, we encountered limitations in performance and reliability. Our team invested four months in developing a superior swerve drive library, featuring enhancements in wheel direction control, power constraints, dynamic steering, acceleration control, and more. This custom library has been validated not only by our team but also by peers, demonstrating its superior performance without additional costs.
 
 In comparison to WPILib, our code is improved in the following ways:
     1. Smart Wheel Direction Control
@@ -48,10 +45,10 @@ Each of these improvements are small and hard to notice, but combined, they do m
 Technical details for all the above can be found in *the annexes*.
 
 ## On-Bot Computer Vision System
-The first step of developing the auto-driving function is, ofcourse, helping the robot sense its surroundings. Once again, we have used a completely self-developed system over the one WPI provided.
+The initial step in developing the autonomous driving functionality, naturally, involves enabling the robot to perceive its surroundings. To achieve this, we opted for a wholly self-developed system, preferring it over the default solution provided by WPI.
 
 #### Hardware Setups
-The heart of our system is a "Jetson Nano" AI-micro-computer. It is similar to the Resbarry Pi used in the WPILib-version of On-Bot Computer Vision, except that it is equiped with high-performance NPU, that can run complex AI-vision networks. Two cameras are attached to it, watching the most important game pieces in the competition: the one facing front measures the position of the Navigation Tags on both the Speaker and the Amplifier, and the one facing back senses the GamePiece.
+The core of our vision system is the "Jetson Nano" AI micro-computer, which, while comparable to the Raspberry Pi utilized in WPILib's On-Bot Computer Vision, distinguishes itself with a high-performance Neural Processing Unit (NPU) capable of handling complex AI-driven vision tasks. This setup includes two strategically placed cameras: one facing forward to determine the positions of Navigation Tags on both the Speaker and Amplifier, and another facing rearward to detect the GamePiece, ensuring comprehensive coverage of critical game elements.
 <div style="display: flex;">
     <img src="images/jetson nano.jpg" alt="Alt Text 1" style="width:50%">
     <img src="images/camera.jpg" alt="Alt Text 1" style="width:50%">
@@ -59,53 +56,51 @@ The heart of our system is a "Jetson Nano" AI-micro-computer. It is similar to t
 
 #### GamePieces Detection through AI-DetectNet
 
-In order to recognize the GamePieces, we collected datasets on our field to train a custom AI-object-detection network.
+To accurately identify GamePieces, we amassed a dataset from our playing field to train a bespoke AI object-detection network. This approach significantly surpasses the capabilities of the OpenCV-based solutions provided by WPILib, which primarily detect GamePieces based on color. Our vision network excels in both accuracy and reliability by recognizing GamePieces through their distinct shapes and appearances, making it robust against variations in lighting conditions and immune to confusion with similarly colored objects.
 
 ![](./images/AI-DetectNet.png)
-<div style="display: flex;">
-    <img src="image1.png" alt="Alt Text 1" style="width: 50%;">
-    <img src="image2.png" alt="Alt Text 2" style="width: 50%;">
-</div>
 
 In comparison to OpenCV applications that WPILib provided, which recognizes the GamePiece mainly by its color, our Vision Network stands out for its accuracy and reliability. Since the AI-model recoginizes the GamePiece by its unique shape and appearance, it is not dependent to lighting environment and will not confound the target with objects with similar colors. 
+![alt text](image.png)
 
 #### Hardware-Accelerated AprilTags Detection
 
-AprilTags (the navigation tags on field) detection is also running with GPU-acceleration, it is based on this https://github.com/NVIDIA-AI-IOT/isaac_ros_apriltag open-source project by NVIDIA.
-While the opencv-based AprilTag detection by WPILib runs at 30fps and takes up a lot of CPU resources of the ResbarryPi, we can run it at up to 90fps and with very low CPU usage rate, thanks to the AI-Micro-Processor.
+Our system's detection of AprilTags, the navigational markers used on the field, is enhanced with GPU acceleration, leveraging the open-source project by NVIDIA available at [Isaac ROS AprilTag](https://github.com/NVIDIA-AI-IOT/isaac_ros_apriltag). Unlike the OpenCV-based AprilTag detection offered by WPILib, which operates at 30fps and consumes significant CPU resources on the Raspberry Pi, our implementation achieves up to 90fps with minimal CPU load, courtesy of the advanced AI Micro-Processor. This efficiency gain not only improves performance but also frees up resources for other computational tasks.
 
 #### Communicating with robotRIO
 
-In order to communicate with the robotRIO, we link the vision co-processor via ethernet. 
+To facilitate communication with the robotRIO, we connect the vision co-processor using Ethernet. A custom Python application we developed sends the detection results continuously to a web server. Our robot's code, written in Java, retrieves these results from the server at a rate of 60 times per second, ensuring timely and efficient data transfer.
 ![alt text](<images/vision system diagram.png>)
-A python application we wrote(see here) sends the results continously through a web server.  The java client in our Robot-Code obtains the results from the server 60 times every second.
-[Photo of web server live-stream]
-The server also streams the images to a webpage, so that we can see the results of the detection live on the computer during tests or practises. 
+Additionally, the server broadcasts the images to a webpage, enabling us to monitor the detection outcomes in real-time on a computer during testing and practice sessions. This setup not only enhances our ability to fine-tune the system's performance but also provides immediate visual feedback, crucial for rapid development and troubleshooting.
 
 #### Calculating Precise Target Positions
-Not only can our system detect the Notes/AprilTags, it can also measure the precise relative position from the robot to the targets.
+Beyond merely detecting Notes/AprilTags, our system is adept at calculating the precise relative position between the robot and its targets. This capability hinges on knowing the field of view (FOV), the camera's height, and its pitch angle. With these parameters, we employ trigonometry to accurately determine relative positioning, as illustrated.
 <div style="display: flex;">
     <img src="./images/distance measuring.png" alt="Alt Text 1" style="width: 50%;">
     <img src="./images/relative position.png" alt="Alt Text 2" style="width: 50%;">
 </div>
-If we know the FOV, height and pitch angle of the camera, the relative position can be determined very easlily using trigonometry, as shown above. However, measuring these parameters by hand is not an easy task and might be inaccurate.
+However, manually measuring these parameters can be challenging and prone to inaccuracies. Our approach ensures precision in positioning, crucial for effective navigation and interaction with game elements.
 
 #### Camera Auto-Calibration Process
-Our solution is let the robot measure the parameters by itself. An auto-stage program is written such that the robot drives to different distances and faces to different angles.  Meanwhile, the program records the position of the target on the camera image.  Next, by analyzing the two data sets, the program calculates the camera's FOV, installation angle using a Least-Square-Regression-Line(Best-Fit-Line)
+Our innovative solution involves automating the measurement process: the robot is programmed to autonomously navigate to various distances and orient itself at different angles. Concurrently, it captures the target's position through its camera. By analyzing these collected datasets, the program calculates the camera's field of view (FOV) and installation angle using a Least-Squares Regression Line (Best-Fit Line) method.
+![alt text](<images/auto calibration.png>)
+<div style="display: flex;">
+    <img src="./images/lsrl.png" alt="Alt Text 1" style="width: 50%;">
+    <img src="./images/lsrl.png" alt="Alt Text 2" style="width: 50%;">
+</div>
+This auto-calibration process not only enhances the accuracy of our system but also significantly reduces manual intervention and potential errors. For a clearer understanding of this method, please refer to the illustrative video, accessible via the provided QR code, showcasing the calibration of our Note-Detection Camera using this automated technique.
+
 <img src="./images/auto calibration video qrcode.png" alt="Alt Text 2" style="width: 20%;">
-For a more illustritive demonstration, please this video where we calibrated the Note-Detection Camera using this method.
-
-
 
 ## Auto-Pilot System
-Our Auto-Pilot System is capable of completing three tasks, namely: intake, shoot and amplify, with the click of a button.  We will focus on how the system works, what problems we encountered during the development and how we solved them.
+Our Auto-Pilot System is engineered to seamlessly perform three critical tasks—intake, shoot, and amplify—at the mere press of a button. In this discussion, we delve into the system's operational mechanisms, the challenges encountered during its development, and the innovative solutions we implemented to overcome these obstacles. This exploration not only highlights our technical prowess but also underscores our commitment to advancing robotic capabilities in competitive settings.
 
 #### Automatic Intake
-When the robot has no GamePiece inside, it is in intake mode. During this mode, the robot turns 45-degrees left, this rotation is best for the intake as the pilot can see the robot and the GamePiece on field in the same time
-As the pilot moves the robot to approach to the GamePiece, the status light turns blue, indicating that the robot "sees" the target.  
-Now the pilot presses the **Auto-Pilot Button**, the robot drives to the GamePiece and grabs it automatically.
-Let's take a look at the detailed process.  As the pilot presses The **Auto-Pilot Button**, the robot prepares for the intake process automatically: it starts the rollers on the feeder and lowers the arm such that the intake & shoot module lines up with the feeder.  
-Meanwhile, the chassis moves towards the target.  Notice the system does not move the chassis in a straight line. Instead, the system dynamically generates the path leading to the target using Bezier-Curves. This not only makes the movement smoother, it also guarrentees that where-ever the robot starts from, it always end up driving backwards towards the Gamepiece. Which is curcial as it will be significantly easier for the feeder to obtain the Note when the the robot is moving to the Note.
+In the absence of a GamePiece within its mechanism, our robot enters "intake mode." In this state, it rotates 45 degrees to the left, a strategic maneuver designed to optimize the intake process. This orientation allows the pilot to simultaneously observe both the robot and the GamePiece on the field, enhancing coordination and efficiency.
+
+Upon detecting a GamePiece, signaled by the status light turning blue, the pilot activates the **Auto-Pilot Button**. This action triggers the robot to autonomously navigate towards and secure the GamePiece. The process involves the robot automatically initiating the feeder's rollers and adjusting the arm to align the intake & shoot module with the feeder.
+
+Crucially, the robot's approach to the GamePiece is not a direct line. Instead, the navigation system dynamically generates a path using Bezier Curves, ensuring smoother movements and a strategic approach angle. This method guarantees that, regardless of its starting position, the robot always reverses towards the GamePiece, significantly enhancing the feeder's ability to collect the Note effectively. This nuanced approach illustrates our commitment to precision and adaptability in robotic design.
 ![alt text](<images/intake auto aim.png>)
 Once the Gamepiece gets "eaten" by the intake, a Rev-2M-Distance-Sensor senses the existence on the note and stops the intake automatically before the Note goes too far.  This is important becuase the shooter cannot accelerate when the Note is in contact with it.
 
@@ -114,8 +109,9 @@ For a more illustrative demonstration, please watch this video.
 
 #### Shooter Automatic Aiming
 After the GamePiece is detected, the robot switches itself to shooting mode. Under this mode, the robot automatically controls its rotation with the help of the camera such that it always faces the speaker.
-Now, the **Auto-Pilot Button** has a different function: it controls the shooter.  When the button is hold, the robot accelerates its shooter and adjust the angle of the arm to aim the target.  We test the ideal shooter speed as well as arm angle at different distances and store them in a look-up-table.  Knowing the precise distance to target, the system automatically adjusts the shooter and the arm to aim the target.
 
+Now, the **Auto-Pilot Button** has a different function: it controls the shooter.  When the button is hold, the robot accelerates its shooter and adjust the angle of the arm to aim the target.  We test the ideal shooter speed as well as arm angle at different distances and store them in a look-up-table.  Knowing the precise distance to target, the system automatically adjusts the shooter and the arm angle, as well as shooter RPM to aim the target.
+![alt text](<aiming lookup table.png>)
 When the **Auto-Pilot Button** is released, the kicker is triggered. The Note flies to the speaker, marking the end of the shooting process.  The robot returns to intake mode.
 
 #### Automatic Target Approaching
@@ -123,9 +119,16 @@ If this function is enabled, the chassis will drive automatically to a shooting 
 It uses an algorthm similar to the one used in the auto-intake to generate a path leading to the sweet-spot.  But when it reaches the sweet spot, it does not stop.  The pilot can decided the direction of the chassis movement by the end of the process using the control stick.  The robot moves to the sweet spot, shoots, and continue moving in that direction until the pilot takes the control back.  This way the robot can move in a smooth and continous process, in which it shoots while moving and finish the process elegantly.
 The system also decides the timing to shoot by itself, and start the kicker automatically.
 Note that this function is optional and it is the pilot's call as to whether to enable it or not.
+
 #### Problem We Encountered: Camera Motion Blur / Losing Focus
+When using vision navigating methods, the most commonly encountered issue is that the camera sometimes losses track of the target. This might be caused by losing focus, obstacle, motion blur or awkward reflection.  The thing is, it is impossible to wish that the target can stay in the camera's view all the time.
+
+So, to make our aiming as well as auto-piloting functions more stable, we have designed an algorithm such that 
+
 
 #### Problem We Encountered: Low Shooting Success Rate When Chassis Moving
+During testing, we found that it is very difficult to shoot when the chassis is moving.  This is because the Note shot from a moving robot has some bias depending on the instantanous velocity of the robot.  
 
-#### Problem We Encountered: Pilot errors when 
-
+In order to enable our robot to shoot while moving, we have designed a system that automatcially compensates for the deviation due to robot velocity.
+![alt text](<auto aim in advance.png>)
+At any time, the robot calculates its distance to target, marked d0. Since we know that the Note flies at about 8m/s when beeing launched, we know that the Note will hit the target after approximately Δt amount of time.  Next, we estimate the robot's position after Δt, using the current instantanous velocity of the robot. Now, we calculate the future target distance and rotation, marked distance1 and rotation1, and use them for auto-aiming.  This way, not only can the robot shoot from where-ever we want, we can also shoot when-ever we want, even when the robot is moving.
