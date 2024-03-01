@@ -181,7 +181,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
 
                 shooter.setShooterMode(Shooter.ShooterMode.DISABLED, this);
                 arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, this);
-                intake.startIntake(this);
+                startIntakeWheels();
 
                 if (!pilotController.keyOnHold(translationAutoPilotButton) || intake.isNoteInsideIntake())
                     currentStatus = Status.MANUALLY_DRIVING;
@@ -205,6 +205,11 @@ public class VisionAidedPilotChassis extends PilotChassis {
             EasyShuffleBoard.putNumber("auto-aim", "aiming system relative pos (y)", speakerPosition.getY());
         }
 
+    }
+
+    private void startIntakeWheels() {
+        if (arm.transformerInPosition())
+            intake.startIntake(this);
     }
 
     private void updateChassisPositionWhenTaskStarted() {
