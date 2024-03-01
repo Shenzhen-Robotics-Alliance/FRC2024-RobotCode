@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.AutoStagePrograms.*;
 import frc.robot.Services.*;
+import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.SequentialCommandSegment;
 import frc.robot.Utils.Tests.*;
 
@@ -53,16 +54,16 @@ public class RobotShell extends TimedRobot {
 //                    40,
 //                    new Vector2D(new double[] {0, 43})
 //                )
-//                new AprilTagCameraAutomaticMeasuring(
-//                robotCore.aprilTagDetectionAppClient,
-//                4,
-//                100,
-//                140,
-//                300,
-//                30,
-//                new Vector2D(new double[] {0, -110})
-//                )
-                new DriveToFrontGrabNoteFaceFront()
+                new AprilTagCameraAutomaticMeasuring(
+                robotCore.aprilTagDetectionAppClient,
+                4,
+                100,
+                140,
+                300,
+                30,
+                new Vector2D(new double[] {0, -110})
+                )
+//                new DriveToFrontGrabNoteFaceFront()
         ); // TODO use sendable chooser
     }
 
