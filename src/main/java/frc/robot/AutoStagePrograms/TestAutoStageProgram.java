@@ -16,9 +16,7 @@ public class TestAutoStageProgram implements AutoStageProgram {
         final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
         final SequentialCommandFactory commandFactory = new SequentialCommandFactory(robotCore, new Vector2D(new double[] {0, 0.4}), new Rotation2D(Math.toRadians(-90)));
 
-        commandSegments.add(commandFactory.justDoIt(() -> System.out.println(robotCore.positionReader.getRobotPosition2D())));
-        commandSegments.add(commandFactory.calibratePositionEstimator());
-        commandSegments.add(commandFactory.justDoIt(() -> System.out.println(robotCore.positionReader.getRobotPosition2D())));
+        commandSegments.add(commandFactory.moveToPoint(new Vector2D(new double[] {0, 3})));
         return commandSegments;
     }
 }

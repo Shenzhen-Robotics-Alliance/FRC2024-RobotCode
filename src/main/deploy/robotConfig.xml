@@ -85,7 +85,7 @@
         <robotRotationMaximumCorrectionPower type="double">0.6</robotRotationMaximumCorrectionPower>
         <robotRotationMinimumCorrectionPower type="double">0</robotRotationMinimumCorrectionPower>
         <robotRotationFeedForwardTime type="double">0.4</robotRotationFeedForwardTime> <!-- in seconds -->
-        <rotationalErrorAsCommandFinished>2</rotationalErrorAsCommandFinished>
+        <rotationalErrorAsCommandFinished>3</rotationalErrorAsCommandFinished>
 
         <!-- position controller(auto stage) -->
         <robotPositionErrorTolerance type="double">0.02</robotPositionErrorTolerance> <!-- in meters -->
@@ -119,37 +119,37 @@
         <amplifyRPM>1200</amplifyRPM>
         <idleRPM>0</idleRPM>
         <preparingForShootRPM>2000</preparingForShootRPM>
-        <projectileSpeed>8</projectileSpeed>
+        <projectileSpeed>10</projectileSpeed>
         <shootingRange>4</shootingRange>
 
         <!-- shooting lookup table -->
-        <targetDistance0>1.5</targetDistance0>
-        <shooterRPM0>3500</shooterRPM0>
-        <armAngle0>8</armAngle0>
+        <targetDistance0>1.2</targetDistance0>
+        <shooterRPM0>3400</shooterRPM0>
+        <armAngle0>12</armAngle0>
 
-        <targetDistance1>2</targetDistance1>
-        <shooterRPM1>4000</shooterRPM1>
-        <armAngle1>-3</armAngle1>
+        <targetDistance1>1.5</targetDistance1>
+        <shooterRPM1>3700</shooterRPM1>
+        <armAngle1>9</armAngle1>
 
-        <targetDistance2>2.5</targetDistance2>
+        <targetDistance2>2</targetDistance2>
         <shooterRPM2>4600</shooterRPM2>
-        <armAngle2>-9</armAngle2>
+        <armAngle2>-3</armAngle2>
 
-        <targetDistance3>3</targetDistance3>
-        <shooterRPM3>5800</shooterRPM3>
-        <armAngle3>-19</armAngle3>
+        <targetDistance3>2.5</targetDistance3>
+        <shooterRPM3>5400</shooterRPM3>
+        <armAngle3>-8</armAngle3>
 
-        <targetDistance4>3.5</targetDistance4>
+        <targetDistance4>3</targetDistance4>
         <shooterRPM4>6000</shooterRPM4>
-        <armAngle4>-22</armAngle4>
+        <armAngle4>-12</armAngle4>
 
-        <targetDistance5>4</targetDistance5>
+        <targetDistance5>3.5</targetDistance5>
         <shooterRPM5>6000</shooterRPM5>
-        <armAngle5>-23</armAngle5>
+        <armAngle5>-20</armAngle5>
 
-        <targetDistance6>5</targetDistance6>
+        <targetDistance6>4</targetDistance6>
         <shooterRPM6>6000</shooterRPM6>
-        <armAngle6>-25</armAngle6>
+        <armAngle6>-21</armAngle6>
     </shooter>
     <intake>
         <launchPower>0.45</launchPower>

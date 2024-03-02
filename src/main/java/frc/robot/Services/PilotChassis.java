@@ -79,7 +79,7 @@ public class PilotChassis extends RobotServiceBase {
         this.controllerTypeSendableChooser.setDefaultOption(defaultControllerType.name(), defaultControllerType);
         SmartDashboard.putData("pilot controller type", controllerTypeSendableChooser);
 
-        addResetChassisCommandButtonToDashboard();
+        // addResetChassisCommandButtonToDashboard();
 
         this.chassis.reset();
         this.chassis.gainOwnerShip(this);

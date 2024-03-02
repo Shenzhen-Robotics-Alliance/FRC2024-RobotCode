@@ -23,10 +23,10 @@ public class BlueDS2 implements AutoStageProgram {
             midLineRighterNotePosition = Flip.flipHorizontally(RedDS2.assumedSpeakerPosition);
     @Override
     public List<SequentialCommandSegment> getCommandSegments(RobotCore robotCore) {
-        final double timeScaleAutoIntake = 0.5;
+        final double timeScaleAutoIntake = 0.8;
         final long intakeTimeOut = 3000;
         final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
-        final SequentialCommandFactory commandFactory = new SequentialCommandFactory(robotCore, AutonomousTemplateBlueDS2.startingPosition, new Rotation2D(Math.toRadians(-90)));
+        final SequentialCommandFactory commandFactory = new SequentialCommandFactory(robotCore, AutonomousTemplateBlueDS2.startingPosition, new Rotation2D(Math.toRadians(90)));
         final AutoStageVisionAimBot aimBot = new AutoStageVisionAimBot(robotCore, intakeTimeOut);
         final SequentialCommandSegment waitForArmToBeInPosition = new SequentialCommandSegment(
                 () -> true,

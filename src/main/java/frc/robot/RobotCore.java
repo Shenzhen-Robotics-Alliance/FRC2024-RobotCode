@@ -106,7 +106,7 @@ public class RobotCore {
                 aprilTagPositionTrackingCamera = new FixedAnglePositionTrackingCamera(
                         aprilTagDetectionAppClient,
                         new FixedAngleCameraProfile(
-                                0.385,
+                                0.3412,
                                 -0.0018,
                                 -0.00179
                         ),
@@ -125,16 +125,13 @@ public class RobotCore {
                 );
 
                 final Map<Integer, Vector2D> speakerTargetAprilTagReferences = new HashMap<>(), amplifierTargetAprilTagReferences = new HashMap<>(), noteTargetReferences = new HashMap<>();
-                final DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Red); // default to red
-                if (alliance == DriverStation.Alliance.Red) {
-                        speakerTargetAprilTagReferences.put(4, new Vector2D(new double[] {0.05,0}));
-                        speakerTargetAprilTagReferences.put(3, new Vector2D(new double[] {-0.5,0}));
-                        amplifierTargetAprilTagReferences.put(5, new Vector2D(new double[] {0, 0}));
-                } else {
-                        speakerTargetAprilTagReferences.put(7, new Vector2D(new double[] {0.05,0}));
-                        speakerTargetAprilTagReferences.put(8, new Vector2D(new double[] {-0.5,0}));
-                        amplifierTargetAprilTagReferences.put(6, new Vector2D(new double[] {0, 0}));
-                }
+                speakerTargetAprilTagReferences.put(4, new Vector2D(new double[] {0.05,0}));
+                // speakerTargetAprilTagReferences.put(3, new Vector2D(new double[] {-0.5,0}));
+                amplifierTargetAprilTagReferences.put(5, new Vector2D(new double[] {0, 0}));
+                speakerTargetAprilTagReferences.put(7, new Vector2D(new double[] {0.05,0}));
+                speakerTargetAprilTagReferences.put(8, new Vector2D(new double[] {-0.5,0}));
+                amplifierTargetAprilTagReferences.put(6, new Vector2D(new double[] {0, 0}));
+
                 noteTargetReferences.put(1, new Vector2D()); // the id of note is always 0, and the note is itself the reference so the relative position is (0,0)
                 speakerTarget = new AprilTagReferredTarget(aprilTagPositionTrackingCamera, speakerTargetAprilTagReferences);
                 amplifierTarget = new AprilTagReferredTarget(aprilTagPositionTrackingCamera, amplifierTargetAprilTagReferences);
@@ -251,20 +248,21 @@ public class RobotCore {
                 configsToTune.add("arm/position-SCORE_AMPLIFIER");
 
                 configsToTune.add("shooter/defaultShootingRPM");
-                configsToTune.add("shooter/speedControllerProportionGain");
-                configsToTune.add("shooter/speedControllerFeedForwardGain");
-//                configsToTune.add("shooter/shooterRPM0");
-//                configsToTune.add("shooter/armAngle0");
-//                configsToTune.add("shooter/shooterRPM1");
-//                configsToTune.add("shooter/armAngle1");
-//                configsToTune.add("shooter/shooterRPM2");
-//                configsToTune.add("shooter/armAngle2");
-//                configsToTune.add("shooter/shooterRPM3");
-//                configsToTune.add("shooter/armAngle3");
-//                configsToTune.add("shooter/shooterRPM4");
-//                configsToTune.add("shooter/armAngle4");
-//                configsToTune.add("shooter/shooterRPM5");
-//                configsToTune.add("shooter/armAngle5");
+//                configsToTune.add("shooter/speedControllerProportionGain");
+//                configsToTune.add("shooter/speedControllerFeedForwardGain");
+
+                configsToTune.add("shooter/shooterRPM0");
+                configsToTune.add("shooter/armAngle0");
+                configsToTune.add("shooter/shooterRPM1");
+                configsToTune.add("shooter/armAngle1");
+                configsToTune.add("shooter/shooterRPM2");
+                configsToTune.add("shooter/armAngle2");
+                configsToTune.add("shooter/shooterRPM3");
+                configsToTune.add("shooter/armAngle3");
+                configsToTune.add("shooter/shooterRPM4");
+                configsToTune.add("shooter/armAngle4");
+                configsToTune.add("shooter/shooterRPM5");
+                configsToTune.add("shooter/armAngle5");
         }
 
         /**

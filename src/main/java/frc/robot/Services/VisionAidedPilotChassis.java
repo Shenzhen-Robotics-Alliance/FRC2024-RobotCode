@@ -129,9 +129,9 @@ public class VisionAidedPilotChassis extends PilotChassis {
             chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
                             intake.isNoteInsideIntake() ? getAprilTagTargetRotation(currentAimingTargetClass, currentAimingTarget) : getNoteRotation()),
                     this);
-        if (copilotGamePad.getXButton())
-            this.currentStatus = Status.MANUALLY_DRIVING;
         if (copilotGamePad.getBButton())
+            this.currentStatus = Status.MANUALLY_DRIVING;
+        if (copilotGamePad.getRightBumper())
             reset();
 
         switch (currentStatus) {
