@@ -110,14 +110,14 @@ public class AutoStageVisionAimBot {
                 },
                 () -> {
                     if (robotCore.transformableArm.transformerInPosition() && robotCore.shooter.shooterAsDemanded())
-                        robotCore.intake.startIntake(null);
+                        robotCore.intake.startLaunch(null);
                 },
                 () -> {
                     robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, null);
                     robotCore.shooter.setShooterMode(Shooter.ShooterMode.DISABLED, null);
                     robotCore.intake.turnOffIntake(null);
                 },
-                () -> timeSinceTaskStarted.get() * 1000 > timeOutMillis,
+                () -> timeSinceTaskStarted.get() * 1000 > timeOutMillis || robotCore.intake.isNoteInsideIntake(),
                 () -> robotStartingRotation, () -> robotEndingRotation
         );
     }
