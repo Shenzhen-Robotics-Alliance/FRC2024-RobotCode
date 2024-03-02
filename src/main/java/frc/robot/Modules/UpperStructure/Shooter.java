@@ -72,8 +72,10 @@ public class Shooter extends RobotModuleBase {
     }
 
     public boolean shooterReady() {
-        if (this.currentMode != ShooterMode.SHOOT)
-            return false;
+        return this.currentMode == ShooterMode.SHOOT && shooterAsDemanded();
+    }
+
+    public boolean shooterAsDemanded() {
         final double desiredShootingSpeed = getShooterSpeedWithAimingSystem(0);
         double maxErrorRPM = 0;
         for (EncoderMotorMechanism shooter:shooters)

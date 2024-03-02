@@ -98,6 +98,30 @@ public class AutoStageVisionAimBot {
         );
     }
 
+    public SequentialCommandSegment splitForwardWhileMoving(BezierCurve chassisMovementPath, Rotation2D robotStartingRotation, Rotation2D robotEndingRotation, long timeOutMillis) {
+        final Timer timeSinceTaskStarted = new Timer();
+        return new SequentialCommandSegment(
+                robotCore.intake::isNoteInsideIntake,
+                () -> chassisMovementPath,
+                () -> {
+                    timeSinceTaskStarted.reset();
+                    robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, null);
+                    robotCore.shooter.setShooterMode(Shooter.ShooterMode.PREPARE_TO_SHOOT, null);
+                },
+                () -> {
+                    if (robotCore.transformableArm.transformerInPosition() && robotCore.shooter.shooterAsDemanded())
+                        robotCore.intake.startIntake(null);
+                },
+                () -> {
+                    robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, null);
+                    robotCore.shooter.setShooterMode(Shooter.ShooterMode.DISABLED, null);
+                    robotCore.intake.turnOffIntake(null);
+                },
+                () -> timeSinceTaskStarted.get() * 1000 > timeOutMillis,
+                () -> robotStartingRotation, () -> robotEndingRotation
+        );
+    }
+
     public Runnable prepareToShoot() {
         return () -> {
             robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, null);
