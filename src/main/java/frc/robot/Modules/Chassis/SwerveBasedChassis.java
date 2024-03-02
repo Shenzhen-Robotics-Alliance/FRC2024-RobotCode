@@ -348,11 +348,10 @@ public class SwerveBasedChassis extends RobotModuleBase {
         this.rotationalTask = rotationalTask;
     }
 
-    private boolean chassisLocked;
     public void setChassisLocked(boolean locked, RobotModuleOperatorMarker operator) {
         if (!this.isOwner(operator))
             return;
-        this.chassisLocked = locked;
+        this.locked = locked;
     }
 
     public double getChassisHeading() {
