@@ -196,7 +196,6 @@ public class SwerveBasedChassis extends RobotModuleBase {
         this.translationalTask.initiate(new Vector2D());
 
         this.decidedVelocity = new Vector2D();
-        chassisLocked = false;
     }
 
     private Vector2D processTranslationalMotion(double dt) {

@@ -56,8 +56,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
     private final XboxController copilotGamePad;
     private final DriverStation.Alliance alliance;
 
-    private static final boolean speakerAutoApproach = false;
-
 
     /**
      * @param chassis
@@ -165,6 +163,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
 
                 if (!currentAimingTarget.isVisible(aimingTimeUnseenToleranceMS))
                     System.out.println("<-- VAPC | waiting for " + currentAimingTargetClass + " to show up -->");
+                final boolean speakerAutoApproach = false; // TODO pilot controller
                 if (currentAimingTarget.isVisible(aimingTimeUnseenToleranceMS) && speakerAutoApproach)
                     switch (currentAimingTargetClass) {
                         case SPEAKER -> initiateGoToSpeakerTargetProcess();
@@ -282,8 +281,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
     }
 
     private BezierCurve getPathToSpeakerTarget() {
-        if (Vector2D.displacementToTarget(chassisPositionWhenCurrentVisionTaskStarted, shootingSweetSpot).getMagnitude() < 1.2)
-            return new BezierCurve(shootingSweetSpot, shootingSweetSpot);
+        if (Vector2D.displacementToTarget(chassisPositionWhenCurrentVisionTaskStarted, currentVisualTargetLastSeenPosition.addBy(shootingSweetSpot)).getMagnitude() < 1000)
+            return new BezierCurve(chassisPositionWhenCurrentVisionTaskStarted, currentVisualTargetLastSeenPosition.addBy(shootingSweetSpot)); // goes a straight line
         final boolean pilotSpecifyingShootingProcessEndPoint = pilotController.getTranslationalStickValue().getMagnitude() > 0.4; // only when significant movement
         final Vector2D
                 /* the position of the ending point of the path of the shooting task, relative to the shooting sweet-spot  */
@@ -427,7 +426,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         this.intakeCenterHorizontalBiasFromCamera = -0.05;
         grabbingNoteDistance = 0.15;
         chassisSpeedLimitWhenAutoAim = 4;
-        shootingSweetSpot = new Vector2D(new double[] {0, 1.5});
+        shootingSweetSpot = new Vector2D(new double[] {0, 2});
         shootingProcessEndingPointUpdatableRange = 1.4;
         chassisReactionDelay = 0.4;
 
