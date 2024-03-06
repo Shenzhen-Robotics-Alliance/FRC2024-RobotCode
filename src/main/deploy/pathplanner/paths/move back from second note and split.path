@@ -1,0 +1,68 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.6964255497697875,
+        "y": 1.2062161642154938
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.956089798056913,
+        "y": 1.7097821356840988
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.194885422581116,
+        "y": 2.6934924055297453
+      },
+      "prevControl": {
+        "x": 4.976585442561406,
+        "y": 1.6936435427642567
+      },
+      "nextControl": {
+        "x": 3.6913194511125114,
+        "y": 3.337588415547729
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.319125730976141,
+        "y": 4.262744502664468
+      },
+      "prevControl": {
+        "x": 4.440812990042527,
+        "y": 4.251033666118687
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.5,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 140.35582504285514,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "blue ds1 pick",
+  "previewStartingState": {
+    "rotation": 137.81555668421132,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

@@ -3,6 +3,14 @@ package frc.robot.Utils.MathUtils;
 /**
  * Bézier curve with four points
  */
+
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPoint;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Bézier curve with four points
  */
@@ -94,5 +102,16 @@ public class BezierCurve {
         for (double t = 0; t <= 1; t += 1.0d/samples)
             length += getVelocityWithLERP(t).getMagnitude() / samples;
         return length;
+    }
+
+    public List<BezierCurve> loadPathFromPathPlanner(String pathFileName) {
+        return loadPathFromPathPlanner(pathFileName, false);
+    }
+
+    public List<BezierCurve> loadPathFromPathPlanner(String pathFileName, boolean flipped) {
+        final PathPlannerPath path = PathPlannerPath.fromPathFile(pathFileName);
+        final List<BezierCurve> curves = new ArrayList<>();
+        path.getPathPoses() // TODO do a robot simulation and see how this works
+        return curves;
     }
 }

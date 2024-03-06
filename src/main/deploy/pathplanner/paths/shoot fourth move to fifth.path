@@ -1,0 +1,68 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 14.16080732304118,
+        "y": 6.991369417831561
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 14.359891544319463,
+        "y": 6.066213330714821
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 12.556422716269113,
+        "y": 4.883418839590889
+      },
+      "prevControl": {
+        "x": 13.682456818089472,
+        "y": 5.557333188407618
+      },
+      "nextControl": {
+        "x": 11.010592292225953,
+        "y": 3.9582627524741496
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.691846656161214,
+        "y": 4.122214464115091
+      },
+      "prevControl": {
+        "x": 9.851219474193584,
+        "y": 4.145636137206654
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 200.0,
+    "maxAngularAcceleration": 400.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "red mid 6 note",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

@@ -1,0 +1,15 @@
+{
+  "robotWidth": 0.75,
+  "robotLength": 0.75,
+  "holonomicMode": true,
+  "pathFolders": [
+    "red mid 6 note",
+    "blue ds1 pick"
+  ],
+  "autoFolders": [],
+  "defaultMaxVel": 4.0,
+  "defaultMaxAccel": 4.5,
+  "defaultMaxAngVel": 200.0,
+  "defaultMaxAngAccel": 400.0,
+  "maxModuleSpeed": 4.5
+}

@@ -1,0 +1,55 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "split first note leave"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "move to second note intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "move back from second note and split"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "move to third note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "move back from third note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "move to forth note intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "back from fourth note"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
