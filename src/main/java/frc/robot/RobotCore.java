@@ -49,7 +49,7 @@ import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
 public class RobotCore {
         private static final long printTimeIfTimeMillisExceeds = 2;
 
-        public final RobotConfigReader robotConfig;
+        public RobotConfigReader robotConfig;
         public final SwerveWheel frontLeftWheel, backLeftWheel, frontRightWheel, backRightWheel;
         public final SimpleGyro gyro;
         public final SwerveWheelPositionEstimator positionReader;
@@ -77,7 +77,12 @@ public class RobotCore {
                 modules = new ArrayList<>();
                 services = new ArrayList<>();
 
-                robotConfig = new RobotConfigReader(configName);
+                try {
+                        robotConfig = new RobotConfigReader(configName);
+                } catch (RuntimeException e) {
+                        System.out.println("<-- error while reading config, trying simulation mode... -->");
+                        robotConfig = new RobotConfigReader(configName, true);
+                }
 
                 frontLeftWheel = createSwerveWheel("frontLeft", 1, new Vector2D(new double[] { -0.6, 0.6 }));
                 modules.add(frontLeftWheel);

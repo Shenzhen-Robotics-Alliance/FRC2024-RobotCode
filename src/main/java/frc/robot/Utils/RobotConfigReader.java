@@ -31,6 +31,7 @@ import org.xml.sax.SAXException;
 public class RobotConfigReader {
     /** user configuration */
     private static final String HOME_DIR = "/home/lvuser/";
+    private static final String CODE_DIR = "/FRC2024-RobotCode/src/main/";
 
     /** the hashmap that stores all the configs */
     private Map<String, Map<String, Double>> robotConfigs= new HashMap(1);
@@ -46,25 +47,36 @@ public class RobotConfigReader {
 
     public RobotConfigReader() {
         try {
-            readConfigs("robotConfig");
-            // System.out.println("robot config: " + robotConfigs);
-        } catch (Exception e) {
-            throw new RuntimeException("error while reading robot config:" + e);
-        }
-    }
-    public RobotConfigReader(String configName) {
-        try {
-            readConfigs("robotConfig");
-            readConfigs(configName); // override the previous
+            readConfigs("robotConfig", false);
             // System.out.println("robot config: " + robotConfigs);
         } catch (Exception e) {
             throw new RuntimeException("error while reading robot config:" + e);
         }
     }
 
-    private void readConfigs(String configName) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
+    public RobotConfigReader(String configName) {
+        try {
+            readConfigs(configName, false);
+            // System.out.println("robot config: " + robotConfigs);
+        } catch (Exception e) {
+            throw new RuntimeException("error while reading robot config:" + e);
+        }
+    }
+
+    public RobotConfigReader(String configName, boolean isSimulation) {
+        try {
+            readConfigs("robotConfig", isSimulation);
+            readConfigs(configName, isSimulation); // override the previous
+            // System.out.println("robot config: " + robotConfigs);
+        } catch (Exception e) {
+            throw new RuntimeException("error while reading robot config:" + e);
+        }
+    }
+
+    private void readConfigs(String configName, boolean isSimulation) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
         /* read xml file from filesystem */
-        xmlFile = new File(HOME_DIR + "deploy/" + configName+ ".xml");
+        xmlFile = new File((isSimulation ? CODE_DIR : HOME_DIR)
+                + "deploy/" + configName+ ".xml");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         doc = dBuilder.parse(xmlFile);

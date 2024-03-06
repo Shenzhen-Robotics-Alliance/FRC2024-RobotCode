@@ -111,7 +111,7 @@ public class BezierCurve {
     public List<BezierCurve> loadPathFromPathPlanner(String pathFileName, boolean flipped) {
         final PathPlannerPath path = PathPlannerPath.fromPathFile(pathFileName);
         final List<BezierCurve> curves = new ArrayList<>();
-        path.getPathPoses() // TODO do a robot simulation and see how this works
+        // path.getPathPoses() // TODO do a robot simulation and see how this works
         return curves;
     }
 }

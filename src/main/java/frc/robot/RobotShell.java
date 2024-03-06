@@ -113,6 +113,11 @@ public class RobotShell extends TimedRobot {
         robotTest.testPeriodic();
     }
 
+    @Override
+    public void simulationInit() {
+        System.out.println("<-- simulate hello world! -->");
+    }
+
     private void startAutoStage(CommandSequenceGenerator autoStageProgram) {
         System.out.println("<-- Robot Shell | starting auto" + autoStageProgram + " -->");
 
