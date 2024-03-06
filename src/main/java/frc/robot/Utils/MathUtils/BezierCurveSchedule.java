@@ -25,11 +25,21 @@ public class BezierCurveSchedule {
         return t = Math.min(t + dt * timeScaleFactor, 1);
     }
 
-    public Vector2D getPositionWithLERP() {
-        return path.getPositionWithLERP(t);
+    public double getT() {
+        return t;
     }
 
+    public Vector2D getPositionWithLERP() {
+        return getPositionWithLERP(t);
+    }
+    public Vector2D getPositionWithLERP(double t) {
+        return path.getPositionWithLERP(t);
+    }
     public Vector2D getVelocityWithLERP() {
+        return getVelocityWithLERP(t);
+    }
+
+    public Vector2D getVelocityWithLERP(double t) {
         return path.getVelocityWithLERP(t);
     }
 

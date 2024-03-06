@@ -59,12 +59,13 @@ public class AutoProgramRunner extends RobotServiceBase {
 
 
         if (currentPathSchedule != null) {
-            final double translationalT = currentPathSchedule.nextCheckPoint(dt.get() * currentCommandSegment.timeScale),
-                    actualInAdvanceTime = MathUtil.clamp(inAdvanceTime, 0, (1-translationalT)* currentSegmentRotationScheduleETA);
-            final Vector2D inAdvanceSpace =  currentPathSchedule.getVelocityWithLERP().multiplyBy(actualInAdvanceTime);
+            final double translationalT = currentPathSchedule.nextCheckPoint(dt.get() * currentCommandSegment.timeScale);
+            final Vector2D inAdvanceSpace =  currentPathSchedule.getVelocityWithLERP().multiplyBy(inAdvanceTime),
+                    distanceLeft = Vector2D.displacementToTarget(currentPathSchedule.getPositionWithLERP(), currentPathSchedule.getPositionWithLERP(1)),
+                    inAdvanceSpaceWithConstrain = new Vector2D(inAdvanceSpace.getHeading(), Math.min(inAdvanceSpace.getMagnitude(), distanceLeft.getMagnitude()));
             robotChassis.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(
                             SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION,
-                            currentPathSchedule.getPositionWithLERP().addBy(inAdvanceSpace)),
+                            currentPathSchedule.getPositionWithLERP().addBy(inAdvanceSpaceWithConstrain)),
                     this);
             EasyShuffleBoard.putNumber("auto", "segment ID", currentSegmentID);
             EasyShuffleBoard.putNumber("auto", "translational scaled T", translationalT);
@@ -73,12 +74,16 @@ public class AutoProgramRunner extends RobotServiceBase {
         }
 
         if (currentSegmentRotationScheduleETA != -1) {
+            rotationT += dt.get() / currentSegmentRotationScheduleETA;
+            double rotationTSyncedToTranslationT = rotationT;
+            if (currentPathSchedule != null)
+                rotationTSyncedToTranslationT = Math.min(currentPathSchedule.getT(), rotationTSyncedToTranslationT);
             robotChassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(
                             SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
-                            currentCommandSegment.getCurrentRotationWithLERP(rotationT+=dt.get() / currentSegmentRotationScheduleETA)),
+                            currentCommandSegment.getCurrentRotationWithLERP(rotationTSyncedToTranslationT)),
                     this);
             EasyShuffleBoard.putNumber("auto", "rotation T", rotationT);
-            EasyShuffleBoard.putNumber("auto", "rotation (deg)", Math.toDegrees(currentCommandSegment.getCurrentRotationWithLERP(rotationT)));
+            EasyShuffleBoard.putNumber("auto", "rotation (deg)", Math.toDegrees(currentCommandSegment.getCurrentRotationWithLERP(rotationTSyncedToTranslationT)));
         }
         currentCommandSegment.periodic.run();
 
