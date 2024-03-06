@@ -163,7 +163,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
 
                 if (!currentAimingTarget.isVisible(aimingTimeUnseenToleranceMS))
                     System.out.println("<-- VAPC | waiting for " + currentAimingTargetClass + " to show up -->");
-                final boolean speakerAutoApproach = false; // TODO pilot controller
+                final boolean speakerAutoApproach = pilotController.getRawAxis(5) > 0; // TODO pilot controller
+                SmartDashboard.putNumber("speaker auto approach", speakerAutoApproach ? 1:0);
                 if (currentAimingTarget.isVisible(aimingTimeUnseenToleranceMS) && speakerAutoApproach)
                     switch (currentAimingTargetClass) {
                         case SPEAKER -> initiateGoToSpeakerTargetProcess();

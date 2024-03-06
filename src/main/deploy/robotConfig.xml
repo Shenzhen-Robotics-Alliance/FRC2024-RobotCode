@@ -74,9 +74,8 @@
         <robotSpeedActivateSpeedControl type="double">0.1</robotSpeedActivateSpeedControl>
 
         <!-- smart wheel speed control -->
-        <wheelsPowerConstrain type="double">1.1</wheelsPowerConstrain>
+        <wheelsPowerConstrain type="double">0.9</wheelsPowerConstrain>
         <rotationalSpeedMaxSacrifice type="double">0.25</rotationalSpeedMaxSacrifice>
-
 
         <!-- the configuration for rotation controller -->
         <timeLockRotationAfterRotationalInputStops>0.45</timeLockRotationAfterRotationalInputStops>
@@ -123,31 +122,31 @@
         <shootingRange>4</shootingRange>
 
         <!-- shooting lookup table -->
-        <targetDistance0>1.2</targetDistance0>
+        <targetDistance0>1.3</targetDistance0>
         <shooterRPM0>3400</shooterRPM0>
         <armAngle0>12</armAngle0>
 
-        <targetDistance1>1.5</targetDistance1>
-        <shooterRPM1>3700</shooterRPM1>
-        <armAngle1>9</armAngle1>
+        <targetDistance1>1.6</targetDistance1>
+        <shooterRPM1>3800</shooterRPM1>
+        <armAngle1>7</armAngle1>
 
-        <targetDistance2>2</targetDistance2>
+        <targetDistance2>2.1</targetDistance2>
         <shooterRPM2>4600</shooterRPM2>
-        <armAngle2>-3</armAngle2>
+        <armAngle2>-2</armAngle2>
 
-        <targetDistance3>2.5</targetDistance3>
+        <targetDistance3>2.6</targetDistance3>
         <shooterRPM3>5400</shooterRPM3>
-        <armAngle3>-8</armAngle3>
+        <armAngle3>-6</armAngle3>
 
-        <targetDistance4>3</targetDistance4>
+        <targetDistance4>3.1</targetDistance4>
         <shooterRPM4>6000</shooterRPM4>
         <armAngle4>-12</armAngle4>
 
-        <targetDistance5>3.5</targetDistance5>
+        <targetDistance5>3.6</targetDistance5>
         <shooterRPM5>6000</shooterRPM5>
         <armAngle5>-20</armAngle5>
 
-        <targetDistance6>4</targetDistance6>
+        <targetDistance6>4.1</targetDistance6>
         <shooterRPM6>6000</shooterRPM6>
         <armAngle6>-21</armAngle6>
     </shooter>

@@ -1,6 +1,7 @@
 package frc.robot.AutoStagePrograms;
 
 import frc.robot.RobotCore;
+import frc.robot.Utils.CommandSequenceGenerator;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.SequentialCommandFactory;
@@ -9,7 +10,7 @@ import frc.robot.Utils.SequentialCommandSegment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HardCodedLeaveCommunityLeft implements AutoStageProgram {
+public class HardCodedLeaveCommunityLeft implements CommandSequenceGenerator {
     @Override
     public List<SequentialCommandSegment> getCommandSegments(RobotCore robotCore) {
         final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
@@ -17,8 +18,8 @@ public class HardCodedLeaveCommunityLeft implements AutoStageProgram {
 
         commandSegments.add(commandFactory.moveFromPointToMidPointToPoint(
                 new Vector2D(new double[] {0, 0}),
-                new Vector2D(new double[] {-1, 0}),
-                new Vector2D(new double[] {-1, 2})
+                new Vector2D(new double[] {-1.4, 0}),
+                new Vector2D(new double[] {-1.2, 2})
         ));
         return commandSegments;
     }

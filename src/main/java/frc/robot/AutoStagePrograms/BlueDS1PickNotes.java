@@ -1,6 +1,7 @@
 package frc.robot.AutoStagePrograms;
 
 import frc.robot.RobotCore;
+import frc.robot.Utils.CommandSequenceGenerator;
 import frc.robot.Utils.ComputerVisionUtils.AutoStageVisionAimBot;
 import frc.robot.Utils.MathUtils.BezierCurve;
 import frc.robot.Utils.MathUtils.Rotation2D;
@@ -11,10 +12,10 @@ import frc.robot.Utils.SequentialCommandSegment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlueDS1PickNotes implements AutoStageProgram {
-    public static final Vector2D startingPosition = new Vector2D(new double[] {2.1, 0.3}),
+public class BlueDS1PickNotes implements CommandSequenceGenerator {
+    public static final Vector2D startingPosition = new Vector2D(new double[] {1.68, 0.3}),
             splitNotePosition = startingPosition.addBy(new Vector2D(new double[] {0, 3})),
-            secondNoteIntakePosition = new Vector2D(new double[] {2.7, 7.5}),
+            secondNoteIntakePosition = new Vector2D(new double[] {2.7, 7.8}),
             midLineRightMostNotePosition = new Vector2D(new double[] {1.68*2, 16.54/2}),
             moveBackFromMidLineRightMostEnd = new Vector2D(new double[] {1.4, 4.2}),
             moveBackFromCenterLineRighterMid = moveBackFromMidLineRightMostEnd.addBy(new Vector2D(new double[] {0.8, 0.8})),
@@ -35,7 +36,7 @@ public class BlueDS1PickNotes implements AutoStageProgram {
     @Override
     public List<SequentialCommandSegment> getCommandSegments(RobotCore robotCore) {
         final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
-        final SequentialCommandFactory commandFactory = new SequentialCommandFactory(robotCore, AutonomousTemplateRedDS2.startingPosition, staringRotation);
+        final SequentialCommandFactory commandFactory = new SequentialCommandFactory(robotCore, startingPosition, staringRotation);
         final AutoStageVisionAimBot aimBot = new AutoStageVisionAimBot(robotCore, 6000);
         final SequentialCommandSegment waitForArmToBeInPosition = new SequentialCommandSegment(
                 () -> true,
@@ -44,7 +45,7 @@ public class BlueDS1PickNotes implements AutoStageProgram {
                 robotCore.transformableArm::transformerInPosition,
                 robotCore.positionReader::getRobotRotation2D, robotCore.positionReader::getRobotRotation2D
         );
-        final long grabTimeOut = 2000, splitTimeOut = 3000;
+        final long grabTimeOut = 2000, splitTimeOut = 7000;
 
         commandSegments.add(commandFactory.calibratePositionEstimator());
 

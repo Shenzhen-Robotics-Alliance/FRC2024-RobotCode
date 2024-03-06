@@ -1,6 +1,7 @@
 package frc.robot.AutoStagePrograms;
 
 import frc.robot.RobotCore;
+import frc.robot.Utils.CommandSequenceGenerator;
 import frc.robot.Utils.ComputerVisionUtils.AutoStageVisionAimBot;
 import frc.robot.Utils.MathUtils.BezierCurve;
 import frc.robot.Utils.MathUtils.Rotation2D;
@@ -12,7 +13,7 @@ import frc.robot.Utils.SequentialCommandSegment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RedDS3 implements AutoStageProgram {
+public class RedDS3 implements CommandSequenceGenerator {
     public static final Vector2D
             robotStartingPosition = new Vector2D(new double[] {2.9, 0.3}),
             assumedSpeakerPosition = new Vector2D(new double[] {1.45, 0}),

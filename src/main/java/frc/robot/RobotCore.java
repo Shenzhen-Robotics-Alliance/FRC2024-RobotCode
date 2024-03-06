@@ -5,18 +5,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.CANcoder;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.DistanceSensors.Rev2mDistanceSensorEncapsulation;
 import frc.robot.Drivers.Encoders.CanCoder;
 import frc.robot.Drivers.Encoders.DCAbsolutePositionEncoder;
 import frc.robot.Drivers.IMUs.PigeonsIMU;
 import frc.robot.Drivers.IMUs.SimpleGyro;
+import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Drivers.Motors.MotorsSet;
 import frc.robot.Drivers.Motors.TalonFXMotor;
+import frc.robot.Drivers.Motors.VictorSPXMotor;
 import frc.robot.Drivers.Visions.FixedAnglePositionTrackingCamera;
 import frc.robot.Drivers.Visions.JetsonDetectionAppClient;
 import frc.robot.Drivers.Visions.TargetFieldPositionTracker;
@@ -125,11 +129,11 @@ public class RobotCore {
                 );
 
                 final Map<Integer, Vector2D> speakerTargetAprilTagReferences = new HashMap<>(), amplifierTargetAprilTagReferences = new HashMap<>(), noteTargetReferences = new HashMap<>();
-                speakerTargetAprilTagReferences.put(4, new Vector2D(new double[] {0.05,0}));
+                speakerTargetAprilTagReferences.put(4, new Vector2D(new double[] {0.05,-0.2}));
                 // speakerTargetAprilTagReferences.put(3, new Vector2D(new double[] {-0.5,0}));
                 amplifierTargetAprilTagReferences.put(5, new Vector2D(new double[] {0, 0}));
-                speakerTargetAprilTagReferences.put(7, new Vector2D(new double[] {0.05,0}));
-                speakerTargetAprilTagReferences.put(8, new Vector2D(new double[] {-0.5,0}));
+                speakerTargetAprilTagReferences.put(7, new Vector2D(new double[] {0.05,-0.2}));
+                // speakerTargetAprilTagReferences.put(8, new Vector2D(new double[] {-0.5,0}));
                 amplifierTargetAprilTagReferences.put(6, new Vector2D(new double[] {0, 0}));
 
                 noteTargetReferences.put(1, new Vector2D()); // the id of note is always 0, and the note is itself the reference so the relative position is (0,0)
@@ -276,9 +280,7 @@ public class RobotCore {
                 /* initialize the services */
                 for (RobotServiceBase service:services)
                         service.init();
-                /* reset the modules and services */
-                for (RobotModuleBase module: modules)
-                        module.reset();
+                /* reset the services */
                 for (RobotServiceBase service: services)
                         service.reset();
                 /* resume the modules that was paused */
@@ -332,6 +334,17 @@ public class RobotCore {
                 /* monitor the program's performance */
                 SmartDashboard.putNumber("robot main thread delay", System.currentTimeMillis()-t);
                 t = System.currentTimeMillis();
+
+                updateClimb();
+        }
+
+        private final MotorsSet climbMotors = new MotorsSet(new Motor[] {
+                new VictorSPXMotor(new VictorSPX(20), false),
+                new VictorSPXMotor(new VictorSPX(21), true)
+        });
+        private final XboxController xboxController = new XboxController(1);
+        public void updateClimb() {
+                climbMotors.setPower(xboxController.getRightTriggerAxis() - xboxController.getLeftTriggerAxis(), null);
         }
 
         public void updateModules() {

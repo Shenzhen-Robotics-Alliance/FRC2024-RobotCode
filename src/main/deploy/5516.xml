@@ -116,8 +116,8 @@
         <autoStageMaxVelocity type="double">4</autoStageMaxVelocity>
         <autoStageMaxAngularVelocity type="double">90</autoStageMaxAngularVelocity> <!-- in deg/s -->
         <inAdvanceTime>0.3</inAdvanceTime>
-<!--        <autoStageMaxAcceleration type="double">9</autoStageMaxAcceleration>-->
-<!--        <autoStageMaxVelocity type="double">2.4</autoStageMaxVelocity>-->
+        <!--        <autoStageMaxAcceleration type="double">4</autoStageMaxAcceleration>-->
+<!--        <autoStageMaxVelocity type="double">2</autoStageMaxVelocity>-->
 <!--        <autoStageMaxAngularVelocity type="double">45</autoStageMaxAngularVelocity> &lt;!&ndash; in deg/s &ndash;&gt;-->
 <!--        <inAdvanceTime>0.1</inAdvanceTime>-->
     </auto>

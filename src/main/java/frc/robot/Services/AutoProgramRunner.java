@@ -11,6 +11,7 @@ import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.RobotConfigReader;
 import frc.robot.Utils.SequentialCommandSegment;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -19,7 +20,7 @@ import java.util.Vector;
  * the auto stage of our robot is basically running the modules in this service, simulating a pilot's commands
  */
 public class AutoProgramRunner extends RobotServiceBase {
-    private final List<SequentialCommandSegment> commandSegments;
+    private List<SequentialCommandSegment> commandSegments;
 
     private final SwerveBasedChassis robotChassis;
     private final BezierCurveScheduleGenerator scheduleGenerator;
@@ -30,9 +31,8 @@ public class AutoProgramRunner extends RobotServiceBase {
     private final Timer dt = new Timer();
     private double currentSegmentRotationScheduleETA, rotationT, inAdvanceTime;
 
-    public AutoProgramRunner(List<SequentialCommandSegment> commandSegments, SwerveBasedChassis chassis, RobotConfigReader robotConfig) {
+    public AutoProgramRunner(SwerveBasedChassis chassis, RobotConfigReader robotConfig) {
         super("Auto-Program-Runner");
-        this.commandSegments = commandSegments;
         this.robotChassis = chassis;
         this.robotConfig = robotConfig;
         this.scheduleGenerator = new BezierCurveScheduleGenerator(robotConfig);
@@ -98,6 +98,7 @@ public class AutoProgramRunner extends RobotServiceBase {
         this.currentSegmentID = -1;
         robotChassis.gainOwnerShip(this);
         updateConfigs();
+        commandSegments = new ArrayList<>();
     }
 
     private void nextSegment() {
@@ -127,6 +128,10 @@ public class AutoProgramRunner extends RobotServiceBase {
         if (currentCommandSegment.chassisMovementPath == null) return;
         this.currentPathSchedule = scheduleGenerator.generateTranslationalSchedule(currentCommandSegment.chassisMovementPath);
         robotChassis.gainOwnerShip(this);
+    }
+
+    public void scheduleCommandSegments(List<SequentialCommandSegment> commandSegments) {
+        this.commandSegments = commandSegments;
     }
 
     public boolean isAutoStageComplete() {

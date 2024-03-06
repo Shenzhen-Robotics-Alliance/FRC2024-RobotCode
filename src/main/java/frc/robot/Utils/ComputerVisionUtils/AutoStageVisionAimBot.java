@@ -99,7 +99,10 @@ public class AutoStageVisionAimBot {
     }
 
     public SequentialCommandSegment splitForwardWhileMoving(BezierCurve chassisMovementPath, Rotation2D robotStartingRotation, Rotation2D robotEndingRotation, long timeOutMillis) {
-        final Timer timeSinceTaskStarted = new Timer();
+        final Timer timeSinceTaskStarted = new Timer(),
+                timeNoteLeftShooterModule = new Timer();
+        timeSinceTaskStarted.start();
+        timeNoteLeftShooterModule.start();
         return new SequentialCommandSegment(
                 robotCore.intake::isNoteInsideIntake,
                 () -> chassisMovementPath,
@@ -109,15 +112,17 @@ public class AutoStageVisionAimBot {
                     robotCore.shooter.setShooterMode(Shooter.ShooterMode.PREPARE_TO_SHOOT, null);
                 },
                 () -> {
-                    if (robotCore.transformableArm.transformerInPosition() && robotCore.shooter.shooterAsDemanded())
+                    if (robotCore.transformableArm.transformerInPosition() && robotCore.shooter.shooterReadyToSplit())
                         robotCore.intake.startLaunch(null);
+                    if (robotCore.intake.isNoteInsideIntake())
+                        timeNoteLeftShooterModule.reset();
                 },
                 () -> {
-                    robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, null);
-                    robotCore.shooter.setShooterMode(Shooter.ShooterMode.DISABLED, null);
+//                    robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, null);
+//                    robotCore.shooter.setShooterMode(Shooter.ShooterMode.DISABLED, null);
                     robotCore.intake.turnOffIntake(null);
                 },
-                () -> timeSinceTaskStarted.get() * 1000 > timeOutMillis || robotCore.intake.isNoteInsideIntake(),
+                () -> timeSinceTaskStarted.get() * 1000 > timeOutMillis || timeNoteLeftShooterModule.get() > 0.5,
                 () -> robotStartingRotation, () -> robotEndingRotation
         );
     }

@@ -1,6 +1,7 @@
 package frc.robot.AutoStagePrograms;
 
 import frc.robot.RobotCore;
+import frc.robot.Utils.CommandSequenceGenerator;
 import frc.robot.Utils.ComputerVisionUtils.AutoStageVisionAimBot;
 import frc.robot.Utils.Flip;
 import frc.robot.Utils.MathUtils.BezierCurve;
@@ -13,7 +14,7 @@ import frc.robot.Utils.SequentialCommandSegment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlueDS2 implements AutoStageProgram {
+public class BlueDS2 implements CommandSequenceGenerator {
     public static final Vector2D
             assumedSpeakerPosition = Flip.flipHorizontally(RedDS2.assumedSpeakerPosition),
             allianceFrontNotePosition = Flip.flipHorizontally(RedDS2.assumedSpeakerPosition),

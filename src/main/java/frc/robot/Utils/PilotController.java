@@ -91,6 +91,10 @@ public class PilotController {
         return translationalStickValue;
     }
 
+    public double getRawAxis(int port) {
+        return rawController.getRawAxis(port);
+    }
+
     public void updateRotationalStickValue() {
         this.rotationalStickValue = applyExponent(
                 applyThreshold(rawController.getRawAxis(zAxisPortID), stickThresholdWhenOtherAxisUnused),

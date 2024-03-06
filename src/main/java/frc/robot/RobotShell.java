@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.AutoStagePrograms.*;
 import frc.robot.Services.*;
-import frc.robot.Utils.MathUtils.Vector2D;
+import frc.robot.Utils.CommandSequenceGenerator;
 import frc.robot.Utils.SequentialCommandSegment;
 import frc.robot.Utils.Tests.*;
 
@@ -14,11 +14,17 @@ import java.util.List;
 public class RobotShell extends TimedRobot {
     private static final int updateFreq = 100;
     public static final boolean isFormalCompetition = false;
+
+    private RobotCore robotCore;
+    private AutoProgramRunner autoProgramRunner;
+    private TransformableIntakeAndShooterService intakeAndShooterService;
+    private VisionAidedPilotChassis visionAidedPilotChassis;
+
     public RobotShell() {
         super(1.0/updateFreq);
     }
 
-    private RobotCore robotCore;
+
     /** called once when the robot powers on */
     @Override
     public void robotInit() {
@@ -31,6 +37,10 @@ public class RobotShell extends TimedRobot {
     public void driverStationConnected() {
         // System.out.println("<-- Robot Shell | driver station connected -->");
         robotCore.initializeRobot();
+
+        autoProgramRunner = new AutoProgramRunner(robotCore.chassisModule, robotCore.robotConfig);
+        intakeAndShooterService = new TransformableIntakeAndShooterService(robotCore.intake, robotCore.shooter, robotCore.transformableArm, robotCore.robotConfig, new XboxController(1));
+        visionAidedPilotChassis = new VisionAidedPilotChassis(robotCore.chassisModule, robotCore.shooter, robotCore.intake, robotCore.transformableArm, robotCore.speakerTarget, robotCore.amplifierTarget, robotCore.noteTarget, new XboxController(1), robotCore.robotConfig);
     }
 
     /** called repeatedly after the robot powers on, no matter enabled or not */
@@ -114,19 +124,15 @@ public class RobotShell extends TimedRobot {
         robotTest.testPeriodic();
     }
 
-    private void startAutoStage(AutoStageProgram autoStageProgram) {
+    private void startAutoStage(CommandSequenceGenerator commandSequenceGenerator) {
         final List<RobotServiceBase> services = new ArrayList<>();
-        final List<SequentialCommandSegment> commandSegments = autoStageProgram.getCommandSegments(robotCore);
-        final AutoProgramRunner autoProgramRunner = new AutoProgramRunner(commandSegments, robotCore.chassisModule, robotCore.robotConfig);
         services.add(autoProgramRunner);
         robotCore.startStage(services);
+        autoProgramRunner.scheduleCommandSegments(commandSequenceGenerator.getCommandSegments(robotCore));
     }
 
     private void startManualStage() {
         final List<RobotServiceBase> services = new ArrayList<>();
-
-        final TransformableIntakeAndShooterService intakeAndShooterService = new TransformableIntakeAndShooterService(robotCore.intake, robotCore.shooter, robotCore.transformableArm, robotCore.robotConfig, new XboxController(1));
-        final VisionAidedPilotChassis visionAidedPilotChassis = new VisionAidedPilotChassis(robotCore.chassisModule, robotCore.shooter, robotCore.intake, robotCore.transformableArm, robotCore.speakerTarget, robotCore.amplifierTarget, robotCore.noteTarget, new XboxController(1), robotCore.robotConfig);
 
         services.add(intakeAndShooterService);
         services.add(visionAidedPilotChassis);

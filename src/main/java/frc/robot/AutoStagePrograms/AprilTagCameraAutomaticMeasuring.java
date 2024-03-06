@@ -5,17 +5,17 @@ import frc.robot.Drivers.Visions.RawObjectDetectionCamera;
 import frc.robot.Modules.PositionReader.PositionEstimator;
 import frc.robot.Modules.UpperStructure.TransformableArm;
 import frc.robot.RobotCore;
+import frc.robot.Utils.CommandSequenceGenerator;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.StatisticsUtils;
 import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.SequentialCommandFactory;
 import frc.robot.Utils.SequentialCommandSegment;
-import frc.robot.Utils.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AprilTagCameraAutomaticMeasuring implements AutoStageProgram{
+public class AprilTagCameraAutomaticMeasuring implements CommandSequenceGenerator {
     private final RawObjectDetectionCamera camera;
     private final Vector2D robotInitialPositionToAprilTag;
     private final int targetID;

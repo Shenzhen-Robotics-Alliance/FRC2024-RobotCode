@@ -1,6 +1,7 @@
 package frc.robot.AutoStagePrograms;
 
 import frc.robot.RobotCore;
+import frc.robot.Utils.CommandSequenceGenerator;
 import frc.robot.Utils.MathUtils.BezierCurve;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
@@ -10,7 +11,7 @@ import frc.robot.Utils.SequentialCommandSegment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AutonomousTemplateRedDS2 implements AutoStageProgram {
+public class AutonomousTemplateRedDS2 implements CommandSequenceGenerator {
     public static final Vector2D startingPosition = new Vector2D(new double[] {0, 0.4}),
             position1 = new Vector2D(new double[] {-0.1, 1.3}),
             position2 = new Vector2D(new double[] {0.8, 1.7}),

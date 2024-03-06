@@ -1,6 +1,7 @@
 package frc.robot.AutoStagePrograms;
 
 import frc.robot.RobotCore;
+import frc.robot.Utils.CommandSequenceGenerator;
 import frc.robot.Utils.ComputerVisionUtils.AutoStageVisionAimBot;
 import frc.robot.Utils.Flip;
 import frc.robot.Utils.MathUtils.BezierCurve;
@@ -12,7 +13,7 @@ import frc.robot.Utils.SequentialCommandSegment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RedDS1PickNotes implements AutoStageProgram {
+public class RedDS1PickNotes implements CommandSequenceGenerator {
     private static final Vector2D startingPosition = Flip.flipHorizontally(BlueDS1PickNotes.startingPosition),
             splitNotePosition = Flip.flipHorizontally(BlueDS1PickNotes.splitNotePosition),
             secondNoteIntakePosition = Flip.flipHorizontally(BlueDS1PickNotes.secondNoteIntakePosition),

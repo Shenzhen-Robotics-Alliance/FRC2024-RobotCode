@@ -72,16 +72,19 @@ public class Shooter extends RobotModuleBase {
     }
 
     public boolean shooterReady() {
-        return this.currentMode == ShooterMode.SHOOT && shooterAsDemanded();
+        return this.currentMode == ShooterMode.SHOOT && shooterAsDemanded(getShooterSpeedWithAimingSystem(0));
     }
 
-    public boolean shooterAsDemanded() {
-        final double desiredShootingSpeed = getShooterSpeedWithAimingSystem(0);
+    private boolean shooterAsDemanded(double desiredSpeed) {
         double maxErrorRPM = 0;
         for (EncoderMotorMechanism shooter:shooters)
-            maxErrorRPM = Math.max(Math.abs(shooter.getEncoderVelocity() * encoderVelocityToRPM - desiredShootingSpeed), maxErrorRPM);
+            maxErrorRPM = Math.max(Math.abs(shooter.getEncoderVelocity() * encoderVelocityToRPM - desiredSpeed), maxErrorRPM);
         System.out.println("shooter speed error (rpm): " + maxErrorRPM + ", tolerance: " + shooterReadyErrorBound);
         return maxErrorRPM < shooterReadyErrorBound;
+    }
+
+    public boolean shooterReadyToSplit() {
+        return shooterAsDemanded(preparingForShootRPM);
     }
 
     @Override

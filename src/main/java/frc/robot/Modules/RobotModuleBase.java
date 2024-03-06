@@ -81,18 +81,23 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
     public void reset() {
         this.previousTimeMillis = System.currentTimeMillis();
         onReset();
-        enable();
+        clearAccumulations();
     }
 
     /** called when the program ends */
     public abstract void onDestroy();
     protected abstract void onEnable();
     protected abstract void onDisable();
+    /** clear all the accumulating variables, such as integral in a PID */
+    protected void clearAccumulations() {
+
+    }
 
     public void enable() {
         if (enabled)
             return;
         System.out.println("<-- Module Base | enabling module " + moduleName + " -->");
+        clearAccumulations();
         onEnable();
         this.enabled = true;
     }
