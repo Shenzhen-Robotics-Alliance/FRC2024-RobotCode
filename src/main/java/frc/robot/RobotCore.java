@@ -81,7 +81,7 @@ public class RobotCore {
                         robotConfig = new RobotConfigReader(configName);
                 } catch (RuntimeException e) {
                         System.out.println("<-- error while reading config, trying simulation mode... -->");
-                        robotConfig = new RobotConfigReader(configName, true);
+                        robotConfig = new RobotConfigReader(configName);
                 }
 
                 frontLeftWheel = createSwerveWheel("frontLeft", 1, new Vector2D(new double[] { -0.6, 0.6 }));

@@ -21,6 +21,7 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -29,9 +30,6 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 public class RobotConfigReader {
-    /** user configuration */
-    private static final String HOME_DIR = "/home/lvuser/";
-    private static final String CODE_DIR = "/FRC2024-RobotCode/src/main/";
 
     /** the hashmap that stores all the configs */
     private Map<String, Map<String, Double>> robotConfigs= new HashMap(1);
@@ -47,7 +45,7 @@ public class RobotConfigReader {
 
     public RobotConfigReader() {
         try {
-            readConfigs("robotConfig", false);
+            readConfigs("robotConfig");
             // System.out.println("robot config: " + robotConfigs);
         } catch (Exception e) {
             throw new RuntimeException("error while reading robot config:" + e);
@@ -56,27 +54,16 @@ public class RobotConfigReader {
 
     public RobotConfigReader(String configName) {
         try {
-            readConfigs(configName, false);
+            readConfigs(configName);
             // System.out.println("robot config: " + robotConfigs);
         } catch (Exception e) {
             throw new RuntimeException("error while reading robot config:" + e);
         }
     }
 
-    public RobotConfigReader(String configName, boolean isSimulation) {
-        try {
-            readConfigs("robotConfig", isSimulation);
-            readConfigs(configName, isSimulation); // override the previous
-            // System.out.println("robot config: " + robotConfigs);
-        } catch (Exception e) {
-            throw new RuntimeException("error while reading robot config:" + e);
-        }
-    }
-
-    private void readConfigs(String configName, boolean isSimulation) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
+    private void readConfigs(String configName) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
         /* read xml file from filesystem */
-        xmlFile = new File((isSimulation ? CODE_DIR : HOME_DIR)
-                + "deploy/" + configName+ ".xml");
+        xmlFile = new File(Filesystem.getDeployDirectory(),configName+ ".xml");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         doc = dBuilder.parse(xmlFile);
@@ -184,50 +171,5 @@ public class RobotConfigReader {
             domainConfig.put(constantName, SmartDashboard.getNumber(configToTune, domainConfig.get(constantName)));
             robotConfigs.put(domainName, domainConfig);
         }
-    }
-
-    @Deprecated
-    /**
-     * @deprecated directly writing to xml is not suggested
-     * */
-    public void writeConfigsToXML() throws ParserConfigurationException, TransformerException {
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-        // Create a new XML document
-        Document doc = docBuilder.newDocument();
-        Element rootElement = doc.createElement("robotConfig");
-        doc.appendChild(rootElement);
-
-        // Iterate through domain configurations
-        for (Map.Entry<String, Map<String, Double>> domainEntry : robotConfigs.entrySet()) {
-            String domainName = domainEntry.getKey();
-            Map<String, Double> domainConfig = domainEntry.getValue();
-
-            Element domainElement = doc.createElement(domainName);
-            rootElement.appendChild(domainElement);
-
-            // Iterate through constant configurations within the domain
-            for (Map.Entry<String, Double> constantEntry : domainConfig.entrySet()) {
-                String constantName = constantEntry.getKey();
-                Double constantValue = constantEntry.getValue();
-
-                Element constantElement = doc.createElement(constantName);
-                constantElement.appendChild(doc.createTextNode(constantValue.toString()));
-                domainElement.appendChild(constantElement);
-            }
-        }
-
-        // Write the updated XML document to the file
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        DOMSource source = new DOMSource(doc);
-
-        File outputFile = new File(HOME_DIR + "deploy/robotConfig.xml");
-        StreamResult result = new StreamResult(outputFile);
-
-        transformer.transform(source, result);
-
-        System.out.println("<--all changed configs are saved to" + HOME_DIR + "deploy/robotConfig.xml" + "-->");
     }
 }
