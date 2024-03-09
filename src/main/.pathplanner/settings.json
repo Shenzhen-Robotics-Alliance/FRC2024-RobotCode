@@ -9,8 +9,8 @@
     "red mid 6 note"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 4.0,
-  "defaultMaxAccel": 4.5,
+  "defaultMaxVel": 4.2,
+  "defaultMaxAccel": 5.0,
   "defaultMaxAngVel": 200.0,
   "defaultMaxAngAccel": 400.0,
   "maxModuleSpeed": 4.5
