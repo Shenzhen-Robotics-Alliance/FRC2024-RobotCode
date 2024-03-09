@@ -97,6 +97,7 @@ public class TransformableArm extends RobotModuleBase {
             System.out.println("<-- WARINING!!! | arm encoder not readable,  correction power: " + simpleArmController.getMotorPower(armLifterMechanism.getEncoderVelocity(), armLifterMechanism.getEncoderPosition()) + " -->");
             return;
         }
+        System.out.println("arm correction power: " + simpleArmController.getMotorPower(armLifterMechanism.getEncoderVelocity(), armLifterMechanism.getEncoderPosition()) + " -->");
         armLifterMechanism.updateWithController(this);
     }
 

@@ -115,7 +115,7 @@ public class RobotShell extends TimedRobot {
     public void testInit() {
         // System.out.println("<-- Robot Shell | test init -->");
         if (robotTest == null)
-            this.robotTest = new SimpleDistanceSensorTest();
+            this.robotTest = new ArmSoftwareLimitTest(robotCore.robotConfig);
         robotTest.testStart();
     }
 
@@ -123,11 +123,6 @@ public class RobotShell extends TimedRobot {
     public void testPeriodic() {
         // System.out.println("<-- Robot Shell | robot init -->");
         robotTest.testPeriodic();
-    }
-
-    @Override
-    public void simulationInit() {
-        System.out.println("<-- simulate hello world! -->");
     }
 
     private void startAutoStage(CommandSequenceGenerator autoStageProgram) {

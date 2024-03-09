@@ -56,6 +56,7 @@
 
     <arm>
         <armMotorPort>9</armMotorPort>
+        <armMotor2Port>-1</armMotor2Port>
         <!-- positive should be towards lower point -->
         <armMotorReversed>1</armMotorReversed>
         <armEncoderReversed>1</armEncoderReversed>

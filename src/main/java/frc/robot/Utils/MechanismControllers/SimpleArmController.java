@@ -1,6 +1,7 @@
 package frc.robot.Utils.MechanismControllers;
 
 import edu.wpi.first.math.MathUtil;
+import frc.robot.Utils.MathUtils.AngleUtils;
 import frc.robot.Utils.MathUtils.LookUpTable;
 
 public class SimpleArmController implements MechanismController {
@@ -19,7 +20,7 @@ public class SimpleArmController implements MechanismController {
 
     @Override
     public double getMotorPower(double mechanismVelocity, double mechanismPosition) {
-        final double error = desiredPosition - mechanismPosition;
+        final double error = AngleUtils.getActualDifference(mechanismPosition, desiredPosition);
         if (Math.abs(error) < errorTolerance)
             return 0;
 

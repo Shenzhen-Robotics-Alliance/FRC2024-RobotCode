@@ -65,7 +65,7 @@
         <armEncoderReversed>0</armEncoderReversed>
 
         <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
-        <encoderZeroPositionRadians>5.087</encoderZeroPositionRadians>
+        <encoderZeroPositionRadians>2.221</encoderZeroPositionRadians>
 
         <position-DEFAULT>102</position-DEFAULT>
         <position-INTAKE>102</position-INTAKE>
@@ -119,13 +119,13 @@
         <errorTolerance>2</errorTolerance>
     </arm>
     <auto>
-        <autoStageMaxAcceleration type="double">10</autoStageMaxAcceleration>
-        <autoStageMaxVelocity type="double">4.2</autoStageMaxVelocity>
-        <autoStageMaxAngularVelocity type="double">90</autoStageMaxAngularVelocity> <!-- in deg/s -->
-        <inAdvanceTime>0.3</inAdvanceTime>
-        <!--        <autoStageMaxAcceleration type="double">4</autoStageMaxAcceleration>-->
-<!--        <autoStageMaxVelocity type="double">2</autoStageMaxVelocity>-->
-<!--        <autoStageMaxAngularVelocity type="double">45</autoStageMaxAngularVelocity> &lt;!&ndash; in deg/s &ndash;&gt;-->
-<!--        <inAdvanceTime>0.1</inAdvanceTime>-->
+<!--        <autoStageMaxAcceleration type="double">10</autoStageMaxAcceleration>-->
+<!--        <autoStageMaxVelocity type="double">4.2</autoStageMaxVelocity>-->
+<!--        <autoStageMaxAngularVelocity type="double">90</autoStageMaxAngularVelocity> &lt;!&ndash; in deg/s &ndash;&gt;-->
+<!--        <inAdvanceTime>0.3</inAdvanceTime>-->
+        <autoStageMaxAcceleration type="double">4</autoStageMaxAcceleration>
+        <autoStageMaxVelocity type="double">2</autoStageMaxVelocity>
+        <autoStageMaxAngularVelocity type="double">45</autoStageMaxAngularVelocity> <!-- in deg/s -->
+        <inAdvanceTime>0.1</inAdvanceTime>
     </auto>
 </robotConfig>
