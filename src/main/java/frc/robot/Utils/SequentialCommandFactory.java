@@ -245,9 +245,9 @@ public class SequentialCommandFactory {
         );
     }
 
-    public List<BezierCurve> getBezierCurvesFromPathFile(String pathName) {
+    public static Vector2D getRobotStartingPosition(String firstPathName) {
         try (BufferedReader br = new BufferedReader(new FileReader(new File(
-                Filesystem.getDeployDirectory(), "pathplanner/paths/" + pathName + ".path")))) {
+                Filesystem.getDeployDirectory(), "pathplanner/paths/" + firstPathName + ".path")))) {
             StringBuilder fileContentBuilder = new StringBuilder();
             String line;
             while ((line = br.readLine()) != null) {
@@ -257,7 +257,28 @@ public class SequentialCommandFactory {
             JSONObject pathJson = (JSONObject) new JSONParser().parse(fileContent);
             JSONArray waypointsJson = (JSONArray) pathJson.get("waypoints");
 
-            JSONArray rotationTargetsJson = (JSONArray) pathJson.get("rotationTargets");
+            JSONObject firstPoint = (JSONObject) waypointsJson.get(0);
+
+            return pointFromJson((JSONObject) firstPoint.get("anchor"));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("Cannot Find Path File: " + firstPathName + " From Deploy Directory: " + Filesystem.getDeployDirectory());
+        } catch (IOException e) {
+            throw new RuntimeException("IO Error While Reading File: " + firstPathName);
+        } catch (ParseException e) {
+            throw new RuntimeException("Error Occurred While Processing JSON Path File: " + firstPathName);
+        }
+    }
+
+    public static List<BezierCurve> getBezierCurvesFromPathFile(String pathName) {
+        try (BufferedReader br = new BufferedReader(new FileReader(new File(
+                Filesystem.getDeployDirectory(), "pathplanner/paths/" + pathName + ".path")))) {
+            StringBuilder fileContentBuilder = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) fileContentBuilder.append(line);
+
+            String fileContent = fileContentBuilder.toString();
+            JSONObject pathJson = (JSONObject) new JSONParser().parse(fileContent);
+            JSONArray waypointsJson = (JSONArray) pathJson.get("waypoints");
 
             List<BezierCurve> curves = new ArrayList<>();
             for (int i = 0; i < waypointsJson.size() - 1; i++) {
