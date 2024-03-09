@@ -1,7 +1,5 @@
 package frc.robot.Utils.MechanismControllers;
 
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Utils.EasyShuffleBoard;
 
 /**
@@ -41,6 +39,7 @@ public class FlyWheelSpeedController implements MechanismController {
     }
 
     public double getCorrectionPower(double currentSpeed) {
+        if (Math.abs(getCurrentTargetSpeedWithLERP() / profile.maximumSpeed) < 0.02) return 0;
         final double correctionSpeed = simpleFeedForwardSpeedController.getSpeedControlPower(
                 currentSpeed / profile.maximumSpeed,
                 getCurrentTargetSpeedWithLERP() / profile.maximumSpeed

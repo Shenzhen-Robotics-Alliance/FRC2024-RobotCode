@@ -104,8 +104,8 @@
     <shooter>
         <shooterMotorEncoderTicksPerRevolution>2048</shooterMotorEncoderTicksPerRevolution>
         <speedControllerProportionGain>1</speedControllerProportionGain>
-        <speedControllerFeedForwardGain>2.3</speedControllerFeedForwardGain>
-        <speedControllerFrictionGain>0.02</speedControllerFrictionGain>
+        <speedControllerFeedForwardGain>2</speedControllerFeedForwardGain>
+        <speedControllerFrictionGain>0</speedControllerFrictionGain>
         <speedControllerFeedForwardDelay>0</speedControllerFeedForwardDelay>
         <speedControllerMaximumSpeed>6000</speedControllerMaximumSpeed>
         <speedControllerTimeNeededToAccelerateToMaxSpeed>0.7</speedControllerTimeNeededToAccelerateToMaxSpeed>

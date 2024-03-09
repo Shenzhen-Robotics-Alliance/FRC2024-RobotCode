@@ -43,8 +43,8 @@
     <shooter>
         <shooter1Port>12</shooter1Port>
         <shooter2Port>13</shooter2Port>
-        <shooter1Reversed>1</shooter1Reversed>
-        <shooter2Reversed>1</shooter2Reversed>
+        <shooter1Reversed>0</shooter1Reversed>
+        <shooter2Reversed>0</shooter2Reversed>
     </shooter>
 
     <intake>

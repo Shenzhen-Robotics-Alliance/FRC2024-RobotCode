@@ -30,7 +30,7 @@ public class SimpleFeedForwardSpeedController {
 
 
         final double correctionPower = basePower + feedForwardPower;
-        if (desiredSpeed != 0 && Math.abs(correctionPower) < profile.frictionGain)
+        if (Math.abs(desiredSpeed) >= 0.02 && Math.abs(correctionPower) < profile.frictionGain)
             return Math.copySign(profile.frictionGain, correctionPower);
 
         return correctionPower;
