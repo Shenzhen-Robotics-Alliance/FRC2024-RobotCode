@@ -53,7 +53,7 @@ public class MotorsSet implements Motor {
     @Override
     public void disableMotor(RobotModuleBase operatorModule) {
         for (Motor motor:motors)
-            motor.gainOwnerShip(operatorModule);
+            motor.disableMotor(operatorModule);
     }
 
     @Override

@@ -197,7 +197,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
             }
             case GRABBING_NOTE -> proceedGrabNoteProcess(translationAutoPilotButton);
         }
-        // System.out.println("<-- VAPC | current status: " + currentStatus + "-->");
+        System.out.println("<-- VAPC | current status: " + currentStatus + "-->");
 
         final Vector2D speakerPosition = shooter.aimingSystem.getRelativePositionToTarget(shooter.getProjectileSpeed());
         if (speakerPosition != null) {

@@ -92,9 +92,12 @@ public class TransformableArm extends RobotModuleBase {
 
         simpleArmController.desiredPosition = desiredEncoderPosition;
 
+        if (multiFunctioning()) {
+            armLifterMechanism.disableMotor(this);
+            System.out.println("<-- WARINING!!! | arm encoder not readable,  correction power: " + simpleArmController.getMotorPower(armLifterMechanism.getEncoderVelocity(), armLifterMechanism.getEncoderPosition()) + " -->");
+            return;
+        }
         armLifterMechanism.updateWithController(this);
-        // armLifterMechanism.disableMotor(this);
-        // System.out.println("arm correction power: " + simpleArmController.getMotorPower(armLifterMechanism.getEncoderVelocity(), armLifterMechanism.getEncoderPosition()));
     }
 
     /**
@@ -106,6 +109,10 @@ public class TransformableArm extends RobotModuleBase {
         if (!isOwner(operatorService) || this.desiredPosition != TransformerPosition.SHOOT_NOTE) return;
 
         armController.updateDesiredPosition((desiredEncoderPositionTable.get(TransformerPosition.SHOOT_NOTE) + aimingAngle));
+    }
+
+    public boolean multiFunctioning() {
+        return !armEncoder.isEncoderAvailable();
     }
 
     @Override

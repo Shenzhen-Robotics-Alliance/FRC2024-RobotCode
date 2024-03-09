@@ -74,4 +74,9 @@ public class DCAbsolutePositionEncoder implements Encoder {
         return dutyCycleEncoder.getAbsolutePosition() * Math.PI * 2;
     }
 
+    @Override
+    public boolean isEncoderAvailable() {
+        dutyCycleEncoder.setConnectedFrequencyThreshold(900);
+        return dutyCycleEncoder.isConnected();
+    }
 }

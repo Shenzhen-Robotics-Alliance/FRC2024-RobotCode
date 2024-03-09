@@ -54,6 +54,7 @@ public class RobotConfigReader {
 
     public RobotConfigReader(String configName) {
         try {
+            readConfigs("robotConfig");
             readConfigs(configName);
             // System.out.println("robot config: " + robotConfigs);
         } catch (Exception e) {

@@ -31,4 +31,6 @@ public interface Encoder {
      * get the raw encoder reading, despite the calibrated zero position
      * */
     double getRawEncoderReading();
+
+    default boolean isEncoderAvailable() {return true;}
 }

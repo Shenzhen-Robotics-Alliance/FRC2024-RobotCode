@@ -112,8 +112,8 @@
         <errorTolerance>2</errorTolerance>
     </arm>
     <auto>
-        <autoStageMaxAcceleration type="double">11</autoStageMaxAcceleration>
-        <autoStageMaxVelocity type="double">4</autoStageMaxVelocity>
+        <autoStageMaxAcceleration type="double">10</autoStageMaxAcceleration>
+        <autoStageMaxVelocity type="double">4.2</autoStageMaxVelocity>
         <autoStageMaxAngularVelocity type="double">90</autoStageMaxAngularVelocity> <!-- in deg/s -->
         <inAdvanceTime>0.3</inAdvanceTime>
         <!--        <autoStageMaxAcceleration type="double">4</autoStageMaxAcceleration>-->

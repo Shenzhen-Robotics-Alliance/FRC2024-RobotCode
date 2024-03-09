@@ -41,86 +41,91 @@
         <robotPositionFeedForwardTime type="double">0.05</robotPositionFeedForwardTime>
     </chassis>
     <shooter>
-        <shooter1Port>50</shooter1Port>
-        <shooter2Port>50</shooter2Port>
-        <shooter1Reversed>0</shooter1Reversed>
-        <shooter2Reversed>0</shooter2Reversed>
-
-        <defaultShootingRPM>4000</defaultShootingRPM>
+        <shooter1Port>12</shooter1Port>
+        <shooter2Port>13</shooter2Port>
+        <shooter1Reversed>1</shooter1Reversed>
+        <shooter2Reversed>1</shooter2Reversed>
     </shooter>
 
     <intake>
-        <intakeMotor1Port>50</intakeMotor1Port>
-        <intakeMotor1Reversed>1</intakeMotor1Reversed>
-        <intakeMotor2Port>50</intakeMotor2Port>
-        <intakeMotor2Reversed>1</intakeMotor2Reversed>
+        <intakeMotorPort>11</intakeMotorPort>
+        <intakeMotorReversed>1</intakeMotorReversed>
+        <intakeAidMotorPort>9</intakeAidMotorPort>
+        <intakeAidMotorReversed>1</intakeAidMotorReversed>
+        <distanceSensorThreshold>20</distanceSensorThreshold>
     </intake>
 
     <arm>
-        <armMotorPort>50</armMotorPort>
+        <armMotorPort>10</armMotorPort>
+        <!-- positive should be towards lower point -->
+        <armMotor2Port>14</armMotor2Port>
         <!-- positive should be towards lower point -->
         <armMotorReversed>1</armMotorReversed>
+        <armMotor2Reversed>0</armMotor2Reversed>
         <armEncoderReversed>0</armEncoderReversed>
 
         <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
-        <encoderZeroPositionRadians>5.854</encoderZeroPositionRadians>
+        <encoderZeroPositionRadians>5.087</encoderZeroPositionRadians>
 
-        <!-- arm positions -->
-        <position-DEFAULT>98</position-DEFAULT> <!-- 60 -->
-        <position-INTAKE>107</position-INTAKE>
-        <position-SHOOT_NOTE>88</position-SHOOT_NOTE>
-        <position-SCORE_AMPLIFIER>0</position-SCORE_AMPLIFIER>
+        <position-DEFAULT>102</position-DEFAULT>
+        <position-INTAKE>102</position-INTAKE>
+        <position-SPLIT>80</position-SPLIT>
+        <position-SHOOT_NOTE>70</position-SHOOT_NOTE>
+        <position-SCORE_AMPLIFIER>1</position-SCORE_AMPLIFIER>
 
         <!-- software limit -->
-        <lowerPositionLimit>-0.1</lowerPositionLimit>
-        <upperPositionLimit>115</upperPositionLimit>
-
-        <!-- arm PID -->
-        <maximumPower>0.65</maximumPower>
-        <errorStartDecelerate>35</errorStartDecelerate>
-        <minPowerToMove>0</minPowerToMove>
-        <errorTolerance>1</errorTolerance>
-        <feedForwardTime>0.06</feedForwardTime>
-        <errorAccumulationProportion>0</errorAccumulationProportion>
-        <maxAcceleration>180</maxAcceleration>
-        <maxVelocity>150</maxVelocity>
-        <inAdvanceTime>0.25</inAdvanceTime>
-        <errorToleranceAsInPosition>4.5</errorToleranceAsInPosition>
+        <lowerPositionLimit>0</lowerPositionLimit>
+        <upperPositionLimit>104</upperPositionLimit>
 
         <!-- lookup table -->
         <encoderPosition0>0</encoderPosition0>
-        <gravityTorque0>0.07</gravityTorque0>
+        <gravityTorque0>0</gravityTorque0>
         <!-- the upper balanced point -->
-        <encoderPosition1>17</encoderPosition1>
+        <encoderPosition1>25</encoderPosition1>
         <gravityTorque1>0</gravityTorque1>
         <!-- midway between the upper balance point and the lower balance point  -->
-        <encoderPosition2>40</encoderPosition2>
-        <gravityTorque2>0.04</gravityTorque2>
+        <encoderPosition2>50</encoderPosition2>
+        <gravityTorque2>-0.02</gravityTorque2>
         <!-- lower balance point (aka. default position) -->
-        <encoderPosition3>62</encoderPosition3>
-        <gravityTorque3>0</gravityTorque3>
+        <encoderPosition3>75</encoderPosition3>
+        <gravityTorque3>-0.03</gravityTorque3>
         <!-- lowest position -->
-        <encoderPosition4>115</encoderPosition4>
+        <encoderPosition4>98</encoderPosition4>
         <gravityTorque4>-0.05</gravityTorque4>
+
+        <!-- arm PID (Override robotConfig) -->
+        <maximumPower>0.85</maximumPower>
+        <errorStartDecelerate>25</errorStartDecelerate>
+        <minPowerToMove>0.04</minPowerToMove>
+        <errorTolerance>2</errorTolerance>
+        <feedForwardTime>0</feedForwardTime>
+        <errorAccumulationProportion>0</errorAccumulationProportion>
+        <errorAccumulationLimit>10</errorAccumulationLimit>
+        <maxAcceleration>180</maxAcceleration>
+        <maxVelocity>120</maxVelocity>
+        <inAdvanceTime>0.25</inAdvanceTime>
+        <errorToleranceAsInPosition>2</errorToleranceAsInPosition>
+
+        <!-- simple arm controller -->
+        <!-- <maxPowerWhenMovingUp>0.65</maxPowerWhenMovingUp>
+        <maxPowerWhenMovingDown>0.2</maxPowerWhenMovingDown> -->
+        <maxPowerWhenMovingUp>0.15</maxPowerWhenMovingUp>
+        <maxPowerWhenMovingDown>0.1</maxPowerWhenMovingDown>
+        <errorStartDecelerate>20</errorStartDecelerate>
+        <!-- <powerNeededToMoveUp>0.26</powerNeededToMoveUp>
+        <powerNeededToMoveDown>0.06</powerNeededToMoveDown> -->
+        <powerNeededToMoveUp>0.1</powerNeededToMoveUp>
+        <powerNeededToMoveDown>0.05</powerNeededToMoveDown>
+        <errorTolerance>2</errorTolerance>
     </arm>
-
-    <control-RM_BOXER>
-        <controllerPort type="int">0</controllerPort>
-        <xAxisPort type="int">0</xAxisPort>
-        <yAxisPort type="int">1</yAxisPort>
-        <zAxisPort type="int">4</zAxisPort>
-
-        <pilotControllerXAxisSensitivity type="int">100</pilotControllerXAxisSensitivity>
-        <pilotControllerYAxisSensitivity type="int">120</pilotControllerYAxisSensitivity>
-        <pilotControllerZAxisSensitivity type="int">-85</pilotControllerZAxisSensitivity>
-        <!-- the minimum amount of stick input to respond to, in percentage -->
-        <pilotStickThresholdWhenOtherAxisUnused>3</pilotStickThresholdWhenOtherAxisUnused>
-        <pilotStickThresholdWhenOtherAxisFull>5</pilotStickThresholdWhenOtherAxisFull>
-        <pilotTranslationalAxisExponent>1</pilotTranslationalAxisExponent>
-        <pilotRotationalAxisExponent>1</pilotRotationalAxisExponent>
-
-        <!-- key bindings -->
-        <resetChassisButton type="int">2</resetChassisButton>
-        <maintainCurrentRotationButton type="int">4</maintainCurrentRotationButton>
-    </control-RM_BOXER>
+    <auto>
+        <autoStageMaxAcceleration type="double">10</autoStageMaxAcceleration>
+        <autoStageMaxVelocity type="double">4.2</autoStageMaxVelocity>
+        <autoStageMaxAngularVelocity type="double">90</autoStageMaxAngularVelocity> <!-- in deg/s -->
+        <inAdvanceTime>0.3</inAdvanceTime>
+        <!--        <autoStageMaxAcceleration type="double">4</autoStageMaxAcceleration>-->
+<!--        <autoStageMaxVelocity type="double">2</autoStageMaxVelocity>-->
+<!--        <autoStageMaxAngularVelocity type="double">45</autoStageMaxAngularVelocity> &lt;!&ndash; in deg/s &ndash;&gt;-->
+<!--        <inAdvanceTime>0.1</inAdvanceTime>-->
+    </auto>
 </robotConfig>
