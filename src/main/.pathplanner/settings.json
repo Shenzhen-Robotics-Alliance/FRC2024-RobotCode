@@ -3,8 +3,10 @@
   "robotLength": 0.75,
   "holonomicMode": true,
   "pathFolders": [
-    "red mid 6 note",
-    "blue ds1 pick"
+    "pick nodes only",
+    "blue ds1 pick",
+    "pick 5 nodes",
+    "red mid 6 note"
   ],
   "autoFolders": [],
   "defaultMaxVel": 4.0,
