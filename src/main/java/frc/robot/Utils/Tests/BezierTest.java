@@ -31,12 +31,19 @@ public class BezierTest implements SimpleRobotTest {
             JSONObject firstPoint = (JSONObject) waypointsJson.get(0);
             System.out.println("<-- first point anchor: " + pointFromJson((JSONObject) firstPoint.get("anchor")) + " -->");
             System.out.println("<-- first point nextControl: " + pointFromJson((JSONObject) firstPoint.get("nextControl")));
+
+            // Points
             for (int i = 1; i < waypointsJson.size() - 1; i++) {
                 JSONObject point = (JSONObject) waypointsJson.get(i);
                 System.out.println("<-- point " + i + " prevControl: " + pointFromJson((JSONObject) point.get("prevControl")));
                 System.out.println("<-- point " + i + " anchor: " + pointFromJson((JSONObject) point.get("anchor")) + " -->");
                 System.out.println("<-- point " + i + " nextControl: " + pointFromJson((JSONObject) point.get("nextControl")));
             }
+
+            // End point
+            JSONObject endPoint = (JSONObject) waypointsJson.get(waypointsJson.size()-1);
+            System.out.println("<-- end point prevControl: " + pointFromJson((JSONObject) endPoint.get("prevControl")));
+            System.out.println("<-- end point anchor: " + pointFromJson((JSONObject) endPoint.get("anchor")) + " -->");
         } catch (FileNotFoundException e) {
             throw new RuntimeException("Cannot Find Path File: " + pathName + " From Deploy Directory: " + Filesystem.getDeployDirectory());
         } catch (IOException e) {
@@ -47,24 +54,18 @@ public class BezierTest implements SimpleRobotTest {
     }
 
     private static Vector2D pointFromJson(JSONObject pointJson) {
-        double x = ((Number) pointJson.get("x")).doubleValue();
-        double y = ((Number) pointJson.get("y")).doubleValue();
+        final double x = ((Number) pointJson.get("x")).doubleValue();
+        final double y = ((Number) pointJson.get("y")).doubleValue();
 
         DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Red);
 
-        alliance = DriverStation.Alliance.Red;
+        alliance = DriverStation.Alliance.Blue;
 
-        /* TODO process x and y */
-        switch (alliance) {
-            case Red -> {
-
-            }
-            case Blue -> {
-
-            }
-        }
-
-        return new Vector2D(new double[] {x, y});
+        final double fieldHeight = 8.21, fieldWidth = 16.54;
+        return switch (alliance) {
+            case Red -> new Vector2D(new double[]{y - fieldHeight / 2, fieldWidth - x});
+            case Blue -> new Vector2D(new double[]{fieldHeight / 2 - y, x});
+        };
     }
 
     @Override

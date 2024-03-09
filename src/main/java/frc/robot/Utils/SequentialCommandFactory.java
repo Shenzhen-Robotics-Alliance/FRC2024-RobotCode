@@ -1,5 +1,7 @@
 package frc.robot.Utils;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Modules.PositionReader.PositionEstimator;
 import frc.robot.Modules.Chassis.SwerveBasedChassis;
@@ -7,6 +9,14 @@ import frc.robot.RobotCore;
 import frc.robot.Utils.MathUtils.BezierCurve;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 // TODO speed curves
 public class SequentialCommandFactory {
@@ -233,5 +243,55 @@ public class SequentialCommandFactory {
                 weDoNotCareAboutIsItComplete,
                 weDoNotCareAboutRotation, weDoNotCareAboutRotation
         );
+    }
+
+    public List<BezierCurve> getBezierCurvesFromPathFile(String pathName) {
+        try (BufferedReader br = new BufferedReader(new FileReader(new File(
+                Filesystem.getDeployDirectory(), "pathplanner/paths/" + pathName + ".path")))) {
+            StringBuilder fileContentBuilder = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                fileContentBuilder.append(line);
+            }
+            String fileContent = fileContentBuilder.toString();
+            JSONObject pathJson = (JSONObject) new JSONParser().parse(fileContent);
+            JSONArray waypointsJson = (JSONArray) pathJson.get("waypoints");
+
+            JSONArray rotationTargetsJson = (JSONArray) pathJson.get("rotationTargets");
+
+            List<BezierCurve> curves = new ArrayList<>();
+            for (int i = 0; i < waypointsJson.size() - 1; i++) {
+                JSONObject point = (JSONObject) waypointsJson.get(i),
+                        nextPoint = (JSONObject) waypointsJson.get(i+1);
+                curves.add(new BezierCurve(
+                        pointFromJson((JSONObject) point.get("anchor")),
+                        pointFromJson((JSONObject) point.get("nextControl")),
+                        pointFromJson((JSONObject) nextPoint.get("prevControl")),
+                        pointFromJson((JSONObject) nextPoint.get("anchor"))
+                ));
+            }
+            return curves;
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("Cannot Find Path File: " + pathName + " From Deploy Directory: " + Filesystem.getDeployDirectory());
+        } catch (IOException e) {
+            throw new RuntimeException("IO Error While Reading File: " + pathName);
+        } catch (ParseException e) {
+            throw new RuntimeException("Error Occurred While Processing JSON Path File: " + pathName);
+        }
+    }
+
+    private static Vector2D pointFromJson(JSONObject pointJson) {
+        final double x = ((Number) pointJson.get("x")).doubleValue();
+        final double y = ((Number) pointJson.get("y")).doubleValue();
+
+        DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Red);
+
+        alliance = DriverStation.Alliance.Blue;
+
+        final double fieldHeight = 8.21, fieldWidth = 16.54;
+        return switch (alliance) {
+            case Red -> new Vector2D(new double[]{y - fieldHeight / 2, fieldWidth - x});
+            case Blue -> new Vector2D(new double[]{fieldHeight / 2 - y, x});
+        };
     }
 }

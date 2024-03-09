@@ -25,7 +25,7 @@ public class RobotShell extends TimedRobot {
     private AutoProgramRunner autoProgramRunner;
     private TransformableIntakeAndShooterService intakeAndShooterService;
     private VisionAidedPilotChassis visionAidedPilotChassis;
-    private final Map<String, CommandSequenceGenerator> autoStagePrograms = new HashMap<>();
+    private List<SequentialCommandSegment> commandSegments;
     private final SendableChooser<CommandSequenceGenerator> autoStageChooser = new SendableChooser<>();
 
     public RobotShell() {
@@ -49,8 +49,17 @@ public class RobotShell extends TimedRobot {
         autoProgramRunner = new AutoProgramRunner(robotCore.chassisModule, robotCore.robotConfig);
         intakeAndShooterService = new TransformableIntakeAndShooterService(robotCore.intake, robotCore.shooter, robotCore.transformableArm, robotCore.robotConfig, new XboxController(1));
         visionAidedPilotChassis = new VisionAidedPilotChassis(robotCore.chassisModule, robotCore.shooter, robotCore.intake, robotCore.transformableArm, robotCore.speakerTarget, robotCore.amplifierTarget, robotCore.noteTarget, new XboxController(1), robotCore.robotConfig);
+
         addAutoStagePrograms();
+        scheduleAutoCommands(autoStageChooser.getSelected());
+        autoStageChooser.onChange(this::scheduleAutoCommands);
         SmartDashboard.putData("Select Auto", autoStageChooser);
+    }
+
+    private void scheduleAutoCommands(CommandSequenceGenerator commandSequenceGenerator) {
+        System.out.println("<-- RobotShell || scheduling commands with auto program -->");
+        this.commandSegments = commandSequenceGenerator.getCommandSegments(robotCore);
+        System.out.println("<-- complete -->");
     }
 
     /** called repeatedly after the robot powers on, no matter enabled or not */
@@ -70,6 +79,9 @@ public class RobotShell extends TimedRobot {
     public void autonomousPeriodic() {
         // System.out.println("<-- Robot Shell | auto periodic -->");
         robotCore.updateRobot();
+
+        if (autoProgramRunner.isAutoStageComplete())
+            robotCore.stopStage();
     }
 
     @Override
@@ -124,7 +136,7 @@ public class RobotShell extends TimedRobot {
         final List<RobotServiceBase> services = new ArrayList<>();
         services.add(autoProgramRunner);
         robotCore.startStage(services);
-        autoProgramRunner.scheduleCommandSegments(autoStageProgram.getCommandSegments(robotCore));
+        autoProgramRunner.scheduleCommandSegments(commandSegments);
     }
 
     private void startManualStage() {
@@ -162,6 +174,8 @@ public class RobotShell extends TimedRobot {
                         40,
                         new Vector2D(new double[] {0, 43})
                 ));
-        autoStageChooser.setDefaultOption("Blue DS2", new BlueDS2());
+        autoStageChooser.addOption("Blue DS2", new BlueDS2());
+
+        autoStageChooser.setDefaultOption("Test Auto", new TestAutoStageProgram());
     }
 }
