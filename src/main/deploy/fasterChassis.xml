@@ -110,8 +110,8 @@
 <!--        <autoStageMaxAngularVelocity type="double">120</autoStageMaxAngularVelocity> &lt;!&ndash; in deg/s &ndash;&gt;-->
 <!--        <inAdvanceTime>0.3</inAdvanceTime>-->
         <autoStageMaxAcceleration type="double">10</autoStageMaxAcceleration>
-        <autoStageMaxVelocity type="double">3.5</autoStageMaxVelocity>
-        <autoStageMaxAngularVelocity type="double">60</autoStageMaxAngularVelocity> <!-- in deg/s -->
-        <inAdvanceTime>0.2</inAdvanceTime>
+        <autoStageMaxVelocity type="double">4</autoStageMaxVelocity>
+        <autoStageMaxAngularVelocity type="double">120</autoStageMaxAngularVelocity> <!-- in deg/s -->
+        <inAdvanceTime>0.3</inAdvanceTime>
     </auto>
 </robotConfig>

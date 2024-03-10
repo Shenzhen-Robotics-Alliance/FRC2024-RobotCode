@@ -51,9 +51,13 @@ public class RedAutoStageSixNote implements CommandSequenceGenerator {
                 () -> {}, () -> {}, () -> {}
         )));
 
-        commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
-                "shoot six",
-                new Rotation2D(Math.toRadians(180))
+        commandSegments.addAll(Arrays.asList(commandFactory.followPath(
+                "shoot sixth",
+                new Rotation2D[] {
+                        new Rotation2D(Math.toRadians(135)),
+                        new Rotation2D(Math.toRadians(180))
+                },
+                () -> {}, () -> {}, () -> {}
         )));
 
         return commandSegments;
