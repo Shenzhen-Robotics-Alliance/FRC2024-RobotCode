@@ -3,32 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 14.042418084836168,
-        "y": 4.4795920361071495
+        "x": 8.609870800340744,
+        "y": 2.17821559751536
       },
       "prevControl": null,
       "nextControl": {
-        "x": 15.14323672013963,
-        "y": 4.4795920361071495
+        "x": 11.193795151123066,
+        "y": 1.3331336064381538
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 14.042418084836168,
-        "y": 6.630585568863446
+        "x": 13.766509128459854,
+        "y": 2.408995815142628
       },
       "prevControl": {
-        "x": 14.851507395322487,
-        "y": 6.156972313944628
+        "x": 13.287048796319814,
+        "y": 1.7307348574811106
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -39,13 +45,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -47.3859440303888,
+    "rotation": -41.87786953788428,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "red mid 6 note",
   "previewStartingState": {
-    "rotation": 40.91438322002495,
+    "rotation": -42.902055578805594,
     "velocity": 0
   },
   "useDefaultConstraints": true

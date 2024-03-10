@@ -1,0 +1,55 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "first note and grab"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot second and grab third"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot third grab fourth"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot fourth move to fifth(half field)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot fifth grab sixth(half field)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "grab sixth(half field)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot sixth(half field)"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
