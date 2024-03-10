@@ -48,10 +48,10 @@
     </shooter>
 
     <intake>
-        <intakeMotor1Port>13</intakeMotor1Port>
-        <intakeMotor1Reversed>1</intakeMotor1Reversed>
-        <intakeMotor2Port>18</intakeMotor2Port>
-        <intakeMotor2Reversed>0</intakeMotor2Reversed>
+        <intakeMotorPort>13</intakeMotorPort>
+        <intakeMotorReversed>1</intakeMotorReversed>
+        <intakeAidMotorPort>18</intakeAidMotorPort>
+        <intakeAidMotorReversed>0</intakeAidMotorReversed>
     </intake>
 
     <arm>
@@ -59,6 +59,7 @@
         <armMotor2Port>-1</armMotor2Port>
         <!-- positive should be towards lower point -->
         <armMotorReversed>1</armMotorReversed>
+        <armMotor2Reversed>0</armMotor2Reversed>
         <armEncoderReversed>1</armEncoderReversed>
 
         <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->

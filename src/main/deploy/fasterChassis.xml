@@ -28,10 +28,10 @@
 
         <gyroPort type="int">0</gyroPort>
         <!-- the zero position of encoders, to measure this value, turn the wheel to the direct front, and see the value of encoder.getRawSensorReading() -->
-        <frontLeftWheelZeroPosition type = "double">0.870</frontLeftWheelZeroPosition>
-        <frontRightWheelZeroPosition type = "double">1.179</frontRightWheelZeroPosition>
-        <backLeftWheelZeroPosition type = "double">1.694</backLeftWheelZeroPosition>
-        <backRightWheelZeroPosition type = "double">-2.329</backRightWheelZeroPosition>
+        <frontLeftWheelZeroPosition type = "double">0.797</frontLeftWheelZeroPosition>
+        <frontRightWheelZeroPosition type = "double">1.191</frontRightWheelZeroPosition>
+        <backLeftWheelZeroPosition type = "double">1.753</backLeftWheelZeroPosition>
+        <backRightWheelZeroPosition type = "double">-2.336</backRightWheelZeroPosition>
     </hardware>
     <chassis>
         <wheelGearRatio type="double">6.75</wheelGearRatio>
@@ -47,16 +47,18 @@
     </shooter>
 
     <intake>
-        <intakeMotor1Port>14</intakeMotor1Port>
-        <intakeMotor1Reversed>1</intakeMotor1Reversed>
-        <intakeMotor2Port>14</intakeMotor2Port>
-        <intakeMotor2Reversed>1</intakeMotor2Reversed>
+        <intakeMotorPort>14</intakeMotorPort>
+        <intakeMotorReversed>1</intakeMotorReversed>
+        <intakeAidMotorPort>-1</intakeAidMotorPort>
+        <intakeAidMotorReversed>1</intakeAidMotorReversed>
     </intake>
 
     <arm>
         <armMotorPort>25</armMotorPort>
         <!-- positive should be towards lower point -->
+        <armMotor2Port>-1</armMotor2Port>
         <armMotorReversed>1</armMotorReversed>
+        <armMotor2Reversed>0</armMotor2Reversed>
         <armEncoderReversed>0</armEncoderReversed>
 
         <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
@@ -65,6 +67,7 @@
         <!-- arm positions -->
         <position-DEFAULT>98</position-DEFAULT> <!-- 60 -->
         <position-INTAKE>107</position-INTAKE>
+        <position-SPLIT>70</position-SPLIT>
         <position-SHOOT_NOTE>88</position-SHOOT_NOTE>
         <position-SCORE_AMPLIFIER>0</position-SCORE_AMPLIFIER>
 
