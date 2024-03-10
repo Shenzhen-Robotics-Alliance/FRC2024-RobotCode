@@ -171,6 +171,8 @@ public class RobotShell extends TimedRobot {
                 ));
         autoStageChooser.addOption("Blue DS2", new BlueDS2());
 
+        autoStageChooser.addOption("Test Path Planner Path Auto", new TestPathPlannerPath());
+
         autoStageChooser.setDefaultOption("Test Auto", new TestAutoStageProgram());
     }
 }

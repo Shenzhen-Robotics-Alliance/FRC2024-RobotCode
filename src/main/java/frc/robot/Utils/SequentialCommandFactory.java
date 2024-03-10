@@ -29,6 +29,10 @@ public class SequentialCommandFactory {
         this(robotCore, new Vector2D(), new Rotation2D(0));
     }
 
+    public SequentialCommandFactory(RobotCore robotCore, String firstPathName, Rotation2D robotStartingRotation2D) {
+        this(robotCore, getBezierCurvesFromPathFile(firstPathName).get(0).getPositionWithLERP(0), robotStartingRotation2D);
+    }
+
     public SequentialCommandFactory(RobotCore robotCore, Vector2D robotStartingPosition, Rotation2D robotStartingRotation2D) {
         this.chassis = robotCore.chassisModule;
         this.positionEstimator = robotCore.positionReader;
@@ -306,8 +310,6 @@ public class SequentialCommandFactory {
         final double y = ((Number) pointJson.get("y")).doubleValue();
 
         DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Red);
-
-        alliance = DriverStation.Alliance.Blue;
 
         final double fieldHeight = 8.21, fieldWidth = 16.54;
         return switch (alliance) {

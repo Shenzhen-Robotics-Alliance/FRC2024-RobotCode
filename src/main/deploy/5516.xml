@@ -37,7 +37,7 @@
     <chassis>
         <wheelGearRatio type="double">6.75</wheelGearRatio>
         <!-- smart wheel speed control -->
-<!--        <wheelsPowerConstrain type="double">0.65</wheelsPowerConstrain>-->
+        <wheelsPowerConstrain type="double">0.65</wheelsPowerConstrain>
     </chassis>
 
     <shooter>

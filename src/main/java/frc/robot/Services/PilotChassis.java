@@ -78,7 +78,7 @@ public class PilotChassis extends RobotServiceBase {
             this.controllerTypeSendableChooser.addOption(controllerType.name(), controllerType);
         this.controllerTypeSendableChooser.setDefaultOption(defaultControllerType.name(), defaultControllerType);
         SmartDashboard.putData("pilot controller type", controllerTypeSendableChooser);
-        
+
         this.chassis.gainOwnerShip(this);
 
         lastRotationalInputTimeMillis = System.currentTimeMillis();
