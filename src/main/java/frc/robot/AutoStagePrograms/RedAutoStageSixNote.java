@@ -16,6 +16,11 @@ public class RedAutoStageSixNote implements CommandSequenceGenerator {
         final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
         final SequentialCommandFactory commandFactory = new SequentialCommandFactory(robotCore, SequentialCommandFactory.getRobotStartingPosition("first note and grab"), new Rotation2D(Math.toRadians(180)));
         final AutoStageVisionAimBot aimBot = new AutoStageVisionAimBot(robotCore, 6000);
+
+        commandSegments.add(commandFactory.calibratePositionEstimator());
+
+        // TODO do the six notes auto route here
+
         return commandSegments;
     }
 }

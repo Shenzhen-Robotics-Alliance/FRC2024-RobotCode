@@ -1,5 +1,6 @@
 package frc.robot.Utils;
 
+import edu.wpi.first.hal.AccumulatorResult;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
@@ -8,6 +9,7 @@ import frc.robot.Modules.Chassis.SwerveBasedChassis;
 import frc.robot.RobotCore;
 import frc.robot.Utils.MathUtils.BezierCurve;
 import frc.robot.Utils.MathUtils.Rotation2D;
+import frc.robot.Utils.MathUtils.SpeedCurves;
 import frc.robot.Utils.MathUtils.Vector2D;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -16,6 +18,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 // TODO speed curves
@@ -30,7 +33,7 @@ public class SequentialCommandFactory {
     }
 
     public SequentialCommandFactory(RobotCore robotCore, String firstPathName, Rotation2D robotStartingRotation2D) {
-        this(robotCore, getBezierCurvesFromPathFile(firstPathName).get(0).getPositionWithLERP(0), robotStartingRotation2D);
+        this(robotCore, getRobotStartingPosition(firstPathName), robotStartingRotation2D);
     }
 
     public SequentialCommandFactory(RobotCore robotCore, Vector2D robotStartingPosition, Rotation2D robotStartingRotation2D) {
@@ -271,6 +274,63 @@ public class SequentialCommandFactory {
         } catch (ParseException e) {
             throw new RuntimeException("Error Occurred While Processing JSON Path File: " + firstPathName);
         }
+    }
+
+    public SequentialCommandSegment[] followPathFacing(String pathName, Rotation2D facingRotation) {
+        return followPathFacing(pathName, facingRotation, doNothing, doNothing, doNothing);
+    }
+    public SequentialCommandSegment[] followPathFacing(String pathName, Rotation2D facingRotation, Runnable beginning, Runnable periodic, Runnable ending) {
+        final Rotation2D[] rotationTargets = new Rotation2D[getBezierCurvesFromPathFile(pathName).size()+1];
+        Arrays.fill(rotationTargets, facingRotation);
+        return followPath(pathName, rotationTargets, beginning, periodic, ending);
+    }
+
+    public SequentialCommandSegment[] followPath(String pathName) {
+        return followPath(pathName, doNothing, doNothing, doNothing);
+    }
+
+
+    public SequentialCommandSegment[] followPath(String pathName, Runnable beginning, Runnable periodic, Runnable ending) {
+        return followPath(pathName, new Rotation2D[getBezierCurvesFromPathFile(pathName).size()+1], beginning, periodic, ending);
+    }
+
+    public SequentialCommandSegment[] followPath(String pathName, Rotation2D[] robotRotationTargets, Runnable beginning, Runnable periodic, Runnable ending) {
+        final List<BezierCurve> curves = getBezierCurvesFromPathFile(pathName);
+        final SequentialCommandSegment[] commandSegments = new SequentialCommandSegment[curves.size()];
+        if (curves.size() != robotRotationTargets.length)
+            throw new IllegalStateException("Error While Scheduling Follow Path Command: " + pathName + ". Rotational targets length (" + robotRotationTargets.length + ") do not match pathplanner checkpoints number (" + curves.size() + ")");
+
+        commandSegments[0] = new SequentialCommandSegment(
+                () -> true,
+                () -> curves.get(0),
+                beginning, periodic, doNothing,
+                () -> true,
+                positionEstimator::getRobotRotation2D, () -> robotRotationTargets[0],
+                SpeedCurves.easeIn,1
+        );
+        for (int i = 1; i < curves.size()-1; i++) {
+            final BezierCurve curve = curves.get(i);
+            final Rotation2D startingRotation = robotRotationTargets[i-1], endingRotation = robotRotationTargets[i];
+            commandSegments[i] = new SequentialCommandSegment(
+                    () -> true,
+                    () -> curve,
+                    doNothing, periodic, doNothing,
+                    () -> true,
+                    () -> startingRotation, () -> endingRotation,
+                    SpeedCurves.originalSpeed,1
+            );
+        }
+
+        commandSegments[commandSegments.length-1] = new SequentialCommandSegment(
+                () -> true,
+                () -> curves.get(curves.size()-1),
+                doNothing, periodic, ending,
+                () -> true,
+                () -> robotRotationTargets[robotRotationTargets.length-2], () -> robotRotationTargets[robotRotationTargets.length-1],
+                SpeedCurves.originalSpeed,1
+        );
+
+        return commandSegments;
     }
 
     public static List<BezierCurve> getBezierCurvesFromPathFile(String pathName) {

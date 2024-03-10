@@ -144,4 +144,15 @@ public class AutoStageVisionAimBot {
     public Runnable prepareToIntake() {
         return () -> robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, null);
     }
+
+    public SequentialCommandSegment waitForArmToLower() {
+        return new SequentialCommandSegment(
+                () -> true,
+                () -> null,
+                () -> robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, null),
+                () -> {}, () -> {},
+                robotCore.transformableArm::transformerInPosition,
+                robotCore.positionReader::getRobotRotation2D, robotCore.positionReader::getRobotRotation2D
+        );
+    }
 }

@@ -8,7 +8,9 @@ import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.SequentialCommandFactory;
 import frc.robot.Utils.SequentialCommandSegment;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TestPathPlannerPath implements CommandSequenceGenerator {
@@ -17,27 +19,14 @@ public class TestPathPlannerPath implements CommandSequenceGenerator {
         final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
         final SequentialCommandFactory commandFactory = new SequentialCommandFactory(robotCore, "test path", new Rotation2D(0));
         commandSegments.add(commandFactory.calibratePositionEstimator());
-        commandSegments.add(new SequentialCommandSegment(
-                () -> true,
-                () -> SequentialCommandFactory.getBezierCurvesFromPathFile("test path").get(0),
-                ()->{}, ()->{}, ()->{},
-                () -> true,
-                () -> new Rotation2D(Math.toRadians(0)),
-                () -> new Rotation2D(Math.toRadians(0)),
-                SpeedCurves.easeIn,
-                1
-        ));
 
-        commandSegments.add(new SequentialCommandSegment(
-                () -> true,
-                () -> SequentialCommandFactory.getBezierCurvesFromPathFile("test path").get(1),
-                ()->{}, ()->{}, ()->{},
-                () -> true,
-                () -> new Rotation2D(Math.toRadians(0)),
-                () -> new Rotation2D(Math.toRadians(90)),
-                SpeedCurves.easeOut,
-                1
-        ));
+        commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
+                "test path",
+                new Rotation2D(Math.toRadians(90)),
+                () -> System.out.println("<-- beginning -->"),
+                () -> System.out.println("<-- periodic -->"),
+                () -> System.out.println("<-- ending -->")
+        )));
         return commandSegments;
     }
 }

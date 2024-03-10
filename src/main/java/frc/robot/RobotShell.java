@@ -169,7 +169,6 @@ public class RobotShell extends TimedRobot {
                         40,
                         new Vector2D(new double[] {0, 43})
                 ));
-        autoStageChooser.addOption("Blue DS2", new BlueDS2());
 
         autoStageChooser.addOption("Test Path Planner Path Auto", new TestPathPlannerPath());
 
