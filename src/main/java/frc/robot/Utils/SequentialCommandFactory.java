@@ -276,6 +276,7 @@ public class SequentialCommandFactory {
         }
     }
 
+    /** all rotations are in red alliance, will be automatically converted if blue */
     public SequentialCommandSegment[] followPathFacing(String pathName, Rotation2D facingRotation) {
         return followPathFacing(pathName, facingRotation, doNothing, doNothing, doNothing);
     }
@@ -305,9 +306,10 @@ public class SequentialCommandFactory {
                 () -> curves.get(0),
                 beginning, periodic, doNothing,
                 () -> true,
-                positionEstimator::getRobotRotation2D, () -> robotRotationTargets[0],
+                positionEstimator::getRobotRotation2D, () -> toActualRotation(robotRotationTargets[0]),
                 SpeedCurves.easeIn,1
         );
+
         for (int i = 1; i < curves.size()-1; i++) {
             final BezierCurve curve = curves.get(i);
             final Rotation2D startingRotation = robotRotationTargets[i-1], endingRotation = robotRotationTargets[i];
@@ -316,21 +318,28 @@ public class SequentialCommandFactory {
                     () -> curve,
                     doNothing, periodic, doNothing,
                     () -> true,
-                    () -> startingRotation, () -> endingRotation,
+                    () -> toActualRotation(startingRotation), () -> toActualRotation(endingRotation),
                     SpeedCurves.originalSpeed,1
             );
         }
+
+        if (curves.size() < 3)
+            return commandSegments;
 
         commandSegments[commandSegments.length-1] = new SequentialCommandSegment(
                 () -> true,
                 () -> curves.get(curves.size()-1),
                 doNothing, periodic, ending,
                 () -> true,
-                () -> robotRotationTargets[robotRotationTargets.length-2], () -> robotRotationTargets[robotRotationTargets.length-1],
+                () -> toActualRotation(robotRotationTargets[robotRotationTargets.length-2]), () -> toActualRotation(robotRotationTargets[robotRotationTargets.length-1]),
                 SpeedCurves.originalSpeed,1
         );
 
         return commandSegments;
+    }
+
+    private static Rotation2D toActualRotation(Rotation2D rotationInRedAlliance) {
+        return (DriverStation.getAlliance().orElse(DriverStation.Alliance.Red) == DriverStation.Alliance.Red) ? rotationInRedAlliance : new Rotation2D(rotationInRedAlliance.getRadian() * -1);
     }
 
     public static List<BezierCurve> getBezierCurvesFromPathFile(String pathName) {
