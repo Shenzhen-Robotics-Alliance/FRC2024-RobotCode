@@ -305,6 +305,11 @@ public class SequentialCommandFactory {
         }
     }
 
+    /**
+     * converts a point from pathplanner to vector2D
+     * pathplanner is always in red alliance
+     * converts to red / blue alliance according to driver-station, defaults to red
+     * */
     private static Vector2D pointFromJson(JSONObject pointJson) {
         final double x = ((Number) pointJson.get("x")).doubleValue();
         final double y = ((Number) pointJson.get("y")).doubleValue();
@@ -312,9 +317,13 @@ public class SequentialCommandFactory {
         DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Red);
 
         final double fieldHeight = 8.21, fieldWidth = 16.54;
-        return switch (alliance) {
-            case Red -> new Vector2D(new double[]{y - fieldHeight / 2, fieldWidth - x});
-            case Blue -> new Vector2D(new double[]{fieldHeight / 2 - y, x});
-        };
+//        return switch (alliance) {
+//            case Red -> new Vector2D(new double[]{y - fieldHeight / 2, fieldWidth - x});
+//            case Blue -> new Vector2D(new double[]{fieldHeight / 2 - y, x});
+//        };
+        return new Vector2D(new double[] {
+                (alliance == DriverStation.Alliance.Blue ? -1:1) * (y - fieldHeight / 2),
+                fieldWidth - x
+        });
     }
 }
