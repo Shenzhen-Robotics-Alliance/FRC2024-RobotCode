@@ -1,11 +1,11 @@
 [Unit]
-Description=Detect Net Server App
+Description=DetectNet Server
+After=multi-user.target
 
 [Service]
+Type=simple
 User=iron-maple
-Group=iron-maple
-ExecStart=/usr/bin/python3 /home/iron-maple/Documents/jetson-vision/DetectNet-CUDA/detectnet-server-app.py > /home/iron-maple/logs/detectnet-server.log
-Restart=no
+ExecStart=/bin/bash /home/ironn-maple/d.sh
 
 [Install]
 WantedBy=multi-user.target
