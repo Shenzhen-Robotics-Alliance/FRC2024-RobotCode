@@ -298,6 +298,8 @@ public class SequentialCommandFactory {
     public SequentialCommandSegment[] followPath(String pathName, Rotation2D[] robotRotationTargets, Runnable beginning, Runnable periodic, Runnable ending) {
         final List<BezierCurve> curves = getBezierCurvesFromPathFile(pathName);
         final SequentialCommandSegment[] commandSegments = new SequentialCommandSegment[curves.size()];
+        System.out.println("curves.size(): " + curves.size());
+        System.out.println("rotation targets size: " + robotRotationTargets.length);
         if (curves.size() != robotRotationTargets.length)
             throw new IllegalStateException("Error While Scheduling Follow Path Command: " + pathName + ". Rotational targets length (" + robotRotationTargets.length + ") do not match pathplanner checkpoints number (" + curves.size() + ")");
 
@@ -309,6 +311,9 @@ public class SequentialCommandFactory {
                 positionEstimator::getRobotRotation2D, () -> toActualRotation(robotRotationTargets[0]),
                 SpeedCurves.easeIn,1
         );
+
+        if (curves.size() < 2)
+            return commandSegments;
 
         for (int i = 1; i < curves.size()-1; i++) {
             final BezierCurve curve = curves.get(i);
@@ -323,14 +328,11 @@ public class SequentialCommandFactory {
             );
         }
 
-        if (curves.size() < 3)
-            return commandSegments;
-
         commandSegments[commandSegments.length-1] = new SequentialCommandSegment(
                 () -> true,
                 () -> curves.get(curves.size()-1),
                 doNothing, periodic, ending,
-                () -> true,
+                chassis::isCurrentTranslationalTaskFinished,
                 () -> toActualRotation(robotRotationTargets[robotRotationTargets.length-2]), () -> toActualRotation(robotRotationTargets[robotRotationTargets.length-1]),
                 SpeedCurves.originalSpeed,1
         );

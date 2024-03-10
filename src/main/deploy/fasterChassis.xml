@@ -35,7 +35,7 @@
     </hardware>
     <chassis>
         <wheelGearRatio type="double">6.75</wheelGearRatio>
-        <wheelsPowerConstrain type="double">0.65</wheelsPowerConstrain>
+        <wheelsPowerConstrain type="double">0.85</wheelsPowerConstrain>
     </chassis>
 
     <shooter>
@@ -109,9 +109,9 @@
 <!--        <autoStageMaxVelocity type="double">4.2</autoStageMaxVelocity>-->
 <!--        <autoStageMaxAngularVelocity type="double">120</autoStageMaxAngularVelocity> &lt;!&ndash; in deg/s &ndash;&gt;-->
 <!--        <inAdvanceTime>0.3</inAdvanceTime>-->
-        <autoStageMaxAcceleration type="double">4</autoStageMaxAcceleration>
-        <autoStageMaxVelocity type="double">1.5</autoStageMaxVelocity>
-        <autoStageMaxAngularVelocity type="double">40</autoStageMaxAngularVelocity> <!-- in deg/s -->
-        <inAdvanceTime>0.1</inAdvanceTime>
+        <autoStageMaxAcceleration type="double">10</autoStageMaxAcceleration>
+        <autoStageMaxVelocity type="double">3.5</autoStageMaxVelocity>
+        <autoStageMaxAngularVelocity type="double">60</autoStageMaxAngularVelocity> <!-- in deg/s -->
+        <inAdvanceTime>0.2</inAdvanceTime>
     </auto>
 </robotConfig>
