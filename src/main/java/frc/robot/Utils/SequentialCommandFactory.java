@@ -280,7 +280,7 @@ public class SequentialCommandFactory {
         return followPathFacing(pathName, facingRotation, doNothing, doNothing, doNothing);
     }
     public SequentialCommandSegment[] followPathFacing(String pathName, Rotation2D facingRotation, Runnable beginning, Runnable periodic, Runnable ending) {
-        final Rotation2D[] rotationTargets = new Rotation2D[getBezierCurvesFromPathFile(pathName).size()+1];
+        final Rotation2D[] rotationTargets = new Rotation2D[getBezierCurvesFromPathFile(pathName).size()];
         Arrays.fill(rotationTargets, facingRotation);
         return followPath(pathName, rotationTargets, beginning, periodic, ending);
     }

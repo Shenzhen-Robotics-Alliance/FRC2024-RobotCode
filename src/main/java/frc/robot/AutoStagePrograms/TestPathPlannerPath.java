@@ -22,7 +22,7 @@ public class TestPathPlannerPath implements CommandSequenceGenerator {
 
         commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
                 "test path",
-                new Rotation2D(Math.toRadians(90)),
+                new Rotation2D(Math.toRadians(-90)),
                 () -> System.out.println("<-- beginning -->"),
                 () -> System.out.println("<-- periodic -->"),
                 () -> System.out.println("<-- ending -->")
