@@ -60,12 +60,14 @@ public class AutoProgramRunner extends RobotServiceBase {
 
         if (currentPathSchedule != null) {
             final double translationalT = currentPathSchedule.nextCheckPoint(dt.get() * currentCommandSegment.timeScale);
-            final Vector2D inAdvanceSpace =  currentPathSchedule.getVelocityWithLERP().multiplyBy(inAdvanceTime),
+            final Vector2D inAdvanceSpaceWithoutConstrain =  currentPathSchedule.getVelocityWithLERP().multiplyBy(inAdvanceTime),
                     distanceLeft = Vector2D.displacementToTarget(currentPathSchedule.getPositionWithLERP(), currentPathSchedule.getPositionWithLERP(1)),
-                    inAdvanceSpaceWithConstrain = new Vector2D(inAdvanceSpace.getHeading(), Math.min(inAdvanceSpace.getMagnitude(), distanceLeft.getMagnitude()));
+                    inAdvanceSpaceWithConstrain = new Vector2D(inAdvanceSpaceWithoutConstrain.getHeading(), Math.min(inAdvanceSpaceWithoutConstrain.getMagnitude(), distanceLeft.getMagnitude()));
             robotChassis.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(
                             SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION,
-                            currentPathSchedule.getPositionWithLERP().addBy(inAdvanceSpaceWithConstrain)),
+                            currentPathSchedule.getPositionWithLERP().addBy(
+                                    currentSegmentID == commandSegments.size()-1 ?
+                                            inAdvanceSpaceWithConstrain : inAdvanceSpaceWithoutConstrain)),
                     this);
             EasyShuffleBoard.putNumber("auto", "segment ID", currentSegmentID);
             EasyShuffleBoard.putNumber("auto", "translational scaled T", translationalT);
