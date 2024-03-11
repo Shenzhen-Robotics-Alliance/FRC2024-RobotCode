@@ -358,6 +358,10 @@ public class SwerveBasedChassis extends RobotModuleBase {
     }
 
     public boolean isCurrentTranslationalTaskFinished() {
+        System.out.println("<-- waiting for chassis to finish movement -->");
+        System.out.println("Task Type: " + translationalTask.taskType);
+        System.out.println("Translational Error: " + Vector2D.displacementToTarget(positionEstimator.getRobotPosition2D(), translationalTask.translationValue));
+        System.out.println("Tolerance: " + positionDifferenceAsTaskFinished);
         return switch (translationalTask.taskType) {
             case SET_VELOCITY ->
                     translationalTask.translationValue.getMagnitude() == 0;

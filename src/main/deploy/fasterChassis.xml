@@ -35,7 +35,7 @@
     </hardware>
     <chassis>
         <wheelGearRatio type="double">6.75</wheelGearRatio>
-        <wheelsPowerConstrain type="double">0.85</wheelsPowerConstrain>
+        <wheelsPowerConstrain type="double">0.95</wheelsPowerConstrain>
     </chassis>
 
     <shooter>
