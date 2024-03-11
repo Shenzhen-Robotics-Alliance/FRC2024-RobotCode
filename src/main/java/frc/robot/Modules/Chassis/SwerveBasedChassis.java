@@ -36,7 +36,6 @@ public class SwerveBasedChassis extends RobotModuleBase {
     private ChassisTaskTranslation translationalTask;
     /** the current rotational task  */
     private ChassisTaskRotation rotationalTask;
-    private boolean locked;
 
     public enum OrientationMode {
         FIELD,
@@ -112,10 +111,6 @@ public class SwerveBasedChassis extends RobotModuleBase {
         processedTranslationalSpeed = processedTranslationalSpeed.multiplyBy(wheelsPowerConstrain/highestWheelSpeed);
         rotationalSpeed *= wheelsPowerConstrain/highestWheelSpeed;
         driveWheels(processedTranslationalSpeed, rotationalSpeed);
-
-        /* set wheels to be locked if asked */
-        for (SwerveWheel swerveWheel:this.swerveWheels)
-            swerveWheel.setWheelLocked(locked, this);
     }
 
     /**
@@ -191,7 +186,6 @@ public class SwerveBasedChassis extends RobotModuleBase {
         this.translationalTask = new ChassisTaskTranslation(ChassisTaskTranslation.TaskType.SET_VELOCITY, new Vector2D());
         this.rotationalTask = new ChassisTaskRotation(ChassisTaskRotation.TaskType.SET_VELOCITY, 0);
 
-        locked = false;
         this.translationalTask = new ChassisTaskTranslation(ChassisTaskTranslation.TaskType.SET_VELOCITY,new Vector2D());
         this.translationalTask.initiate(new Vector2D());
 
@@ -350,7 +344,8 @@ public class SwerveBasedChassis extends RobotModuleBase {
     public void setChassisLocked(boolean locked, RobotModuleOperatorMarker operator) {
         if (!this.isOwner(operator))
             return;
-        this.locked = locked;
+        for (SwerveWheel swerveWheel:swerveWheels)
+            swerveWheel.setWheelLocked(locked, this);
     }
 
     public double getChassisHeading() {
