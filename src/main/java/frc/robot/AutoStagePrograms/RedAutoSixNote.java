@@ -34,22 +34,45 @@ public class RedAutoSixNote implements CommandSequenceGenerator {
                 2000
         ));
 
+        commandSegments.add(aimBot.shootWhileMoving(
+                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot second and grab third").get(0),
+                FieldPositions.toActualPosition(FieldPositions.speakerPosition),
+                shootingTimeOut
+        ));
+
+        commandSegments.add(aimBot.grabNote(
+                        FieldPositions.toActualPosition(FieldPositions.nearNote1),
+                        FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(-135))),
+                        2000
+        ));
+
+        commandSegments.add(aimBot.shootWhileMoving(
+                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot third grab fourth").get(0),
+                FieldPositions.toActualPosition(FieldPositions.speakerPosition),
+                shootingTimeOut
+        ));
+
+        commandSegments.add(aimBot.grabNote(
+                FieldPositions.toActualPosition(FieldPositions.nearNote3),
+                FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(135))),
+                2000
+        ));
+
+        commandSegments.add(aimBot.shootWhileMoving(
+                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fourth move to fifth").get(0),
+                FieldPositions.toActualPosition(FieldPositions.speakerPosition),
+                shootingTimeOut
+        ));
+
+        commandSegments.add(new SequentialCommandSegment(
+                () -> true,
+                () -> SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fourth move to fifth").get(1),
+                ()->{}, ()->{}, ()->{},
+                () -> true,
+                () -> new Rotation2D(Math.toRadians(180)), () -> new Rotation2D(Math.toRadians(180))
+        ));
+
         // TODO finish the rest
-
-        commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
-                "shoot second and grab third",
-                FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(-135)))
-        )));
-
-        commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
-                "shoot third grab fourth",
-                FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(135)))
-        )));
-
-        commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
-                "shoot fourth move to fifth",
-                FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(180)))
-        )));
 
         commandSegments.addAll(Arrays.asList(commandFactory.followPath(
                 "shoot fifth grab sixth",
