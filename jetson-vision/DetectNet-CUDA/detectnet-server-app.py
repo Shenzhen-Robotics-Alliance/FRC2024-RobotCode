@@ -1,3 +1,6 @@
+FLIP_IMG = False
+CAM_PORT = 1
+
 from jetson_inference import detectNet
 from jetson_utils import videoSource, videoOutput, cudaAllocMapped, cudaToNumpy, cudaFromNumpy
 import cv2
@@ -19,8 +22,8 @@ detection_results_ready = False
 fps = 0
 detection_results = "<no results yet>"
 
-camera = videoSource("/dev/video1", argv="--flip-method=rotate-180")
-net = detectNet("ssd-mobilenet-v2", model="/home/iron-maple/Documents/jetson-vision/DetectNet-CUDA/NoteDetection-mobilenet.onnx", labels="/home/iron-maple/Documents/jetson-vision/DetectNet-CUDA/labels.txt", input_blob="input_0", output_cvg="scores", output_bbox="boxes", threshold=0.92)
+camera = videoSource("/dev/video" + str(CAM_PORT), argv="--flip-method=rotate-180")
+net = detectNet("ssd-mobilenet-v2", model="/home/ironn-maple//NoteDetection-mobilenet.onnx", labels="/home/ironn-maple/Documents/jetson-vision/labels.txt", input_blob="input_0", output_cvg="scores", output_bbox="boxes", threshold=0.92)
 # net = detectNet("ssd-mobilenet-v2", threshold=0.8)
 def generate_frames():
     global frame, new_frame_ready, detection_results_ready, fps, detection_results
@@ -30,9 +33,10 @@ def generate_frames():
         img = camera.Capture()
 
         # flip it with opencv
-        numpy_img = cudaToNumpy(img)
-        img_flipped = cv2.rotate(numpy_img, cv2.ROTATE_180)
-        img = cudaFromNumpy(img_flipped)
+        if (FLIP_IMG):
+            numpy_img = cudaToNumpy(img)
+            img_flipped = cv2.rotate(numpy_img, cv2.ROTATE_180)
+            img = cudaFromNumpy(img_flipped)
 
         detections = net.Detect(img, width=1280, height=720)
         
@@ -78,7 +82,7 @@ class StreamingHandler(SimpleHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            with open('./index.html', 'rb') as f:
+            with open('/home/ironn-maple/index.html', 'rb') as f:
                 content = f.read()
             self.wfile.write(content)
         elif self.path == '/fps':

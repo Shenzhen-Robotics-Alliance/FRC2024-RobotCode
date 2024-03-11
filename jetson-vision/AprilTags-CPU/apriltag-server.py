@@ -1,8 +1,9 @@
+CAM_PORT = 0
 CAMERA_RESOLUTION = (640, 480)
 CAMERA_FRAMERATE = 60
 STREAMING_RESOLUTION = (320, 240)
 STREAMING_FRAMERATE = 24
-FLIP_IMAGE = None # 0 for vertical flip, 1 for horizontal flip, -1 for flip both, None for do not flip
+FLIP_IMAGE = -1 # 0 for vertical flip, 1 for horizontal flip, -1 for flip both, None for do not flip
 
 '''
 inspection and detection server running together
@@ -10,20 +11,20 @@ inspection and detection server running together
 import cv2
 import numpy as np
 from time import time, sleep
-# import apriltag
-import pupil_apriltags as apriltag # for windows
+import apriltag
+# import pupil_apriltags as apriltag # for windows
 import threading
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
 from time import time, sleep
 
-# cap = cv2.VideoCapture(0, cv2.CAP_V4L2) # camera port 0 for linux
-cap = cv2.VideoCapture(1) # camera port 0 for windows
+cap = cv2.VideoCapture(CAM_PORT, cv2.CAP_V4L2) # camera port 0 for linux
+# cap = cv2.VideoCapture(1) # camera port 0 for windows
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, CAMERA_RESOLUTION[0]) # width
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, CAMERA_RESOLUTION[1]) # height
 cap.set(cv2.CAP_PROP_FPS, CAMERA_FRAMERATE) 
-# detector = apriltag.Detector(apriltag.DetectorOptions(families='tag36h11 tag25h9', nthreads=1))
-detector = apriltag.Detector(families='tag36h11', nthreads=4) # for windows
+detector = apriltag.Detector(apriltag.DetectorOptions(families='tag36h11 tag25h9', nthreads=1))
+# detector = apriltag.Detector(families='tag36h11', nthreads=4) # for windows
 
 server_port = 8888
 
@@ -108,7 +109,7 @@ class StreamingHandler(SimpleHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            with open('./index.html', 'rb') as f:
+            with open('/home/ironn-maple/index.html', 'rb') as f:
                 content = f.read()
             self.wfile.write(content)
         elif self.path == '/fps':
