@@ -168,7 +168,8 @@ public class RobotShell extends TimedRobot {
                         new Vector2D(new double[] {0, 43})
                 ));
 
-        autoStageChooser.addOption("Middle Six Notes Auto", new RedAutoStageSixNoteRoute());
+        autoStageChooser.addOption("Middle Six Notes Auto (Test Route)", new RedAutoStageSixNoteRoute());
+        autoStageChooser.addOption("Middle Six Notes Auto Upper Half (Test Route)", new RedAutoStageSixNoteUpperHalfRoute());
         autoStageChooser.addOption("Test Path Planner Path Auto", new TestPathPlannerPath());
 
         autoStageChooser.setDefaultOption("Test Auto", new TestAutoStageProgram());
