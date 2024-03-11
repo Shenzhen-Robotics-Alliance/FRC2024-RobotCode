@@ -165,7 +165,9 @@ public class VisionAidedPilotChassis extends PilotChassis {
 
                 if (!currentAimingTarget.isVisible(aimingTimeUnseenToleranceMS))
                     System.out.println("<-- VAPC | waiting for " + currentAimingTargetClass + " to show up -->");
+
                 final boolean speakerAutoApproach = pilotController.getRawAxis(5) > 0; // TODO pilot controller
+
                 SmartDashboard.putNumber("speaker auto approach", speakerAutoApproach ? 1:0);
                 if (currentAimingTarget.isVisible(aimingTimeUnseenToleranceMS) && speakerAutoApproach)
                     switch (currentAimingTargetClass) {
@@ -259,7 +261,9 @@ public class VisionAidedPilotChassis extends PilotChassis {
         updateTargetPositionIfSeen(speakerTarget);
 
         final double timeSinceTaskStarted = (System.currentTimeMillis() - timeTaskStartedMillis) / 1000.0;
-        final BezierCurve currentPath = getPathToSpeakerTarget();
+        final BezierCurve currentPath =
+                getPathToSweetSpot();
+//                getPathToSpeakerTarget();
 
 
         final Vector2D currentPathPositionWithLERP = currentPath.getPositionWithLERP(autoApproachSpeedCurve.getScaledT(timeSinceTaskStarted / currentVisionTaskETA)),
@@ -283,6 +287,30 @@ public class VisionAidedPilotChassis extends PilotChassis {
             currentStatus = Status.MANUALLY_DRIVING; // finished or cancelled
     }
 
+    private static final double centerZoneAimHorizontalRange = 0.7;
+    private static final int shootFromFarSpotControllerAxis = 2;
+    private static final Vector2D centerSweetSpotNear = new Vector2D(new double[] {0, 1.5}),
+            leftSweetSpotNear = new Vector2D(new double[] {-1, 1}),
+            rightSweetSpotNear = new Vector2D(new double[] {1, 1}),
+            centerSweetSpotFar = new Vector2D(new double[] {0, 2.5}),
+            leftSweetSpotFar = new Vector2D(new double[] {-1.7, 1.7}),
+            rightSweetSpotFar = new Vector2D(new double[] {1.7, 1.7});
+
+    private BezierCurve getPathToSweetSpot() {
+        final Vector2D relativePositionToSpeaker = Vector2D.displacementToTarget(chassisPositionWhenCurrentVisionTaskStarted, currentVisualTargetLastSeenPosition);
+        return new BezierCurve(chassisPositionWhenCurrentVisionTaskStarted, currentVisualTargetLastSeenPosition.addBy(getSweetSpot(relativePositionToSpeaker)));
+    }
+
+    private Vector2D getSweetSpot(Vector2D relativePositionToSpeaker) {
+        final boolean useFarSweetSpot = pilotController.getRawAxis(shootFromFarSpotControllerAxis) > 0;
+        if (relativePositionToSpeaker.getX() < -centerZoneAimHorizontalRange)
+            return useFarSweetSpot ? leftSweetSpotFar : leftSweetSpotNear;
+        if (relativePositionToSpeaker.getX() > centerZoneAimHorizontalRange)
+            return useFarSweetSpot ? rightSweetSpotFar : rightSweetSpotNear;
+        return useFarSweetSpot ? centerSweetSpotFar : centerSweetSpotNear;
+    }
+
+    @Deprecated
     private BezierCurve getPathToSpeakerTarget() {
         if (Vector2D.displacementToTarget(chassisPositionWhenCurrentVisionTaskStarted, currentVisualTargetLastSeenPosition.addBy(shootingSweetSpot)).getMagnitude() < 1000)
             return new BezierCurve(chassisPositionWhenCurrentVisionTaskStarted, currentVisualTargetLastSeenPosition.addBy(shootingSweetSpot)); // goes a straight line
