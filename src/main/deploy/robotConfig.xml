@@ -74,7 +74,7 @@
         <robotSpeedActivateSpeedControl type="double">0.1</robotSpeedActivateSpeedControl>
 
         <!-- smart wheel speed control -->
-        <wheelsPowerConstrain type="double">0.9</wheelsPowerConstrain>
+        <wheelsPowerConstrain type="double">1</wheelsPowerConstrain>
         <rotationalSpeedMaxSacrifice type="double">0.25</rotationalSpeedMaxSacrifice>
 
         <!-- the configuration for rotation controller -->
@@ -152,8 +152,8 @@
     </shooter>
     <intake>
         <launchPower>0.45</launchPower>
-        <intakePower>0.5</intakePower>
-        <intakeAidPower>0.3</intakeAidPower>
+        <intakePower>0.3</intakePower>
+        <intakeAidPower>0.5</intakeAidPower>
         <revertPower>-0.35</revertPower>
         <distanceSensorThreshold>30</distanceSensorThreshold>
         <splitTime>0.4</splitTime>
@@ -192,8 +192,8 @@
         <yAxisPort type="int">1</yAxisPort>
         <zAxisPort type="int">3</zAxisPort>
 
-        <pilotControllerXAxisSensitivity type="int">100</pilotControllerXAxisSensitivity>
-        <pilotControllerYAxisSensitivity type="int">100</pilotControllerYAxisSensitivity>
+        <pilotControllerXAxisSensitivity type="int">50</pilotControllerXAxisSensitivity>
+        <pilotControllerYAxisSensitivity type="int">50</pilotControllerYAxisSensitivity>
         <pilotControllerZAxisSensitivity type="int">-65</pilotControllerZAxisSensitivity>
         <!-- the minimum amount of stick input to respond to, in percentage -->
         <pilotStickThresholdWhenOtherAxisUnused>5</pilotStickThresholdWhenOtherAxisUnused>

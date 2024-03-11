@@ -127,7 +127,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
             chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
                             intake.isNoteInsideIntake() ? getAprilTagTargetRotation(currentAimingTargetClass, currentAimingTarget) : getNoteRotation()),
                     this);
-        if (copilotGamePad.getBButton())
+        if (copilotGamePad.getXButton())
             this.currentStatus = Status.MANUALLY_DRIVING;
         if (copilotGamePad.getRightBumper()) {
             reset();
@@ -137,7 +137,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         switch (currentStatus) {
             case MANUALLY_DRIVING -> {
                 shooter.setShooterMode(Shooter.ShooterMode.DISABLED, this);
-                if (copilotGamePad.getAButton()) {
+                if (copilotGamePad.getBButton()) {
                     intake.startSplit(this); // in case if the Note is stuck
                     arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SPLIT, this);
                 }
@@ -201,7 +201,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
             }
             case GRABBING_NOTE -> proceedGrabNoteProcess(translationAutoPilotButton);
         }
-        System.out.println("<-- VAPC | current status: " + currentStatus + "-->");
+//        System.out.println("<-- VAPC | current status: " + currentStatus + "-->");
 
         final Vector2D speakerPosition = shooter.aimingSystem.getRelativePositionToTarget(shooter.getProjectileSpeed());
         if (speakerPosition != null) {

@@ -110,18 +110,18 @@ public class RobotCore {
 
 
                 /* TODO: the following into robot config */
-                aprilTagDetectionAppClient = new JetsonDetectionAppClient("AprilTagDetector", "onbot-jetson.local", 8888);
+                aprilTagDetectionAppClient = new JetsonDetectionAppClient("AprilTagDetector", "onbot-jetson", 8888);
                 final double[] targetHeights = new double[] {100, 100, 100, 100, 100, 100};
                 aprilTagPositionTrackingCamera = new FixedAnglePositionTrackingCamera(
                         aprilTagDetectionAppClient,
                         new FixedAngleCameraProfile(
-                                0.3412,
-                                -0.0018,
+                                0.290,
+                                -0.0019,
                                 -0.00179
                         ),
                         targetHeights
                 );
-                noteDetectionAppClient = new JetsonDetectionAppClient("NoteDetector", "onbot-jetson.local", 8889, new double[] {1280, 720});
+                noteDetectionAppClient = new JetsonDetectionAppClient("NoteDetector", "onbot-jetson", 8889, new double[] {1280, 720});
                 notePositionTrackingCamera = new FixedAnglePositionTrackingCamera(
                         noteDetectionAppClient,
                         new FixedAngleCameraProfile(
@@ -134,10 +134,10 @@ public class RobotCore {
                 );
 
                 final Map<Integer, Vector2D> speakerTargetAprilTagReferences = new HashMap<>(), amplifierTargetAprilTagReferences = new HashMap<>(), noteTargetReferences = new HashMap<>();
-                speakerTargetAprilTagReferences.put(4, new Vector2D(new double[] {0.05,-0.2}));
+                speakerTargetAprilTagReferences.put(4, new Vector2D(new double[] {0,-0.2}));
                 // speakerTargetAprilTagReferences.put(3, new Vector2D(new double[] {-0.5,0}));
                 amplifierTargetAprilTagReferences.put(5, new Vector2D(new double[] {0, 0}));
-                speakerTargetAprilTagReferences.put(7, new Vector2D(new double[] {0.05,-0.2}));
+                speakerTargetAprilTagReferences.put(7, new Vector2D(new double[] {0,-0.2}));
                 // speakerTargetAprilTagReferences.put(8, new Vector2D(new double[] {-0.5,0}));
                 amplifierTargetAprilTagReferences.put(6, new Vector2D(new double[] {0, 0}));
 

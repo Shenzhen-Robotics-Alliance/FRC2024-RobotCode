@@ -48,8 +48,10 @@ public class AprilTagCameraAutomaticMeasuring implements CommandSequenceGenerato
     }
     @Override
     public List<SequentialCommandSegment> getCommandSegments(RobotCore robotCore) {
-        final SequentialCommandFactory commandFactory = new SequentialCommandFactory(robotCore);
+        final SequentialCommandFactory commandFactory = new SequentialCommandFactory(robotCore, robotInitialPositionToAprilTag, new Rotation2D(0));
         final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
+
+        commandSegments.add(commandFactory.calibratePositionEstimator());
 
         commandSegments.add(commandFactory.justDoIt(camera::startRecognizing));
         commandSegments.add(commandFactory.justDoIt(() -> robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, null)));
@@ -94,7 +96,7 @@ public class AprilTagCameraAutomaticMeasuring implements CommandSequenceGenerato
     }
 
     private Vector2D toFieldPosition(Vector2D aprilTagNavigatedPosition) {
-        return aprilTagNavigatedPosition.multiplyBy(cameraFacing).addBy(robotInitialPositionToAprilTag.multiplyBy(-1));
+        return aprilTagNavigatedPosition.multiplyBy(cameraFacing);
     }
 
     private Vector2D getAprilTagRelativePositionFromRobotView(Vector2D robotFieldPosition, Rotation2D robotFacing) {
