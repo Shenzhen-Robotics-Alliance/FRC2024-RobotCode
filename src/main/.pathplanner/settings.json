@@ -3,14 +3,12 @@
   "robotLength": 0.75,
   "holonomicMode": true,
   "pathFolders": [
-    "pick nodes only",
-    "blue ds1 pick",
-    "pick 5 nodes",
+    "red lower pick notes only",
     "red mid 6 note"
   ],
   "autoFolders": [],
   "defaultMaxVel": 4.2,
-  "defaultMaxAccel": 5.0,
+  "defaultMaxAccel": 6.0,
   "defaultMaxAngVel": 200.0,
   "defaultMaxAngAccel": 400.0,
   "maxModuleSpeed": 4.5

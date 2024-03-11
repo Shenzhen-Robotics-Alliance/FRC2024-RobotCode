@@ -8,61 +8,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "p1"
+            "pathName": "first note and grab"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "p2"
+            "pathName": "shoot second and grab third (half field)"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "p3"
+            "pathName": "shoot third grab fourth (half field)"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "p4"
+            "pathName": "shoot fourth move to fifth (half field)"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "p5"
+            "pathName": "shoot fifth grab sixth (half field)"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "p6"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "p7"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "p8"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "p9"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "p10"
+            "pathName": "shoot sixth (half field)"
           }
         }
       ]

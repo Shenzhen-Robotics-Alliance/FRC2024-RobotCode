@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class RedAutoStageSixNote implements CommandSequenceGenerator {
+public class RedAutoStageSixNoteUpperHalfRoute implements CommandSequenceGenerator {
     @Override
     public List<SequentialCommandSegment> getCommandSegments(RobotCore robotCore) {
         final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
@@ -26,38 +26,28 @@ public class RedAutoStageSixNote implements CommandSequenceGenerator {
         )));
 
         commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
-                "shoot second and grab third",
-                new Rotation2D(Math.toRadians(-135))
-        )));
-
-        commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
-                "shoot third grab fourth",
+                "shoot second and grab third (half field)",
                 new Rotation2D(Math.toRadians(135))
         )));
 
         commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
-                "shoot fourth move to fifth",
+                "shoot third grab fourth (half field)",
+                new Rotation2D(Math.toRadians(-135))
+        )));
+
+        commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
+                "shoot fourth move to fifth (half field)",
+                new Rotation2D(Math.toRadians(-135))
+        )));
+
+        commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
+                "shoot fifth grab sixth (half field)",
                 new Rotation2D(Math.toRadians(180))
         )));
 
-        commandSegments.addAll(Arrays.asList(commandFactory.followPath(
-                "shoot fifth grab sixth",
-                new Rotation2D[] {
-                        new Rotation2D(Math.toRadians(180)),
-                        new Rotation2D(Math.toRadians(180)),
-                        new Rotation2D(Math.toRadians(135)),
-                        new Rotation2D(Math.toRadians(135))
-                },
-                () -> {}, () -> {}, () -> {}
-        )));
-
-        commandSegments.addAll(Arrays.asList(commandFactory.followPath(
-                "shoot sixth",
-                new Rotation2D[] {
-                        new Rotation2D(Math.toRadians(135)),
-                        new Rotation2D(Math.toRadians(180))
-                },
-                () -> {}, () -> {}, () -> {}
+        commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
+                "shoot sixth (half field)",
+                new Rotation2D(Math.toRadians(180))
         )));
 
         return commandSegments;

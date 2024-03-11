@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.521830656196924,
-        "y": 0.7367317298737166
+        "x": 8.803071452296752,
+        "y": 7.479142650592993
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.521830656196922,
-        "y": 0.7367317298737166
+        "x": 11.300870046801423,
+        "y": 7.479142650592993
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.6216803544718195,
-        "y": 4.502249460339376
+        "x": 14.33842636916043,
+        "y": 5.505754088431254
       },
       "prevControl": {
-        "x": 6.527827528589529,
-        "y": 4.911544865824775
+        "x": 12.276235321701414,
+        "y": 5.46628631718802
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,19 +33,19 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.2,
-    "maxAcceleration": 5.0,
+    "maxAcceleration": 6.0,
     "maxAngularVelocity": 200.0,
     "maxAngularAcceleration": 400.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 140.33215888165958,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "pick nodes only",
+  "folder": "red mid 6 note",
   "previewStartingState": {
-    "rotation": 178.71267105847497,
+    "rotation": 0.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

@@ -13,9 +13,7 @@ import frc.robot.Utils.SequentialCommandSegment;
 import frc.robot.Utils.Tests.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class RobotShell extends TimedRobot {
     private static final int updateFreq = 100;
@@ -170,7 +168,7 @@ public class RobotShell extends TimedRobot {
                         new Vector2D(new double[] {0, 43})
                 ));
 
-        autoStageChooser.addOption("Middle Six Notes Auto", new RedAutoStageSixNote());
+        autoStageChooser.addOption("Middle Six Notes Auto", new RedAutoStageSixNoteRoute());
         autoStageChooser.addOption("Test Path Planner Path Auto", new TestPathPlannerPath());
 
         autoStageChooser.setDefaultOption("Test Auto", new TestAutoStageProgram());
