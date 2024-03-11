@@ -56,12 +56,12 @@
     </intake>
 
     <arm>
-        <armMotorPort>10</armMotorPort>
+        <armMotorPort>14</armMotorPort>
         <!-- positive should be towards lower point -->
         <armMotor2Port>14</armMotor2Port>
         <!-- positive should be towards lower point -->
         <armMotorReversed>1</armMotorReversed>
-        <armMotor2Reversed>0</armMotor2Reversed>
+        <armMotor2Reversed>1</armMotor2Reversed>
         <armEncoderReversed>0</armEncoderReversed>
 
         <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
@@ -107,13 +107,9 @@
         <errorToleranceAsInPosition>2</errorToleranceAsInPosition>
 
         <!-- simple arm controller -->
-        <!-- <maxPowerWhenMovingUp>0.65</maxPowerWhenMovingUp>
-        <maxPowerWhenMovingDown>0.2</maxPowerWhenMovingDown> -->
-        <maxPowerWhenMovingUp>0.15</maxPowerWhenMovingUp>
-        <maxPowerWhenMovingDown>0.1</maxPowerWhenMovingDown>
+        <maxPowerWhenMovingUp>0.45</maxPowerWhenMovingUp>
+        <maxPowerWhenMovingDown>0.3</maxPowerWhenMovingDown>
         <errorStartDecelerate>20</errorStartDecelerate>
-        <!-- <powerNeededToMoveUp>0.26</powerNeededToMoveUp>
-        <powerNeededToMoveDown>0.06</powerNeededToMoveDown> -->
         <powerNeededToMoveUp>0.1</powerNeededToMoveUp>
         <powerNeededToMoveDown>0.05</powerNeededToMoveDown>
         <errorTolerance>2</errorTolerance>

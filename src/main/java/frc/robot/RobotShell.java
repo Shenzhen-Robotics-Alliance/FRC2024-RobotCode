@@ -35,7 +35,7 @@ public class RobotShell extends TimedRobot {
     @Override
     public void robotInit() {
         // System.out.println("<-- Robot Shell | robot init -->");
-        robotCore = new RobotCore("fasterChassis");
+        robotCore = new RobotCore("6706-2024");
     }
 
     /** called once when the driver station first connects to the robot */
@@ -113,7 +113,7 @@ public class RobotShell extends TimedRobot {
     public void testInit() {
         // System.out.println("<-- Robot Shell | test init -->");
         if (robotTest == null)
-            this.robotTest = new WheelsCalibration(robotCore.robotConfig);
+            this.robotTest = new DCEncoderCalibration();
         robotTest.testStart();
     }
 
