@@ -145,7 +145,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
             case MANUALLY_DRIVING -> {
                 shooter.setShooterMode(Shooter.ShooterMode.DISABLED, this);
                 if (copilotGamePad.getBButton()) {
-                    intake.startSplit(this); // in case if the Note is stuck
+                    if (arm.transformerInPosition())
+                        intake.startSplit(this); // in case if the Note is stuck
                     arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SPLIT, this);
                 }
                 else {
@@ -319,8 +320,10 @@ public class VisionAidedPilotChassis extends PilotChassis {
             rightSweetSpotFar = new Vector2D(new double[] {1.7, 1.7});
 
     private BezierCurve getPathToSweetSpot() {
-        final Vector2D relativePositionToSpeaker = Vector2D.displacementToTarget(chassisPositionWhenCurrentVisionTaskStarted, currentVisualTargetLastSeenPosition);
-        return new BezierCurve(chassisPositionWhenCurrentVisionTaskStarted, currentVisualTargetLastSeenPosition.addBy(getSweetSpot(relativePositionToSpeaker)));
+        final Vector2D relativePositionToSpeaker = Vector2D.displacementToTarget(currentVisualTargetLastSeenPosition, chassisPositionWhenCurrentVisionTaskStarted);
+        return new BezierCurve(chassisPositionWhenCurrentVisionTaskStarted, currentVisualTargetLastSeenPosition.addBy(
+                getSweetSpot(relativePositionToSpeaker)
+        ));
     }
 
     private Vector2D getSweetSpot(Vector2D relativePositionToSpeaker) {
@@ -445,7 +448,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
     private boolean updateTargetPositionIfSeen(AprilTagReferredTarget target) {
         final Vector2D targetFieldPosition = target.getTargetFieldPositionWithVisibleAprilTags();
         if (targetFieldPosition == null) return false;
-        this.currentVisualTargetLastSeenPosition = targetFieldPosition;
+        if (this.currentVisualTargetLastSeenPosition== null || Vector2D.displacementToTarget(this.currentVisualTargetLastSeenPosition, targetFieldPosition).getMagnitude() > robotConfig.getConfig("vision-autopilot", "updateTargetPositionTolerance"))
+            this.currentVisualTargetLastSeenPosition = targetFieldPosition;
         return true;
     }
 

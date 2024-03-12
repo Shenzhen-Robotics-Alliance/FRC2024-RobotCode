@@ -176,6 +176,8 @@
     <vision-autopilot>
         <autoFaceTargetTimeUnseenToleranceMS>5000</autoFaceTargetTimeUnseenToleranceMS>
         <aimingTimeUnseenToleranceMS>2000</aimingTimeUnseenToleranceMS>
+
+        <updateTargetPositionTolerance>0.05</updateTargetPositionTolerance>
     </vision-autopilot>
 
     <auto>
@@ -194,8 +196,8 @@
         <yAxisPort type="int">1</yAxisPort>
         <zAxisPort type="int">3</zAxisPort>
 
-        <pilotControllerXAxisSensitivity type="int">50</pilotControllerXAxisSensitivity>
-        <pilotControllerYAxisSensitivity type="int">50</pilotControllerYAxisSensitivity>
+        <pilotControllerXAxisSensitivity type="int">65</pilotControllerXAxisSensitivity>
+        <pilotControllerYAxisSensitivity type="int">65</pilotControllerYAxisSensitivity>
         <pilotControllerZAxisSensitivity type="int">-65</pilotControllerZAxisSensitivity>
         <!-- the minimum amount of stick input to respond to, in percentage -->
         <pilotStickThresholdWhenOtherAxisUnused>5</pilotStickThresholdWhenOtherAxisUnused>
