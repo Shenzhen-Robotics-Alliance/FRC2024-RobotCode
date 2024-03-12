@@ -46,7 +46,7 @@ public class RobotShell extends TimedRobot {
 
         autoProgramRunner = new AutoProgramRunner(robotCore.chassisModule, robotCore.robotConfig);
         intakeAndShooterService = new TransformableIntakeAndShooterService(robotCore.intake, robotCore.shooter, robotCore.transformableArm, robotCore.robotConfig, new XboxController(1));
-        visionAidedPilotChassis = new VisionAidedPilotChassis(robotCore.chassisModule, robotCore.shooter, robotCore.intake, robotCore.transformableArm, robotCore.speakerTarget, robotCore.amplifierTarget, robotCore.noteTarget, new XboxController(1), robotCore.robotConfig);
+        visionAidedPilotChassis = new VisionAidedPilotChassis(robotCore.chassisModule, robotCore.shooter, robotCore.intake, robotCore.transformableArm, robotCore.speakerTarget, robotCore.amplifierTarget, robotCore.noteTarget, new XboxController(1), robotCore.robotConfig, robotCore.red, robotCore.green, robotCore.blue);
 
         addAutoStagePrograms();
         scheduleAutoCommands(autoStageChooser.getSelected());

@@ -10,7 +10,8 @@ public class LEDStatusLights extends RobotModuleBase {
     public enum LEDStatus {
         OFF,
         BLINK,
-        ON
+        ON,
+        FADE
     }
     private static final double hz = 10;
 
@@ -33,11 +34,16 @@ public class LEDStatusLights extends RobotModuleBase {
             case ON -> light.set(true);
             case OFF -> light.set(false);
             case BLINK -> light.set(blink());
+            case FADE -> light.set(fade());
         }
     }
 
     private boolean blink() {
         return Math.sin(t.get() * hz * Math.PI) > 0;
+    }
+
+    private boolean fade() {
+        return Math.sin(t.get() * Math.PI) > 0.6;
     }
 
     @Override

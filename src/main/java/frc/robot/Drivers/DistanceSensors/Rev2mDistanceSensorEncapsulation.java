@@ -29,4 +29,9 @@
          rev2mDistanceSensorInstance.setAutomaticMode(enabled);
          System.out.println("Rev2m Distance Sensor | " + "automatic mode " + end);
      }
+
+     @Override
+     public boolean errorDetected() {
+         return !rev2mDistanceSensorInstance.isRangeValid();
+     }
  }

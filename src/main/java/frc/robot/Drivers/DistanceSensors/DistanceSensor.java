@@ -7,4 +7,6 @@ public interface DistanceSensor {
      * */
     double getDistanceCM();
     default void setEnabled(boolean enabled) {}
+
+    default boolean errorDetected() {return false;}
 }

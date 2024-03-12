@@ -1,7 +1,5 @@
 package frc.robot.Modules.UpperStructure;
 
-import com.revrobotics.REVLibError;
-
 import frc.robot.Drivers.DistanceSensors.DistanceSensor;
 import frc.robot.Drivers.Encoders.Encoder;
 import frc.robot.Drivers.Motors.Motor;
@@ -170,5 +168,10 @@ public class IntakeWithDistanceSensor extends Intake {
     @Override
     public boolean isNoteInsideIntake() {
         return System.currentTimeMillis() - previousNoteSeenTimeMillis < 500;
+    }
+
+    @Override
+    public boolean malFunctioning() {
+        return intakeDistanceSensor.errorDetected();
     }
 }

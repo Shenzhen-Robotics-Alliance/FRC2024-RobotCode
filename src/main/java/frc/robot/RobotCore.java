@@ -29,10 +29,7 @@ import frc.robot.Modules.PositionReader.SwerveWheelPositionEstimatorCurveOptimiz
 import frc.robot.Modules.RobotModuleBase;
 import frc.robot.Modules.Chassis.SwerveBasedChassis;
 import frc.robot.Modules.Chassis.SwerveWheel;
-import frc.robot.Modules.UpperStructure.Intake;
-import frc.robot.Modules.UpperStructure.IntakeWithDistanceSensor;
-import frc.robot.Modules.UpperStructure.Shooter;
-import frc.robot.Modules.UpperStructure.TransformableArm;
+import frc.robot.Modules.UpperStructure.*;
 import frc.robot.Services.RobotServiceBase;
 import frc.robot.Utils.*;
 import frc.robot.Utils.ComputerVisionUtils.AprilTagReferredTarget;
@@ -61,6 +58,7 @@ public class RobotCore {
         public final Intake intake;
         public final Shooter shooter;
         public final AprilTagReferredTarget speakerTarget, amplifierTarget, noteTarget;
+        public final LEDStatusLights red, green, blue;
 
         private final List<String> configsToTune = new ArrayList<>(1);
         private final List<RobotModuleBase> modules;
@@ -171,6 +169,11 @@ public class RobotCore {
                         intakeAidMotor = new TalonFXMotor(new TalonFX((int)robotConfig.getConfig("intake/intakeAidMotorPort")), robotConfig.getConfig("intake/intakeAidMotorReversed") != 0);
 
                 this.intake = new IntakeWithDistanceSensor(intakeMotor, intakeAidMotor, intakeMotor, new Rev2mDistanceSensorEncapsulation(), robotConfig); modules.add(intake);
+
+
+                this.red = new LEDStatusLights(0);
+                this.green = new LEDStatusLights(0);
+                this.blue = new LEDStatusLights(0);
         }
 
         private SwerveWheel createSwerveWheel(String name, int id, Vector2D wheelInstallationPosition) {
