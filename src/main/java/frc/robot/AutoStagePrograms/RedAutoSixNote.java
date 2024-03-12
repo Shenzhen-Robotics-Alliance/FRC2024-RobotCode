@@ -33,7 +33,7 @@ public class RedAutoSixNote implements CommandSequenceGenerator {
         commandSegments.add(aimBot.grabNote(
                 FieldPositions.toActualPosition(FieldPositions.nearNote2),
                 FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(180))),
-                2000
+                intakeTimeOut
         ));
 
         /* shoot second and move to third */
@@ -46,8 +46,8 @@ public class RedAutoSixNote implements CommandSequenceGenerator {
         /* grab third */
         commandSegments.add(aimBot.grabNote(
                         FieldPositions.toActualPosition(FieldPositions.nearNote1),
-                        FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(-135))),
-                        2000
+                        FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(180))),
+                        intakeTimeOut
         ));
 
         /* shoot third and move to fourth */
@@ -61,7 +61,7 @@ public class RedAutoSixNote implements CommandSequenceGenerator {
         commandSegments.add(aimBot.grabNote(
                 FieldPositions.toActualPosition(FieldPositions.nearNote3),
                 FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(135))),
-                2000
+                intakeTimeOut
         ));
 
         /* shoot fourth */

@@ -28,6 +28,9 @@ public class AutoStageVisionAimBot {
         return grabNote(initiateCondition, assumedNotePosition, desiredRobotRotation, timeOutMillis, false);
     }
     public SequentialCommandSegment grabNote(SequentialCommandSegment.InitiateCondition initiateCondition, Vector2D assumedNotePosition, Rotation2D desiredRobotRotation, long timeOutMillis, boolean accelerateShooters) {
+        /* TODO: in robot config */
+        final double intakeDistance = 0.35, intakeTime = 0.3, positionDifferenceTolerance = 0.05;
+
         final Timer timer = new Timer();
         timer.start();
         final Vector2D noteLastSeenPosition = assumedNotePosition;
@@ -36,14 +39,18 @@ public class AutoStageVisionAimBot {
                 () -> null,
                 timer::reset,
                 () -> {
+                    System.out.println("<-- running grab command, timer: " + timer.get() + "note inside: " + robotCore.intake.isNoteInsideIntake() + " -->");
+                    /* wait for arm to be in position */
+                    if (!robotCore.transformableArm.transformerInPosition()) {
+                        robotCore.chassisModule.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.SET_VELOCITY, new Vector2D()), null);
+                        return;
+                    }
+
+                    robotCore.intake.startIntake(null);
                     robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, null);
                     robotCore.shooter.setShooterMode(accelerateShooters ? Shooter.ShooterMode.PREPARE_TO_SHOOT : Shooter.ShooterMode.DISABLED, null);
-                    if (robotCore.transformableArm.transformerInPosition())
-                        robotCore.intake.startIntake(null);
                     robotCore.chassisModule.setOrientationMode(SwerveBasedChassis.OrientationMode.FIELD, null);
 
-                    /* TODO: in robot config */
-                    final double intakeDistance = 0.2, intakeTime = 0.6, positionDifferenceTolerance = 0.1;
                     final Vector2D
                             noteFieldPositionByCamera = robotCore.noteTarget.getTargetFieldPositionWithAprilTags(timeUnseenToleranceMillis),
                             intakeProcessPath = new Vector2D(new double[] {0, -intakeDistance}),
@@ -57,7 +64,11 @@ public class AutoStageVisionAimBot {
                         noteLastSeenPosition.update(noteLastSeenPosition);
                 },
                 () -> robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, null),
-                () -> timer.get() * 1000 > timeOutMillis || robotCore.intake.isNoteInsideIntake(),
+                () -> {
+                    System.out.println("<-- is grab complete? note already in: " + robotCore.intake.isNoteInsideIntake() + ", timeout:" + timer.get() * 1000);
+                    return (timer.get() > intakeTime && robotCore.intake.isNoteInsideIntake()) ||
+                            timer.get() * 1000 > timeOutMillis;
+                },
                 () -> desiredRobotRotation, () -> desiredRobotRotation
         );
     }

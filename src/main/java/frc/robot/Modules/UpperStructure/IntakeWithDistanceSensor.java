@@ -14,7 +14,6 @@ public class IntakeWithDistanceSensor extends Intake {
     private final DistanceSensor intakeDistanceSensor;
     private final RobotConfigReader robotConfig;
 
-    private long previousNoteSeenTimeMillis = 0;
     public IntakeWithDistanceSensor(Motor intakeMotor, Motor intakeAidMotor, Encoder intakeEncoder, DistanceSensor intakeDistanceSensor, RobotConfigReader robotConfig) {
         super();
         this.intakeAidMotor = intakeAidMotor;
@@ -33,8 +32,6 @@ public class IntakeWithDistanceSensor extends Intake {
 
     @Override
     protected void periodic(double dt) {
-        updateNoteStatus();
-
         intakeMotor.setPower(decidedIntakeMotorPower(dt), this);
         intakeAidMotor.setPower(switch(currentStatus) {
             case GRABBING -> intakeAidingMotorPower;
@@ -42,11 +39,6 @@ public class IntakeWithDistanceSensor extends Intake {
             default -> 0;
         }, this);
         EasyShuffleBoard.putNumber("intake", "note sensor reading (CM)", intakeDistanceSensor.getDistanceCM());
-    }
-
-    private void updateNoteStatus() {
-        if (intakeDistanceSensor.getDistanceCM() <= distanceSensorThreshold)
-            previousNoteSeenTimeMillis = System.currentTimeMillis();
     }
 
     private double intakeWheelHoldingPosition = 0;
@@ -129,7 +121,6 @@ public class IntakeWithDistanceSensor extends Intake {
         intakeAidMotor.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.RELAX, this);
 
         timeSinceSplitProcessStarted = 0;
-        updateNoteStatus();
     }
 
     @Override
@@ -167,7 +158,7 @@ public class IntakeWithDistanceSensor extends Intake {
 
     @Override
     public boolean isNoteInsideIntake() {
-        return System.currentTimeMillis() - previousNoteSeenTimeMillis < 500;
+        return intakeDistanceSensor.getDistanceCM() <= distanceSensorThreshold;
     }
 
     @Override
