@@ -38,13 +38,13 @@
     <chassis>
         <wheelGearRatio type="double">6.75</wheelGearRatio>
 
-        <wheelsPowerConstrain type="double">0.75</wheelsPowerConstrain>
+        <wheelsPowerConstrain type="double">1</wheelsPowerConstrain>
         <robotPositionFeedForwardTime type="double">0.05</robotPositionFeedForwardTime>
 
         <translationalTaskUpdatableRange type="double">0.1</translationalTaskUpdatableRange>
-        <ignoredAccelerateTime type="double">0.08</ignoredAccelerateTime>
+        <ignoredAccelerateTime type="double">0.05</ignoredAccelerateTime>
         <robotMaximumSpeed type="double">4.5</robotMaximumSpeed>
-        <timeNeededToFullyAccelerate type="double">0.5</timeNeededToFullyAccelerate>
+        <timeNeededToFullyAccelerate type="double">0.3</timeNeededToFullyAccelerate>
         <robotSpeedActivateSpeedControl type="double">0.1</robotSpeedActivateSpeedControl>
     </chassis>
     <shooter>

@@ -172,8 +172,8 @@ public class RobotCore {
 
 
                 this.red = new LEDStatusLights(0);
-                this.green = new LEDStatusLights(0);
-                this.blue = new LEDStatusLights(0);
+                this.green = new LEDStatusLights(1);
+                this.blue = new LEDStatusLights(2);
         }
 
         private SwerveWheel createSwerveWheel(String name, int id, Vector2D wheelInstallationPosition) {
