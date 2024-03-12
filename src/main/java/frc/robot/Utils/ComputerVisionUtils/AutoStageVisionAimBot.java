@@ -94,7 +94,7 @@ public class AutoStageVisionAimBot {
                 () -> timeSinceTaskStarted.get() * 1000 > timeOutMillis
                         || timeSinceNoteGone.get() > 0.05,
                 () -> null, () -> null,
-                SpeedCurves.slowDown, 0.6 // TODO in robotConfig
+                SpeedCurves.slowDown, robotCore.robotConfig.getConfig("auto", "shootingSegmentSpeedFactor")
         );
     }
 

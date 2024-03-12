@@ -184,6 +184,8 @@
         <autoStageMaxAngularVelocity type="double">160</autoStageMaxAngularVelocity> <!-- in deg/s -->
 
         <inAdvanceTime>0.4</inAdvanceTime>
+
+        <shootingSegmentSpeedFactor>0.6</shootingSegmentSpeedFactor>
     </auto>
     <!-- the config for xbox controller, currently using radio master in replace -->
     <control-RM_POCKET>
