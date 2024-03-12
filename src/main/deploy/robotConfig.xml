@@ -177,7 +177,7 @@
         <autoFaceTargetTimeUnseenToleranceMS>5000</autoFaceTargetTimeUnseenToleranceMS>
         <aimingTimeUnseenToleranceMS>2000</aimingTimeUnseenToleranceMS>
 
-        <updateTargetPositionTolerance>0.05</updateTargetPositionTolerance>
+        <updateTargetPositionTolerance>0.2</updateTargetPositionTolerance>
     </vision-autopilot>
 
     <auto>

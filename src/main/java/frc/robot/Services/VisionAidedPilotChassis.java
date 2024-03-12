@@ -275,13 +275,13 @@ public class VisionAidedPilotChassis extends PilotChassis {
         timeTaskStartedMillis = System.currentTimeMillis();
     }
 
-    private static final SpeedCurves.SpeedCurve autoApproachSpeedCurve = SpeedCurves.slowDown;
+    private static final SpeedCurves.SpeedCurve autoApproachSpeedCurve = SpeedCurves.easeInOut;
     private void proceedGoToSpeakerTarget(int translationAutoPilotButton) {
         shooter.setShooterMode(Shooter.ShooterMode.SHOOT, this);
         arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, this);
 
         /* if seen, update the position */
-        updateTargetPositionIfSeen(speakerTarget);
+        // updateTargetPositionIfSeen(speakerTarget);
 
         final double timeSinceTaskStarted = (System.currentTimeMillis() - timeTaskStartedMillis) / 1000.0;
         final BezierCurve currentPath =
@@ -418,7 +418,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         final double timeSinceTaskStarted = (System.currentTimeMillis() - timeTaskStartedMillis) / 1000.0;
         final BezierCurve currentPath = getPathToNoteTarget();
         chassis.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION,
-                currentPath.getPositionWithLERP(timeSinceTaskStarted / currentVisionTaskETA)), this);
+                currentPath.getPositionWithLERP(autoApproachSpeedCurve.getScaledT(timeSinceTaskStarted / currentVisionTaskETA))), this);
         chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
                 currentIntakeTaskFacing), this);
 
@@ -433,7 +433,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
                 new Vector2D(new double[] {intakeCenterHorizontalBiasFromCamera, -grabbingNoteDistance}).multiplyBy(new Rotation2D(currentIntakeTaskFacing)), // by default, we move backwards in relative to the robot, but we need to convert this to in relative to field by rotating it.
                 /* the position of the ending point of the path of the grabbing task, relative to the speaker */
                 grabbingProcessEndingPoint = currentVisualTargetLastSeenPosition.addBy(grabbingProcessEndPointFromNoteDeviation),
-                grabbingProcessEndingAnotherPoint = currentVisualTargetLastSeenPosition.addBy(grabbingProcessEndPointFromNoteDeviation.multiplyBy(-1));
+                grabbingProcessEndingAnotherPoint = currentVisualTargetLastSeenPosition.addBy(new Vector2D(new double[] {0, grabbingNoteDistance * 2}));
 
         return new BezierCurve(
                 chassisPositionWhenCurrentVisionTaskStarted, // starting from the chassis initial position during task
@@ -481,8 +481,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
         aimingTimeUnseenToleranceMS = (long) robotConfig.getConfig("vision-autopilot", "aimingTimeUnseenToleranceMS");
         /* TODO read from robotConfig */
         this.intakeCenterHorizontalBiasFromCamera = -0.05;
-        grabbingNoteDistance = 0.15;
-        chassisSpeedLimitWhenAutoAim = 4;
+        grabbingNoteDistance = 0.1;
+        chassisSpeedLimitWhenAutoAim = 2;
         shootingSweetSpot = new Vector2D(new double[] {0, 2});
         shootingProcessEndingPointUpdatableRange = 1.4;
         chassisReactionDelay = 0.4;
