@@ -150,7 +150,7 @@ public class RobotShell extends TimedRobot {
                 new AprilTagCameraAutomaticMeasuring(
                         robotCore.aprilTagDetectionAppClient,
                         4,
-                        100,
+                        145.5-32,
                         130,
                         240,
                         30,

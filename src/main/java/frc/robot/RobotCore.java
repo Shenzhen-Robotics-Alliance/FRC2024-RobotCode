@@ -115,9 +115,9 @@ public class RobotCore {
                 aprilTagPositionTrackingCamera = new FixedAnglePositionTrackingCamera(
                         aprilTagDetectionAppClient,
                         new FixedAngleCameraProfile(
-                                0.290,
-                                -0.0019,
-                                -0.00179
+                                0.2825,
+                                -0.00194,
+                                -9.3574E-4
                         ),
                         targetHeights
                 );

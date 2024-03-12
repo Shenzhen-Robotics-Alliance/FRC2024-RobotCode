@@ -129,7 +129,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
                     this);
         if (copilotGamePad.getXButton())
             this.currentStatus = Status.MANUALLY_DRIVING;
-        if (copilotGamePad.getRightBumper()) {
+        if (copilotGamePad.getLeftStickButton() && copilotGamePad.getRightStickButton()) {
             reset();
             chassis.reset();
         }

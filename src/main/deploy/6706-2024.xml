@@ -38,14 +38,45 @@
     <chassis>
         <wheelGearRatio type="double">6.75</wheelGearRatio>
 
-        <wheelsPowerConstrain type="double">0.6</wheelsPowerConstrain>
+        <wheelsPowerConstrain type="double">0.75</wheelsPowerConstrain>
         <robotPositionFeedForwardTime type="double">0.05</robotPositionFeedForwardTime>
+
+        <translationalTaskUpdatableRange type="double">0.1</translationalTaskUpdatableRange>
+        <ignoredAccelerateTime type="double">0.08</ignoredAccelerateTime>
+        <robotMaximumSpeed type="double">4.5</robotMaximumSpeed>
+        <timeNeededToFullyAccelerate type="double">0.5</timeNeededToFullyAccelerate>
+        <robotSpeedActivateSpeedControl type="double">0.1</robotSpeedActivateSpeedControl>
     </chassis>
     <shooter>
         <shooter1Port>12</shooter1Port>
         <shooter2Port>13</shooter2Port>
         <shooter1Reversed>0</shooter1Reversed>
         <shooter2Reversed>0</shooter2Reversed>
+
+        <preparingForShootRPM>2000</preparingForShootRPM>
+        <projectileSpeed>10</projectileSpeed>
+        <shootingRange>3.6</shootingRange>
+
+        <!-- shooting lookup table -->
+        <targetDistance0>1.5</targetDistance0>
+        <shooterRPM0>3400</shooterRPM0>
+        <armAngle0>20</armAngle0>
+
+        <targetDistance1>2</targetDistance1>
+        <shooterRPM1>3800</shooterRPM1>
+        <armAngle1>12</armAngle1>
+
+        <targetDistance2>2.5</targetDistance2>
+        <shooterRPM2>4600</shooterRPM2>
+        <armAngle2>4</armAngle2>
+
+        <targetDistance3>3</targetDistance3>
+        <shooterRPM3>5400</shooterRPM3>
+        <armAngle3>-4</armAngle3>
+
+        <targetDistance4>3.5</targetDistance4>
+        <shooterRPM4>6000</shooterRPM4>
+        <armAngle4>-7</armAngle4>
     </shooter>
 
     <intake>
