@@ -170,6 +170,7 @@ public class RobotShell extends TimedRobot {
 
         autoStageChooser.addOption("Middle Six Notes Auto (Test Route)", new RedAutoStageSixNoteRoute());
         autoStageChooser.addOption("Middle Six Notes Auto Upper Half (Test Route)", new RedAutoStageSixNoteUpperHalfRoute());
+        autoStageChooser.addOption("Middle Six Notes Auto", new RedAutoSixNote());
         autoStageChooser.addOption("Test Path Planner Path Auto", new TestPathPlannerPath());
 
         autoStageChooser.setDefaultOption("Test Auto", new TestAutoStageProgram());

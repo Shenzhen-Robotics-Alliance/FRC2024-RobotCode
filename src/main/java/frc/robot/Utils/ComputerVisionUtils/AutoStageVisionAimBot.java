@@ -84,6 +84,13 @@ public class AutoStageVisionAimBot {
                         robotCore.intake.startLaunch(null);
                     if (robotCore.intake.isNoteInsideIntake())
                         timeSinceNoteGone.reset();
+
+                    if (timeSinceNoteGone.get() > 0.2) {
+                        robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, null);
+                        robotCore.shooter.setShooterMode(Shooter.ShooterMode.DISABLED, null);
+                        robotCore.intake.turnOffIntake(null);
+                        robotCore.shooter.aimingSystem.defaultTargetFieldPosition = null;
+                    }
                 },
                 () -> {
                     robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, null);
@@ -92,7 +99,7 @@ public class AutoStageVisionAimBot {
                     robotCore.shooter.aimingSystem.defaultTargetFieldPosition = null;
                 },
                 () -> timeSinceTaskStarted.get() * 1000 > timeOutMillis
-                        || timeSinceNoteGone.get() > 0.05,
+                        || timeSinceNoteGone.get() > 0.2,
                 () -> null, () -> null,
                 SpeedCurves.slowDown, robotCore.robotConfig.getConfig("auto", "shootingSegmentSpeedFactor")
         );
