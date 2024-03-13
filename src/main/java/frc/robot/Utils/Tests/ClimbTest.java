@@ -9,17 +9,20 @@ import frc.robot.Drivers.Motors.TalonFXMotor;
 import frc.robot.Drivers.Motors.VictorSPXMotor;
 
 public class ClimbTest implements SimpleRobotTest {
-    private final TalonFXMotor left = new TalonFXMotor(new TalonFX(-1), false), right = new TalonFXMotor(new TalonFX(-1), false);
+    private final TalonFXMotor left = new TalonFXMotor(new TalonFX(16), false), right = new TalonFXMotor(new TalonFX(15), true) ;
     private final XboxController xboxController = new XboxController(1);
 
     @Override
     public void testStart() {
-
+        left.setCurrentPositionAsZeroPosition();right.setCurrentPositionAsZeroPosition();
     }
 
     @Override
     public void testPeriodic() {
         left.setPower(xboxController.getLeftY() * -1, null);
         right.setPower(xboxController.getRightY() * -1, null);
+
+        System.out.println("left climb enc reading: " + left.getEncoderPosition());
+        System.out.println("right climb enc reading: " + right.getEncoderPosition());
     }
 }

@@ -197,8 +197,8 @@
         <rightClimbMotorReversed>0</rightClimbMotorReversed>
 
         <movingPower>0.2</movingPower>
-        <tolerance>200</tolerance>
-        <upMostPointEncoderPosition>0</upMostPointEncoderPosition>
+        <tolerance>5000</tolerance>
+        <upMostPointEncoderPosition>420000</upMostPointEncoderPosition>
     </climb>
 
     <!-- the config for xbox controller, currently using radio master in replace -->

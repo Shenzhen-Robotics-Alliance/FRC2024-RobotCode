@@ -1,9 +1,8 @@
 package frc.robot.Modules.UpperStructure;
 
+import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Modules.RobotModuleBase;
 import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
-import frc.robot.Utils.MechanismControllers.MechanismController;
-import frc.robot.Utils.MechanismControllers.SimpleArmController;
 import frc.robot.Utils.RobotConfigReader;
 import frc.robot.Utils.RobotModuleOperatorMarker;
 
@@ -13,9 +12,9 @@ public class Climb extends RobotModuleBase {
      */
     private final EncoderMotorMechanism leftClimb, rightClimb;
     private final RobotConfigReader robotConfig;
+    private double movingPower;
     private ClimbTask leftClimbTask, rightClimbTask;
 
-    private SimpleArmController controller;
     public Climb(EncoderMotorMechanism leftClimb, EncoderMotorMechanism rightClimb, RobotConfigReader robotConfig) {
         super("climb");
         this.leftClimb = leftClimb;
@@ -30,43 +29,26 @@ public class Climb extends RobotModuleBase {
 
     @Override
     protected void periodic(double dt) {
-        leftClimb.setController(controller);
-        rightClimb.setController(controller);
-        switch (leftClimbTask.taskType) {
-            case SET_POWER ->
-                leftClimb.setPower(leftClimbTask.taskValue, this);
-            case SET_POSITION -> {
-                controller.desiredPosition = leftClimbTask.taskValue;
-                leftClimb.updateWithController(this);
-            }
-        }
-
         updateClimbGivenTask(leftClimb, leftClimbTask);
         updateClimbGivenTask(rightClimb, rightClimbTask);
     }
 
     private void updateClimbGivenTask(EncoderMotorMechanism climb, ClimbTask task) {
-        switch (task.taskType) {
-            case SET_POWER ->
-                    climb.setPower(task.taskValue, this);
-            case SET_POSITION -> {
-                controller.desiredPosition = task.taskValue;
-                climb.updateWithController(this);
-            }
-        }
+        climb.setPower(
+                switch (task.taskType) {
+                    case SET_POWER -> task.taskValue;
+                    case SET_POSITION -> (climb.getEncoderPosition() < task.taskValue) ? movingPower : 0;
+                },
+                this
+        );
+        climb.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE, this);
+
+        System.out.println("climb task: " + task.taskType + ", value: " + task.taskValue);
     }
 
     @Override
     public void updateConfigs() {
-        controller = new SimpleArmController(
-                robotConfig.getConfig("climb", "movingPower"),
-                robotConfig.getConfig("climb", "movingPower"),
-                robotConfig.getConfig("climb", "tolerance"),
-                robotConfig.getConfig("climb", "movingPower"),
-                robotConfig.getConfig("climb", "movingPower"),
-                robotConfig.getConfig("climb", "tolerance"),
-                false
-        );
+        movingPower = robotConfig.getConfig("climb", "movingPower");
     }
 
     @Override

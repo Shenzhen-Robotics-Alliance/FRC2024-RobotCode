@@ -182,11 +182,11 @@ public class RobotCore {
                                 new TalonFX((int) robotConfig.getConfig("climb/rightClimbMotorPort")),
                                 robotConfig.getConfig("climb/rightClimbMotorReversed")!=0).toEncoderAndMotorMechanism(),
                         robotConfig
-                );
+                ); modules.add(climb);
 
-                this.red = new LEDStatusLights(0);
-                this.green = new LEDStatusLights(1);
-                this.blue = new LEDStatusLights(2);
+                this.red = new LEDStatusLights(0); modules.add(red);
+                this.green = new LEDStatusLights(1); modules.add(green);
+                this.blue = new LEDStatusLights(2); modules.add(blue);
         }
 
         private SwerveWheel createSwerveWheel(String name, int id, Vector2D wheelInstallationPosition) {

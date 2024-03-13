@@ -160,11 +160,13 @@
     </auto>
 
     <climb>
-        <leftClimbMotorPort>-1</leftClimbMotorPort>
+        <leftClimbMotorPort>16</leftClimbMotorPort>
         <!-- positive is up -->
         <leftClimbMotorReversed>0</leftClimbMotorReversed>
-        <rightClimbMotorPort>-1</rightClimbMotorPort>
+        <rightClimbMotorPort>15</rightClimbMotorPort>
         <!-- positive is up -->
-        <rightClimbMotorReversed>0</rightClimbMotorReversed>
+        <rightClimbMotorReversed>1</rightClimbMotorReversed>
+
+        <movingPower>0.4</movingPower>
     </climb>
 </robotConfig>
