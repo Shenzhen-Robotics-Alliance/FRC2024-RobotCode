@@ -1,16 +1,15 @@
 package frc.robot.Utils.Tests;
 
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Drivers.Motors.MotorsSet;
+import frc.robot.Drivers.Motors.TalonFXMotor;
 import frc.robot.Drivers.Motors.VictorSPXMotor;
 
 public class ClimbTest implements SimpleRobotTest {
-    private final MotorsSet climbMotors = new MotorsSet(new Motor[] {
-            new VictorSPXMotor(new VictorSPX(20), false),
-            new VictorSPXMotor(new VictorSPX(21), true)
-    });
+    private final TalonFXMotor left = new TalonFXMotor(new TalonFX(-1), false), right = new TalonFXMotor(new TalonFX(-1), false);
     private final XboxController xboxController = new XboxController(1);
 
     @Override
@@ -20,6 +19,7 @@ public class ClimbTest implements SimpleRobotTest {
 
     @Override
     public void testPeriodic() {
-        climbMotors.setPower(xboxController.getRightTriggerAxis() - xboxController.getLeftTriggerAxis(), null);
+        left.setPower(xboxController.getLeftY() * -1, null);
+        right.setPower(xboxController.getRightY() * -1, null);
     }
 }

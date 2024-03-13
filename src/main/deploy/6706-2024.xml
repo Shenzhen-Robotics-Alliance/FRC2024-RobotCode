@@ -161,8 +161,10 @@
 
     <climb>
         <leftClimbMotorPort>-1</leftClimbMotorPort>
+        <!-- positive is up -->
         <leftClimbMotorReversed>0</leftClimbMotorReversed>
         <rightClimbMotorPort>-1</rightClimbMotorPort>
+        <!-- positive is up -->
         <rightClimbMotorReversed>0</rightClimbMotorReversed>
     </climb>
 </robotConfig>

@@ -9,6 +9,7 @@ import frc.robot.Services.*;
 import frc.robot.Utils.CommandSequenceGenerator;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
+import frc.robot.Utils.MechanismControllers.SimpleArmController;
 import frc.robot.Utils.SequentialCommandSegment;
 import frc.robot.Utils.Tests.*;
 
@@ -118,7 +119,7 @@ public class RobotShell extends TimedRobot {
     public void testInit() {
         // System.out.println("<-- Robot Shell | test init -->");
         if (robotTest == null)
-            this.robotTest = new DCEncoderCalibration();
+            this.robotTest = new ClimbTest();
         robotTest.testStart();
     }
 
