@@ -109,8 +109,7 @@
         <speedControllerFeedForwardDelay>0</speedControllerFeedForwardDelay>
         <speedControllerMaximumSpeed>6000</speedControllerMaximumSpeed>
         <speedControllerTimeNeededToAccelerateToMaxSpeed>0.7</speedControllerTimeNeededToAccelerateToMaxSpeed>
-<!--        <flyWheelSpeedErrorTolerance>0.05</flyWheelSpeedErrorTolerance>-->
-        <flyWheelSpeedErrorTolerance>0.1</flyWheelSpeedErrorTolerance>
+        <flyWheelSpeedErrorTolerance>0.06</flyWheelSpeedErrorTolerance>
 
         <additionalInAdvanceTime>0.3</additionalInAdvanceTime>
 

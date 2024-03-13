@@ -229,7 +229,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
 
         green.setCurrentStatus(switch (currentStatus) {
             case MANUALLY_DRIVING, SEARCHING_FOR_SHOOT_TARGET, SEARCHING_FOR_NOTE, GRABBING_NOTE -> LEDStatusLights.LEDStatus.OFF;
-            case REACHING_TO_SHOOT_TARGET -> (shooter.shooterReady() && arm.transformerInPosition()) ? LEDStatusLights.LEDStatus.ON :
+            case REACHING_TO_SHOOT_TARGET ->
+                    (shooter.shooterReady() && shooter.targetInRange() && arm.transformerInPosition() && chassis.isCurrentRotationalTaskFinished()) ? LEDStatusLights.LEDStatus.ON :
                     (speakerTarget.isVisible(500) ? LEDStatusLights.LEDStatus.BLINK : LEDStatusLights.LEDStatus.OFF);
         }, this);
     }
@@ -298,10 +299,10 @@ public class VisionAidedPilotChassis extends PilotChassis {
         chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
                 shooter.aimingSystem.getRobotFacing(shooter.getProjectileSpeed(), currentVisualTargetLastSeenPosition)), this);
 
-        if (intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && shooter.shooterReady() && shooter.targetInRange() && arm.transformerInPosition() && chassis.isCurrentRotationalTaskFinished()) {
-            // start shooting
+        if (autoTrigger && intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && shooter.shooterReady() && shooter.targetInRange() && arm.transformerInPosition() && chassis.isCurrentRotationalTaskFinished())
             intake.startLaunch(this);
-        }
+        if (!autoTrigger && !pilotController.keyOnHold(translationAutoPilotButton))
+            intake.startLaunch(this);
         if (
                 timeSinceTaskStarted > currentVisionTaskETA + aimingTimeUnseenToleranceMS/1000.0
                         || !intake.isNoteInsideIntake()
@@ -310,29 +311,28 @@ public class VisionAidedPilotChassis extends PilotChassis {
             currentStatus = Status.MANUALLY_DRIVING; // finished or cancelled
     }
 
-    private static final double centerZoneAimHorizontalRange = 0.7;
+    private static final double centerZoneAimHorizontalRange = 0.7, farShootingSpotDistanceFactor=1.75;
     private static final int shootFromFarSpotControllerAxis = 2;
-    private static final Vector2D centerSweetSpotNear = new Vector2D(new double[] {0, 2}),
-            leftSweetSpotNear = new Vector2D(new double[] {-1.4, 1.4}),
-            rightSweetSpotNear = new Vector2D(new double[] {1.4, 1.4}),
-            centerSweetSpotFar = new Vector2D(new double[] {0, 2.5}),
-            leftSweetSpotFar = new Vector2D(new double[] {-1.7, 1.7}),
-            rightSweetSpotFar = new Vector2D(new double[] {1.7, 1.7});
+    private static final Vector2D shootingSweetSpotMid = new Vector2D(new double[] {0, 2}),
+            shootingSweetSpotLeft = new Vector2D(new double[] {-1.2, 1.8}),
+            shootingSweetSpotRight = new Vector2D(new double[] {1.2, 1.8});
 
     private BezierCurve getPathToSweetSpot() {
         final Vector2D relativePositionToSpeaker = Vector2D.displacementToTarget(currentVisualTargetLastSeenPosition, chassisPositionWhenCurrentVisionTaskStarted);
+        SmartDashboard.putNumber("Shooting Sweet Spot (x)", getSweetSpot(relativePositionToSpeaker).getX());
+        SmartDashboard.putNumber("Shooting Sweet Spot (y)", getSweetSpot(relativePositionToSpeaker).getY());
         return new BezierCurve(chassisPositionWhenCurrentVisionTaskStarted, currentVisualTargetLastSeenPosition.addBy(
                 getSweetSpot(relativePositionToSpeaker)
         ));
     }
 
     private Vector2D getSweetSpot(Vector2D relativePositionToSpeaker) {
-        final boolean useFarSweetSpot = pilotController.getRawAxis(shootFromFarSpotControllerAxis) > 0;
+        final double shootingDistanceFactor = LookUpTable.linearInterpretation(-1, 1, 1, farShootingSpotDistanceFactor, pilotController.getRawAxis(shootFromFarSpotControllerAxis));
         if (relativePositionToSpeaker.getX() < -centerZoneAimHorizontalRange)
-            return useFarSweetSpot ? leftSweetSpotFar : leftSweetSpotNear;
+            return shootingSweetSpotLeft.multiplyBy(shootingDistanceFactor);
         if (relativePositionToSpeaker.getX() > centerZoneAimHorizontalRange)
-            return useFarSweetSpot ? rightSweetSpotFar : rightSweetSpotNear;
-        return useFarSweetSpot ? centerSweetSpotFar : centerSweetSpotNear;
+            return shootingSweetSpotRight.multiplyBy(shootingDistanceFactor);
+        return shootingSweetSpotMid.multiplyBy(shootingDistanceFactor);
     }
 
     @Deprecated
@@ -472,6 +472,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
     private Vector2D shootProcessEndingPointInReferenceToShootingSweetSpotByDefault;
     /** how many seconds does the chassis need to react */
     private double chassisReactionDelay;
+
+    private boolean autoTrigger = true;
     @Override
     public void updateConfigs() {
         super.updateConfigs();
