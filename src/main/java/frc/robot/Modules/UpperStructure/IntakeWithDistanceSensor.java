@@ -123,21 +123,6 @@ public class IntakeWithDistanceSensor extends Intake {
         timeSinceSplitProcessStarted = 0;
     }
 
-    @Override
-    public void onDestroy() {
-
-    }
-
-    @Override
-    protected void onEnable() {
-
-    }
-
-    @Override
-    protected void onDisable() {
-
-    }
-
     private double timeSinceSplitProcessStarted;
 
     @Override

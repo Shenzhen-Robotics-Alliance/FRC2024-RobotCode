@@ -52,21 +52,6 @@ public class LEDStatusLights extends RobotModuleBase {
         t.start();
     }
 
-    @Override
-    public void onDestroy() {
-
-    }
-
-    @Override
-    protected void onEnable() {
-
-    }
-
-    @Override
-    protected void onDisable() {
-
-    }
-
     public void setCurrentStatus(LEDStatus ledStatus, RobotModuleOperatorMarker operator) {
         if (!isOwner(operator))
             return;

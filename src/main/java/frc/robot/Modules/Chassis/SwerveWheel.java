@@ -363,16 +363,6 @@ public class SwerveWheel extends RobotModuleBase {
     }
 
     @Override
-    public void onDestroy() {
-
-    }
-
-    @Override
-    protected void onEnable() {
-
-    }
-
-    @Override
     protected void onDisable() {
         drivingMotor.disableMotor(this);
         steerMotor.disableMotor(this);

@@ -74,21 +74,6 @@ public class SwerveWheelPositionEstimator extends RobotModuleBase implements Pos
     }
 
     @Override
-    public void onDestroy() {
-
-    }
-
-    @Override
-    protected void onEnable() {
-
-    }
-
-    @Override
-    protected void onDisable() {
-
-    }
-
-    @Override
     public Vector2D getRobotVelocity2D() {
         Vector2D robotVelocity = new Vector2D();
         for (int wheelID = 0; wheelID < swerveWheels.length; wheelID++)

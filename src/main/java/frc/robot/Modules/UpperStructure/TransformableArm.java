@@ -171,21 +171,6 @@ public class TransformableArm extends RobotModuleBase {
         this.armLifterMechanism.setSoftEncoderLimit(Math.toRadians(robotConfig.getConfig("arm", "lowerPositionLimit")), Math.toRadians(robotConfig.getConfig("arm", "upperPositionLimit")));
     }
 
-    @Override
-    public void onDestroy() {
-
-    }
-
-    @Override
-    protected void onEnable() {
-
-    }
-
-    @Override
-    protected void onDisable() {
-
-    }
-
     public void setTransformerDesiredPosition(TransformerPosition desiredPosition, RobotServiceBase operatorService) {
         if (!isOwner(operatorService))
             return;

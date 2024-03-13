@@ -85,9 +85,9 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
     }
 
     /** called when the program ends */
-    public abstract void onDestroy();
-    protected abstract void onEnable();
-    protected abstract void onDisable();
+    public void onDestroy() {}
+    protected void onEnable() {}
+    protected void onDisable() {}
     /** clear all the accumulating variables, such as integral in a PID */
     protected void clearAccumulations() {
 

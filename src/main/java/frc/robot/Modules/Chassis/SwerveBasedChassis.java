@@ -277,21 +277,6 @@ public class SwerveBasedChassis extends RobotModuleBase {
         return goToRotationController.getMotorPower(AngleUtils.simplifyAngle(gyro.getYaw()), gyro.getYawVelocity(), dt);
     }
 
-    @Override
-    public void onDestroy() {
-
-    }
-
-    @Override
-    protected void onEnable() {
-
-    }
-
-    @Override
-    protected void onDisable() {
-
-    }
-
     /**
      * set the translational task of the chassis
      * @param translationalTask the desired task for rotation

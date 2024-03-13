@@ -151,16 +151,6 @@ public class Shooter extends RobotModuleBase {
     }
 
     @Override
-    public void onDestroy() {
-
-    }
-
-    @Override
-    protected void onEnable() {
-
-    }
-
-    @Override
     protected void onDisable() {
         for (EncoderMotorMechanism shooter:shooters)
             shooter.disableMotor(this);
