@@ -123,6 +123,7 @@ public class PilotChassis extends RobotServiceBase {
                 /* if autopilot is on, we scale the input down by a factor so that we can search for the target */
                 pilotController.getTranslationalStickValue().multiplyBy(pilotController.keyOnHold(translationAutoPilotButton) ? robotConfig.getConfig("chassis", "lowSpeedModeTranslationalCommandScale"):1)
         );
+        chassis.setLowSpeedModeEnabled(pilotController.keyOnHold(translationAutoPilotButton), this);
 
 
         /* read and process the pilot's rotation inputs */

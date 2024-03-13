@@ -60,7 +60,8 @@ public class RobotShell extends TimedRobot {
 
     private void scheduleAutoCommands(CommandSequenceGenerator commandSequenceGenerator) {
         System.out.println("<-- RobotShell || scheduling commands with auto program -->");
-        this.commandSegments = commandSequenceGenerator.getCommandSegments(robotCore);
+        if (commandSequenceGenerator!=null)
+            this.commandSegments = commandSequenceGenerator.getCommandSegments(robotCore);
         System.out.println("<-- complete -->");
     }
 
@@ -173,7 +174,6 @@ public class RobotShell extends TimedRobot {
                         new Vector2D(new double[] {0, 52})
                 ));
 
-        autoStageChooser.addOption("Middle Six Notes Auto (Test Route)", new RedAutoStageSixNoteRoute());
         autoStageChooser.addOption("Middle Six Notes Auto Upper Half (Test Route)", new RedAutoStageSixNoteUpperHalfRoute());
         autoStageChooser.addOption("Middle Six Notes Auto", new RedAutoSixNote());
         autoStageChooser.addOption("Test Path Planner Path Auto", new TestPathPlannerPath());

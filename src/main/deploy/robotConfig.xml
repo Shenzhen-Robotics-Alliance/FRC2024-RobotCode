@@ -75,6 +75,7 @@
 
         <!-- smart wheel speed control -->
         <wheelsPowerConstrain type="double">1</wheelsPowerConstrain>
+        <wheelsPowerConstrainAtLowSpeedMode>0.6</wheelsPowerConstrainAtLowSpeedMode>
         <rotationalSpeedMaxSacrifice type="double">0.25</rotationalSpeedMaxSacrifice>
 
         <!-- the configuration for rotation controller -->
@@ -151,8 +152,8 @@
     </shooter>
     <intake>
         <launchPower>0.45</launchPower>
-        <intakePower>0.25</intakePower>
-        <intakeAidPower>0.5</intakeAidPower>
+        <intakePower>0.3</intakePower>
+        <intakeAidPower>0.6</intakeAidPower>
         <revertPower>-0.35</revertPower>
         <distanceSensorThreshold>30</distanceSensorThreshold>
         <splitTime>0.4</splitTime>

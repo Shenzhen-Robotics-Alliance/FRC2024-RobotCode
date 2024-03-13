@@ -29,24 +29,25 @@ public class AutoStageVisionAimBot {
     }
     public SequentialCommandSegment grabNote(SequentialCommandSegment.InitiateCondition initiateCondition, Vector2D assumedNotePosition, Rotation2D desiredRobotRotation, long timeOutMillis, boolean accelerateShooters) {
         /* TODO: in robot config */
-        final double intakeDistance = 0.35, intakeTime = 0.3, positionDifferenceTolerance = 0.1;
+        final double intakeDistance = 0.35, intakeTime = 0.3, timeWaitAfterNoteSensed, positionDifferenceTolerance = 0.1;
 
-        final Timer timer = new Timer();
-        timer.start();
+        final Timer grabTimer = new Timer(), noteSensedTimer = new Timer();
+        grabTimer.start(); noteSensedTimer.start();
         final Vector2D noteLastSeenPosition = assumedNotePosition;
         return new SequentialCommandSegment(
                 initiateCondition,
                 () -> null,
-                timer::reset,
+                grabTimer::reset,
                 () -> {
-                    System.out.println("<-- running grab command, timer: " + timer.get() + "note inside: " + robotCore.intake.isNoteInsideIntake() + " -->");
+                    System.out.println("<-- running grab command, timer: " + grabTimer.get() + "note inside: " + robotCore.intake.isNoteInsideIntake() + " -->");
                     /* wait for arm to be in position */
                     if (!robotCore.transformableArm.transformerInPosition()) {
                         robotCore.chassisModule.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.SET_VELOCITY, new Vector2D()), null);
-                        timer.reset();
+                        grabTimer.reset();
                         return;
                     }
 
+                    robotCore.chassisModule.setLowSpeedModeEnabled(true, null);
                     robotCore.intake.startIntake(null);
                     robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, null);
                     robotCore.shooter.setShooterMode(accelerateShooters ? Shooter.ShooterMode.PREPARE_TO_SHOOT : Shooter.ShooterMode.DISABLED, null);
@@ -58,19 +59,22 @@ public class AutoStageVisionAimBot {
                             pathAnotherPoint = noteLastSeenPosition.addBy(intakeProcessPath.multiplyBy(desiredRobotRotation).multiplyBy(-1)),
                             pathEndPoint = noteLastSeenPosition.addBy(intakeProcessPath.multiplyBy(desiredRobotRotation));
                     final BezierCurve pathCurve = new BezierCurve(robotCore.positionReader.getRobotPosition2D(), pathAnotherPoint, pathEndPoint);
-                    final Vector2D currentDesiredPosition = pathCurve.getPositionWithLERP(timer.get() / intakeTime);
+                    final Vector2D currentDesiredPosition = pathCurve.getPositionWithLERP(grabTimer.get() / intakeTime);
 
                     robotCore.chassisModule.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION, currentDesiredPosition), null);
 
                     if (noteFieldPositionByCamera != null && Vector2D.displacementToTarget(noteLastSeenPosition, noteFieldPositionByCamera).getMagnitude() > positionDifferenceTolerance)
                         noteLastSeenPosition.update(noteLastSeenPosition);
+
+                    if (!robotCore.intake.isNoteInsideIntake())
+                        noteSensedTimer.reset();
                 },
-                () -> robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, null),
                 () -> {
-                    System.out.println("<-- is grab complete? note already in: " + robotCore.intake.isNoteInsideIntake() + ", timeout:" + timer.get() * 1000);
-                    return (timer.get() > intakeTime && robotCore.intake.isNoteInsideIntake()) ||
-                            timer.get() * 1000 > timeOutMillis;
+                    robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, null);
+                    robotCore.chassisModule.setLowSpeedModeEnabled(false, null);
                 },
+                () -> (grabTimer.get() > intakeTime && robotCore.intake.isNoteInsideIntake() && noteSensedTimer.get() > 0.1) ||
+                            grabTimer.get() * 1000 > timeOutMillis,
                 () -> desiredRobotRotation, () -> desiredRobotRotation
         );
     }
@@ -80,6 +84,10 @@ public class AutoStageVisionAimBot {
     }
 
     public SequentialCommandSegment shootWhileMoving(SequentialCommandSegment.InitiateCondition initiateCondition, BezierCurve chassisMovementPath, Vector2D assumedSpeakerPosition, long timeOutMillis) {
+        return shootWhileMoving(initiateCondition, chassisMovementPath, assumedSpeakerPosition, new Rotation2D(Math.PI), timeOutMillis);
+    }
+
+    public SequentialCommandSegment shootWhileMoving(SequentialCommandSegment.InitiateCondition initiateCondition, BezierCurve chassisMovementPath, Vector2D assumedSpeakerPosition, Rotation2D endingRotation, long timeOutMillis) {
         final Timer timeSinceTaskStarted = new Timer(), timeSinceNoteGone = new Timer();
         timeSinceTaskStarted.start(); timeSinceNoteGone.start();
         return new SequentialCommandSegment(
@@ -87,24 +95,26 @@ public class AutoStageVisionAimBot {
                 () -> chassisMovementPath,
                 timeSinceTaskStarted::reset,
                 () -> {
+                    robotCore.chassisModule.setLowSpeedModeEnabled(true, null);
+
                     robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, null);
                     robotCore.shooter.setShooterMode(Shooter.ShooterMode.SHOOT, null);
                     robotCore.shooter.aimingSystem.defaultTargetFieldPosition = assumedSpeakerPosition;
                     robotCore.chassisModule.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(
                             SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION, robotCore.shooter.aimingSystem.getRobotFacing(robotCore.shooter.getProjectileSpeed())), null);
 
-                    if (robotCore.intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && robotCore.shooter.shooterReady() && robotCore.shooter.targetInRange() && robotCore.transformableArm.transformerInPosition())
+                    if (robotCore.intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && robotCore.chassisModule.isCurrentRotationalTaskFinished() && robotCore.shooter.shooterReady() && robotCore.shooter.targetInRange() && robotCore.transformableArm.transformerInPosition())
                         robotCore.intake.startLaunch(null);
                     if (robotCore.intake.isNoteInsideIntake())
                         timeSinceNoteGone.reset();
 
-                    if (timeSinceNoteGone.get() > 0.2) {
+                    if (timeSinceNoteGone.get() > 0.1) {
                         robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, null);
                         robotCore.shooter.setShooterMode(Shooter.ShooterMode.DISABLED, null);
                         robotCore.intake.turnOffIntake(null);
                         robotCore.shooter.aimingSystem.defaultTargetFieldPosition = null;
                         robotCore.chassisModule.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(
-                                SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION, Math.PI), null);
+                                SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION, endingRotation.getRadian()), null);
                     }
                 },
                 () -> {
@@ -112,6 +122,7 @@ public class AutoStageVisionAimBot {
                     robotCore.shooter.setShooterMode(Shooter.ShooterMode.DISABLED, null);
                     robotCore.intake.turnOffIntake(null);
                     robotCore.shooter.aimingSystem.defaultTargetFieldPosition = null;
+                    robotCore.chassisModule.setLowSpeedModeEnabled(false, null);
                 },
                 () -> timeSinceTaskStarted.get() * 1000 > timeOutMillis
                         || timeSinceNoteGone.get() > 0.2,

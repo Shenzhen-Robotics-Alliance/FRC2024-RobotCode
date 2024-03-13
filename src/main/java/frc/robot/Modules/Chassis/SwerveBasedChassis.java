@@ -27,8 +27,8 @@ public class SwerveBasedChassis extends RobotModuleBase {
     private EnhancedPIDController goToRotationController;
     private ChassisPositionController chassisPIDController;
 
-    private double positionDifferenceAsTaskFinished;
-    private double rotationDifferenceAsTaskFinished;
+    private double positionDifferenceAsTaskFinished, rotationDifferenceAsTaskFinished, wheelsPowerConstrainAtLowSpeedMode;
+    private boolean lowSpeedModeEnabled;
 
 
 
@@ -83,6 +83,7 @@ public class SwerveBasedChassis extends RobotModuleBase {
 
         SmartDashboard.putNumber("imu yaw:", Math.toDegrees(gyro.getYaw()));
 
+        final double wheelsPowerConstrain = lowSpeedModeEnabled ? this.wheelsPowerConstrain : this.wheelsPowerConstrainAtLowSpeedMode;
         double highestWheelSpeed = driveWheels(processedTranslationalSpeed, rotationalSpeed);
         // System.out.println("highest wheel speed:" + highestWheelSpeed);
         if (highestWheelSpeed <= wheelsPowerConstrain) return;
@@ -125,6 +126,11 @@ public class SwerveBasedChassis extends RobotModuleBase {
         return highestWheelSpeed;
     }
 
+    public void setLowSpeedModeEnabled(boolean enabled, RobotModuleOperatorMarker operator) {
+        if (isOwner(operator))
+            this.lowSpeedModeEnabled = enabled;
+    }
+
     @Override
     public void updateConfigs() {
         this.translationalTaskUpdatableRange = robotConfig.getConfig("chassis/translationalTaskUpdatableRange");
@@ -132,6 +138,7 @@ public class SwerveBasedChassis extends RobotModuleBase {
         this.timeNeededToFullyAccelerate = robotConfig.getConfig("chassis/timeNeededToFullyAccelerate");
         this.robotSpeedActivateSpeedControl = robotConfig.getConfig("chassis/robotSpeedActivateSpeedControl");
         this.wheelsPowerConstrain = robotConfig.getConfig("chassis/wheelsPowerConstrain");
+        this.wheelsPowerConstrainAtLowSpeedMode = robotConfig.getConfig("chassis/wheelsPowerConstrainAtLowSpeedMode");
         this.rotationalSpeedMaxSacrifice = robotConfig.getConfig("chassis/rotationalSpeedMaxSacrifice");
         this.ignoredAccelerateTime = robotConfig.getConfig("chassis/ignoredAccelerateTime");
 
@@ -190,6 +197,7 @@ public class SwerveBasedChassis extends RobotModuleBase {
         this.translationalTask.initiate(new Vector2D());
 
         this.decidedVelocity = new Vector2D();
+        this.lowSpeedModeEnabled = false;
     }
 
     private Vector2D processTranslationalMotion(double dt) {
@@ -298,15 +306,8 @@ public class SwerveBasedChassis extends RobotModuleBase {
             return;
         for(SwerveWheel wheel: swerveWheels)
             wheel.setSpeedControl(
-                    selectedMode == WheelOutputMode.SPEED_CONTROL // asked to use speed control
-                    && isSpeedControlAllowed()
+                    selectedMode == WheelOutputMode.SPEED_CONTROL
             );
-    }
-
-    private boolean isSpeedControlAllowed() {
-        boolean disallowed = this.translationalTask.taskType == ChassisTaskTranslation.TaskType.SET_VELOCITY
-                && this.translationalTask.translationValue.getMagnitude() > 0.95; // TODO read from robot config, the amount of power at which the robot should just forget about speed control
-        return true;
     }
 
     public void setOrientationMode(OrientationMode mode, RobotModuleOperatorMarker operator) {
