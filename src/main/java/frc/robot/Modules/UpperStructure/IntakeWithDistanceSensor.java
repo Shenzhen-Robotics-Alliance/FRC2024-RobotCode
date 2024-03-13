@@ -96,7 +96,7 @@ public class IntakeWithDistanceSensor extends Intake {
         this.distanceSensorThreshold = robotConfig.getConfig("intake", "distanceSensorThreshold");
         this.splitTime = robotConfig.getConfig("intake", "splitTime");
 
-        // TODO put the following in robotConfig
+        // TODO put the following in robotConfig and make this CM
         final double intakeMotorEncoderTicksPerSecondAtNormalPower = 74000;
         EnhancedPIDController.PIDProfile intakeMotorPIDProfile = new EnhancedPIDController.StaticPIDProfile(
                 Double.POSITIVE_INFINITY,
@@ -108,7 +108,7 @@ public class IntakeWithDistanceSensor extends Intake {
                 0,
                 0);
         intakeWheelPositionController = new EnhancedPIDController(intakeMotorPIDProfile);
-        intakeSensorToReadyPositionDifference = intakeMotorEncoderTicksPerSecondAtNormalPower * -0.02;
+        intakeSensorToReadyPositionDifference = intakeMotorEncoderTicksPerSecondAtNormalPower * -0.01;
     }
 
     @Override

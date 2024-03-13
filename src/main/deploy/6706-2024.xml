@@ -103,7 +103,7 @@
         <position-INTAKE>102</position-INTAKE>
         <position-SPLIT>80</position-SPLIT>
         <position-SHOOT_NOTE>70</position-SHOOT_NOTE>
-        <position-SCORE_AMPLIFIER>1</position-SCORE_AMPLIFIER>
+        <position-SCORE_AMPLIFIER>-20</position-SCORE_AMPLIFIER>
 
         <!-- software limit -->
         <lowerPositionLimit>0</lowerPositionLimit>
@@ -139,11 +139,11 @@
         <errorToleranceAsInPosition>2</errorToleranceAsInPosition>
 
         <!-- simple arm controller -->
-        <maxPowerWhenMovingUp>0.45</maxPowerWhenMovingUp>
-        <maxPowerWhenMovingDown>0.3</maxPowerWhenMovingDown>
-        <errorStartDecelerate>20</errorStartDecelerate>
-        <powerNeededToMoveUp>0.1</powerNeededToMoveUp>
-        <powerNeededToMoveDown>0.05</powerNeededToMoveDown>
+        <maxPowerWhenMovingUp>0.65</maxPowerWhenMovingUp>
+        <maxPowerWhenMovingDown>0.15</maxPowerWhenMovingDown>
+        <errorStartDecelerate>40</errorStartDecelerate>
+        <powerNeededToMoveUp>0.2</powerNeededToMoveUp>
+        <powerNeededToMoveDown>0.1</powerNeededToMoveDown>
         <errorTolerance>2</errorTolerance>
     </arm>
     <auto>

@@ -29,7 +29,7 @@ public class AutoStageVisionAimBot {
     }
     public SequentialCommandSegment grabNote(SequentialCommandSegment.InitiateCondition initiateCondition, Vector2D assumedNotePosition, Rotation2D desiredRobotRotation, long timeOutMillis, boolean accelerateShooters) {
         /* TODO: in robot config */
-        final double intakeDistance = 0.35, intakeTime = 0.3, positionDifferenceTolerance = 0.05;
+        final double intakeDistance = 0.35, intakeTime = 0.3, positionDifferenceTolerance = 0.1;
 
         final Timer timer = new Timer();
         timer.start();
@@ -101,6 +101,8 @@ public class AutoStageVisionAimBot {
                         robotCore.shooter.setShooterMode(Shooter.ShooterMode.DISABLED, null);
                         robotCore.intake.turnOffIntake(null);
                         robotCore.shooter.aimingSystem.defaultTargetFieldPosition = null;
+                        robotCore.chassisModule.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(
+                                SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION, Math.PI), null);
                     }
                 },
                 () -> {
