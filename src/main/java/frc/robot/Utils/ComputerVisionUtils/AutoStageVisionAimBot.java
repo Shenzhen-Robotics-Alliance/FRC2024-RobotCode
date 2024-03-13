@@ -58,7 +58,13 @@ public class AutoStageVisionAimBot {
                             pathEndPoint = noteLastSeenPosition.addBy(intakeProcessPath.multiplyBy(desiredRobotRotation));
                     final BezierCurve pathCurve = new BezierCurve(robotCore.positionReader.getRobotPosition2D(), pathAnotherPoint, pathEndPoint);
                     final Vector2D currentDesiredPosition = pathCurve.getPositionWithLERP(timer.get() / intakeTime);
-                    robotCore.chassisModule.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION, currentDesiredPosition), null);
+
+                    robotCore.chassisModule.setTranslationalTask(
+                            /* don't start chassis unless arm in position */
+                            robotCore.transformableArm.transformerInPosition() ?
+                                    new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION, currentDesiredPosition)
+                                    : new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.SET_VELOCITY, new Vector2D())
+                            , null);
 
                     if (noteFieldPositionByCamera != null && Vector2D.displacementToTarget(noteLastSeenPosition, noteFieldPositionByCamera).getMagnitude() > positionDifferenceTolerance)
                         noteLastSeenPosition.update(noteLastSeenPosition);
