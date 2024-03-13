@@ -188,6 +188,18 @@
 
         <shootingSegmentSpeedFactor>0.4</shootingSegmentSpeedFactor>
     </auto>
+
+    <climb>
+        <leftClimbMotorPort>-1</leftClimbMotorPort>
+        <leftClimbMotorReversed>0</leftClimbMotorReversed>
+        <rightClimbMotorPort>-1</rightClimbMotorPort>
+        <rightClimbMotorReversed>0</rightClimbMotorReversed>
+
+        <movingPower>0.2</movingPower>
+        <tolerance>200</tolerance>
+        <upMostPointEncoderPosition>0</upMostPointEncoderPosition>
+    </climb>
+
     <!-- the config for xbox controller, currently using radio master in replace -->
     <control-RM_POCKET>
         <controllerPort type="int">0</controllerPort>

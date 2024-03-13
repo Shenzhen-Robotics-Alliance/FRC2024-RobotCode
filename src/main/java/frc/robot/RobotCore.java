@@ -57,6 +57,7 @@ public class RobotCore {
         public final TransformableArm transformableArm;
         public final Intake intake;
         public final Shooter shooter;
+        public final Climb climb;
         public final AprilTagReferredTarget speakerTarget, amplifierTarget, noteTarget;
         public final LEDStatusLights red, green, blue;
 
@@ -170,6 +171,15 @@ public class RobotCore {
 
                 this.intake = new IntakeWithDistanceSensor(intakeMotor, intakeAidMotor, intakeMotor, new Rev2mDistanceSensorEncapsulation(), robotConfig); modules.add(intake);
 
+                this.climb = new Climb(
+                        new TalonFXMotor(
+                                new TalonFX((int) robotConfig.getConfig("climb/leftClimbMotorPort")),
+                                robotConfig.getConfig("climb/leftClimbMotorReversed")!=0).toEncoderAndMotorMechanism(),
+                        new TalonFXMotor(
+                                new TalonFX((int) robotConfig.getConfig("climb/rightClimbMotorPort")),
+                                robotConfig.getConfig("climb/rightClimbMotorReversed")!=0).toEncoderAndMotorMechanism(),
+                        robotConfig
+                );
 
                 this.red = new LEDStatusLights(0);
                 this.green = new LEDStatusLights(1);
@@ -344,17 +354,6 @@ public class RobotCore {
                 /* monitor the program's performance */
                 SmartDashboard.putNumber("robot main thread delay", System.currentTimeMillis()-t);
                 t = System.currentTimeMillis();
-
-                updateClimb();
-        }
-
-        private final MotorsSet climbMotors = new MotorsSet(new Motor[] {
-                new VictorSPXMotor(new VictorSPX(20), false),
-                new VictorSPXMotor(new VictorSPX(21), true)
-        });
-        private final XboxController xboxController = new XboxController(1);
-        public void updateClimb() {
-                climbMotors.setPower(xboxController.getRightTriggerAxis() - xboxController.getLeftTriggerAxis(), null);
         }
 
         public void updateModules() {

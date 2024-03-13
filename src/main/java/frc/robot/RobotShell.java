@@ -19,10 +19,13 @@ public class RobotShell extends TimedRobot {
     private static final int updateFreq = 100;
     public static final boolean isFormalCompetition = false;
 
+    private final XboxController copilotGamePad = new XboxController(1);
+
     private RobotCore robotCore;
     private AutoProgramRunner autoProgramRunner;
     private TransformableIntakeAndShooterService intakeAndShooterService;
     private VisionAidedPilotChassis visionAidedPilotChassis;
+    private ClimbService climbService;
     private List<SequentialCommandSegment> commandSegments;
     private final SendableChooser<CommandSequenceGenerator> autoStageChooser = new SendableChooser<>();
 
@@ -45,8 +48,9 @@ public class RobotShell extends TimedRobot {
         robotCore.initializeRobot();
 
         autoProgramRunner = new AutoProgramRunner(robotCore.chassisModule, robotCore.robotConfig);
-        intakeAndShooterService = new TransformableIntakeAndShooterService(robotCore.intake, robotCore.shooter, robotCore.transformableArm, robotCore.robotConfig, new XboxController(1));
-        visionAidedPilotChassis = new VisionAidedPilotChassis(robotCore.chassisModule, robotCore.shooter, robotCore.intake, robotCore.transformableArm, robotCore.speakerTarget, robotCore.amplifierTarget, robotCore.noteTarget, new XboxController(1), robotCore.robotConfig, robotCore.red, robotCore.green, robotCore.blue);
+        intakeAndShooterService = new TransformableIntakeAndShooterService(robotCore.intake, robotCore.shooter, robotCore.transformableArm, robotCore.robotConfig, copilotGamePad);
+        visionAidedPilotChassis = new VisionAidedPilotChassis(robotCore.chassisModule, robotCore.shooter, robotCore.intake, robotCore.transformableArm, robotCore.speakerTarget, robotCore.amplifierTarget, robotCore.noteTarget, copilotGamePad, robotCore.robotConfig, robotCore.red, robotCore.green, robotCore.blue);
+        climbService = new ClimbService(copilotGamePad, robotCore.climb, robotCore.robotConfig);
 
         addAutoStagePrograms();
         scheduleAutoCommands(autoStageChooser.getSelected());
@@ -137,6 +141,7 @@ public class RobotShell extends TimedRobot {
 
         services.add(intakeAndShooterService);
         services.add(visionAidedPilotChassis);
+        services.add(climbService);
 
         robotCore.startStage(services);
     }

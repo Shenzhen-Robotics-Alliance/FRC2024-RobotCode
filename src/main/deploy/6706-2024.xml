@@ -156,4 +156,11 @@
         <autoStageMaxAngularVelocity type="double">90</autoStageMaxAngularVelocity> <!-- in deg/s -->
         <inAdvanceTime>0.1</inAdvanceTime>
     </auto>
+
+    <climb>
+        <leftClimbMotorPort>-1</leftClimbMotorPort>
+        <leftClimbMotorReversed>0</leftClimbMotorReversed>
+        <rightClimbMotorPort>-1</rightClimbMotorPort>
+        <rightClimbMotorReversed>0</rightClimbMotorReversed>
+    </climb>
 </robotConfig>
