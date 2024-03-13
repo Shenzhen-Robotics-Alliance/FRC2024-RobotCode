@@ -145,9 +145,9 @@ public class VisionAidedPilotChassis extends PilotChassis {
             case MANUALLY_DRIVING -> {
                 shooter.setShooterMode(Shooter.ShooterMode.DISABLED, this);
                 if (copilotGamePad.getBButton()) {
+                    arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SPLIT, this);
                     if (arm.transformerInPosition())
                         intake.startSplit(this); // in case if the Note is stuck
-                    arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SPLIT, this);
                 }
                 else {
                     intake.turnOffIntake(this);
@@ -433,7 +433,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
                 new Vector2D(new double[] {intakeCenterHorizontalBiasFromCamera, -grabbingNoteDistance}).multiplyBy(new Rotation2D(currentIntakeTaskFacing)), // by default, we move backwards in relative to the robot, but we need to convert this to in relative to field by rotating it.
                 /* the position of the ending point of the path of the grabbing task, relative to the speaker */
                 grabbingProcessEndingPoint = currentVisualTargetLastSeenPosition.addBy(grabbingProcessEndPointFromNoteDeviation),
-                grabbingProcessEndingAnotherPoint = currentVisualTargetLastSeenPosition.addBy(new Vector2D(new double[] {0, grabbingNoteDistance * 2}));
+                grabbingProcessEndingAnotherPoint = currentVisualTargetLastSeenPosition.addBy(new Vector2D(new double[] {0, grabbingPathControlPointDistance}));
 
         return new BezierCurve(
                 chassisPositionWhenCurrentVisionTaskStarted, // starting from the chassis initial position during task
@@ -461,9 +461,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
     /** in radian, zero is front */
     private double grabbingNoteDefaultFacing;
     /** the amount of distance to travel when intake is sucking the note */
-    private double grabbingNoteDistance;
-    private double intakeCenterHorizontalBiasFromCamera;
-    private double chassisSpeedLimitWhenAutoAim; // m/s
+    private double grabbingNoteDistance, grabbingPathControlPointDistance, intakeCenterHorizontalBiasFromCamera, chassisSpeedLimitWhenAutoAim; // m/s
 
     /** avoid impact */
     private double speakerImpactSpacingWidth, distanceToWallConstrainInFrontOfSpeaker, distanceToWallConstrain, positionToSpeakerXConstrain;
@@ -481,7 +479,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
         aimingTimeUnseenToleranceMS = (long) robotConfig.getConfig("vision-autopilot", "aimingTimeUnseenToleranceMS");
         /* TODO read from robotConfig */
         this.intakeCenterHorizontalBiasFromCamera = -0.05;
-        grabbingNoteDistance = 0.1;
+        grabbingNoteDistance = 0.2;
+        grabbingPathControlPointDistance = 0.4;
         chassisSpeedLimitWhenAutoAim = 2;
         shootingSweetSpot = new Vector2D(new double[] {0, 2});
         shootingProcessEndingPointUpdatableRange = 1.4;
