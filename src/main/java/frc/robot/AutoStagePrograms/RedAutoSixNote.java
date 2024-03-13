@@ -121,18 +121,9 @@ public class RedAutoSixNote implements CommandSequenceGenerator {
                 intakeTimeOut
         ));
 
-        /* move back to shooting spot */
-        commandSegments.add(new SequentialCommandSegment(
-                () -> true,
-                () -> SequentialCommandFactory.getBezierCurvesFromPathFile("shoot sixth").get(0),
-                ()->{}, ()->{}, ()->{},
-                () -> true,
-                () -> new Rotation2D(Math.toRadians(-135)), () -> new Rotation2D(Math.toRadians(180))
-        ));
-
         /* shoot sixth */
         commandSegments.add(aimBot.shootWhileMoving(
-                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot sixth").get(1),
+                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot sixth").get(0),
                 FieldPositions.toActualPosition(FieldPositions.speakerPosition),
                 shootingTimeOut
         ));

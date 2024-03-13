@@ -314,8 +314,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
     private static final double centerZoneAimHorizontalRange = 0.7, farShootingSpotDistanceFactor=1.75;
     private static final int shootFromFarSpotControllerAxis = 2;
     private static final Vector2D shootingSweetSpotMid = new Vector2D(new double[] {0, 2}),
-            shootingSweetSpotLeft = new Vector2D(new double[] {-1.2, 1.8}),
-            shootingSweetSpotRight = new Vector2D(new double[] {1.2, 1.8});
+            shootingSweetSpotLeft = new Vector2D(new double[] {-0.8, 1.7}),
+            shootingSweetSpotRight = new Vector2D(new double[] {0.8, 1.7});
 
     private BezierCurve getPathToSweetSpot() {
         final Vector2D relativePositionToSpeaker = Vector2D.displacementToTarget(currentVisualTargetLastSeenPosition, chassisPositionWhenCurrentVisionTaskStarted);
@@ -480,10 +480,10 @@ public class VisionAidedPilotChassis extends PilotChassis {
         autoFaceTargetTimeUnseenToleranceMS = (long) robotConfig.getConfig("vision-autopilot", "autoFaceTargetTimeUnseenToleranceMS");
         aimingTimeUnseenToleranceMS = (long) robotConfig.getConfig("vision-autopilot", "aimingTimeUnseenToleranceMS");
         /* TODO read from robotConfig */
-        this.intakeCenterHorizontalBiasFromCamera = -0.05;
+        this.intakeCenterHorizontalBiasFromCamera = 0;
         grabbingNoteDistance = 0.2;
         grabbingPathControlPointDistance = 0.4;
-        chassisSpeedLimitWhenAutoAim = 2;
+        chassisSpeedLimitWhenAutoAim = 2.5;
         shootingSweetSpot = new Vector2D(new double[] {0, 2});
         shootingProcessEndingPointUpdatableRange = 1.4;
         chassisReactionDelay = 0.4;

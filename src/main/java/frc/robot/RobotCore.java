@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -124,19 +127,19 @@ public class RobotCore {
                 notePositionTrackingCamera = new FixedAnglePositionTrackingCamera(
                         noteDetectionAppClient,
                         new FixedAngleCameraProfile(
-                                -1.0615,
-                                -0.0021,
-                                -0.00148
+                                -0.657,
+                                -0.0014,
+                                -8.0704E-4
                         ),
-                        new double[] {-30, -30, -30},
+                        new double[] {-60, -60, -60},
                         new Rotation2D(Math.PI)
                 );
 
                 final Map<Integer, Vector2D> speakerTargetAprilTagReferences = new HashMap<>(), amplifierTargetAprilTagReferences = new HashMap<>(), noteTargetReferences = new HashMap<>();
-                speakerTargetAprilTagReferences.put(4, new Vector2D(new double[] {0,-0.2}));
+                speakerTargetAprilTagReferences.put(4, new Vector2D(new double[] {0, 0}));
                 // speakerTargetAprilTagReferences.put(3, new Vector2D(new double[] {-0.5,0}));
                 amplifierTargetAprilTagReferences.put(5, new Vector2D(new double[] {0, 0}));
-                speakerTargetAprilTagReferences.put(7, new Vector2D(new double[] {0,-0.2}));
+                speakerTargetAprilTagReferences.put(7, new Vector2D(new double[] {0, 0}));
                 // speakerTargetAprilTagReferences.put(8, new Vector2D(new double[] {-0.5,0}));
                 amplifierTargetAprilTagReferences.put(6, new Vector2D(new double[] {0, 0}));
 

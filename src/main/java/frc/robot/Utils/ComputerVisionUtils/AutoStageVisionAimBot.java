@@ -43,6 +43,7 @@ public class AutoStageVisionAimBot {
                     /* wait for arm to be in position */
                     if (!robotCore.transformableArm.transformerInPosition()) {
                         robotCore.chassisModule.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.SET_VELOCITY, new Vector2D()), null);
+                        timer.reset();
                         return;
                     }
 
@@ -59,12 +60,7 @@ public class AutoStageVisionAimBot {
                     final BezierCurve pathCurve = new BezierCurve(robotCore.positionReader.getRobotPosition2D(), pathAnotherPoint, pathEndPoint);
                     final Vector2D currentDesiredPosition = pathCurve.getPositionWithLERP(timer.get() / intakeTime);
 
-                    robotCore.chassisModule.setTranslationalTask(
-                            /* don't start chassis unless arm in position */
-                            robotCore.transformableArm.transformerInPosition() ?
-                                    new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION, currentDesiredPosition)
-                                    : new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.SET_VELOCITY, new Vector2D())
-                            , null);
+                    robotCore.chassisModule.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION, currentDesiredPosition), null);
 
                     if (noteFieldPositionByCamera != null && Vector2D.displacementToTarget(noteLastSeenPosition, noteFieldPositionByCamera).getMagnitude() > positionDifferenceTolerance)
                         noteLastSeenPosition.update(noteLastSeenPosition);

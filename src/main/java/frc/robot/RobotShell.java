@@ -167,10 +167,10 @@ public class RobotShell extends TimedRobot {
                         1,
                         -60,
                         new Rotation2D(Math.PI),
-                        50,
-                        100,
+                        60,
+                        200,
                         40,
-                        new Vector2D(new double[] {0, 43})
+                        new Vector2D(new double[] {0, 52})
                 ));
 
         autoStageChooser.addOption("Middle Six Notes Auto (Test Route)", new RedAutoStageSixNoteRoute());
