@@ -86,7 +86,7 @@
         <intakeMotorReversed>1</intakeMotorReversed>
         <intakeAidMotorPort>9</intakeAidMotorPort>
         <intakeAidMotorReversed>1</intakeAidMotorReversed>
-        <distanceSensorThreshold>22</distanceSensorThreshold>
+        <distanceSensorThreshold>18</distanceSensorThreshold>
     </intake>
 
     <arm>
@@ -142,10 +142,10 @@
 
         <!-- simple arm controller -->
         <maxPowerWhenMovingUp>0.65</maxPowerWhenMovingUp>
-        <maxPowerWhenMovingDown>0.2</maxPowerWhenMovingDown>
+        <maxPowerWhenMovingDown>0.3</maxPowerWhenMovingDown>
         <errorStartDecelerate>40</errorStartDecelerate>
-        <powerNeededToMoveUp>0.2</powerNeededToMoveUp>
-        <powerNeededToMoveDown>0.12</powerNeededToMoveDown>
+        <powerNeededToMoveUp>0.3</powerNeededToMoveUp>
+        <powerNeededToMoveDown>0.2</powerNeededToMoveDown>
         <errorTolerance>2</errorTolerance>
     </arm>
     <auto>

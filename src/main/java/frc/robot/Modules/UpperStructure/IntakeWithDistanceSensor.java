@@ -100,8 +100,8 @@ public class IntakeWithDistanceSensor extends Intake {
         final double intakeMotorEncoderTicksPerSecondAtNormalPower = 74000;
         EnhancedPIDController.PIDProfile intakeMotorPIDProfile = new EnhancedPIDController.StaticPIDProfile(
                 Double.POSITIVE_INFINITY,
-                0.15,
-                0.01,
+                0.12,
+                0,
                 intakeMotorEncoderTicksPerSecondAtNormalPower * 0.15,
                 intakeMotorEncoderTicksPerSecondAtNormalPower * 0.01,
                 0.02,

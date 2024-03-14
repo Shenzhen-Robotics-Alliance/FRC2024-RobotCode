@@ -152,7 +152,7 @@
     </shooter>
     <intake>
         <launchPower>0.45</launchPower>
-        <intakePower>0.3</intakePower>
+        <intakePower>0.28</intakePower>
         <intakeAidPower>0.5</intakeAidPower>
         <revertPower>-0.35</revertPower>
         <distanceSensorThreshold>30</distanceSensorThreshold>
