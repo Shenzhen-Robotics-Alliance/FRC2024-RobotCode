@@ -42,8 +42,6 @@ public class Climb extends RobotModuleBase {
                 this
         );
         climb.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE, this);
-
-        System.out.println("climb task: " + task.taskType + ", value: " + task.taskValue);
     }
 
     @Override

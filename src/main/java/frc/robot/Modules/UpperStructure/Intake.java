@@ -77,4 +77,8 @@ public abstract class Intake extends RobotModuleBase {
     public abstract boolean isNoteInsideIntake();
 
     public boolean malFunctioning() {return true;}
+
+    public void setCurrentStatusAsHolding() {
+        this.currentStatus = IntakeModuleStatus.HOLDING;
+    }
 }

@@ -26,7 +26,6 @@ public class SimpleArmController implements MechanismController {
     @Override
     public double getMotorPower(double mechanismVelocity, double mechanismPosition) {
         final double error = isEncoderAbsolute ? AngleUtils.getActualDifference(mechanismPosition, desiredPosition) : desiredPosition - mechanismPosition;
-        System.out.println("arm error: " + error);
         if (Math.abs(error) < errorTolerance)
             return 0;
 

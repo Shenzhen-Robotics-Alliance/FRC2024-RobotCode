@@ -160,9 +160,11 @@
 <!--    </intake>-->
     <intake>
         <launchPower>0.45</launchPower>
-        <intakePower>0.4</intakePower>
-        <moveNoteInsideIntakePower>0.03</moveNoteInsideIntakePower>
-        <moveNoteInsideIntakeFastPower>0.1</moveNoteInsideIntakeFastPower>
+        <intakePower>0.35</intakePower>
+        <moveNoteUpInsideIntakePower>0.1</moveNoteUpInsideIntakePower>
+        <moveNoteDownInsideIntakePower>-0.1</moveNoteDownInsideIntakePower>
+        <moveBackToPositionTime>0.15</moveBackToPositionTime>
+
         <intakeAidPower>0.5</intakeAidPower>
         <revertPower>-0.35</revertPower>
         <distanceSensorThreshold>30</distanceSensorThreshold>

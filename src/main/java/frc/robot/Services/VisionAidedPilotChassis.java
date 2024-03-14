@@ -139,6 +139,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         if (copilotGamePad.getLeftStickButton() && copilotGamePad.getRightStickButton()) {
             reset();
             chassis.reset();
+            intake.reset();
         }
 
         switch (currentStatus) {
