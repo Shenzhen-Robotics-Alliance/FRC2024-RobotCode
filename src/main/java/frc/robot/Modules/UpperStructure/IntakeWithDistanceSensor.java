@@ -3,7 +3,6 @@ package frc.robot.Modules.UpperStructure;
 import frc.robot.Drivers.DistanceSensors.DistanceSensor;
 import frc.robot.Drivers.Encoders.Encoder;
 import frc.robot.Drivers.Motors.Motor;
-import frc.robot.Services.RobotServiceBase;
 import frc.robot.Utils.EasyShuffleBoard;
 import frc.robot.Utils.MechanismControllers.EnhancedPIDController;
 import frc.robot.Utils.RobotConfigReader;
@@ -61,13 +60,14 @@ public class IntakeWithDistanceSensor extends Intake {
                 return holdPower;
             }
             case LAUNCHING -> {
-                if (!isNoteInsideIntake())
+                timeSinceSplitOrShootProcessStarted += dt;
+                if (timeSinceSplitOrShootProcessStarted > launchTime)
                     return updateStatusToDisabled();
                 return launchPower;
             }
             case SPLITTING -> {
-                timeSinceSplitProcessStarted += dt;
-                if (timeSinceSplitProcessStarted > splitTime)
+                timeSinceSplitOrShootProcessStarted += dt;
+                if (timeSinceSplitOrShootProcessStarted > splitTime)
                     return updateStatusToDisabled();
                 return revertPower;
             }
@@ -84,7 +84,7 @@ public class IntakeWithDistanceSensor extends Intake {
     }
 
     private EnhancedPIDController intakeWheelPositionController;
-    private double intakePower, intakeAidingMotorPower, launchPower, revertPower, distanceSensorThreshold, splitTime,
+    private double intakePower, intakeAidingMotorPower, launchPower, revertPower, distanceSensorThreshold, splitTime, launchTime,
     /** the difference, in encoder ticks, between the position at which the note sensor is triggered and the desired note position */
             intakeSensorToReadyPositionDifference;
     @Override
@@ -96,20 +96,21 @@ public class IntakeWithDistanceSensor extends Intake {
         this.launchPower = robotConfig.getConfig("intake", "launchPower");
         this.distanceSensorThreshold = robotConfig.getConfig("intake", "distanceSensorThreshold");
         this.splitTime = robotConfig.getConfig("intake", "splitTime");
+        this.launchTime = robotConfig.getConfig("intake", "launchTime");
 
         // TODO put the following in robotConfig and make this CM
         final double intakeMotorEncoderTicksPerSecondAtNormalPower = 74000;
         EnhancedPIDController.PIDProfile intakeMotorPIDProfile = new EnhancedPIDController.StaticPIDProfile(
                 Double.POSITIVE_INFINITY,
                 0.12,
-                0,
+                0.02,
                 intakeMotorEncoderTicksPerSecondAtNormalPower * 0.15,
                 intakeMotorEncoderTicksPerSecondAtNormalPower * 0.01,
                 0.02,
                 0,
                 0);
         intakeWheelPositionController = new EnhancedPIDController(intakeMotorPIDProfile);
-        intakeSensorToReadyPositionDifference = intakeMotorEncoderTicksPerSecondAtNormalPower * -0.05;
+        intakeSensorToReadyPositionDifference = intakeMotorEncoderTicksPerSecondAtNormalPower * -0.04;
     }
 
     @Override
@@ -121,10 +122,10 @@ public class IntakeWithDistanceSensor extends Intake {
         intakeAidMotor.gainOwnerShip(this);
         intakeAidMotor.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.RELAX, this);
 
-        timeSinceSplitProcessStarted = 0;
+        timeSinceSplitOrShootProcessStarted = 0;
     }
 
-    private double timeSinceSplitProcessStarted;
+    private double timeSinceSplitOrShootProcessStarted;
 
     @Override
     public void startIntake(RobotModuleOperatorMarker operator) {
@@ -138,8 +139,16 @@ public class IntakeWithDistanceSensor extends Intake {
     public void startSplit(RobotModuleOperatorMarker operator) {
         if (!isOwner(operator))
             return;
-        timeSinceSplitProcessStarted = 0;
+        timeSinceSplitOrShootProcessStarted = 0;
         super.startSplit(operator);
+    }
+
+    @Override
+    public void startLaunch(RobotModuleOperatorMarker operator) {
+        if (!isOwner(operator))
+            return;
+        timeSinceSplitOrShootProcessStarted = 0;
+        super.startLaunch(operator);
     }
 
     @Override

@@ -172,7 +172,7 @@ public class RobotCore {
                 final TalonFXMotor intakeMotor = new TalonFXMotor(new TalonFX((int)robotConfig.getConfig("intake/intakeMotorPort")), robotConfig.getConfig("intake/intakeMotorReversed") != 0),
                         intakeAidMotor = new TalonFXMotor(new TalonFX((int)robotConfig.getConfig("intake/intakeAidMotorPort")), robotConfig.getConfig("intake/intakeAidMotorReversed") != 0);
 
-                this.intake = new IntakeWithLowerDistanceSensor(intakeMotor, intakeAidMotor, new Rev2mDistanceSensorEncapsulation(), robotConfig); modules.add(intake);
+                this.intake = new IntakeWithDistanceSensor(intakeMotor, intakeAidMotor, intakeMotor, new Rev2mDistanceSensorEncapsulation(), robotConfig); modules.add(intake);
 
                 this.climb = new Climb(
                         new TalonFXMotor(

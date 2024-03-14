@@ -87,6 +87,13 @@
         <intakeAidMotorPort>9</intakeAidMotorPort>
         <intakeAidMotorReversed>1</intakeAidMotorReversed>
         <distanceSensorThreshold>20</distanceSensorThreshold>
+
+        <launchPower>0.45</launchPower>
+        <intakePower>0.3</intakePower>
+        <intakeAidPower>0.5</intakeAidPower>
+        <revertPower>-0.35</revertPower>
+        <splitTime>0.3</splitTime>
+        <launchTime>0.5</launchTime>
     </intake>
 
     <arm>
@@ -108,7 +115,7 @@
         <position-SCORE_AMPLIFIER>-20</position-SCORE_AMPLIFIER>
 
         <!-- software limit -->
-        <lowerPositionLimit>0</lowerPositionLimit>
+        <lowerPositionLimit>50</lowerPositionLimit>
         <upperPositionLimit>104</upperPositionLimit>
 
         <!-- lookup table -->
@@ -142,10 +149,10 @@
 
         <!-- simple arm controller -->
         <maxPowerWhenMovingUp>0.65</maxPowerWhenMovingUp>
-        <maxPowerWhenMovingDown>0.22</maxPowerWhenMovingDown>
+        <maxPowerWhenMovingDown>0.18</maxPowerWhenMovingDown>
         <errorStartDecelerate>40</errorStartDecelerate>
         <powerNeededToMoveUp>0.3</powerNeededToMoveUp>
-        <powerNeededToMoveDown>0.15</powerNeededToMoveDown>
+        <powerNeededToMoveDown>0.16</powerNeededToMoveDown>
         <errorTolerance>2</errorTolerance>
     </arm>
     <auto>
