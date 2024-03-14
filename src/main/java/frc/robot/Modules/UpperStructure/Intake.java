@@ -2,6 +2,7 @@ package frc.robot.Modules.UpperStructure;
 
 import frc.robot.Modules.RobotModuleBase;
 import frc.robot.Services.RobotServiceBase;
+import frc.robot.Utils.RobotModuleOperatorMarker;
 
 public abstract class Intake extends RobotModuleBase {
     // TODO handle the situation when the distance sensor is disconnected
@@ -44,22 +45,22 @@ public abstract class Intake extends RobotModuleBase {
      *  start the intake process
      *  the intake module will run the motors to suck the note in, and will automatically stop
      *  */
-    public void startIntake(RobotServiceBase operatorService) {
-        if (!isOwner(operatorService))
+    public void startIntake(RobotModuleOperatorMarker operator) {
+        if (!isOwner(operator))
             return;
 
         this.currentStatus = IntakeModuleStatus.GRABBING;
     }
 
-    public void startLaunch(RobotServiceBase operatorService) {
-        if (!isOwner(operatorService))
+    public void startLaunch(RobotModuleOperatorMarker operator) {
+        if (!isOwner(operator))
             return;
 
         this.currentStatus = IntakeModuleStatus.LAUNCHING;
     }
 
-    public void startSplit(RobotServiceBase operatorService) {
-        if (!isOwner(operatorService))
+    public void startSplit(RobotModuleOperatorMarker operator) {
+        if (!isOwner(operator))
             return;
 
         this.currentStatus = IntakeModuleStatus.SPLITTING;

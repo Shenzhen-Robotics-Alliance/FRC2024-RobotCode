@@ -9,13 +9,14 @@ import frc.robot.Utils.MechanismControllers.EnhancedPIDController;
 import frc.robot.Utils.RobotConfigReader;
 import frc.robot.Utils.RobotModuleOperatorMarker;
 
-public class IntakeWithDistanceSensor extends Intake {
+public class IntakeWithLowerDistanceSensor extends Intake {
     private final Motor intakeMotor, intakeAidMotor;
     private final Encoder intakeEncoder;
     private final DistanceSensor intakeDistanceSensor;
     private final RobotConfigReader robotConfig;
+    private boolean noteAlreadyInIntake;
 
-    public IntakeWithDistanceSensor(Motor intakeMotor, Motor intakeAidMotor, Encoder intakeEncoder, DistanceSensor intakeDistanceSensor, RobotConfigReader robotConfig) {
+    public IntakeWithLowerDistanceSensor(Motor intakeMotor, Motor intakeAidMotor, Encoder intakeEncoder, DistanceSensor intakeDistanceSensor, RobotConfigReader robotConfig) {
         super();
         this.intakeAidMotor = intakeAidMotor;
         this.intakeMotor = intakeMotor;
@@ -42,74 +43,51 @@ public class IntakeWithDistanceSensor extends Intake {
         EasyShuffleBoard.putNumber("intake", "note sensor reading (CM)", intakeDistanceSensor.getDistanceCM());
     }
 
-    private double intakeWheelHoldingPosition = 0;
     public double decidedIntakeMotorPower(double dt) {
         switch (currentStatus) {
             case GRABBING -> {
-                if (isNoteInsideIntake())
+                this.noteAlreadyInIntake |= isNoteInsideIntake();
+
+                if (noteAlreadyInIntake && !isNoteInsideIntake())
                     return updateStatusToHolding();
-                return intakePower;
+                return noteAlreadyInIntake ? moveNoteInsideIntakeFastPower : intakePower;
             }
             case HOLDING -> {
-                if (!isNoteInsideIntake()) {
-                    System.out.println("<-- Intake | note gone when holding, updating to disabled... -->");
-                    return updateStatusToDisabled();
-                }
-                intakeWheelPositionController.startNewTask(new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, intakeWheelHoldingPosition));
-                final double holdPower = intakeWheelPositionController.getMotorPower(intakeEncoder.getEncoderPosition(), intakeEncoder.getEncoderVelocity(), 0); // dt does not matter
-                EasyShuffleBoard.putNumber("intake", "holding power", holdPower);
-                return holdPower;
+                return noteSensedBySensor() ? moveNoteInsideIntakePower : 0;
             }
             case LAUNCHING -> {
-                if (!isNoteInsideIntake())
+                timeSinceSplitOrShootProcessStarted += dt;
+                if (timeSinceSplitOrShootProcessStarted > launchTime) {
+                    this.noteAlreadyInIntake = false;
                     return updateStatusToDisabled();
+                }
                 return launchPower;
             }
             case SPLITTING -> {
-                timeSinceSplitProcessStarted += dt;
-                if (timeSinceSplitProcessStarted > splitTime)
+                timeSinceSplitOrShootProcessStarted += dt;
+                if (timeSinceSplitOrShootProcessStarted > splitTime) {
+                    this.noteAlreadyInIntake = false;
                     return updateStatusToDisabled();
+                }
                 return revertPower;
             }
         }
         return 0;
     }
 
-    @Override
-    protected double updateStatusToHolding() {
-        super.updateStatusToHolding();
-        intakeWheelPositionController.startNewTask(new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION,
-                this.intakeWheelHoldingPosition = this.intakeEncoder.getEncoderPosition() + intakeSensorToReadyPositionDifference));
-        return intakeWheelPositionController.getMotorPower(intakeEncoder.getEncoderPosition(), intakeEncoder.getEncoderVelocity(), 0); // dt does not matter
-    }
-
-    private EnhancedPIDController intakeWheelPositionController;
-    private double intakePower, intakeAidingMotorPower, launchPower, revertPower, distanceSensorThreshold, splitTime,
-    /** the difference, in encoder ticks, between the position at which the note sensor is triggered and the desired note position */
-            intakeSensorToReadyPositionDifference;
+    private double intakePower, intakeAidingMotorPower, moveNoteInsideIntakePower, moveNoteInsideIntakeFastPower, launchPower, revertPower, distanceSensorThreshold, splitTime, launchTime;
     @Override
     public void updateConfigs() {
         // this.intakeAidingMotorPower = robotConfig.getConfig("intake", "intakeAidPower");
         this.intakePower = robotConfig.getConfig("intake", "intakePower");
         this.intakeAidingMotorPower = robotConfig.getConfig("intake", "intakeAidPower");
+        this.moveNoteInsideIntakePower = robotConfig.getConfig("intake", "moveNoteInsideIntakePower");
+        this.moveNoteInsideIntakeFastPower = robotConfig.getConfig("intake", "moveNoteInsideIntakeFastPower");
         this.revertPower = robotConfig.getConfig("intake", "revertPower");
         this.launchPower = robotConfig.getConfig("intake", "launchPower");
         this.distanceSensorThreshold = robotConfig.getConfig("intake", "distanceSensorThreshold");
         this.splitTime = robotConfig.getConfig("intake", "splitTime");
-
-        // TODO put the following in robotConfig and make this CM
-        final double intakeMotorEncoderTicksPerSecondAtNormalPower = 74000;
-        EnhancedPIDController.PIDProfile intakeMotorPIDProfile = new EnhancedPIDController.StaticPIDProfile(
-                Double.POSITIVE_INFINITY,
-                0.12,
-                0,
-                intakeMotorEncoderTicksPerSecondAtNormalPower * 0.15,
-                intakeMotorEncoderTicksPerSecondAtNormalPower * 0.01,
-                0.02,
-                0,
-                0);
-        intakeWheelPositionController = new EnhancedPIDController(intakeMotorPIDProfile);
-        intakeSensorToReadyPositionDifference = intakeMotorEncoderTicksPerSecondAtNormalPower * -0.05;
+        this.launchTime = robotConfig.getConfig("intake", "launchTime");
     }
 
     @Override
@@ -121,29 +99,44 @@ public class IntakeWithDistanceSensor extends Intake {
         intakeAidMotor.gainOwnerShip(this);
         intakeAidMotor.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.RELAX, this);
 
-        timeSinceSplitProcessStarted = 0;
+        timeSinceSplitOrShootProcessStarted = 0;
+        noteAlreadyInIntake = false;
     }
 
-    private double timeSinceSplitProcessStarted;
+    private double timeSinceSplitOrShootProcessStarted;
+
+    @Override
+    public void startLaunch(RobotModuleOperatorMarker operator) {
+        if (!isOwner(operator) || this.currentStatus == IntakeModuleStatus.LAUNCHING)
+            return;
+
+        this.timeSinceSplitOrShootProcessStarted = 0;
+        super.startLaunch(operator);
+    }
 
     @Override
     public void startIntake(RobotModuleOperatorMarker operator) {
-        if (isNoteInsideIntake())
-            this.currentStatus = IntakeModuleStatus.HOLDING;
-        else
-            super.startIntake(operator);
+        if (!isOwner(operator) || currentStatus == IntakeModuleStatus.GRABBING || isNoteInsideIntake())
+            return;
+
+        super.startIntake(operator);
     }
 
     @Override
     public void startSplit(RobotModuleOperatorMarker operator) {
-        if (!isOwner(operator))
+        if (!isOwner(operator) || this.currentStatus == IntakeModuleStatus.SPLITTING)
             return;
-        timeSinceSplitProcessStarted = 0;
-        super.startSplit(operator);
+
+        this.timeSinceSplitOrShootProcessStarted = 0;
+        super.startLaunch(operator);
     }
 
     @Override
     public boolean isNoteInsideIntake() {
+        return noteAlreadyInIntake;
+    }
+
+    private boolean noteSensedBySensor() {
         return intakeDistanceSensor.getDistanceCM() <= distanceSensorThreshold;
     }
 

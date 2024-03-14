@@ -150,13 +150,24 @@
         <shooterRPM6>6000</shooterRPM6>
         <armAngle6>-21</armAngle6>
     </shooter>
+<!--    <intake>-->
+<!--        <launchPower>0.45</launchPower>-->
+<!--        <intakePower>0.28</intakePower>-->
+<!--        <intakeAidPower>0.5</intakeAidPower>-->
+<!--        <revertPower>-0.35</revertPower>-->
+<!--        <distanceSensorThreshold>30</distanceSensorThreshold>-->
+<!--        <splitTime>0.4</splitTime>-->
+<!--    </intake>-->
     <intake>
         <launchPower>0.45</launchPower>
-        <intakePower>0.28</intakePower>
+        <intakePower>0.4</intakePower>
+        <moveNoteInsideIntakePower>0.03</moveNoteInsideIntakePower>
+        <moveNoteInsideIntakeFastPower>0.1</moveNoteInsideIntakeFastPower>
         <intakeAidPower>0.5</intakeAidPower>
         <revertPower>-0.35</revertPower>
         <distanceSensorThreshold>30</distanceSensorThreshold>
-        <splitTime>0.4</splitTime>
+        <splitTime>0.3</splitTime>
+        <launchTime>0.5</launchTime>
     </intake>
     <arm>
         <!-- arm PID -->
