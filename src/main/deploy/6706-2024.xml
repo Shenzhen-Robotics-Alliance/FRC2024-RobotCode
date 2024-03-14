@@ -115,7 +115,7 @@
         <position-SCORE_AMPLIFIER>-20</position-SCORE_AMPLIFIER>
 
         <!-- software limit -->
-        <lowerPositionLimit>50</lowerPositionLimit>
+        <lowerPositionLimit>-21</lowerPositionLimit>
         <upperPositionLimit>104</upperPositionLimit>
 
         <!-- lookup table -->
@@ -148,11 +148,11 @@
         <errorToleranceAsInPosition>2</errorToleranceAsInPosition>
 
         <!-- simple arm controller -->
-        <maxPowerWhenMovingUp>0.65</maxPowerWhenMovingUp>
+        <maxPowerWhenMovingUp>0.45</maxPowerWhenMovingUp>
         <maxPowerWhenMovingDown>0.18</maxPowerWhenMovingDown>
         <errorStartDecelerate>40</errorStartDecelerate>
-        <powerNeededToMoveUp>0.3</powerNeededToMoveUp>
-        <powerNeededToMoveDown>0.16</powerNeededToMoveDown>
+        <powerNeededToMoveUp>0.2</powerNeededToMoveUp>
+        <powerNeededToMoveDown>0.12</powerNeededToMoveDown>
         <errorTolerance>2</errorTolerance>
     </arm>
     <auto>
