@@ -36,7 +36,7 @@
 
 
     <chassis>
-        <wheelGearRatio type="double">6.75</wheelGearRatio>
+        <wheelGearRatio type="double">8.14</wheelGearRatio>
 
         <wheelsPowerConstrain type="double">1</wheelsPowerConstrain>
         <robotPositionFeedForwardTime type="double">0.05</robotPositionFeedForwardTime>

@@ -35,7 +35,14 @@
     </hardware>
     <chassis>
         <wheelGearRatio type="double">6.75</wheelGearRatio>
-        <wheelsPowerConstrain type="double">0.95</wheelsPowerConstrain>
+        <wheelsPowerConstrain type="double">0.75</wheelsPowerConstrain>
+
+        <!-- to make the pilot know what acceleration control is like -->
+        <translationalTaskUpdatableRange type="double">0.1</translationalTaskUpdatableRange>
+        <ignoredAccelerateTime type="double">0.05</ignoredAccelerateTime>
+        <robotMaximumSpeed type="double">4.5</robotMaximumSpeed>
+        <timeNeededToFullyAccelerate type="double">0.3</timeNeededToFullyAccelerate>
+        <robotSpeedActivateSpeedControl type="double">0.1</robotSpeedActivateSpeedControl>
     </chassis>
 
     <shooter>
@@ -106,12 +113,12 @@
     </arm>
     <auto>
 <!--        <autoStageMaxAcceleration type="double">10</autoStageMaxAcceleration>-->
-<!--        <autoStageMaxVelocity type="double">4.2</autoStageMaxVelocity>-->
+<!--        <autoStageMaxVelocity type="double">4</autoStageMaxVelocity>-->
 <!--        <autoStageMaxAngularVelocity type="double">120</autoStageMaxAngularVelocity> &lt;!&ndash; in deg/s &ndash;&gt;-->
 <!--        <inAdvanceTime>0.3</inAdvanceTime>-->
         <autoStageMaxAcceleration type="double">10</autoStageMaxAcceleration>
         <autoStageMaxVelocity type="double">4</autoStageMaxVelocity>
         <autoStageMaxAngularVelocity type="double">120</autoStageMaxAngularVelocity> <!-- in deg/s -->
-        <inAdvanceTime>0.3</inAdvanceTime>
+        <inAdvanceTime>0.35</inAdvanceTime>
     </auto>
 </robotConfig>

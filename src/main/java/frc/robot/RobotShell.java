@@ -39,7 +39,7 @@ public class RobotShell extends TimedRobot {
     @Override
     public void robotInit() {
         // System.out.println("<-- Robot Shell | robot init -->");
-        robotCore = new RobotCore("6706-2024");
+        robotCore = new RobotCore("fasterChassis");
     }
 
     /** called once when the driver station first connects to the robot */
@@ -176,6 +176,7 @@ public class RobotShell extends TimedRobot {
                 ));
 
         autoStageChooser.addOption("Middle Six Notes Auto Upper Half (Test Route)", new RedAutoStageSixNoteUpperHalfRoute());
+        autoStageChooser.addOption("Middle Six Notes Auto (Test Route)", new RedAutoSixNotesRouteTest());
         autoStageChooser.addOption("Middle Six Notes Auto", new RedAutoSixNote());
         autoStageChooser.addOption("Test Path Planner Path Auto", new TestPathPlannerPath());
 
