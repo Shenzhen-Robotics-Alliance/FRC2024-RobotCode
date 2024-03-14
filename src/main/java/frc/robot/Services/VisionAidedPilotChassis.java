@@ -298,7 +298,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         chassis.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION,
                 new Vector2D(new double[] {currentPathPositionWithLERP.getX(), Math.max(currentPathPositionWithLERP.getY(), currentVisualTargetLastSeenPosition.getY() + yPositionLowerConstrain)})), this);
         chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
-                shooter.aimingSystem.getRobotFacing(shooter.getProjectileSpeed(), currentVisualTargetLastSeenPosition)), this);
+                shooter.aimingSystem.getRobotFacing(shooter.getProjectileSpeed(), currentVisualTargetLastSeenPosition, rotationInAdvanceTime)), this);
 
         if (autoTrigger && intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && shooter.shooterReady() && shooter.targetInRange() && arm.transformerInPosition() && chassis.isCurrentRotationalTaskFinished())
             intake.startLaunch(this);
@@ -472,7 +472,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
     /** the default shoot process ending point, in reference to the shooting sweet spot */
     private Vector2D shootProcessEndingPointInReferenceToShootingSweetSpotByDefault;
     /** how many seconds does the chassis need to react */
-    private double chassisReactionDelay;
+    private double chassisReactionDelay, rotationInAdvanceTime;
 
     private boolean autoTrigger = true;
     @Override
@@ -481,6 +481,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         autoFaceTargetTimeUnseenToleranceMS = (long) robotConfig.getConfig("vision-autopilot", "autoFaceTargetTimeUnseenToleranceMS");
         aimingTimeUnseenToleranceMS = (long) robotConfig.getConfig("vision-autopilot", "aimingTimeUnseenToleranceMS");
         /* TODO read from robotConfig */
+        rotationInAdvanceTime = 0.3;
         this.intakeCenterHorizontalBiasFromCamera = 0;
         grabbingNoteDistance = 0.2;
         grabbingPathControlPointDistance = 0.4;

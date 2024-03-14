@@ -100,15 +100,15 @@ public class IntakeWithDistanceSensor extends Intake {
         final double intakeMotorEncoderTicksPerSecondAtNormalPower = 74000;
         EnhancedPIDController.PIDProfile intakeMotorPIDProfile = new EnhancedPIDController.StaticPIDProfile(
                 Double.POSITIVE_INFINITY,
-                0.3,
-                0.02,
-                intakeMotorEncoderTicksPerSecondAtNormalPower * 0.3,
+                0.15,
+                0.01,
+                intakeMotorEncoderTicksPerSecondAtNormalPower * 0.15,
                 intakeMotorEncoderTicksPerSecondAtNormalPower * 0.01,
-                0.1,
+                0.02,
                 0,
                 0);
         intakeWheelPositionController = new EnhancedPIDController(intakeMotorPIDProfile);
-        intakeSensorToReadyPositionDifference = intakeMotorEncoderTicksPerSecondAtNormalPower * -0.02;
+        intakeSensorToReadyPositionDifference = intakeMotorEncoderTicksPerSecondAtNormalPower * -0.05;
     }
 
     @Override

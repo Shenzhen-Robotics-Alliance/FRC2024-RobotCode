@@ -47,7 +47,7 @@
         <timeNeededToFullyAccelerate type="double">0.3</timeNeededToFullyAccelerate>
         <robotSpeedActivateSpeedControl type="double">0.1</robotSpeedActivateSpeedControl>
 
-        <rotationalErrorAsCommandFinished>4.5</rotationalErrorAsCommandFinished>
+        <rotationalErrorAsCommandFinished>4</rotationalErrorAsCommandFinished>
     </chassis>
     <shooter>
         <shooter1Port>12</shooter1Port>
@@ -86,7 +86,7 @@
         <intakeMotorReversed>1</intakeMotorReversed>
         <intakeAidMotorPort>9</intakeAidMotorPort>
         <intakeAidMotorReversed>1</intakeAidMotorReversed>
-        <distanceSensorThreshold>20</distanceSensorThreshold>
+        <distanceSensorThreshold>22</distanceSensorThreshold>
     </intake>
 
     <arm>

@@ -83,7 +83,7 @@ public class SwerveBasedChassis extends RobotModuleBase {
 
         SmartDashboard.putNumber("imu yaw:", Math.toDegrees(gyro.getYaw()));
 
-        final double wheelsPowerConstrain = lowSpeedModeEnabled ? this.wheelsPowerConstrain : this.wheelsPowerConstrainAtLowSpeedMode;
+        final double wheelsPowerConstrain = lowSpeedModeEnabled ? this.wheelsPowerConstrainAtLowSpeedMode : this.wheelsPowerConstrain;
         double highestWheelSpeed = driveWheels(processedTranslationalSpeed, rotationalSpeed);
         // System.out.println("highest wheel speed:" + highestWheelSpeed);
         if (highestWheelSpeed <= wheelsPowerConstrain) return;

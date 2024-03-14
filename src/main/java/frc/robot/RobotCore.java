@@ -128,7 +128,7 @@ public class RobotCore {
                         noteDetectionAppClient,
                         new FixedAngleCameraProfile(
                                 -0.657,
-                                -0.0014,
+                                -0.0016,
                                 -8.0704E-4
                         ),
                         new double[] {-60, -60, -60},

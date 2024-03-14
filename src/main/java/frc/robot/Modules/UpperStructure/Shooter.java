@@ -279,13 +279,21 @@ public class Shooter extends RobotModuleBase {
         }
 
         public double getRobotFacing(double projectileSpeed) {
+            return getRobotFacing(projectileSpeed, 0);
+        }
+
+        public double getRobotFacing(double projectileSpeed, double additionalInAdvanceTime) {
             final Vector2D targetFieldPositionByCamera = target.getTargetFieldPositionWithAprilTags(timeUnseenTolerance),
                     targetFieldPosition = targetFieldPositionByCamera == null ? defaultTargetFieldPosition : targetFieldPositionByCamera;
-            return getRelativePositionToTarget(projectileSpeed, targetFieldPosition).getHeading() - Math.toRadians(90);
+            return getRelativePositionToTarget(projectileSpeed, targetFieldPosition, additionalInAdvanceTime).getHeading() - Math.toRadians(90);
         }
 
         public double getRobotFacing(double projectileSpeed, Vector2D targetLastSeenPosition) {
-            return getRelativePositionToTarget(projectileSpeed, targetLastSeenPosition, 0).getHeading() - Math.toRadians(90);
+            return getRobotFacing(projectileSpeed, targetLastSeenPosition, 0);
+        }
+
+        public double getRobotFacing(double projectileSpeed, Vector2D targetLastSeenPosition, double additionalInAdvanceTime) {
+            return getRelativePositionToTarget(projectileSpeed, targetLastSeenPosition, additionalInAdvanceTime).getHeading() - Math.toRadians(90);
         }
     }
 }
