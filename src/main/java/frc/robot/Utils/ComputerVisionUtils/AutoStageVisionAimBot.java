@@ -88,8 +88,6 @@ public class AutoStageVisionAimBot {
     }
 
     public SequentialCommandSegment shootWhileMoving(SequentialCommandSegment.InitiateCondition initiateCondition, BezierCurve chassisMovementPath, Vector2D assumedSpeakerPosition, Rotation2D endingRotation, long timeOutMillis) {
-        final double additionalRotationInAdvanceTime = 0.2;
-
         final Timer timeSinceTaskStarted = new Timer(), timeSinceNoteGone = new Timer();
         timeSinceTaskStarted.start(); timeSinceNoteGone.start();
         return new SequentialCommandSegment(
@@ -104,7 +102,7 @@ public class AutoStageVisionAimBot {
                     robotCore.shooter.aimingSystem.defaultTargetFieldPosition = assumedSpeakerPosition;
                     robotCore.chassisModule.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(
                             SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
-                            robotCore.shooter.aimingSystem.getRobotFacing(robotCore.shooter.getProjectileSpeed(), additionalRotationInAdvanceTime)), null);
+                            robotCore.shooter.aimingSystem.getRobotFacing(robotCore.shooter.getProjectileSpeed(), robotCore.robotConfig.getConfig("auto", "additionalRotationInAdvanceTime"))), null);
 
                     if (robotCore.intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && robotCore.chassisModule.isCurrentRotationalTaskFinished() && robotCore.shooter.shooterReady() && robotCore.shooter.targetInRange() && robotCore.transformableArm.transformerInPosition())
                         robotCore.intake.startLaunch(null);

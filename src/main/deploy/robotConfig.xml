@@ -200,7 +200,8 @@
 
         <inAdvanceTime>0.4</inAdvanceTime>
 
-        <shootingSegmentSpeedFactor>0.4</shootingSegmentSpeedFactor>
+        <shootingSegmentSpeedFactor>0.5</shootingSegmentSpeedFactor>
+        <additionalRotationInAdvanceTime>0.3</additionalRotationInAdvanceTime>
     </auto>
 
     <climb>
