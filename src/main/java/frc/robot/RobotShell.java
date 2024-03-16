@@ -9,7 +9,6 @@ import frc.robot.Services.*;
 import frc.robot.Utils.CommandSequenceGenerator;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
-import frc.robot.Utils.MechanismControllers.SimpleArmController;
 import frc.robot.Utils.SequentialCommandSegment;
 import frc.robot.Utils.Tests.*;
 
@@ -175,11 +174,12 @@ public class RobotShell extends TimedRobot {
                         new Vector2D(new double[] {0, 52})
                 ));
 
-        autoStageChooser.addOption("Middle Six Notes Auto Upper Half (Test Route)", new RedAutoStageSixNoteUpperHalfRoute());
-        autoStageChooser.addOption("Middle Six Notes Auto (Test Route)", new RedAutoSixNotesRouteTest());
-        autoStageChooser.addOption("Middle Six Notes Auto", new RedAutoSixNote());
-        autoStageChooser.addOption("Test Path Planner Path Auto", new TestPathPlannerPath());
+        autoStageChooser.addOption("Middle Six Notes Auto Upper Half (Test Route)", new RedAutoStageSixNoteUpperHalfTestRoute());
+        autoStageChooser.addOption("Middle Six Notes Auto (Test Route)", new RedAutoSixNotesTestRoute());
 
-        autoStageChooser.setDefaultOption("Test Auto", new TestAutoStageProgram());
+        autoStageChooser.addOption("Middle Six Notes Auto Upper Half", new RedAutoStageSixNoteUpperHalf());
+        autoStageChooser.addOption("Middle Six Notes Auto", new RedAutoSixNote());
+
+        autoStageChooser.setDefaultOption("Leave Community", new LeaveCommunity());
     }
 }

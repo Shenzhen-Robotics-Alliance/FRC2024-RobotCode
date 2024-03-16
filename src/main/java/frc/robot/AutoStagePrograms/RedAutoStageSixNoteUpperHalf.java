@@ -4,7 +4,6 @@ import frc.robot.RobotCore;
 import frc.robot.Utils.CommandSequenceGenerator;
 import frc.robot.Utils.ComputerVisionUtils.AutoStageVisionAimBot;
 import frc.robot.Utils.MathUtils.Rotation2D;
-import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.SequentialCommandFactory;
 import frc.robot.Utils.SequentialCommandSegment;
 
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class RedAutoSixNote implements CommandSequenceGenerator {
+public class RedAutoStageSixNoteUpperHalf implements CommandSequenceGenerator {
     @Override
     public List<SequentialCommandSegment> getCommandSegments(RobotCore robotCore) {
         final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
@@ -45,9 +44,9 @@ public class RedAutoSixNote implements CommandSequenceGenerator {
 
         /* grab third */
         commandSegments.add(aimBot.grabNote(
-                        FieldPositions.toActualPosition(FieldPositions.nearNote3),
-                        FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(135))),
-                        intakeTimeOut
+                FieldPositions.toActualPosition(FieldPositions.nearNote3),
+                FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(135))),
+                intakeTimeOut
         ));
 
         /* shoot third and move to fourth */
@@ -68,26 +67,24 @@ public class RedAutoSixNote implements CommandSequenceGenerator {
 
         /* shoot fourth */
         commandSegments.add(aimBot.shootWhileMoving(
-                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fourth move to fifth").get(0),
+                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fourth move to fifth (half field)").get(0),
                 FieldPositions.toActualPosition(FieldPositions.speakerPosition),
                 shootingTimeOut
         ));
-        /* wait for arm to reset */
-        commandSegments.add(aimBot.waitForArmToLower());
 
         /* move to fifth */
         commandSegments.add(new SequentialCommandSegment(
                 () -> true,
-                () -> SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fourth move to fifth").get(1),
+                () -> SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fourth move to fifth (half field)").get(1),
                 ()->{}, ()->{}, ()->{},
                 () -> true,
                 () -> FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(180))),
-                () -> FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(180)))
+                () -> FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(-135)))
         ));
 
         /* grab fifth */
         commandSegments.add(aimBot.grabNote(
-                FieldPositions.toActualPosition(FieldPositions.farNoteCenter),
+                FieldPositions.toActualPosition(FieldPositions.farNoteRighter),
                 FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(-135))),
                 intakeTimeOut
         ));
@@ -95,16 +92,16 @@ public class RedAutoSixNote implements CommandSequenceGenerator {
         /* move back to shooting spot */
         commandSegments.add(new SequentialCommandSegment(
                 () -> true,
-                () -> SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fifth grab sixth").get(0),
+                () -> SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fifth grab sixth (half field)").get(0),
                 ()->{}, ()->{}, ()->{},
                 () -> true,
-                () -> FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(180))),
+                () -> FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(-135))),
                 () -> FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(180)))
         ));
 
         /* shoot fifth */
         commandSegments.add(aimBot.shootWhileMoving(
-                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fifth grab sixth").get(1),
+                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fifth grab sixth (half field)").get(1),
                 FieldPositions.toActualPosition(FieldPositions.speakerPosition),
                 shootingTimeOut
         ));
@@ -112,33 +109,34 @@ public class RedAutoSixNote implements CommandSequenceGenerator {
         /* move to sixth */
         commandSegments.add(new SequentialCommandSegment(
                 () -> true,
-                () -> SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fifth grab sixth").get(2),
+                () -> SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fifth grab sixth (half field)").get(2),
                 ()->{}, ()->{}, ()->{},
                 () -> true,
                 robotCore.positionReader::getRobotRotation2D,
-                () -> FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(-135)))
+                () -> FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(180)))
         ));
 
         /* grab sixth */
         commandSegments.add(aimBot.grabNote(
-                FieldPositions.toActualPosition(FieldPositions.farNoteLefter),
-                FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(-135))),
+                FieldPositions.toActualPosition(FieldPositions.farNoteRightMost),
+                FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(180))),
                 intakeTimeOut
         ));
+
 
         /* move to shooting spot */
         commandSegments.add(new SequentialCommandSegment(
                 () -> true,
-                () -> SequentialCommandFactory.getBezierCurvesFromPathFile("shoot sixth").get(0),
+                () -> SequentialCommandFactory.getBezierCurvesFromPathFile("shoot sixth (half field)").get(0),
                 ()->{}, ()->{}, ()->{},
                 () -> true,
-                () -> FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(-135))),
+                () -> FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(180))),
                 () -> FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(180)))
         ));
 
         /* shoot sixth */
         commandSegments.add(aimBot.shootWhileMoving(
-                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot sixth").get(1),
+                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot sixth (half field)").get(1),
                 FieldPositions.toActualPosition(FieldPositions.speakerPosition),
                 shootingTimeOut
         ));

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class RedAutoSixNotesRouteTest implements CommandSequenceGenerator {
+public class RedAutoSixNotesTestRoute implements CommandSequenceGenerator {
     @Override
     public List<SequentialCommandSegment> getCommandSegments(RobotCore robotCore) {
         final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
@@ -30,13 +30,13 @@ public class RedAutoSixNotesRouteTest implements CommandSequenceGenerator {
         /* shoot second and move to third */
         commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
                 "shoot second and grab third",
-                FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(180)))
+                FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(135)))
         )));
 
         /* shoot third and move to fourth */
         commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
                 "shoot third grab fourth",
-                FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(135)))
+                FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(-150)))
         )));
 
         /* shoot fourth and move to fifth */
@@ -50,8 +50,7 @@ public class RedAutoSixNotesRouteTest implements CommandSequenceGenerator {
                 "shoot fifth grab sixth",
                 new Rotation2D[] {
                         FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(180))),
-                        FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(180))),
-                        FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(180))),
+                        FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(135))),
                         FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(-135)))
                 },
                 ()->{}, ()->{}, ()->{}
