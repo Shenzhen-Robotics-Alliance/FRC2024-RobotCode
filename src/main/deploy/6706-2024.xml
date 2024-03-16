@@ -156,13 +156,13 @@
         <errorTolerance>2</errorTolerance>
     </arm>
     <auto>
-<!--        <autoStageMaxAcceleration type="double">10</autoStageMaxAcceleration>-->
+<!--        <autoStageMaxAcceleration type="double">8</autoStageMaxAcceleration>-->
 <!--        <autoStageMaxVelocity type="double">4</autoStageMaxVelocity>-->
-<!--        <autoStageMaxAngularVelocity type="double">120</autoStageMaxAngularVelocity> &lt;!&ndash; in deg/s &ndash;&gt;-->
+<!--        <autoStageMaxAngularVelocity type="double">180</autoStageMaxAngularVelocity> &lt;!&ndash; in deg/s &ndash;&gt;-->
 <!--        <inAdvanceTime>0.4</inAdvanceTime>-->
-        <autoStageMaxAcceleration type="double">2.5</autoStageMaxAcceleration>
+        <autoStageMaxAcceleration type="double">2</autoStageMaxAcceleration>
         <autoStageMaxVelocity type="double">1</autoStageMaxVelocity>
-        <autoStageMaxAngularVelocity type="double">30</autoStageMaxAngularVelocity> <!-- in deg/s -->
+        <autoStageMaxAngularVelocity type="double">45</autoStageMaxAngularVelocity> <!-- in deg/s -->
         <inAdvanceTime>0.1</inAdvanceTime>
     </auto>
 
