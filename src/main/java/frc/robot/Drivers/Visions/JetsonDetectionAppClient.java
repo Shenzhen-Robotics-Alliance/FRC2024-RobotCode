@@ -6,10 +6,10 @@ import java.io.InputStreamReader;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class JetsonDetectionAppClient implements RawObjectDetectionCamera {
-    private final String name;
+    public final String name, jetsonIP;
+    public final int port;
     private final String serverURL;
     private Thread communicationThread;
     private boolean activated;
@@ -19,12 +19,14 @@ public class JetsonDetectionAppClient implements RawObjectDetectionCamera {
     private final double[] cameraResolution;
 
 
-    public JetsonDetectionAppClient(String name, String jetsonIpAddress, int portID) {
-        this(name, jetsonIpAddress, portID, new double[] {640, 480});
+    public JetsonDetectionAppClient(String name, String jetsonIpAddress, int port) {
+        this(name, jetsonIpAddress, port, new double[] {640, 480});
     }
-    public JetsonDetectionAppClient(String name, String jetsonIpAddress, int portID, double[] cameraResolution) {
+    public JetsonDetectionAppClient(String name, String jetsonIpAddress, int port, double[] cameraResolution) {
         this.name = name;
-        this.serverURL = "http://" + jetsonIpAddress + ":" + portID;
+        this.jetsonIP = jetsonIpAddress;
+        this.port = port;
+        this.serverURL = "http://" + jetsonIpAddress + ":" + port;
         this.cameraResolution = cameraResolution;
         this.activated = false;
         this.results = "no-rst";

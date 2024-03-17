@@ -1,5 +1,6 @@
 # FRC 2024 Competition Robot *"PHANTOM"*
 Team 6706 **Golem** and Team 5516 **IRON MAPLE**, presents.
+
 ***
 
 <div style="display: flex;">
@@ -8,7 +9,7 @@ Team 6706 **Golem** and Team 5516 **IRON MAPLE**, presents.
 </div>
 
 ## Overview
-This year, our team has formed an alliance with Team 5516 "Iron Maple" in our city.  Together we have designed, built and programmed the Robot "PHANTOM", which is used by Team 5516 in Canadian Pacific Regional.  The Robot we use is "PHANTOM" Ⅱ, the upgraded version of "PHANTOM".  Extending our work on "PHANTOM", "PHANTOM Ⅱ" continues to showcase its autonomous capabilities, employing a suite of sensors and algorithms to independently execute most field tasks. This portfolio concentrates on the development of these autopilot functions, briefly touching on other aspects, with detailed discussions available in *the annexes*.
+This year, our team has formed an alliance with Team 5516 "Iron Maple" in our city.  Together we have designed, built and programmed the Robot "PHANTOM", which is used by Team 5516 in Canadian Pacific Regional.  The Robot we use is "PHANTOM" Ⅱ, the upgraded version of "PHANTOM".  Extending our work on "PHANTOM", "PHANTOM" Ⅱ continues to showcase its autonomous capabilities, employing a suite of sensors and algorithms to independently execute most field tasks. This portfolio concentrates on the development of these autopilot functions, briefly touching on other aspects, with detailed discussions available in *the annexes*.
 
 ## Hardware Components (in brief)
 "PHANTOM" features a custom-designed, square-shaped chassis with four advanced swerve modules, optimized for easy transportation.
@@ -17,7 +18,6 @@ At the rear, a feeder equipped with rollers collects Notes from the ground, dire
 
 The intake & shoot module, mounted on an arm, performs three functions: grabbing Notes from the feeder, shooting Notes to the "Speaker," and directing them to the amplifier when positioned vertically.
 
-A key innovation is our robot's modular design, allowing for disassembly into four parts for convenient transport and reassembly within three hours—a crucial feature for overseas competitions.
 <div style="display: flex;">
     <img src="images/chassis.png" alt="Alt Text 1" style="width:50%">
     <img src="images/feeder1.jpg" alt="Alt Text 1" style="width:50%">
@@ -26,6 +26,8 @@ A key innovation is our robot's modular design, allowing for disassembly into fo
     <img src="images/feeder2.jpg" alt="Alt Text 1" style="width:50%">
     <img src="images/intake and shoot module.jpg" alt="Alt Text 1" style="width:50%">
 </div>
+
+A key innovation is our robot's modular design, allowing for disassembly into four parts for convenient transport and reassembly within three hours—a crucial feature for overseas competitions.
 
 ## Self-Developed Swerve Drive Library (in brief)
 Despite the availability of official FRC swerve drive code, we encountered limitations in performance and reliability. Our team invested four months in developing a superior swerve drive library, featuring enhancements in wheel direction control, power constraints, dynamic steering, acceleration control, and more. This custom library has been validated not only by our team but also by peers, demonstrating its superior performance without additional costs.
@@ -41,8 +43,7 @@ In comparison to WPILib, our code is improved in the following ways:
     8. Enhanced Path-Planning with Speed Curves 
     9. Delay-Compensation for Auto-Stage-Path-Follwing
     10. Self-Instructed Autonomous program
-Each of these improvements are small and hard to notice, but combined, they do make a difference. The  Our swerve-drive-lib is considered better not only by our pilots, but also by Team 6706 "Golem", Team 6414 "Voyager" and Team 8812 "SCIE" from the same as our team, who have choosen our swerve lib over WpiLib. This is not bad an outcome in consider to the fact that not an extra dollar is spend to 
-Technical details for all the above can be found in *the annexes*.
+Each of these improvements are small and hard to notice, but combined, they do make a difference. The  Our swerve-drive-lib is considered better not only by our pilots, but also by Team 6414 "Voyager" and Team 8812 "SCIE" from ShenZhen, who have choosen our swerve lib over WpiLib.  Technical details for all the above can be found in *the annexes*.
 
 ## On-Bot Computer Vision System
 The initial step in developing the autonomous driving functionality, naturally, involves enabling the robot to perceive its surroundings. To achieve this, we opted for a wholly self-developed system, preferring it over the default solution provided by WPI.
@@ -85,12 +86,13 @@ However, manually measuring these parameters can be challenging and prone to ina
 Our innovative solution involves automating the measurement process: the robot is programmed to autonomously navigate to various distances and orient itself at different angles. Concurrently, it captures the target's position through its camera. By analyzing these collected datasets, the program calculates the camera's field of view (FOV) and installation angle using a Least-Squares Regression Line (Best-Fit Line) method.
 ![alt text](<images/auto calibration.png>)
 <div style="display: flex;">
-    <img src="./images/lsrl.png" alt="Alt Text 1" style="width: 50%;">
-    <img src="./images/lsrl.png" alt="Alt Text 2" style="width: 50%;">
+    <img src="./images/lsrl.png" alt="Alt Text 1" style="width: 40%;">
+    <img src="./images/lsrl.png" alt="Alt Text 2" style="width: 40%;">
+    <img src="./images/auto calibration video qrcode.png" alt="Alt Text 2" style="width: 20%; height: 20%">
 </div>
 This auto-calibration process not only enhances the accuracy of our system but also significantly reduces manual intervention and potential errors. For a clearer understanding of this method, please refer to the illustrative video, accessible via the provided QR code, showcasing the calibration of our Note-Detection Camera using this automated technique.
 
-<img src="./images/auto calibration video qrcode.png" alt="Alt Text 2" style="width: 20%;">
+
 
 ## Auto-Pilot System
 Our Auto-Pilot System is engineered to seamlessly perform three critical tasks—intake, shoot, and amplify—at the mere press of a button. In this discussion, we delve into the system's operational mechanisms, the challenges encountered during its development, and the innovative solutions we implemented to overcome these obstacles. This exploration not only highlights our technical prowess but also underscores our commitment to advancing robotic capabilities in competitive settings.
@@ -103,7 +105,7 @@ Upon detecting a GamePiece, signaled by the status light turning blue, the pilot
 Crucially, the robot's approach to the GamePiece is not a direct line. Instead, the navigation system dynamically generates a path using Bezier Curves, ensuring smoother movements and a strategic approach angle. This method guarantees that, regardless of its starting position, the robot always reverses towards the GamePiece, significantly enhancing the feeder's ability to collect the Note effectively. This nuanced approach illustrates our commitment to precision and adaptability in robotic design.
 ![alt text](<images/intake auto aim.png>)
 Once the Gamepiece gets "eaten" by the intake, a Rev-2M-Distance-Sensor senses the existence on the note and stops the intake automatically before the Note goes too far.  This is important becuase the shooter cannot accelerate when the Note is in contact with it.
-
+<img src="./images/auto intake aim qr.png" alt="Alt Text 2" style="width: 20%; height: 20%">
 For a more illustrative demonstration, please watch this video.
 
 
@@ -114,15 +116,21 @@ Now, the **Auto-Pilot Button** has a different function: it controls the shooter
 ![alt text](<aiming lookup table.png>)
 When the **Auto-Pilot Button** is released, the kicker is triggered. The Note flies to the speaker, marking the end of the shooting process.  The robot returns to intake mode.
 
+[演示视频二维码]
+
 #### Automatic Target Approaching
 If this function is enabled, the chassis will drive automatically to a shooting sweet spot once the **Auto-Pilot Button** is pressed under shooting mode.
-It uses an algorthm similar to the one used in the auto-intake to generate a path leading to the sweet-spot.  But when it reaches the sweet spot, it does not stop.  The pilot can decided the direction of the chassis movement by the end of the process using the control stick.  The robot moves to the sweet spot, shoots, and continue moving in that direction until the pilot takes the control back.  This way the robot can move in a smooth and continous process, in which it shoots while moving and finish the process elegantly.
-The system also decides the timing to shoot by itself, and start the kicker automatically.
-Note that this function is optional and it is the pilot's call as to whether to enable it or not.
+
+The algorithm decides which sweet spot to go depending on which is closest, and a stick on the pilot's controller can be used adjust the exact position to shoot.  Which mulitple sweetspots selectable, the robot can shoot even when there is a defense robot
+[TODO: 录制视频]
+
+#### Accurate and Stable Six-Notes Auto
+The above features, which has significantly enhanced our efficiency during teleop, is also used to improve the accuracy of the robot during autonomous periodic. By implementing the computer vision technologies, the robot does not have to rely entirely on its encoders to navigate. Now it can sense the speaker and the note.  Proudly, we are one of the few teams on Earth that can achive six notes during auto stage.  And, our successrate is very high thanks to the auto-aiming functions.  This videos shows three consecutive auto stages runned on our robot in a practice field.
+[TODO: 自动阶段视频]
 
 #### Problem We Encountered: Camera Motion Blur / Losing Focus
 When using vision navigating methods, the most commonly encountered issue is that the camera sometimes losses track of the target. This might be caused by losing focus, obstacle, motion blur or awkward reflection.  The thing is, it is impossible to wish that the target can stay in the camera's view all the time.
-
+[TODO: 原理图]
 So, to make our aiming as well as auto-piloting functions more stable, we have designed an algorithm such that 
 
 

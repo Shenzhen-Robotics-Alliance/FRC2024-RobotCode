@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.CANcoder;
 
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -238,6 +239,10 @@ public class RobotCore {
                 addConfigsToTune();
                 for (String config:configsToTune)
                         robotConfig.startTuningConfig(config);
+
+                /* add port forwarding */
+                PortForwarder.add(5800, aprilTagDetectionAppClient.jetsonIP, aprilTagDetectionAppClient.port);
+                PortForwarder.add(5801, noteDetectionAppClient.jetsonIP, noteDetectionAppClient.port);
 
                 System.out.println("<-- Robot | robot initialized -->");
         }
