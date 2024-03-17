@@ -19,26 +19,33 @@ running = True
 frame = cv2.imread("./no_result.png")
 new_frame_ready = False
 detection_results_ready = False
-fps = 0
+frame_time_total = 0
+frame_time_samplecount = 0
 detection_results = "<no results yet>"
 
-camera = videoSource("/dev/video" + str(CAM_PORT), argv="--flip-method=rotate-180")
+camera = cap = cv2.VideoCapture(CAM_PORT, cv2.CAP_V4L2)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640) # width
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480) # height
+cap.set(cv2.CAP_PROP_FPS, 30) 
 net = detectNet("ssd-mobilenet-v2", model="/home/ironn-maple//NoteDetection-mobilenet.onnx", labels="/home/ironn-maple/Documents/jetson-vision/labels.txt", input_blob="input_0", output_cvg="scores", output_bbox="boxes", threshold=0.92)
 # net = detectNet("ssd-mobilenet-v2", threshold=0.8)
 def generate_frames():
-    global frame, new_frame_ready, detection_results_ready, fps, detection_results
+    global frame, new_frame_ready, detection_results_ready, frame_time_total, frame_time_samplecount, detection_results
     print("<-- DetectNetServer | generate frames activated -->")
+    t = time()
     while running:
         print("<-- DetectNetServer | generate frames running -->")
-        img = camera.Capture()
+        ret, cvimg = cap.read()
+        if cvimg is None:
+            continue
 
         # flip it with opencv
         if (FLIP_IMG):
-            numpy_img = cudaToNumpy(img)
-            img_flipped = cv2.rotate(numpy_img, cv2.ROTATE_180)
-            img = cudaFromNumpy(img_flipped)
+            cvimg = cv2.rotate(cvimg, cv2.ROTATE_180)
+        
+        img = cudaFromNumpy(cv2.cvtColor(cvimg, cv2.COLOR_RGB2BGR))
 
-        detections = net.Detect(img, width=1280, height=720)
+        detections = net.Detect(img, width=640, height=480)
         
         detection_results = ""
         # TODO here, find the object with maximum confident
@@ -66,7 +73,11 @@ def generate_frames():
         frame = cv2.cvtColor(cv2.resize(raw_frame, (320, 240)), cv2.COLOR_BGR2RGB)
         new_frame_ready = True
         detection_results_ready = True
-        fps = net.GetNetworkFPS()
+
+        frame_time_total += time()-t
+        frame_time_samplecount += 1
+        t = time()
+
         # display_window.Render(img) # this can't work if there is line "import cv2"
         print(f"<-- DetectNetServer | detect net running, FPS: {net.GetNetworkFPS()} -->")
         
@@ -75,7 +86,7 @@ def generate_frames():
 update_rate = 24
 class StreamingHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
-        global new_frame_ready, detection_results_ready, detection_results
+        global new_frame_ready, detection_results_ready, detection_results, frame_time_samplecount, frame_time_total, detection_results
         print(f"<-- DetectNetServer | client visited {self.path} -->")
         if self.path == "/":
             # Return the main page (index.html)
@@ -89,7 +100,12 @@ class StreamingHandler(SimpleHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'text/plain')
             self.end_headers()
-            self.wfile.write( ("FPS: " + str(fps))  .encode())
+            if frame_time_total == 0:
+                self.wfile.write("waiting for camera to start".encode())
+            else:
+                self.wfile.write( ("FPS: " + str(round(frame_time_samplecount / frame_time_total)))  .encode())
+            frame_time_total = 0
+            frame_time_samplecount = 0
         elif self.path == '/video_feed':
             self.send_response(200)
             self.send_header('Content-type', 'multipart/x-mixed-replace; boundary=frame')
