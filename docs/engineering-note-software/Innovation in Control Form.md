@@ -2,9 +2,6 @@
 # Control Award Submission Form
 This form provides a concise summary of the control system innovations implemented in the 2024 cooperative robot "PHANTOM" Ⅱ, developed in collaboration by Team 6706 "Golem" and Team 5516 "Iron Maple". For a comprehensive understanding of our methodologies and innovations, please refer to the detailed descriptions in our engineering portfolio.
 
-
-### Autonomous Objectives
-
 ### Sensors Used
 The development of our auto-aiming systems was supported by a sophisticated sensor suite, including:
 

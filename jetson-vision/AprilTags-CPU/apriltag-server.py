@@ -1,7 +1,7 @@
 CAM_PORT = 0
 CAMERA_RESOLUTION = (640, 480)
 CAMERA_FRAMERATE = 60
-STREAMING_RESOLUTION = (320, 240)
+STREAMING_RESOLUTION = (160, 120)
 STREAMING_FRAMERATE = 24
 FLIP_IMAGE = -1 # 0 for vertical flip, 1 for horizontal flip, -1 for flip both, None for do not flip
 

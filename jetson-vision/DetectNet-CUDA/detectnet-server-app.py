@@ -70,7 +70,7 @@ def generate_frames():
         detection_results += "\n"
         
         raw_frame = cudaToNumpy(img)
-        frame = cv2.cvtColor(cv2.resize(raw_frame, (320, 240)), cv2.COLOR_BGR2RGB)
+        frame = cv2.cvtColor(cv2.resize(raw_frame, (160, 120)), cv2.COLOR_BGR2RGB)
         new_frame_ready = True
         detection_results_ready = True
 

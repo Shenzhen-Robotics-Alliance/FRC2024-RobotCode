@@ -125,7 +125,7 @@ The algorithm decides which sweet spot to go depending on which is closest, and 
 [TODO: 录制视频]
 
 #### Accurate and Stable Six-Notes Auto
-The above features, which has significantly enhanced our efficiency during teleop, is also used to improve the accuracy of the robot during autonomous periodic. By implementing the computer vision technologies, the robot does not have to rely entirely on its encoders to navigate. Now it can sense the speaker and the note.  Proudly, we are one of the few teams on Earth that can achive six notes during auto stage.  And, our successrate is very high thanks to the auto-aiming functions.  This videos shows three consecutive auto stages runned on our robot in a practice field.
+The above features, which has significantly enhanced our efficiency during teleop, is also used to improve the accuracy of the robot during autonomous periodic. By implementing the computer vision technologies, the robot does not have to rely entirely on its encoders to navigate. Now it can sense the speaker and the note.  Proudly, we are one of the few teams on Earth that can achive six notes during auto stage.  And, our successrate is very high thanks to the auto-aiming functions. 
 [TODO: 自动阶段视频]
 
 #### Problem We Encountered: Camera Motion Blur / Losing Focus
