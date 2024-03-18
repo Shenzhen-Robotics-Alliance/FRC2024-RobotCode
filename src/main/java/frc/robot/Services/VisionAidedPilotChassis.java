@@ -114,21 +114,24 @@ public class VisionAidedPilotChassis extends PilotChassis {
     private double currentVisionTaskETA;
     private double currentIntakeTaskFacing;
     private long timeTaskStartedMillis;
+
     @Override
     public void periodic() {
+        final long turnFaceToTargetFunctionBackOnTimeAfterNoReactionMillis = 1500; // TODO in robotConfig
+
         super.periodic();
         final int translationAutoPilotButton = (int)robotConfig.getConfig(super.controllerName, "translationAutoPilotButton"),
-                rotationAutoPilotButton = (int)robotConfig.getConfig(super.controllerName, "rotationAutoPilotButton");
+                smartRotationControlButton = (int)robotConfig.getConfig(super.controllerName, "smartRotationControlButton");
         final VisionTargetClass currentAimingTargetClass = targetChooser.getSelected();
         final AprilTagReferredTarget currentAimingTarget = switch (currentAimingTargetClass) {
             case SPEAKER -> speakerTarget;
             case AMPLIFIER -> amplifierTarget;
         };
 
-        if (pilotController.keyOnHold(rotationAutoPilotButton))
+        if (pilotController.keyOnHold(translationAutoPilotButton) && intake.isNoteInsideIntake())
             chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
-                            intake.isNoteInsideIntake() ? getAprilTagTargetRotation(currentAimingTargetClass, currentAimingTarget) : getNoteRotation()),
-                    this);
+                             getAprilTagTargetRotation(currentAimingTargetClass, currentAimingTarget))
+                    , this);
 
         if (copilotGamePad.getStartButton()) {
             reset();
@@ -155,6 +158,11 @@ public class VisionAidedPilotChassis extends PilotChassis {
                         shooter.setShooterMode(Shooter.ShooterMode.SPECIFIED_RPM, this);
                 }
                 arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
+
+                /* turn auto facing back on after an amount of time whenever note is in intake */
+                if (intake.isNoteInsideIntake() && (System.currentTimeMillis() - super.lastRotationalInputTimeMillis > turnFaceToTargetFunctionBackOnTimeAfterNoReactionMillis))
+                    super.smartRotationControlDesiredHeading = getAprilTagTargetRotation(currentAimingTargetClass, currentAimingTarget);
+
                 if (pilotController.keyOnPress(translationAutoPilotButton))
                     currentStatus = intake.isNoteInsideIntake() ?  Status.SEARCHING_FOR_SHOOT_TARGET : Status.SEARCHING_FOR_NOTE;
             }
@@ -200,7 +208,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
                 if (!pilotController.keyOnHold(translationAutoPilotButton) || intake.isNoteInsideIntake())
                     currentStatus = Status.MANUALLY_DRIVING;
                 else if (noteTarget.isVisible())
-                    initiateGrabNoteProcess(pilotController.keyOnHold(rotationAutoPilotButton));
+//                    initiateGrabNoteProcess(pilotController.keyOnHold(smartRotationControlButton));
+                    initiateGrabNoteProcess(false);
             }
             case REACHING_TO_SHOOT_TARGET -> {
                 intake.turnOffIntake(this);
@@ -250,13 +259,15 @@ public class VisionAidedPilotChassis extends PilotChassis {
      * @return the facing of the chassis such that it faces the target, or the default value if unseen. In radian, zero is to front.
      * */
     private double getAprilTagTargetRotation(VisionTargetClass currentAimingTargetClass, AprilTagReferredTarget currentAimingTarget) {
-        final Vector2D targetFieldPosition = currentAimingTarget.getTargetFieldPositionWithAprilTags(autoFaceTargetTimeUnseenToleranceMS);
-        if (targetFieldPosition == null)
-            return switch (currentAimingTargetClass) {
-                case SPEAKER -> speakerDefaultRotation;
-                case AMPLIFIER -> amplifyingDefaultFacing;
-            };
-        return Vector2D.displacementToTarget(chassis.positionEstimator.getRobotPosition2D(), targetFieldPosition).getHeading() - Math.toRadians(90);
+        return switch (currentAimingTargetClass) {
+            case SPEAKER -> {
+                final Vector2D speakerLastSeenPosition = currentAimingTarget.getTargetFieldPositionWithAprilTags(autoFaceTargetTimeUnseenToleranceMS);
+                if (speakerLastSeenPosition == null)
+                    yield speakerDefaultRotation;
+                yield shooter.aimingSystem.getRobotFacing(shooter.getProjectileSpeed(), speakerLastSeenPosition, rotationInAdvanceTime);
+            }
+            case AMPLIFIER -> amplifyingDefaultFacing;
+        };
     }
 
     /**
@@ -381,8 +392,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
         /* pass the target position to chassis */
         chassis.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION,
                 currentVisualTargetLastSeenPosition.addBy(amplifyingPositionToAmplifier)), this);
-        chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
-                getAprilTagTargetRotation(VisionTargetClass.AMPLIFIER, amplifierTarget)), this);
 
         if (intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && chassis.isCurrentRotationalTaskFinished() && chassis.isCurrentTranslationalTaskFinished()) {
             // start shooting
@@ -400,9 +409,10 @@ public class VisionAidedPilotChassis extends PilotChassis {
         * otherwise, we use the current chassis facing
         * the robot will face this direction during the whole moving process
          * */
-        this.currentIntakeTaskFacing = useRotationAutoPilotRotationAsIntakeFacing ?
-                getNoteRotation() :
-                chassis.positionEstimator.getRobotRotation();
+        this.currentIntakeTaskFacing =
+                useRotationAutoPilotRotationAsIntakeFacing ?
+                        getNoteRotation() :
+                        chassis.positionEstimator.getRobotRotation();
         currentStatus = Status.GRABBING_NOTE;
         final double length = getPathToNoteTarget().getLength(10);
         currentVisionTaskETA = length / chassisSpeedLimitWhenAutoAim;

@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Modules.Chassis.SwerveBasedChassis;
 import frc.robot.Utils.PilotController;
 import frc.robot.Utils.RobotConfigReader;
-import frc.robot.Utils.MathUtils.Vector2D;
 
 public class PilotChassis extends RobotServiceBase {
     /** the module of the robot's chassis */
@@ -14,13 +13,8 @@ public class PilotChassis extends RobotServiceBase {
 
     protected final RobotConfigReader robotConfig;
 
-    /** the center of the translation axis of the stick, in vector */
-    private Vector2D controllerTranslationStickCenter;
-    /** the center of the rotation axis of the stick */
-    private double controllerRotationStickCenter;
-
     /** the desired heading of the robot */
-    private double desiredHeading;
+    protected double smartRotationControlDesiredHeading;
 
     private final SendableChooser<SwerveBasedChassis.OrientationMode> orientationModeChooser= new SendableChooser<>();
     private final SwerveBasedChassis.OrientationMode defaultOrientationMode = SwerveBasedChassis.OrientationMode.FIELD;
@@ -56,13 +50,6 @@ public class PilotChassis extends RobotServiceBase {
 
     @Override
     public void reset() {
-        /* calibrate its center */
-//        this.controllerTranslationStickCenter = new Vector2D(
-//                new double[] { pilotControllerStick.getX(), pilotControllerStick.getY() });
-//        this.controllerRotationStickCenter = pilotControllerStick.getZ();
-        this.controllerTranslationStickCenter = new Vector2D();
-        this.controllerRotationStickCenter = 0;
-
         /* add mode choosers */
         for (SwerveBasedChassis.OrientationMode mode: SwerveBasedChassis.OrientationMode.values())
             this.orientationModeChooser.addOption(mode.name(), mode);
@@ -88,7 +75,7 @@ public class PilotChassis extends RobotServiceBase {
         SmartDashboard.putData("Reset Chassis", new InstantCommand(() -> {
             chassis.reset();
             /* make rotation maintenance target zero */
-            desiredHeading = 0;
+            smartRotationControlDesiredHeading = 0;
             /* start rotation maintenance immediately */
             lastRotationalInputTimeMillis = System.currentTimeMillis() - (long)(robotConfig.getConfig("chassis", "timeLockRotationAfterRotationalInputStops") * 1000);
             addResetChassisCommandButtonToDashboard();
@@ -98,7 +85,7 @@ public class PilotChassis extends RobotServiceBase {
     private ControllerType previousSelectedController = null;
     protected PilotController pilotController;
     protected String controllerName;
-    private long lastRotationalInputTimeMillis;
+    protected long lastRotationalInputTimeMillis;
     @Override
     public void periodic() {
         final ControllerType selectedController = controllerTypeSendableChooser.getSelected();
@@ -117,7 +104,7 @@ public class PilotChassis extends RobotServiceBase {
 
         /* read and process pilot's translation input */
         final int translationAutoPilotButton = (int)robotConfig.getConfig(controllerName, "translationAutoPilotButton");
-        final int rotationAutoPilotButton = (int) robotConfig.getConfig(controllerName, "rotationAutoPilotButton");
+        final int smartRotationControlButton = (int) robotConfig.getConfig(controllerName, "smartRotationControlButton");
         SwerveBasedChassis.ChassisTaskTranslation chassisTranslationalTask = new SwerveBasedChassis.ChassisTaskTranslation(
                 SwerveBasedChassis.ChassisTaskTranslation.TaskType.SET_VELOCITY,
                 /* if autopilot is on, we scale the input down by a factor so that we can search for the target */
@@ -136,28 +123,29 @@ public class PilotChassis extends RobotServiceBase {
         /* when there is rotational input or there has been rotational input in the previous 0.3 seconds, we record the current heading of the chassis */
         if (pilotController.getRotationalStickValue() != 0)
             lastRotationalInputTimeMillis = System.currentTimeMillis();
-        if (pilotController.keyOnHold(rotationAutoPilotButton) || System.currentTimeMillis() - lastRotationalInputTimeMillis < robotConfig.getConfig("chassis", "timeLockRotationAfterRotationalInputStops") * 1000)
-            desiredHeading = chassis.getChassisHeading();
-        else /* or, when there is no rotational input, we stay at the previous rotation */
+        if (pilotController.keyOnHold(smartRotationControlButton) || System.currentTimeMillis() - lastRotationalInputTimeMillis < robotConfig.getConfig("chassis", "timeLockRotationAfterRotationalInputStops") * 1000)
+            smartRotationControlDesiredHeading = chassis.getChassisHeading();
+        else if (pilotController.keyOnHold(smartRotationControlButton))
+            /* or, when there is no rotational input and that the smart rotation control is on, we stay at the previous rotation */
             chassisRotationalTask = new SwerveBasedChassis.ChassisTaskRotation(
                     SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
-                    desiredHeading
+                    smartRotationControlDesiredHeading
             );
 
         /* calls to the chassis module and pass the desired motion */
         chassis.setTranslationalTask(chassisTranslationalTask, this);
-        if (!pilotController.keyOnHold(rotationAutoPilotButton))
+        if (!pilotController.keyOnHold(smartRotationControlButton))
             chassis.setRotationalTask(chassisRotationalTask, this);
 
         /* lock the chassis if needed */
         final int lockChassisButtonPort = (int) robotConfig.getConfig(controllerName, "lockChassisButtonPort");
         chassis.setChassisLocked(pilotController.keyOnHold(lockChassisButtonPort), this);
 
-        SmartDashboard.putNumber("rotation maintenance heading", Math.toDegrees(desiredHeading));
+        SmartDashboard.putNumber("rotation maintenance heading", Math.toDegrees(smartRotationControlDesiredHeading));
     }
 
     @Override
     public void onDestroy() {
-        throw new UnsupportedOperationException("Unimplemented method 'onDestroy'");
+
     }
 }
