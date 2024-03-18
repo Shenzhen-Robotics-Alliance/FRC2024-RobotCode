@@ -116,11 +116,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
     private long timeTaskStartedMillis;
     @Override
     public void periodic() {
-        if (copilotGamePad.getStartButton()) {
-            reset();
-            activateControlUpperStructure();
-        }
-
         super.periodic();
         final int translationAutoPilotButton = (int)robotConfig.getConfig(super.controllerName, "translationAutoPilotButton"),
                 rotationAutoPilotButton = (int)robotConfig.getConfig(super.controllerName, "rotationAutoPilotButton");
@@ -134,9 +129,13 @@ public class VisionAidedPilotChassis extends PilotChassis {
             chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
                             intake.isNoteInsideIntake() ? getAprilTagTargetRotation(currentAimingTargetClass, currentAimingTarget) : getNoteRotation()),
                     this);
-        if (copilotGamePad.getXButton())
+
+        if (copilotGamePad.getStartButton()) {
+            reset();
+            activateControlUpperStructure();
+        } else if (copilotGamePad.getXButton())
             this.currentStatus = Status.MANUALLY_DRIVING;
-        if (copilotGamePad.getLeftStickButton() && copilotGamePad.getRightStickButton()) {
+        else if (copilotGamePad.getLeftStickButton() && copilotGamePad.getRightStickButton()) {
             reset();
             chassis.reset();
             intake.reset();
@@ -148,13 +147,14 @@ public class VisionAidedPilotChassis extends PilotChassis {
                 if (copilotGamePad.getBButton()) {
                     arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SPLIT, this);
                     arm.periodic();
+                    shooter.setDesiredSpeed(-6000, this);
+                    shooter.setShooterMode(Shooter.ShooterMode.DISABLED, this);
                     if (arm.transformerInPosition())
                         intake.startSplit(this); // in case if the Note is stuck
+                    if (copilotGamePad.getYButton())
+                        shooter.setShooterMode(Shooter.ShooterMode.SPECIFIED_RPM, this);
                 }
-                else {
-                    intake.turnOffIntake(this);
-                    arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
-                }
+                arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
                 if (pilotController.keyOnPress(translationAutoPilotButton))
                     currentStatus = intake.isNoteInsideIntake() ?  Status.SEARCHING_FOR_SHOOT_TARGET : Status.SEARCHING_FOR_NOTE;
             }
