@@ -5,7 +5,12 @@ import frc.robot.Utils.EasyShuffleBoard;
 import frc.robot.Utils.MathUtils.AngleUtils;
 
 public class DCEncoderCalibration implements SimpleRobotTest {
-    final DutyCycleEncoder dutyCycleEncoder = new DutyCycleEncoder(1);
+    final DutyCycleEncoder dutyCycleEncoder;
+
+    public DCEncoderCalibration(DutyCycleEncoder dutyCycleEncoder) {
+        this.dutyCycleEncoder = dutyCycleEncoder;
+    }
+
     @Override
     public void testStart() {
 

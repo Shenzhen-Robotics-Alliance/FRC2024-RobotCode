@@ -10,7 +10,6 @@ import frc.robot.Utils.MathUtils.AngleUtils;
  *  1.
  * */
 public class DCAbsolutePositionEncoder implements Encoder {
-    // TODO here, we need to make limit switches react to the condition when the encoder is unavailable
     private final DutyCycleEncoder dutyCycleEncoder;
     private final double encoderFactor;
     private double zeroPosition;
@@ -78,5 +77,9 @@ public class DCAbsolutePositionEncoder implements Encoder {
     public boolean isEncoderAvailable() {
         dutyCycleEncoder.setConnectedFrequencyThreshold(900);
         return dutyCycleEncoder.isConnected();
+    }
+
+    public DutyCycleEncoder getRawSensorInstance() {
+        return this.dutyCycleEncoder;
     }
 }

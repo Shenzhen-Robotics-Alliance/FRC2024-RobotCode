@@ -58,6 +58,7 @@ public class RobotCore {
         public final JetsonDetectionAppClient aprilTagDetectionAppClient, noteDetectionAppClient;
         public final TargetFieldPositionTracker aprilTagPositionTrackingCamera, notePositionTrackingCamera;
 
+        public final DCAbsolutePositionEncoder armEncoder;
         public final TransformableArm transformableArm;
         public final Intake intake;
         public final Shooter shooter;
@@ -167,7 +168,7 @@ public class RobotCore {
                         new TalonFXMotor(new TalonFX((int) robotConfig.getConfig("arm", "armMotorPort")), robotConfig.getConfig("arm", "armMotorReversed") != 0),
                         new TalonFXMotor(new TalonFX((int) robotConfig.getConfig("arm", "armMotor2Port")), robotConfig.getConfig("arm", "armMotor2Reversed") != 0)
                     });
-                final DCAbsolutePositionEncoder armEncoder = new DCAbsolutePositionEncoder(0, robotConfig.getConfig("arm/armEncoderReversed")!=0);
+                armEncoder = new DCAbsolutePositionEncoder(0, robotConfig.getConfig("arm/armEncoderReversed")!=0);
                 this.transformableArm = new TransformableArm(armMotors, armEncoder, shooter, robotConfig); modules.add(transformableArm);
                 
                 final TalonFXMotor intakeMotor = new TalonFXMotor(new TalonFX((int)robotConfig.getConfig("intake/intakeMotorPort")), robotConfig.getConfig("intake/intakeMotorReversed") != 0),
