@@ -1,15 +1,20 @@
-# FRC 2024 Competition Robot *"PHANTOM"*
-Team 6706 **Golem** and Team 5516 **IRON MAPLE**, presents.
+# TEAM 6706 Competition Robot *"PHANTOM"* Ⅱ
+<img src="images/team logos.jpg" alt="Alt Text 1" style="width: 100%;">
 
+Team 5516 **IRON MAPLE** and Team 6706 **Golem**, presents.
 ***
 
+## Overview
+This year, our team has formed an alliance with Team 5516 "Iron Maple" in our city.  Together we have designed, built and programmed the Robot "PHANTOM", which is used by Team 5516 in Canadian Pacific Regional.  The Robot we use is "PHANTOM" Ⅱ, the upgraded version of "PHANTOM".  
 <div style="display: flex;">
     <img src="images/machine.png" alt="Alt Text 2" style="width: 50%;">
-    <img src="images/team.png" alt="Alt Text 1" style="width: 50%;">
+    <img src="images/machine.png" alt="Alt Text 1" style="width: 50%;">
 </div>
-
-## Overview
-This year, our team has formed an alliance with Team 5516 "Iron Maple" in our city.  Together we have designed, built and programmed the Robot "PHANTOM", which is used by Team 5516 in Canadian Pacific Regional.  The Robot we use is "PHANTOM" Ⅱ, the upgraded version of "PHANTOM".  Extending our work on "PHANTOM", "PHANTOM" Ⅱ continues to showcase its autonomous capabilities, employing a suite of sensors and algorithms to independently execute most field tasks. This portfolio concentrates on the development of these autopilot functions, briefly touching on other aspects, with detailed discussions available in *the annexes*.
+<div style="display: flex;">
+    <div style="width: 50%;"><p>"PHANTOM" Ⅰ</p></div>
+    <div style="width: 50%;"><p>"PHANTOM" Ⅱ</p></div>
+</div>
+Extending our work on "PHANTOM", "PHANTOM" Ⅱ continues to showcase its autonomous capabilities, employing a suite of sensors and algorithms to independently execute most field tasks. This portfolio concentrates on the development of these autopilot functions, briefly touching on other aspects, with detailed discussions available in *the annexes*.
 
 ## Hardware Components (in brief)
 "PHANTOM" features a custom-designed, square-shaped chassis with four advanced swerve modules, optimized for easy transportation.
@@ -132,7 +137,6 @@ The above features, which has significantly enhanced our efficiency during teleo
 When using vision navigating methods, the most commonly encountered issue is that the camera sometimes losses track of the target. This might be caused by losing focus, obstacle, motion blur or awkward reflection.  The thing is, it is impossible to wish that the target can stay in the camera's view all the time.
 [TODO: 原理图]
 So, to make our aiming as well as auto-piloting functions more stable, we have designed an algorithm such that 
-
 
 #### Problem We Encountered: Low Shooting Success Rate When Chassis Moving
 During testing, we found that it is very difficult to shoot when the chassis is moving.  This is because the Note shot from a moving robot has some bias depending on the instantanous velocity of the robot.  

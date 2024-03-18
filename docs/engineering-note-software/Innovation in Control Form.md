@@ -1,5 +1,4 @@
-# Team 6706 "Golem" 
-# Control Award Submission Form
+# Team 6706 "Golem" - Control Award Submission Form
 This form provides a concise summary of the control system innovations implemented in the 2024 cooperative robot "PHANTOM" Ⅱ, developed in collaboration by Team 6706 "Golem" and Team 5516 "Iron Maple". For a comprehensive understanding of our methodologies and innovations, please refer to the detailed descriptions in our engineering portfolio.
 
 ### Sensors Used
@@ -20,5 +19,8 @@ The development of our auto-aiming systems was supported by a sophisticated sens
 - Shooter Auto-Aiming: Automatically aligns the shooter with the target, adjusting for distance and angle, to ensure high accuracy shots without manual aiming.
 - Enhanced Control Feedback: Provides the driver with real-time data on system status and environmental conditions, facilitating informed decision-making and precise control.
 ### Autonomous Program Diagram
+Main AutoStage Diagram
+![alt text](<six notes auto path.png>)
+Link To Demo Video
 
 ### Video Demos
