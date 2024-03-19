@@ -14,7 +14,7 @@ public class FiveNotesUpperTestRoute implements CommandSequenceGenerator {
     @Override
     public List<SequentialCommandSegment> getCommandSegments(RobotCore robotCore) {
         final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
-        final SequentialCommandFactory commandFactory = new SequentialCommandFactory(robotCore, SequentialCommandFactory.getRobotStartingPosition("shoot first move to second upper"), new Rotation2D(Math.toRadians(90)));
+        final SequentialCommandFactory commandFactory = new SequentialCommandFactory(robotCore, SequentialCommandFactory.getRobotStartingPosition("shoot first move to second upper"), FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(90))));
 
         commandSegments.add(commandFactory.calibratePositionEstimator());
 
@@ -55,7 +55,6 @@ public class FiveNotesUpperTestRoute implements CommandSequenceGenerator {
         commandSegments.addAll(Arrays.asList(commandFactory.followPath(
                 "shoot fourth move to fifth upper",
                 new Rotation2D[] {
-                        new Rotation2D(Math.toRadians(-160)),
                         new Rotation2D(Math.toRadians(-150)),
                         new Rotation2D(Math.toRadians(180))
                 },

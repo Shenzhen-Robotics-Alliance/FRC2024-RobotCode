@@ -176,11 +176,13 @@ public class RobotShell extends TimedRobot {
 
         autoStageChooser.setDefaultOption("Leave Community", new LeaveCommunity());
 
-        autoStageChooser.addOption("Middle Six Notes Auto (Test Route)", new SixNotesMidTestRoute());
-        autoStageChooser.addOption("Middle Five Notes Auto (Test Route)", new FiveNotesMidTestRoute());
+        autoStageChooser.addOption("Middle Six Notes (Test Route)", new SixNotesMidTestRoute());
+        autoStageChooser.addOption("Middle Five Notes (Test Route)", new FiveNotesMidTestRoute());
+        autoStageChooser.addOption("Upper Five Notes (Test Route)", new FiveNotesUpperTestRoute());
 
-        autoStageChooser.addOption("Middle Six Notes Auto", new SixNotesMid());
-        autoStageChooser.addOption("Middle Five Notes Auto", new FiveNotesMid());
+        autoStageChooser.addOption("Middle Six Notes", new SixNotesMid());
+        autoStageChooser.addOption("Middle Five Notes", new FiveNotesMid());
+        autoStageChooser.addOption("Upper Five Notes", new FiveNotesUpper());
 
         autoStageChooser.addOption("Test Auto Intake", new TestAutoIntake());
     }

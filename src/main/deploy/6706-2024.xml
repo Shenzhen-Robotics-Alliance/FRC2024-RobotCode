@@ -37,8 +37,11 @@
 
     <chassis>
         <wheelGearRatio type="double">8.14</wheelGearRatio>
-        <wheelsPowerConstrain type="double">0.6</wheelsPowerConstrain>
-        <wheelsPowerConstrainAtLowSpeedMode>0.5</wheelsPowerConstrainAtLowSpeedMode>
+<!--        <wheelsPowerConstrain type="double">0.8</wheelsPowerConstrain>-->
+<!--        <wheelsPowerConstrainAtLowSpeedMode>0.5</wheelsPowerConstrainAtLowSpeedMode>-->
+<!--        <rotationalSpeedMaxSacrifice type="double">0.5</rotationalSpeedMaxSacrifice>-->
+        <wheelsPowerConstrain type="double">0.4</wheelsPowerConstrain>
+        <wheelsPowerConstrainAtLowSpeedMode>0.3</wheelsPowerConstrainAtLowSpeedMode>
         <rotationalSpeedMaxSacrifice type="double">0.5</rotationalSpeedMaxSacrifice>
 
         <robotPositionFeedForwardTime type="double">0.05</robotPositionFeedForwardTime>
@@ -58,7 +61,7 @@
 
         <preparingForShootRPM>2000</preparingForShootRPM>
         <projectileSpeed>10</projectileSpeed>
-        <shootingRange>3.6</shootingRange>
+        <shootingRange>4</shootingRange>
 
         <!-- shooting lookup table -->
         <targetDistance0>1.5</targetDistance0>
@@ -80,6 +83,10 @@
         <targetDistance4>3.5</targetDistance4>
         <shooterRPM4>6000</shooterRPM4>
         <armAngle4>-5.5</armAngle4>
+
+        <targetDistance4>4</targetDistance4>
+        <shooterRPM4>6000</shooterRPM4>
+        <armAngle4>-7</armAngle4>
     </shooter>
 
     <intake>
@@ -90,8 +97,8 @@
         <distanceSensorThreshold>24</distanceSensorThreshold>
 
         <launchPower>0.45</launchPower>
-        <intakePower>0.25</intakePower>
-        <intakeAidPower>0.45</intakeAidPower>
+        <intakePower>0.18</intakePower>
+        <intakeAidPower>0.4</intakeAidPower>
         <revertPower>-0.3</revertPower>
         <splitTime>0.3</splitTime>
         <launchTime>0.5</launchTime>
@@ -164,7 +171,7 @@
         <autoStageMaxAcceleration type="double">2</autoStageMaxAcceleration>
         <autoStageMaxVelocity type="double">1</autoStageMaxVelocity>
         <autoStageMaxAngularVelocity type="double">45</autoStageMaxAngularVelocity> <!-- in deg/s -->
-        <inAdvanceTime>0.1</inAdvanceTime>
+        <inAdvanceTime>0.25</inAdvanceTime>
     </auto>
 
     <climb>

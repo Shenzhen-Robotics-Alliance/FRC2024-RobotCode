@@ -15,7 +15,7 @@ public class FiveNotesUpper implements CommandSequenceGenerator {
     @Override
     public List<SequentialCommandSegment> getCommandSegments(RobotCore robotCore) {
         final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
-        final SequentialCommandFactory commandFactory = new SequentialCommandFactory(robotCore, SequentialCommandFactory.getRobotStartingPosition("shoot first move to second upper"), new Rotation2D(Math.toRadians(90)));
+        final SequentialCommandFactory commandFactory = new SequentialCommandFactory(robotCore, SequentialCommandFactory.getRobotStartingPosition("shoot first move to second upper"), FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(90))));
         final AutoStageVisionAimBot aimBot = new AutoStageVisionAimBot(robotCore, 6000);
         final long shootingTimeOut = 5000, intakeTimeOut = 2000;
 

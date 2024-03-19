@@ -124,10 +124,10 @@ public class FiveNotesMid implements CommandSequenceGenerator {
                 intakeTimeOut
         ));
 
-        commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
-                "move closer to speaker holding sixth",
-                new Rotation2D(Math.toRadians(-135))
-        )));
+//        commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
+//                "move closer to speaker holding sixth",
+//                new Rotation2D(Math.toRadians(-135))
+//        )));
 
         return commandSegments;
     }
