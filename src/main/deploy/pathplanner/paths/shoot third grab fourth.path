@@ -3,50 +3,84 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.821193063213515,
-        "y": 6.897682725465309
+        "x": 13.950012265217111,
+        "y": 4.227611993027124
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.968855044700105,
-        "y": 6.206743369264199
+        "x": 15.077967684398994,
+        "y": 4.732312144813356
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 14.207650669224307,
-        "y": 4.321298685393376
+        "x": 14.38619409791229,
+        "y": 6.151334886324542
       },
       "prevControl": {
-        "x": 15.039120063974792,
-        "y": 5.457249830334184
+        "x": 15.157390936241137,
+        "y": 5.862375874660358
+      },
+      "nextControl": {
+        "x": 12.858836322632783,
+        "y": 6.723619122031145
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 9.090015098717787,
+        "y": 6.2887192250846695
+      },
+      "prevControl": {
+        "x": 10.015171185834525,
+        "y": 6.8039960330990565
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": -15.497166817991008,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "shoot",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 1.05,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 180.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 4.0,
-    "maxAngularVelocity": 200.0,
-    "maxAngularAcceleration": 400.0
+    "maxVelocity": 3.5,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 20.772254682046054,
+    "rotation": 32.38067770656921,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "red mid 6 note",
   "previewStartingState": {
-    "rotation": -47.60256220249989,
+    "rotation": 22.03622694014548,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

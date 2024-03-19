@@ -3,57 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.17656984814683,
-        "y": 5.624157402160958
+        "x": 13.809482226667734,
+        "y": 5.539225686154654
       },
       "prevControl": null,
       "nextControl": {
-        "x": 9.34765350272498,
-        "y": 4.450117887396973
+        "x": 13.470135401809268,
+        "y": 6.186573142377054
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 12.181675946804104,
-        "y": 4.848286329953544
+        "x": 12.626687735543802,
+        "y": 6.5463576290918635
       },
       "prevControl": {
-        "x": 10.808398542917896,
-        "y": 3.68862985556075
+        "x": 13.133170197551989,
+        "y": 6.471671104573878
       },
       "nextControl": {
-        "x": 12.708663591364273,
-        "y": 5.293298118693241
+        "x": 10.717258357593641,
+        "y": 6.82792442507962
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 13.270783745561786,
-        "y": 6.604911811820771
+        "x": 8.691846656161214,
+        "y": 5.000527205048704
       },
       "prevControl": {
-        "x": 13.475627296475242,
-        "y": 5.871787524341041
-      },
-      "nextControl": {
-        "x": 13.048277851191935,
-        "y": 7.401248696933915
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 8.793204509485944,
-        "y": 7.439674879349759
-      },
-      "prevControl": {
-        "x": 10.302846759539676,
-        "y": 7.380473222484906
+        "x": 9.090015098717787,
+        "y": 5.8788399459823175
       },
       "nextControl": null,
       "isLocked": false,
@@ -62,16 +46,16 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 2.0,
-      "rotationDegrees": -13.736268305622765,
+      "waypointRelativePos": 1,
+      "rotationDegrees": -16.078848562182785,
       "rotateFast": false
     }
   ],
   "constraintZones": [
     {
       "name": "shoot",
-      "minWaypointRelativePos": 1.0499999999999998,
-      "maxWaypointRelativePos": 2.0,
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.95,
       "constraints": {
         "maxVelocity": 2.0,
         "maxAcceleration": 4.0,
@@ -89,13 +73,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": 67.96377305985439,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "red mid 6 note",
   "previewStartingState": {
-    "rotation": 47.12109639666126,
+    "rotation": -1.332219853869674,
     "velocity": 0
   },
   "useDefaultConstraints": true

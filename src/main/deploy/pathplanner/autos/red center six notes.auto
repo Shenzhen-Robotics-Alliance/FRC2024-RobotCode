@@ -8,7 +8,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "first note and grab"
+            "pathName": "first note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "move to second note"
           }
         },
         {
@@ -32,7 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "shoot fifth grab sixth"
+            "pathName": "shoot fifth grab sixth fast"
           }
         },
         {

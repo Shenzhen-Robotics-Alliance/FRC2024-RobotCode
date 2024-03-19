@@ -8,7 +8,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "first note and grab"
+            "pathName": "first note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "move to second note"
           }
         },
         {
@@ -26,19 +32,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "shoot fourth move to fifth (half field)"
+            "pathName": "shoot fourth move to fifth"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "shoot fifth grab sixth (half field)"
+            "pathName": "shoot fifth grab sixth"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "shoot sixth (half field)"
+            "pathName": "move closer to speaker holding sixth"
           }
         }
       ]

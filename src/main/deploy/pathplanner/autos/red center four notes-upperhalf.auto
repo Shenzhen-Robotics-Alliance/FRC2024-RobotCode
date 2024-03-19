@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot first move to second(half)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot second move to third(half)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot third move to fourth(half)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot fourth(half)"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

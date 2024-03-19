@@ -150,10 +150,10 @@
 
         <!-- simple arm controller -->
         <maxPowerWhenMovingUp>0.45</maxPowerWhenMovingUp>
-        <maxPowerWhenMovingDown>0.18</maxPowerWhenMovingDown>
+        <maxPowerWhenMovingDown>0.2</maxPowerWhenMovingDown>
         <errorStartDecelerate>40</errorStartDecelerate>
-        <powerNeededToMoveUp>0.2</powerNeededToMoveUp>
-        <powerNeededToMoveDown>0.12</powerNeededToMoveDown>
+        <powerNeededToMoveUp>0.24</powerNeededToMoveUp>
+        <powerNeededToMoveDown>0.18</powerNeededToMoveDown>
         <errorTolerance>2</errorTolerance>
     </arm>
     <auto>

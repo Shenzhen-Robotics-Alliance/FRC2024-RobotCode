@@ -3,41 +3,57 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.352232396333552,
-        "y": 4.227611993027124
+        "x": 8.492762434882929,
+        "y": 6.0076591479859145
       },
       "prevControl": null,
       "nextControl": {
-        "x": 9.643224100308974,
-        "y": 3.765890499813842
+        "x": 10.132279551292338,
+        "y": 6.979658581285779
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 12.251940966078795,
-        "y": 4.906840512682451
+        "x": 12.93116948573412,
+        "y": 6.300430061630451
       },
       "prevControl": {
-        "x": 11.144004274187907,
-        "y": 3.9593939720678035
+        "x": 12.155380003848473,
+        "y": 6.325865782348014
       },
       "nextControl": {
-        "x": 12.52417721705064,
-        "y": 5.139641985998561
+        "x": 14.359891544319463,
+        "y": 6.253586715447325
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 13.513278287103638,
-        "y": 5.477192351175378
+        "x": 14.765406842307566,
+        "y": 6.109580906007338
       },
       "prevControl": {
-        "x": 12.932377658659815,
-        "y": 5.445792317205441
+        "x": 14.5546117844835,
+        "y": 6.355508473468749
+      },
+      "nextControl": {
+        "x": 15.213705828023791,
+        "y": 5.586565422671742
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 14.373219029224071,
+        "y": 4.396444547876023
+      },
+      "prevControl": {
+        "x": 14.731036256900293,
+        "y": 4.875288190795675
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,15 +63,20 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1,
-      "rotationDegrees": 10.035521433439449,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": 0,
       "rotateFast": false
     }
   ],
   "constraintZones": [
     {
       "name": "shoot",
-      "minWaypointRelativePos": 1.0,
-      "maxWaypointRelativePos": 2.0,
+      "minWaypointRelativePos": 2.05,
+      "maxWaypointRelativePos": 3.0,
       "constraints": {
         "maxVelocity": 2.0,
         "maxAcceleration": 4.0,
@@ -73,13 +94,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": 24.64677085193139,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "red mid 6 note",
+  "folder": "red mid 5 notes up",
   "previewStartingState": {
-    "rotation": 69.27444113443926,
+    "rotation": 45.162021045048135,
     "velocity": 0
   },
   "useDefaultConstraints": true

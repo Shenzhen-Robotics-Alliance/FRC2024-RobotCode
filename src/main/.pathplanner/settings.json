@@ -1,9 +1,9 @@
 {
-  "robotWidth": 0.75,
-  "robotLength": 0.75,
+  "robotWidth": 0.83,
+  "robotLength": 0.99,
   "holonomicMode": true,
   "pathFolders": [
-    "red lower pick notes only",
+    "red mid 5 notes up",
     "red mid 6 note"
   ],
   "autoFolders": [],
