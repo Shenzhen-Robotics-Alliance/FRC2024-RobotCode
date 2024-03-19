@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class RedAutoFiveNotesTestRoute implements CommandSequenceGenerator {
+public class SixNotesMidTestRoute implements CommandSequenceGenerator {
     @Override
     public List<SequentialCommandSegment> getCommandSegments(RobotCore robotCore) {
         final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
@@ -26,7 +26,6 @@ public class RedAutoFiveNotesTestRoute implements CommandSequenceGenerator {
                 "first note",
                 new Rotation2D(Math.toRadians(180))
         )));
-
         commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
                 "move to second note",
                 new Rotation2D(Math.toRadians(135))
@@ -52,8 +51,8 @@ public class RedAutoFiveNotesTestRoute implements CommandSequenceGenerator {
         commandSegments.addAll(Arrays.asList(commandFactory.followPath(
                 "shoot fourth move to fifth",
                 new Rotation2D[] {
-                        new Rotation2D(Math.toRadians(-150)),
-                        new Rotation2D(Math.toRadians(-150)),
+                        new Rotation2D(Math.toRadians(150)),
+                        new Rotation2D(Math.toRadians(150)),
                         new Rotation2D(Math.toRadians(180))
                 },
                 ()->{}, ()->{}, ()->{}
@@ -61,20 +60,24 @@ public class RedAutoFiveNotesTestRoute implements CommandSequenceGenerator {
 
         /* shoot fifth move to sixth */
         commandSegments.addAll(Arrays.asList(commandFactory.followPath(
-                "shoot fifth grab sixth",
+                "shoot fifth grab sixth fast",
                 new Rotation2D[] {
-                        new Rotation2D(Math.toRadians(150)),
+                        new Rotation2D(Math.toRadians(160)),
                         new Rotation2D(Math.toRadians(-120))
                 },
                 ()->{}, ()->{}, ()->{}
         )));
 
-        commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
-                "move closer to speaker holding sixth",
-                new Rotation2D(Math.toRadians(-135))
+        /* shoot sixth */
+        commandSegments.addAll(Arrays.asList(commandFactory.followPath(
+                "shoot sixth",
+                new Rotation2D[] {
+                        new Rotation2D(Math.toRadians(-170)),
+                        new Rotation2D(Math.toRadians(180))
+                },
+                ()->{}, ()->{}, ()->{}
         )));
 
         return commandSegments;
     }
 }
-

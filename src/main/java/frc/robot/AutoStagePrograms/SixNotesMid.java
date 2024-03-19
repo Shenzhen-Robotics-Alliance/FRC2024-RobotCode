@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class RedAutoSixNote implements CommandSequenceGenerator {
+public class SixNotesMid implements CommandSequenceGenerator {
     @Override
     public List<SequentialCommandSegment> getCommandSegments(RobotCore robotCore) {
         final List<SequentialCommandSegment> commandSegments = new ArrayList<>();
@@ -51,13 +51,9 @@ public class RedAutoSixNote implements CommandSequenceGenerator {
         ));
 
         /* move to third */
-        commandSegments.add(new SequentialCommandSegment(
-                () -> true,
-                () -> SequentialCommandFactory.getBezierCurvesFromPathFile("shoot second and grab third").get(1),
-                ()->{}, ()->{}, ()->{},
-                () -> true,
-                robotCore.positionReader::getRobotRotation2D,
-                () -> new Rotation2D(Math.toRadians(-150))
+        commandSegments.add(commandFactory.followSingleCurve(
+                "shoot second and grab third", 1,
+                new Rotation2D(Math.toRadians(-150))
         ));
 
         /* grab third */
@@ -74,13 +70,9 @@ public class RedAutoSixNote implements CommandSequenceGenerator {
                 shootingTimeOut
         ));
         /* move to fourth */
-        commandSegments.add(new SequentialCommandSegment(
-                () -> true,
-                () -> SequentialCommandFactory.getBezierCurvesFromPathFile("shoot third grab fourth").get(1),
-                ()->{}, ()->{}, ()->{},
-                () -> true,
-                robotCore.positionReader::getRobotRotation2D,
-                () -> new Rotation2D(Math.toRadians(-150))
+        commandSegments.add(commandFactory.followSingleCurve(
+                "shoot third grab fourth", 1,
+                new Rotation2D(Math.toRadians(-150))
         ));
 
         /* grab fourth */
@@ -91,13 +83,9 @@ public class RedAutoSixNote implements CommandSequenceGenerator {
         ));
 
         /* move to shooting spot */
-        commandSegments.add(new SequentialCommandSegment(
-                () -> true,
-                () -> SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fourth move to fifth").get(0),
-                ()->{}, ()->{}, ()->{},
-                () -> true,
-                () -> new Rotation2D(Math.toRadians(-150)),
-                () -> new Rotation2D(Math.toRadians(150))
+        commandSegments.add(commandFactory.followSingleCurve(
+                "shoot fourth move to fifth", 0,
+                new Rotation2D(Math.toRadians(150))
         ));
         /* shoot fourth */
         commandSegments.add(aimBot.shootWhileMoving(
@@ -106,13 +94,9 @@ public class RedAutoSixNote implements CommandSequenceGenerator {
                 shootingTimeOut
         ));
         /* move to fifth */
-        commandSegments.add(new SequentialCommandSegment(
-                () -> true,
-                () -> SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fourth move to fifth").get(2),
-                ()->{}, ()->{}, ()->{},
-                () -> true,
-                robotCore.positionReader::getRobotRotation2D,
-                () -> new Rotation2D(Math.toRadians(180))
+        commandSegments.add(commandFactory.followSingleCurve(
+                "shoot fourth move to fifth", 2,
+                new Rotation2D(Math.toRadians(180))
         ));
         /* grab fifth */
         commandSegments.add(aimBot.grabNote(
@@ -128,13 +112,9 @@ public class RedAutoSixNote implements CommandSequenceGenerator {
                 shootingTimeOut
         ));
         /* move to sixth */
-        commandSegments.add(new SequentialCommandSegment(
-                () -> true,
-                () -> SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fifth grab sixth fast").get(1),
-                ()->{}, ()->{}, ()->{},
-                () -> true,
-                robotCore.positionReader::getRobotRotation2D,
-                () -> new Rotation2D(Math.toRadians(-120))
+        commandSegments.add(commandFactory.followSingleCurve(
+                "shoot fifth grab sixth fast", 1,
+                new Rotation2D(Math.toRadians(-120))
         ));
 
         /* grab sixth */
@@ -143,15 +123,10 @@ public class RedAutoSixNote implements CommandSequenceGenerator {
                 new Rotation2D(Math.toRadians(-120)),
                 intakeTimeOut
         ));
-
         /* move to shooting spot */
-        commandSegments.add(new SequentialCommandSegment(
-                () -> true,
-                () -> SequentialCommandFactory.getBezierCurvesFromPathFile("shoot sixth").get(0),
-                ()->{}, ()->{}, ()->{},
-                () -> true,
-                () -> new Rotation2D(Math.toRadians(-120)),
-                () -> new Rotation2D(Math.toRadians(-170))
+        commandSegments.add(commandFactory.followSingleCurve(
+                "shoot sixth", 0,
+                new Rotation2D(Math.toRadians(-170))
         ));
         /* shoot sixth */
         commandSegments.add(aimBot.shootWhileMoving(

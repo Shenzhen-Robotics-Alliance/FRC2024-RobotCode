@@ -4,6 +4,7 @@ import edu.wpi.first.hal.AccumulatorResult;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.AutoStagePrograms.FieldPositions;
 import frc.robot.Modules.PositionReader.PositionEstimator;
 import frc.robot.Modules.Chassis.SwerveBasedChassis;
 import frc.robot.RobotCore;
@@ -276,6 +277,22 @@ public class SequentialCommandFactory {
         }
     }
 
+    public SequentialCommandSegment followSingleCurve(String pathName, int index, Rotation2D facingRotation) {
+        return followSingleCurve(pathName, index, facingRotation, doNothing, doNothing, doNothing);
+    }
+
+    public SequentialCommandSegment followSingleCurve(String pathName, int index, Rotation2D facingRotation, Runnable beginning, Runnable periodic, Runnable ending) {
+        final List<BezierCurve> curves = getBezierCurvesFromPathFile(pathName);
+        return new SequentialCommandSegment(
+                () -> true,
+                () -> curves.get(index),
+                beginning, periodic, ending,
+                () -> true,
+                positionEstimator::getRobotRotation2D, () -> FieldPositions.toActualRotation(facingRotation),
+                SpeedCurves.originalSpeed,1
+        );
+    }
+
     /** all rotations are in red alliance, will be automatically converted if blue */
     public SequentialCommandSegment[] followPathFacing(String pathName, Rotation2D facingRotation) {
         return followPathFacing(pathName, facingRotation, doNothing, doNothing, doNothing);
@@ -310,7 +327,7 @@ public class SequentialCommandFactory {
                             () -> curves.get(0),
                             beginning, periodic, ending,
                             chassis::isCurrentTranslationalTaskFinished,
-                            positionEstimator::getRobotRotation2D, () -> toActualRotation(robotRotationTargets[0]),
+                            positionEstimator::getRobotRotation2D, () -> FieldPositions.toActualRotation(robotRotationTargets[0]),
                             SpeedCurves.easeInOut,1
                     )
             };
@@ -320,7 +337,7 @@ public class SequentialCommandFactory {
                 () -> curves.get(0),
                 beginning, periodic, doNothing,
                 () -> true,
-                positionEstimator::getRobotRotation2D, () -> toActualRotation(robotRotationTargets[0]),
+                positionEstimator::getRobotRotation2D, () -> FieldPositions.toActualRotation(robotRotationTargets[0]),
                 SpeedCurves.easeIn,1
         );
 
@@ -332,7 +349,7 @@ public class SequentialCommandFactory {
                     () -> curve,
                     doNothing, periodic, doNothing,
                     () -> true,
-                    () -> toActualRotation(startingRotation), () -> toActualRotation(endingRotation),
+                    () -> FieldPositions.toActualRotation(startingRotation), () -> FieldPositions.toActualRotation(endingRotation),
                     SpeedCurves.originalSpeed,1
             );
         }
@@ -342,15 +359,11 @@ public class SequentialCommandFactory {
                 () -> curves.get(curves.size()-1),
                 doNothing, periodic, ending,
                 chassis::isCurrentTranslationalTaskFinished,
-                () -> toActualRotation(robotRotationTargets[robotRotationTargets.length-2]), () -> toActualRotation(robotRotationTargets[robotRotationTargets.length-1]),
+                () -> FieldPositions.toActualRotation(robotRotationTargets[robotRotationTargets.length-2]), () -> FieldPositions.toActualRotation(robotRotationTargets[robotRotationTargets.length-1]),
                 SpeedCurves.originalSpeed,1
         );
 
         return commandSegments;
-    }
-
-    private static Rotation2D toActualRotation(Rotation2D rotationInRedAlliance) {
-        return (DriverStation.getAlliance().orElse(DriverStation.Alliance.Red) == DriverStation.Alliance.Red) ? rotationInRedAlliance : new Rotation2D(rotationInRedAlliance.getRadian() * -1);
     }
 
     public static List<BezierCurve> getBezierCurvesFromPathFile(String pathName) {

@@ -8,25 +8,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "shoot first move to second(half)"
+            "pathName": "shoot first move to second upper"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "shoot second move to third(half)"
+            "pathName": "shoot second move to third upper"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "shoot third move to fourth(half)"
+            "pathName": "shoot third move to fourth upper"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "shoot fourth(half)"
+            "pathName": "shoot fourth move to fifth upper"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot fifth upper"
           }
         }
       ]
