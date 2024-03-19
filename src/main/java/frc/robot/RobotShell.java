@@ -118,7 +118,7 @@ public class RobotShell extends TimedRobot {
     public void testInit() {
         // System.out.println("<-- Robot Shell | test init -->");
         if (robotTest == null)
-            this.robotTest = new DCEncoderCalibration(robotCore.armEncoder.getRawSensorInstance());
+            this.robotTest = new WheelsCalibration(robotCore.robotConfig);
         robotTest.testStart();
     }
 
