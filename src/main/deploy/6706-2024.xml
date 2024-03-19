@@ -37,9 +37,9 @@
 
     <chassis>
         <wheelGearRatio type="double">8.14</wheelGearRatio>
-        <wheelsPowerConstrain type="double">0.2</wheelsPowerConstrain>
-        <wheelsPowerConstrainAtLowSpeedMode>0.1</wheelsPowerConstrainAtLowSpeedMode>
-        <rotationalSpeedMaxSacrifice type="double">0.05</rotationalSpeedMaxSacrifice>
+        <wheelsPowerConstrain type="double">0.6</wheelsPowerConstrain>
+        <wheelsPowerConstrainAtLowSpeedMode>0.5</wheelsPowerConstrainAtLowSpeedMode>
+        <rotationalSpeedMaxSacrifice type="double">0.5</rotationalSpeedMaxSacrifice>
 
         <robotPositionFeedForwardTime type="double">0.05</robotPositionFeedForwardTime>
         <translationalTaskUpdatableRange type="double">0.1</translationalTaskUpdatableRange>
@@ -87,7 +87,7 @@
         <intakeMotorReversed>1</intakeMotorReversed>
         <intakeAidMotorPort>9</intakeAidMotorPort>
         <intakeAidMotorReversed>1</intakeAidMotorReversed>
-        <distanceSensorThreshold>20</distanceSensorThreshold>
+        <distanceSensorThreshold>24</distanceSensorThreshold>
 
         <launchPower>0.45</launchPower>
         <intakePower>0.3</intakePower>
@@ -157,13 +157,13 @@
         <errorTolerance>2</errorTolerance>
     </arm>
     <auto>
-<!--        <autoStageMaxAcceleration type="double">8</autoStageMaxAcceleration>-->
-<!--        <autoStageMaxVelocity type="double">4</autoStageMaxVelocity>-->
+<!--        <autoStageMaxAcceleration type="double">7</autoStageMaxAcceleration>-->
+<!--        <autoStageMaxVelocity type="double">3.5</autoStageMaxVelocity>-->
 <!--        <autoStageMaxAngularVelocity type="double">180</autoStageMaxAngularVelocity> &lt;!&ndash; in deg/s &ndash;&gt;-->
 <!--        <inAdvanceTime>0.4</inAdvanceTime>-->
-        <autoStageMaxAcceleration type="double">2</autoStageMaxAcceleration>
-        <autoStageMaxVelocity type="double">1</autoStageMaxVelocity>
-        <autoStageMaxAngularVelocity type="double">45</autoStageMaxAngularVelocity> <!-- in deg/s -->
+        <autoStageMaxAcceleration type="double">4</autoStageMaxAcceleration>
+        <autoStageMaxVelocity type="double">2</autoStageMaxVelocity>
+        <autoStageMaxAngularVelocity type="double">90</autoStageMaxAngularVelocity> <!-- in deg/s -->
         <inAdvanceTime>0.1</inAdvanceTime>
     </auto>
 

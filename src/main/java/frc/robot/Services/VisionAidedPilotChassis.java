@@ -102,6 +102,10 @@ public class VisionAidedPilotChassis extends PilotChassis {
 
         activateControlUpperStructure();
 
+        intake.reset();
+        arm.reset();
+        shooter.reset();
+
         red.gainOwnerShip(this); green.gainOwnerShip(this);  blue.gainOwnerShip(this);
     }
 
@@ -121,7 +125,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
 
         super.periodic();
         final int translationAutoPilotButton = (int)robotConfig.getConfig(super.controllerName, "translationAutoPilotButton"),
-                smartRotationControlButton = (int)robotConfig.getConfig(super.controllerName, "smartRotationControlButton");
+                smartRotationControlButton = (int)robotConfig.getConfig(super.controllerName, "rotationAutoPilotButton");
         final VisionTargetClass currentAimingTargetClass = targetChooser.getSelected();
         final AprilTagReferredTarget currentAimingTarget = switch (currentAimingTargetClass) {
             case SPEAKER -> speakerTarget;
@@ -147,6 +151,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
         switch (currentStatus) {
             case MANUALLY_DRIVING -> {
                 shooter.setShooterMode(Shooter.ShooterMode.DISABLED, this);
+                arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
+                intake.turnOffIntake(this);
                 if (copilotGamePad.getBButton()) {
                     arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SPLIT, this);
                     arm.periodic();
@@ -157,7 +163,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
                     if (copilotGamePad.getYButton())
                         shooter.setShooterMode(Shooter.ShooterMode.SPECIFIED_RPM, this);
                 }
-                arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
 
                 /* turn auto facing back on after an amount of time whenever note is in intake */
                 if (intake.isNoteInsideIntake() && (System.currentTimeMillis() - super.lastRotationalInputTimeMillis > turnFaceToTargetFunctionBackOnTimeAfterNoReactionMillis))

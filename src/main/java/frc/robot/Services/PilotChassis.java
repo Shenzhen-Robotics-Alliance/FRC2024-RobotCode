@@ -104,7 +104,7 @@ public class PilotChassis extends RobotServiceBase {
 
         /* read and process pilot's translation input */
         final int translationAutoPilotButton = (int)robotConfig.getConfig(controllerName, "translationAutoPilotButton");
-        final int smartRotationControlButton = (int) robotConfig.getConfig(controllerName, "smartRotationControlButton");
+        final int smartRotationControlButton = (int) robotConfig.getConfig(controllerName, "rotationAutoPilotButton");
         SwerveBasedChassis.ChassisTaskTranslation chassisTranslationalTask = new SwerveBasedChassis.ChassisTaskTranslation(
                 SwerveBasedChassis.ChassisTaskTranslation.TaskType.SET_VELOCITY,
                 /* if autopilot is on, we scale the input down by a factor so that we can search for the target */

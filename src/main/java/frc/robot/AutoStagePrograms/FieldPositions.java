@@ -21,6 +21,7 @@ public class FieldPositions {
     }
 
     public static Rotation2D toActualRotation(Rotation2D rotation2D) {
+        System.out.println("to actual rotation alliance: " + DriverStation.getAlliance().orElse(DriverStation.Alliance.Red).name());
         return DriverStation.getAlliance().orElse(DriverStation.Alliance.Red) == DriverStation.Alliance.Red ? rotation2D : new Rotation2D(-rotation2D.getRadian());
     }
 }

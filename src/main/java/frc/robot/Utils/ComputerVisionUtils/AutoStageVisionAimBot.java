@@ -1,6 +1,7 @@
 package frc.robot.Utils.ComputerVisionUtils;
 
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.AutoStagePrograms.FieldPositions;
 import frc.robot.Modules.Chassis.SwerveBasedChassis;
 import frc.robot.Modules.UpperStructure.Intake;
 import frc.robot.Modules.UpperStructure.Shooter;
@@ -27,10 +28,12 @@ public class AutoStageVisionAimBot {
     public SequentialCommandSegment grabNote(SequentialCommandSegment.InitiateCondition initiateCondition, Vector2D assumedNotePosition, Rotation2D desiredRobotRotation, long timeOutMillis) {
         return grabNote(initiateCondition, assumedNotePosition, desiredRobotRotation, timeOutMillis, false);
     }
-    public SequentialCommandSegment grabNote(SequentialCommandSegment.InitiateCondition initiateCondition, Vector2D assumedNotePosition, Rotation2D desiredRobotRotation, long timeOutMillis, boolean accelerateShooters) {
+    public SequentialCommandSegment grabNote(SequentialCommandSegment.InitiateCondition initiateCondition, Vector2D assumedNotePositionRaw, Rotation2D desiredRobotRotationRaw, long timeOutMillis, boolean accelerateShooters) {
         /* TODO: in robot config */
         final double intakeDistance = 0.35, intakeTime = 0.4, timeWaitAfterNoteSensed = 0.12, positionDifferenceTolerance = 0.1;
 
+        final Rotation2D desiredRobotRotation = FieldPositions.toActualRotation(desiredRobotRotationRaw);
+        final Vector2D assumedNotePosition = FieldPositions.toActualPosition(assumedNotePositionRaw);
         final Timer grabTimer = new Timer(), noteSensedTimer = new Timer();
         grabTimer.start(); noteSensedTimer.start();
         final Vector2D noteLastSeenPosition = assumedNotePosition;
@@ -87,7 +90,10 @@ public class AutoStageVisionAimBot {
         return shootWhileMoving(initiateCondition, chassisMovementPath, assumedSpeakerPosition, new Rotation2D(Math.PI), timeOutMillis);
     }
 
-    public SequentialCommandSegment shootWhileMoving(SequentialCommandSegment.InitiateCondition initiateCondition, BezierCurve chassisMovementPath, Vector2D assumedSpeakerPosition, Rotation2D endingRotation, long timeOutMillis) {
+    public SequentialCommandSegment shootWhileMoving(SequentialCommandSegment.InitiateCondition initiateCondition, BezierCurve chassisMovementPath, Vector2D assumedSpeakerPositionRaw, Rotation2D endingRotationRaw, long timeOutMillis) {
+        final Vector2D assumedSpeakerPosition = FieldPositions.toActualPosition(assumedSpeakerPositionRaw);
+        final Rotation2D endingRotation = FieldPositions.toActualRotation(endingRotationRaw);
+
         final Timer timeSinceTaskStarted = new Timer(), timeSinceNoteGone = new Timer();
         timeSinceTaskStarted.start(); timeSinceNoteGone.start();
         return new SequentialCommandSegment(

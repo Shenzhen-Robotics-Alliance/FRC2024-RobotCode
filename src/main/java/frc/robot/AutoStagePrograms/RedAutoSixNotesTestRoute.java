@@ -24,34 +24,34 @@ public class RedAutoSixNotesTestRoute implements CommandSequenceGenerator {
         /* shoot the preloaded and move to the second */
         commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
                 "first note and grab",
-                FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(180)))
+                new Rotation2D(Math.toRadians(180))
         )));
 
         /* shoot second and move to third */
         commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
                 "shoot second and grab third",
-                FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(135)))
+                new Rotation2D(Math.toRadians(135))
         )));
 
         /* shoot third and move to fourth */
         commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
                 "shoot third grab fourth",
-                FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(-150)))
+                new Rotation2D(Math.toRadians(-150))
         )));
 
         /* shoot fourth and move to fifth */
         commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
                 "shoot fourth move to fifth",
-                FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(180)))
+                new Rotation2D(Math.toRadians(180))
         )));
 
         /* shoot fifth move to sixth */
         commandSegments.addAll(Arrays.asList(commandFactory.followPath(
                 "shoot fifth grab sixth",
                 new Rotation2D[] {
-                        FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(180))),
-                        FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(135))),
-                        FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(-135)))
+                        new Rotation2D(Math.toRadians(180)),
+                        new Rotation2D(Math.toRadians(135)),
+                        new Rotation2D(Math.toRadians(-135))
                 },
                 ()->{}, ()->{}, ()->{}
         )));
@@ -59,7 +59,7 @@ public class RedAutoSixNotesTestRoute implements CommandSequenceGenerator {
         /* shoot sixth */
         commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
                 "shoot sixth",
-                FieldPositions.toActualRotation(new Rotation2D(Math.toRadians(135)))
+                new Rotation2D(Math.toRadians(135))
         )));
 
         return commandSegments;

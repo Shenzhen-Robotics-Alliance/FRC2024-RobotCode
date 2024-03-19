@@ -171,7 +171,7 @@ public class RobotShell extends TimedRobot {
                         60,
                         200,
                         40,
-                        new Vector2D(new double[] {0, 52})
+                        new Vector2D(new double[] {0, 60})
                 ));
 
         autoStageChooser.addOption("Middle Six Notes Auto Upper Half (Test Route)", new RedAutoStageSixNoteUpperHalfTestRoute());

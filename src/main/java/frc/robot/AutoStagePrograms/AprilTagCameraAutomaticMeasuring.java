@@ -67,7 +67,7 @@ public class AprilTagCameraAutomaticMeasuring implements CommandSequenceGenerato
                     0, -verticalDistance / 100 // notice here the robot moves in meters, so we need to divide it by 100
             });
             commandSegments.add(commandFactory.moveFromPointToPointAndStop(
-                    toFieldPosition(robotPreviousPosition),
+                    robotPreviousPosition,
                     toFieldPosition(targetedPosition),
                     () -> System.out.println("moving to position"),
                     this::putDataOnDashBoard,
@@ -77,7 +77,7 @@ public class AprilTagCameraAutomaticMeasuring implements CommandSequenceGenerato
 
             System.out.println("<-- scheduling | going to position: " + targetedPosition + " -->");
 
-            robotPreviousPosition = targetedPosition;
+            robotPreviousPosition = toFieldPosition(targetedPosition);
             for (int currentHorizontalDistanceSample = 0; currentHorizontalDistanceSample < horizontalAngleSamplesCount; currentHorizontalDistanceSample++) {
                 System.out.println("<-- scheduling | face rotation: " + Math.toDegrees(horizontalAngleRadian) + " -->");
                 commandSegments.add(commandFactory.faceDirection(
