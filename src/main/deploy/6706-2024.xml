@@ -90,9 +90,9 @@
         <distanceSensorThreshold>24</distanceSensorThreshold>
 
         <launchPower>0.45</launchPower>
-        <intakePower>0.3</intakePower>
-        <intakeAidPower>0.5</intakeAidPower>
-        <revertPower>-0.35</revertPower>
+        <intakePower>0.25</intakePower>
+        <intakeAidPower>0.45</intakeAidPower>
+        <revertPower>-0.3</revertPower>
         <splitTime>0.3</splitTime>
         <launchTime>0.5</launchTime>
     </intake>
@@ -150,9 +150,9 @@
 
         <!-- simple arm controller -->
         <maxPowerWhenMovingUp>0.45</maxPowerWhenMovingUp>
-        <maxPowerWhenMovingDown>0.2</maxPowerWhenMovingDown>
+        <maxPowerWhenMovingDown>0.28</maxPowerWhenMovingDown>
         <errorStartDecelerate>40</errorStartDecelerate>
-        <powerNeededToMoveUp>0.24</powerNeededToMoveUp>
+        <powerNeededToMoveUp>0.26</powerNeededToMoveUp>
         <powerNeededToMoveDown>0.18</powerNeededToMoveDown>
         <errorTolerance>2</errorTolerance>
     </arm>
@@ -161,9 +161,9 @@
 <!--        <autoStageMaxVelocity type="double">3.5</autoStageMaxVelocity>-->
 <!--        <autoStageMaxAngularVelocity type="double">180</autoStageMaxAngularVelocity> &lt;!&ndash; in deg/s &ndash;&gt;-->
 <!--        <inAdvanceTime>0.4</inAdvanceTime>-->
-        <autoStageMaxAcceleration type="double">4</autoStageMaxAcceleration>
-        <autoStageMaxVelocity type="double">2</autoStageMaxVelocity>
-        <autoStageMaxAngularVelocity type="double">90</autoStageMaxAngularVelocity> <!-- in deg/s -->
+        <autoStageMaxAcceleration type="double">2</autoStageMaxAcceleration>
+        <autoStageMaxVelocity type="double">1</autoStageMaxVelocity>
+        <autoStageMaxAngularVelocity type="double">45</autoStageMaxAngularVelocity> <!-- in deg/s -->
         <inAdvanceTime>0.1</inAdvanceTime>
     </auto>
 

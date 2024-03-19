@@ -115,7 +115,7 @@
         <additionalInAdvanceTime>0.3</additionalInAdvanceTime>
 
         <defaultShootingRPM>5200</defaultShootingRPM>
-        <amplifyRPM>2000</amplifyRPM>
+        <amplifyRPM>3000</amplifyRPM>
         <idleRPM>0</idleRPM>
         <preparingForShootRPM>2000</preparingForShootRPM>
         <projectileSpeed>10</projectileSpeed>

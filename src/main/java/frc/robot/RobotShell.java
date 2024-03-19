@@ -174,10 +174,14 @@ public class RobotShell extends TimedRobot {
                         new Vector2D(new double[] {0, 60})
                 ));
 
+        autoStageChooser.setDefaultOption("Leave Community", new LeaveCommunity());
+
         autoStageChooser.addOption("Middle Six Notes Auto (Test Route)", new RedAutoSixNotesTestRoute());
+        autoStageChooser.addOption("Middle Five Notes Auto (Test Route)", new RedAutoFiveNotesTestRoute());
 
         autoStageChooser.addOption("Middle Six Notes Auto", new RedAutoSixNote());
+        autoStageChooser.addOption("Middle Five Notes Auto", new RedAutoFiveNotes());
 
-        autoStageChooser.setDefaultOption("Leave Community", new LeaveCommunity());
+        autoStageChooser.addOption("Test Auto Intake", new TestAutoIntake());
     }
 }
