@@ -32,9 +32,92 @@ public class FiveNotesUpper implements CommandSequenceGenerator {
                 "shoot first move to second upper", 1,
                 new Rotation2D(Math.toRadians(180))
         ));
+        commandSegments.add(commandFactory.followSingleCurve(
+                "shoot first move to second upper", 2,
+                new Rotation2D(Math.toRadians(180))
+        ));
 
-        // TODO finish the rest
+        /* grab second */
+        commandSegments.add(aimBot.grabNote(
+                FieldPositions.farNoteRightMost,
+                new Rotation2D(Math.toRadians(180)),
+                intakeTimeOut
+        ));
+        /* move to shooting position */
+        commandSegments.add(commandFactory.followSingleCurve(
+                "shoot second move to third upper", 0,
+                new Rotation2D(Math.toRadians(160))
+        ));
+        /* shoot second */
+        commandSegments.add(aimBot.shootWhileMoving(
+                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot second move to third upper").get(1),
+                FieldPositions.speakerPosition,
+                shootingTimeOut
+        ));
+        /* move to third */
+        commandSegments.add(commandFactory.followSingleCurve(
+                "shoot second move to third upper", 2,
+                new Rotation2D(Math.toRadians(-160))
+        ));
 
+        /* grab third */
+        commandSegments.add(aimBot.grabNote(
+                FieldPositions.farNoteRighter,
+                new Rotation2D(Math.toRadians(-160)),
+                intakeTimeOut
+        ));
+        /* move to shooting position */
+        commandSegments.add(commandFactory.followSingleCurve(
+                "shoot third move to fourth upper", 0,
+                new Rotation2D(Math.toRadians(160))
+        ));
+        /* shoot third */
+        commandSegments.add(aimBot.shootWhileMoving(
+                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot third move to fourth upper").get(1),
+                FieldPositions.speakerPosition,
+                shootingTimeOut
+        ));
+        /* move to fourth */
+        commandSegments.add(commandFactory.followSingleCurve(
+                "shoot third move to fourth upper", 2,
+                new Rotation2D(Math.toRadians(180))
+        ));
+
+        /* grab fourth */
+        commandSegments.add(aimBot.grabNote(
+                FieldPositions.farNoteCenter,
+                new Rotation2D(Math.toRadians(180)),
+                intakeTimeOut
+        ));
+        /* move to shooting position */
+        commandSegments.add(commandFactory.followSingleCurve(
+                "shoot fourth move to fifth upper", 0,
+                new Rotation2D(Math.toRadians(-170))
+        ));
+        /* shoot fourth */
+        commandSegments.add(aimBot.shootWhileMoving(
+                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fourth move to fifth upper").get(1),
+                FieldPositions.speakerPosition,
+                shootingTimeOut
+        ));
+        /* move to fifth */
+        commandSegments.add(commandFactory.followSingleCurve(
+                "shoot fourth move to fifth upper", 2,
+                new Rotation2D(Math.toRadians(180))
+        ));
+
+        /* grab fifth */
+        commandSegments.add(aimBot.grabNote(
+                FieldPositions.nearNote1,
+                new Rotation2D(Math.toRadians(180)),
+                intakeTimeOut
+        ));
+        /* shoot fifth */
+        commandSegments.add(aimBot.shootWhileMoving(
+                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fifth upper").get(1),
+                FieldPositions.speakerPosition,
+                shootingTimeOut
+        ));
         return commandSegments;
     }
 }
