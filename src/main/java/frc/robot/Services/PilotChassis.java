@@ -123,7 +123,7 @@ public class PilotChassis extends RobotServiceBase {
         /* when there is rotational input or there has been rotational input in the previous 0.3 seconds, we record the current heading of the chassis */
         if (pilotController.getRotationalStickValue() != 0)
             lastRotationalInputTimeMillis = System.currentTimeMillis();
-        if (pilotController.keyOnHold(smartRotationControlButton) || System.currentTimeMillis() - lastRotationalInputTimeMillis < robotConfig.getConfig("chassis", "timeLockRotationAfterRotationalInputStops") * 1000)
+        if (System.currentTimeMillis() - lastRotationalInputTimeMillis < robotConfig.getConfig("chassis", "timeLockRotationAfterRotationalInputStops") * 1000)
             smartRotationControlDesiredHeading = chassis.getChassisHeading();
         else if (pilotController.keyOnHold(smartRotationControlButton))
             /* or, when there is no rotational input and that the smart rotation control is on, we stay at the previous rotation */
@@ -134,8 +134,7 @@ public class PilotChassis extends RobotServiceBase {
 
         /* calls to the chassis module and pass the desired motion */
         chassis.setTranslationalTask(chassisTranslationalTask, this);
-        if (!pilotController.keyOnHold(smartRotationControlButton))
-            chassis.setRotationalTask(chassisRotationalTask, this);
+        chassis.setRotationalTask(chassisRotationalTask, this);
 
         /* lock the chassis if needed */
         final int lockChassisButtonPort = (int) robotConfig.getConfig(controllerName, "lockChassisButtonPort");

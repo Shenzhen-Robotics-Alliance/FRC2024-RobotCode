@@ -200,7 +200,7 @@
 
         <inAdvanceTime>0.4</inAdvanceTime>
 
-        <shootingSegmentSpeedFactor>0.5</shootingSegmentSpeedFactor>
+        <shootingSegmentSpeedFactor>0.65</shootingSegmentSpeedFactor>
         <additionalRotationInAdvanceTime>0.3</additionalRotationInAdvanceTime>
     </auto>
 

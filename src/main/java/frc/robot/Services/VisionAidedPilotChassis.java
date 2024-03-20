@@ -165,8 +165,10 @@ public class VisionAidedPilotChassis extends PilotChassis {
                 }
 
                 /* turn auto facing back on after an amount of time whenever note is in intake */
-                if (intake.isNoteInsideIntake() && (System.currentTimeMillis() - super.lastRotationalInputTimeMillis > turnFaceToTargetFunctionBackOnTimeAfterNoReactionMillis))
-                    super.smartRotationControlDesiredHeading = getAprilTagTargetRotation(currentAimingTargetClass, currentAimingTarget);
+                if (pilotController.keyOnHold(smartRotationControlButton) && intake.isNoteInsideIntake() && (System.currentTimeMillis() - super.lastRotationalInputTimeMillis > turnFaceToTargetFunctionBackOnTimeAfterNoReactionMillis))
+                    chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
+                                    getAprilTagTargetRotation(currentAimingTargetClass, currentAimingTarget))
+                            , this);
 
                 if (pilotController.keyOnPress(translationAutoPilotButton))
                     currentStatus = intake.isNoteInsideIntake() ?  Status.SEARCHING_FOR_SHOOT_TARGET : Status.SEARCHING_FOR_NOTE;

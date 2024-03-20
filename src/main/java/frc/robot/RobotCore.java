@@ -125,13 +125,13 @@ public class RobotCore {
                         ),
                         targetHeights
                 );
-                noteDetectionAppClient = new JetsonDetectionAppClient("NoteDetector", "onbot-jetson.local", 8889, new double[] {1280, 720});
+                noteDetectionAppClient = new JetsonDetectionAppClient("NoteDetector", "onbot-jetson.local", 8889, new double[] {640, 480});
                 notePositionTrackingCamera = new FixedAnglePositionTrackingCamera(
                         noteDetectionAppClient,
                         new FixedAngleCameraProfile(
-                                -0.657,
-                                -0.0016,
-                                -8.0704E-4
+                                -0.495,
+                                -0.00206,
+                                -0.0010
                         ),
                         new double[] {-60, -60, -60},
                         new Rotation2D(Math.PI)
