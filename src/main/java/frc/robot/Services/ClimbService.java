@@ -25,21 +25,14 @@ public class ClimbService extends RobotServiceBase {
     @Override
     public void reset() {
         climb.gainOwnerShip(this);
+        climb.onReset();
     }
 
     @Override
     public void periodic() {
-        climb.setLeftClimbTask(
-                copilotGamePad.getAButton() ?
-                new Climb.ClimbTask(Climb.ClimbTask.TaskType.SET_POSITION, robotConfig.getConfig("climb", "upMostPointEncoderPosition"))
-                        : new Climb.ClimbTask(Climb.ClimbTask.TaskType.SET_POWER, copilotGamePad.getLeftTriggerAxis())
-                , this);
+        climb.setLeftClimbTask(new Climb.ClimbTask(Climb.ClimbTask.TaskType.SET_POWER, (copilotGamePad.getAButton() ? -1:1) * copilotGamePad.getLeftTriggerAxis()), this);
 
-        climb.setRightClimbTask(
-                copilotGamePad.getAButton() ?
-                        new Climb.ClimbTask(Climb.ClimbTask.TaskType.SET_POSITION, robotConfig.getConfig("climb", "upMostPointEncoderPosition"))
-                        : new Climb.ClimbTask(Climb.ClimbTask.TaskType.SET_POWER, copilotGamePad.getRightTriggerAxis())
-                , this);
+        climb.setRightClimbTask(new Climb.ClimbTask(Climb.ClimbTask.TaskType.SET_POWER, (copilotGamePad.getAButton() ? -1:1) * copilotGamePad.getRightTriggerAxis()), this);
     }
 
     @Override

@@ -210,7 +210,7 @@
         <rightClimbMotorPort>-1</rightClimbMotorPort>
         <rightClimbMotorReversed>0</rightClimbMotorReversed>
 
-        <movingPower>0.2</movingPower>
+        <movingPower>-0.4</movingPower>
         <tolerance>5000</tolerance>
         <upMostPointEncoderPosition>420000</upMostPointEncoderPosition>
     </climb>

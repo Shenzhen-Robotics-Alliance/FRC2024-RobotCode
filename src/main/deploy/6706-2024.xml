@@ -164,8 +164,8 @@
         <errorTolerance>2</errorTolerance>
     </arm>
     <auto>
-        <autoStageMaxAcceleration type="double">6</autoStageMaxAcceleration>
-        <autoStageMaxVelocity type="double">3</autoStageMaxVelocity>
+        <autoStageMaxAcceleration type="double">7</autoStageMaxAcceleration>
+        <autoStageMaxVelocity type="double">3.5</autoStageMaxVelocity>
         <autoStageMaxAngularVelocity type="double">180</autoStageMaxAngularVelocity> <!-- in deg/s -->
         <inAdvanceTime>0.4</inAdvanceTime>
 <!--        <autoStageMaxAcceleration type="double">2</autoStageMaxAcceleration>-->
@@ -181,7 +181,5 @@
         <rightClimbMotorPort>15</rightClimbMotorPort>
         <!-- positive is up -->
         <rightClimbMotorReversed>1</rightClimbMotorReversed>
-
-        <movingPower>0.4</movingPower>
     </climb>
 </robotConfig>

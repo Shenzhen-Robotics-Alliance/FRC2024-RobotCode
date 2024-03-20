@@ -2,7 +2,7 @@ package frc.robot.Utils.Tests;
 
 import frc.robot.Drivers.DistanceSensors.Rev2mDistanceSensorEncapsulation;
 
-public class SimpleDistanceSensorTest implements SimpleRobotTest {
+public class DistanceSensorTest implements SimpleRobotTest {
     private final Rev2mDistanceSensorEncapsulation testDistanceSensor = new Rev2mDistanceSensorEncapsulation();
 
     @Override
