@@ -132,10 +132,12 @@ public class VisionAidedPilotChassis extends PilotChassis {
             case AMPLIFIER -> amplifierTarget;
         };
 
-        if (pilotController.keyOnHold(translationAutoPilotButton) && intake.isNoteInsideIntake())
+        if (pilotController.keyOnHold(translationAutoPilotButton) && intake.isNoteInsideIntake()) {
+            super.smartRotationControlDesiredHeading = getAprilTagTargetRotation(currentAimingTargetClass, currentAimingTarget);
             chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
-                             getAprilTagTargetRotation(currentAimingTargetClass, currentAimingTarget))
+                            super.smartRotationControlDesiredHeading)
                     , this);
+        }
 
         if (copilotGamePad.getStartButton()) {
             reset();
