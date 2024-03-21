@@ -101,6 +101,7 @@ public class AutoStageVisionAimBot {
                 () -> chassisMovementPath,
                 timeSinceTaskStarted::reset,
                 () -> {
+                    robotCore.shooter.aimingSystem.trustVisionSystem = true;
                     robotCore.chassisModule.setLowSpeedModeEnabled(true, null);
 
                     robotCore.transformableArm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SHOOT_NOTE, null);

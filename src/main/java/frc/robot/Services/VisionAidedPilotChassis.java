@@ -2,6 +2,7 @@ package frc.robot.Services;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Modules.Chassis.SwerveBasedChassis;
@@ -23,7 +24,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
         SPEAKER,
         AMPLIFIER
     }
-    private SendableChooser<VisionTargetClass> targetChooser;
+    private final SendableChooser<VisionTargetClass> targetChooser= new SendableChooser<>();;
+    private final SendableChooser<Boolean> trustAutoAimChooser = new SendableChooser<>();
     private enum Status {
         /**
          * the movement of the chassis is controlled by the pilot
@@ -87,10 +89,13 @@ public class VisionAidedPilotChassis extends PilotChassis {
     @Override
     public void init() {
         super.init();
-        targetChooser = new SendableChooser<>();
         targetChooser.setDefaultOption(VisionTargetClass.SPEAKER.name(), VisionTargetClass.SPEAKER);
         targetChooser.addOption(VisionTargetClass.AMPLIFIER.name(), VisionTargetClass.AMPLIFIER);
         SmartDashboard.putData("current aiming target", targetChooser);
+
+        trustAutoAimChooser.setDefaultOption("Trust", true);
+        trustAutoAimChooser.addOption("Not Trust", false);
+        SmartDashboard.putData("Trust Aiming System", trustAutoAimChooser);
     }
 
 
@@ -122,6 +127,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
     @Override
     public void periodic() {
         final long turnFaceToTargetFunctionBackOnTimeAfterNoReactionMillis = 1500; // TODO in robotConfig
+        shooter.aimingSystem.trustVisionSystem = trustAutoAimChooser.getSelected();
 
         super.periodic();
         final int translationAutoPilotButton = (int)robotConfig.getConfig(super.controllerName, "translationAutoPilotButton"),
@@ -132,7 +138,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
             case AMPLIFIER -> amplifierTarget;
         };
 
-        if (pilotController.keyOnHold(translationAutoPilotButton) && intake.isNoteInsideIntake()) {
+        if (trustAutoAimChooser.getSelected() && pilotController.keyOnHold(translationAutoPilotButton) && intake.isNoteInsideIntake()) {
             super.smartRotationControlDesiredHeading = getAprilTagTargetRotation(currentAimingTargetClass, currentAimingTarget);
             chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
                             super.smartRotationControlDesiredHeading)
@@ -152,22 +158,21 @@ public class VisionAidedPilotChassis extends PilotChassis {
 
         switch (currentStatus) {
             case MANUALLY_DRIVING -> {
-                shooter.setShooterMode(Shooter.ShooterMode.DISABLED, this);
                 arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
                 intake.turnOffIntake(this);
+
+                /* in case of stuck */
+                shooter.setDesiredSpeed(copilotGamePad.getBButton() ? 6000: -6000, this);
+                shooter.setShooterMode(copilotGamePad.getYButton() ? Shooter.ShooterMode.SPECIFIED_RPM : Shooter.ShooterMode.DISABLED, this);
                 if (copilotGamePad.getBButton()) {
                     arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SPLIT, this);
                     arm.periodic();
-                    shooter.setDesiredSpeed(-6000, this);
-                    shooter.setShooterMode(Shooter.ShooterMode.DISABLED, this);
-                    if (arm.transformerInPosition())
-                        intake.startSplit(this); // in case if the Note is stuck
-                    if (copilotGamePad.getYButton())
-                        shooter.setShooterMode(Shooter.ShooterMode.SPECIFIED_RPM, this);
+                    if (arm.transformerInPosition()) intake.startSplit(this); // in case if the Note is stuck
+                    return;
                 }
 
                 /* turn auto facing back on after an amount of time whenever note is in intake */
-                if (pilotController.keyOnHold(smartRotationControlButton) && intake.isNoteInsideIntake() && (System.currentTimeMillis() - super.lastRotationalInputTimeMillis > turnFaceToTargetFunctionBackOnTimeAfterNoReactionMillis))
+                if (trustAutoAimChooser.getSelected() && pilotController.keyOnHold(smartRotationControlButton) && intake.isNoteInsideIntake() && (System.currentTimeMillis() - super.lastRotationalInputTimeMillis > turnFaceToTargetFunctionBackOnTimeAfterNoReactionMillis))
                     chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
                                     getAprilTagTargetRotation(currentAimingTargetClass, currentAimingTarget))
                             , this);
@@ -318,7 +323,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
                 distanceToWallConstrainInFrontOfSpeaker: distanceToWallConstrain;
         chassis.setTranslationalTask(new SwerveBasedChassis.ChassisTaskTranslation(SwerveBasedChassis.ChassisTaskTranslation.TaskType.GO_TO_POSITION,
                 new Vector2D(new double[] {currentPathPositionWithLERP.getX(), Math.max(currentPathPositionWithLERP.getY(), currentVisualTargetLastSeenPosition.getY() + yPositionLowerConstrain)})), this);
-        chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
+        if (trustAutoAimChooser.getSelected())
+            chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
                 shooter.aimingSystem.getRobotFacing(shooter.getProjectileSpeed(), currentVisualTargetLastSeenPosition, rotationInAdvanceTime)), this);
 
         if (autoTrigger && intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && shooter.shooterReady() && shooter.targetInRange() && arm.transformerInPosition() && chassis.isCurrentRotationalTaskFinished())

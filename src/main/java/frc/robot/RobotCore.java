@@ -150,7 +150,7 @@ public class RobotCore {
                 amplifierTarget = new AprilTagReferredTarget(aprilTagPositionTrackingCamera, amplifierTargetAprilTagReferences);
 
                 noteTarget = new AprilTagReferredTarget(notePositionTrackingCamera, noteTargetReferences); // we call it april tag referred target but it is actually recognized by detect-net app
-                final Shooter.AimingSystem aimingSystem = new Shooter.AimingSystem(positionReader, speakerTarget, (long) robotConfig.getConfig("vision-autopilot/aimingTimeUnseenToleranceMS"));
+                final Shooter.AimingSystem aimingSystem = new Shooter.AimingSystem(positionReader, speakerTarget, robotConfig);
                 final EncoderMotorMechanism[] shooterMechanisms = new EncoderMotorMechanism[] {
                         new TalonFXMotor(
                                 new TalonFX((int)robotConfig.getConfig("shooter/shooter1Port")),

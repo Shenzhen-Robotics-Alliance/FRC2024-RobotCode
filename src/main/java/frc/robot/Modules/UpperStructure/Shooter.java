@@ -240,16 +240,15 @@ public class Shooter extends RobotModuleBase {
     public static final class AimingSystem {
         public final PositionEstimator chassisPositionEstimator;
         public final AprilTagReferredTarget target;
-        public final long timeUnseenTolerance;
         public Vector2D defaultTargetFieldPosition = null;
+        public boolean trustVisionSystem = true;
+        private final RobotConfigReader robotConfig;
 
-        /**
-         * @param timeUnseenTolerance the amount of time, in ms, that we can accept the target to be gone
-         * */
-        public AimingSystem(PositionEstimator chassisPositionEstimator, AprilTagReferredTarget aprilTagReferredTarget, long timeUnseenTolerance) {
+
+        public AimingSystem(PositionEstimator chassisPositionEstimator, AprilTagReferredTarget aprilTagReferredTarget, RobotConfigReader robotConfig) {
             this.chassisPositionEstimator = chassisPositionEstimator;
             this.target = aprilTagReferredTarget;
-            this.timeUnseenTolerance = timeUnseenTolerance;
+            this.robotConfig = robotConfig;
         }
 
         public Vector2D getRelativePositionToTarget(double projectileSpeed) {
@@ -261,7 +260,7 @@ public class Shooter extends RobotModuleBase {
          * @return the relative position to target, in meters, and in reference to the robot; if not seen for too long, return null
           */
         public Vector2D getRelativePositionToTarget(double projectileSpeed, double additionalInAdvanceTime) {
-            final Vector2D targetFieldPositionByCamera = target.getTargetFieldPositionWithAprilTags(timeUnseenTolerance),
+            final Vector2D targetFieldPositionByCamera = target.getTargetFieldPositionWithAprilTags((long) robotConfig.getConfig("vision-autopilot/aimingTimeUnseenToleranceMS")),
                     targetFieldPosition = targetFieldPositionByCamera == null ? defaultTargetFieldPosition : targetFieldPositionByCamera;
             if (targetFieldPosition == null) return null;
             return getRelativePositionToTarget(projectileSpeed, targetFieldPosition, additionalInAdvanceTime);
@@ -272,6 +271,9 @@ public class Shooter extends RobotModuleBase {
         }
 
         public Vector2D getRelativePositionToTarget(double projectileSpeed, Vector2D targetFieldPosition, double additionalInAdvanceTime) {
+            if (!trustVisionSystem)
+                return new Vector2D(new double[] {0, -robotConfig.getConfig("vision-autopilot/defaultShootingPositionDistance")});
+
             final double distanceToTarget = Vector2D.displacementToTarget(chassisPositionEstimator.getRobotPosition2D(), targetFieldPosition).getMagnitude(),
                     flightTime = distanceToTarget / projectileSpeed;
             final Vector2D chassisPositionAfterFlightTime = chassisPositionEstimator.getRobotPosition2D().addBy(chassisPositionEstimator.getRobotVelocity2D().multiplyBy(flightTime + additionalInAdvanceTime));
@@ -283,7 +285,7 @@ public class Shooter extends RobotModuleBase {
         }
 
         public double getRobotFacing(double projectileSpeed, double additionalInAdvanceTime) {
-            final Vector2D targetFieldPositionByCamera = target.getTargetFieldPositionWithAprilTags(timeUnseenTolerance),
+            final Vector2D targetFieldPositionByCamera = target.getTargetFieldPositionWithAprilTags((long) robotConfig.getConfig("vision-autopilot/aimingTimeUnseenToleranceMS")),
                     targetFieldPosition = targetFieldPositionByCamera == null ? defaultTargetFieldPosition : targetFieldPositionByCamera;
             return getRelativePositionToTarget(projectileSpeed, targetFieldPosition, additionalInAdvanceTime).getHeading() - Math.toRadians(90);
         }
