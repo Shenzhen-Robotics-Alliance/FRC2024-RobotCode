@@ -2,7 +2,6 @@ package frc.robot.Services;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Modules.Chassis.SwerveBasedChassis;
@@ -57,7 +56,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
     private final TransformableArm arm;
     private final AprilTagReferredTarget speakerTarget, amplifierTarget, noteTarget;
     private final XboxController copilotGamePad;
-    private final DriverStation.Alliance alliance;
     private final LEDStatusLights red, green, blue;
 
 
@@ -82,7 +80,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
         this.red = red;
         this.green = green;
         this.blue = blue;
-        this.alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Red);
     }
 
 
@@ -181,6 +178,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
                     currentStatus = intake.isNoteInsideIntake() ?  Status.SEARCHING_FOR_SHOOT_TARGET : Status.SEARCHING_FOR_NOTE;
             }
             case SEARCHING_FOR_SHOOT_TARGET -> {
+                putLastShootingInfoToDashboard();
                 updateChassisPositionWhenTaskStarted();
 
                 shooter.setShooterMode(
@@ -226,6 +224,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
                     initiateGrabNoteProcess(false);
             }
             case REACHING_TO_SHOOT_TARGET -> {
+                putLastShootingInfoToDashboard();
                 intake.turnOffIntake(this);
                 switch (currentAimingTargetClass) {
                     case SPEAKER -> proceedGoToSpeakerTarget(translationAutoPilotButton);
@@ -520,7 +519,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         speakerImpactSpacingWidth = 0.6;
         distanceToWallConstrainInFrontOfSpeaker = 1.5;
         distanceToWallConstrain = 0.8;
-        switch (alliance) {
+        switch (DriverStation.getAlliance().orElse(DriverStation.Alliance.Red)) {
             case Red -> {
                 amplifyingPositionToAmplifier = new Vector2D(new double[] {0, -0.4});
                 speakerDefaultRotation = Math.toRadians(180);
@@ -536,6 +535,15 @@ public class VisionAidedPilotChassis extends PilotChassis {
                 shootProcessEndingPointInReferenceToShootingSweetSpotByDefault = new Vector2D(new double[] {shootingProcessEndingPointUpdatableRange, 0});
             }
         }
+    }
+
+    private void putLastShootingInfoToDashboard() {
+        final Vector2D speakerRelativePosition = speakerTarget.getTargetFieldPositionWithAprilTags(5000);
+        if (speakerRelativePosition == null)
+            return;
+        SmartDashboard.putNumber("prev st rel pos (x)", speakerRelativePosition.getX());
+        SmartDashboard.putNumber("prev st rel pos (y)", speakerRelativePosition.getY());
+        SmartDashboard.putNumber("prev st distance", speakerRelativePosition.getMagnitude());
     }
 
     /**
