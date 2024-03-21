@@ -114,7 +114,7 @@ public class FiveNotesUpper implements CommandSequenceGenerator {
         ));
         /* shoot fifth */
         commandSegments.add(aimBot.shootWhileMoving(
-                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fifth upper").get(1),
+                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fifth upper").get(0),
                 FieldPositions.speakerPosition,
                 shootingTimeOut
         ));
