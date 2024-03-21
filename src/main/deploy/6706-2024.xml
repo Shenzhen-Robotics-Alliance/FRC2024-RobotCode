@@ -37,12 +37,12 @@
 
     <chassis>
         <wheelGearRatio type="double">8.14</wheelGearRatio>
-<!--        <wheelsPowerConstrain type="double">0.8</wheelsPowerConstrain>-->
-<!--        <wheelsPowerConstrainAtLowSpeedMode>0.5</wheelsPowerConstrainAtLowSpeedMode>-->
-<!--        <rotationalSpeedMaxSacrifice type="double">0.5</rotationalSpeedMaxSacrifice>-->
-        <wheelsPowerConstrain type="double">0.4</wheelsPowerConstrain>
-        <wheelsPowerConstrainAtLowSpeedMode>0.3</wheelsPowerConstrainAtLowSpeedMode>
+        <wheelsPowerConstrain type="double">0.8</wheelsPowerConstrain>
+        <wheelsPowerConstrainAtLowSpeedMode>0.5</wheelsPowerConstrainAtLowSpeedMode>
         <rotationalSpeedMaxSacrifice type="double">0.5</rotationalSpeedMaxSacrifice>
+<!--        <wheelsPowerConstrain type="double">0.4</wheelsPowerConstrain>-->
+<!--        <wheelsPowerConstrainAtLowSpeedMode>0.3</wheelsPowerConstrainAtLowSpeedMode>-->
+<!--        <rotationalSpeedMaxSacrifice type="double">0.4</rotationalSpeedMaxSacrifice>-->
 
         <robotPositionFeedForwardTime type="double">0.05</robotPositionFeedForwardTime>
         <translationalTaskUpdatableRange type="double">0.1</translationalTaskUpdatableRange>
@@ -61,32 +61,32 @@
 
         <preparingForShootRPM>2000</preparingForShootRPM>
         <projectileSpeed>10</projectileSpeed>
-        <shootingRange>4</shootingRange>
+        <shootingRange>3.6</shootingRange>
 
         <!-- shooting lookup table -->
-        <targetDistance0>1.5</targetDistance0>
+        <targetDistance0>1.6</targetDistance0>
         <shooterRPM0>3400</shooterRPM0>
-        <armAngle0>20</armAngle0>
+        <armAngle0>19</armAngle0>
 
-        <targetDistance1>2</targetDistance1>
+        <targetDistance1>2.1</targetDistance1>
         <shooterRPM1>3800</shooterRPM1>
-        <armAngle1>12</armAngle1>
+        <armAngle1>11</armAngle1>
 
-        <targetDistance2>2.5</targetDistance2>
+        <targetDistance2>2.6</targetDistance2>
         <shooterRPM2>4600</shooterRPM2>
-        <armAngle2>5</armAngle2>
+        <armAngle2>-3</armAngle2>
 
-        <targetDistance3>3</targetDistance3>
+        <targetDistance3>3.1</targetDistance3>
         <shooterRPM3>5400</shooterRPM3>
-        <armAngle3>-2</armAngle3>
+        <armAngle3>-10</armAngle3>
 
-        <targetDistance4>3.5</targetDistance4>
+        <targetDistance4>3.6</targetDistance4>
         <shooterRPM4>6000</shooterRPM4>
-        <armAngle4>-5.5</armAngle4>
+        <armAngle4>-15</armAngle4>
 
-        <targetDistance4>4</targetDistance4>
+        <targetDistance4>4.1</targetDistance4>
         <shooterRPM4>6000</shooterRPM4>
-        <armAngle4>-7</armAngle4>
+        <armAngle4>-20</armAngle4>
     </shooter>
 
     <intake>
@@ -164,14 +164,14 @@
         <errorTolerance>2</errorTolerance>
     </arm>
     <auto>
-        <autoStageMaxAcceleration type="double">7</autoStageMaxAcceleration>
-        <autoStageMaxVelocity type="double">3.5</autoStageMaxVelocity>
-        <autoStageMaxAngularVelocity type="double">180</autoStageMaxAngularVelocity> <!-- in deg/s -->
-        <inAdvanceTime>0.4</inAdvanceTime>
-<!--        <autoStageMaxAcceleration type="double">2</autoStageMaxAcceleration>-->
-<!--        <autoStageMaxVelocity type="double">1</autoStageMaxVelocity>-->
-<!--        <autoStageMaxAngularVelocity type="double">45</autoStageMaxAngularVelocity> &lt;!&ndash; in deg/s &ndash;&gt;-->
-<!--        <inAdvanceTime>0.25</inAdvanceTime>-->
+<!--        <autoStageMaxAcceleration type="double">7</autoStageMaxAcceleration>-->
+<!--        <autoStageMaxVelocity type="double">3.5</autoStageMaxVelocity>-->
+<!--        <autoStageMaxAngularVelocity type="double">180</autoStageMaxAngularVelocity> &lt;!&ndash; in deg/s &ndash;&gt;-->
+<!--        <inAdvanceTime>0.4</inAdvanceTime>-->
+        <autoStageMaxAcceleration type="double">6</autoStageMaxAcceleration>
+        <autoStageMaxVelocity type="double">3</autoStageMaxVelocity>
+        <autoStageMaxAngularVelocity type="double">150</autoStageMaxAngularVelocity> <!-- in deg/s -->
+        <inAdvanceTime>0.3</inAdvanceTime>
     </auto>
 
     <climb>

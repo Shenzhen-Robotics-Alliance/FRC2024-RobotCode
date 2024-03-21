@@ -43,6 +43,7 @@ public class IntakeWithDistanceSensor extends Intake {
 
     private double intakeWheelHoldingPosition = 0;
     public double decidedIntakeMotorPower(double dt) {
+        // System.out.println("<-- intake current status" + this.currentStatus + " -->");
         return switch (currentStatus) {
             case GRABBING -> {
                 if (isNoteInsideIntake())

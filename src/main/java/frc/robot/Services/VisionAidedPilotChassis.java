@@ -261,6 +261,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
     }
 
     private void startIntakeWheels() {
+        // System.out.println("<-- starting intake.. -->");
         if (arm.transformerInPosition())
             intake.startIntake(this);
     }
@@ -339,11 +340,11 @@ public class VisionAidedPilotChassis extends PilotChassis {
             currentStatus = Status.MANUALLY_DRIVING; // finished or cancelled
     }
 
-    private static final double centerZoneAimHorizontalRange = 0.7, farShootingSpotDistanceFactor=1.75;
+    private static final double centerZoneAimHorizontalRange = 1, farShootingSpotDistanceFactor=1.75;
     private static final int shootFromFarSpotControllerAxis = 2;
     private static final Vector2D shootingSweetSpotMid = new Vector2D(new double[] {0, 2}),
-            shootingSweetSpotLeft = new Vector2D(new double[] {-0.8, 1.7}),
-            shootingSweetSpotRight = new Vector2D(new double[] {0.8, 1.7});
+            shootingSweetSpotLeft = new Vector2D(new double[] {-1.2, 1.5}),
+            shootingSweetSpotRight = new Vector2D(new double[] {1.2, 1.5});
 
     private BezierCurve getPathToSweetSpot() {
         final Vector2D relativePositionToSpeaker = Vector2D.displacementToTarget(currentVisualTargetLastSeenPosition, chassisPositionWhenCurrentVisionTaskStarted);

@@ -50,7 +50,10 @@ public class ArmIntakeAndShootManuallyOperatedBackUpService extends RobotService
      * */
     @Override
     public void periodic() {
-        if (copilotController.getBackButton() || intakeModule.malFunctioning() || transformerModule.malFunctioning()) gainOwnerShipsToUpperStructure();
+        if (
+                copilotController.getBackButton()
+                // || intakeModule.malFunctioning() || transformerModule.malFunctioning()
+        ) gainOwnerShipsToUpperStructure();
         if (copilotController.getLeftStickButton() && copilotController.getRightStickButton()) intakeModule.reset();
 
         /* normal ops */

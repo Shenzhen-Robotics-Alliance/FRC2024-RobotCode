@@ -160,10 +160,10 @@ public class RobotShell extends TimedRobot {
                         robotCore.aprilTagDetectionAppClient,
                         4,
                         145.5-32,
-                        130,
+                        150,
                         240,
                         30,
-                        new Vector2D(new double[] {0, -120})
+                        new Vector2D(new double[] {0, -110})
                 ));
         autoStageChooser.addOption("Note Camera Calibration",
                 new AprilTagCameraAutomaticMeasuring(

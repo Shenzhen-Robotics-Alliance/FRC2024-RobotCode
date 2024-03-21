@@ -190,7 +190,7 @@
 
         <updateTargetPositionTolerance>0.2</updateTargetPositionTolerance>
 
-        <defaultShootingPositionDistance>1.6</defaultShootingPositionDistance>
+        <defaultShootingPositionDistance>1.8</defaultShootingPositionDistance>
     </vision-autopilot>
 
     <auto>
@@ -222,9 +222,9 @@
         <yAxisPort type="int">1</yAxisPort>
         <zAxisPort type="int">3</zAxisPort>
 
-        <pilotControllerXAxisSensitivity type="int">75</pilotControllerXAxisSensitivity>
-        <pilotControllerYAxisSensitivity type="int">75</pilotControllerYAxisSensitivity>
-        <pilotControllerZAxisSensitivity type="int">-65</pilotControllerZAxisSensitivity>
+        <pilotControllerXAxisSensitivity type="int">70</pilotControllerXAxisSensitivity>
+        <pilotControllerYAxisSensitivity type="int">70</pilotControllerYAxisSensitivity>
+        <pilotControllerZAxisSensitivity type="int">-50</pilotControllerZAxisSensitivity>
         <!-- the minimum amount of stick input to respond to, in percentage -->
         <pilotStickThresholdWhenOtherAxisUnused>5</pilotStickThresholdWhenOtherAxisUnused>
         <pilotStickThresholdWhenOtherAxisFull>8</pilotStickThresholdWhenOtherAxisFull>
