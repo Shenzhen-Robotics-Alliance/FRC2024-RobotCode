@@ -150,24 +150,22 @@
         <shooterRPM6>6000</shooterRPM6>
         <armAngle6>-21</armAngle6>
     </shooter>
-<!--    <intake>-->
-<!--        <launchPower>0.45</launchPower>-->
-<!--        <intakePower>0.28</intakePower>-->
-<!--        <intakeAidPower>0.5</intakeAidPower>-->
-<!--        <revertPower>-0.35</revertPower>-->
-<!--        <distanceSensorThreshold>30</distanceSensorThreshold>-->
-<!--        <splitTime>0.4</splitTime>-->
-<!--    </intake>-->
     <intake>
-        <launchPower>0.45</launchPower>
-        <intakePower>0.35</intakePower>
-        <moveNoteUpInsideIntakePower>0.1</moveNoteUpInsideIntakePower>
-        <moveNoteDownInsideIntakePower>-0.1</moveNoteDownInsideIntakePower>
-        <moveBackToPositionTime>0.15</moveBackToPositionTime>
-
-        <intakeAidPower>0.5</intakeAidPower>
-        <revertPower>-0.35</revertPower>
+        <intakeMotorPort>-1</intakeMotorPort>
+        <intakeMotorReversed>0</intakeMotorReversed>
+        <intakeAidMotorPort>-1</intakeAidMotorPort>
+        <intakeAidMotorReversed>0</intakeAidMotorReversed>
         <distanceSensorThreshold>30</distanceSensorThreshold>
+<!--        <moveBackToPositionTime>0.15</moveBackToPositionTime>-->
+
+        <moveNoteUpInsideIntakePower>0.35</moveNoteUpInsideIntakePower>
+        <moveNoteDownInsideIntakePower>0.1</moveNoteDownInsideIntakePower>
+
+        <launchPower>0.45</launchPower>
+        <intakePower>0.18</intakePower>
+        <intakeAidPower>0.4</intakeAidPower>
+        <revertPower>-0.3</revertPower>
+
         <splitTime>0.3</splitTime>
         <launchTime>0.5</launchTime>
     </intake>
@@ -191,6 +189,8 @@
         <aimingTimeUnseenToleranceMS>2000</aimingTimeUnseenToleranceMS>
 
         <updateTargetPositionTolerance>0.2</updateTargetPositionTolerance>
+
+        <defaultShootingPositionDistance>1.6</defaultShootingPositionDistance>
     </vision-autopilot>
 
     <auto>

@@ -11,6 +11,6 @@ import edu.wpi.first.wpilibj.RobotBase;
 public class Main {
     public static void main(String[] args) {
         System.out.printf("@@@@@@  void main(String[] args)  %n");
-        RobotBase.startRobot(MyRobotSimulation::new);
+        RobotBase.startRobot(RobotShell::new);
     }
 }

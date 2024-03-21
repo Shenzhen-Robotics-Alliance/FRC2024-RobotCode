@@ -112,7 +112,7 @@ public class IntakeWithLowerDistanceSensor extends Intake {
     @Override
     public void onReset() {
         updateConfigs();
-        this.currentStatus = IntakeModuleStatus.YIELD;
+        this.currentStatus = IntakeModuleStatus.OFF;
         intakeMotor.gainOwnerShip(this);
         intakeMotor.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE, this);
         intakeAidMotor.gainOwnerShip(this);

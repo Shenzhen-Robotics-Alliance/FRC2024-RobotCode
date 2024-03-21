@@ -24,6 +24,7 @@ public class RobotShell extends TimedRobot {
     private RobotCore robotCore;
     private AutoProgramRunner autoProgramRunner;
     private TransformableIntakeAndShooterService intakeAndShooterService;
+    private ArmIntakeAndShootManuallyOperatedBackUpService intakeAndShooterBackUpService;
     private VisionAidedPilotChassis visionAidedPilotChassis;
     private ClimbService climbService;
     private List<SequentialCommandSegment> commandSegments;
@@ -49,6 +50,7 @@ public class RobotShell extends TimedRobot {
 
         autoProgramRunner = new AutoProgramRunner(robotCore.chassisModule, robotCore.robotConfig);
         intakeAndShooterService = new TransformableIntakeAndShooterService(robotCore.intake, robotCore.shooter, robotCore.transformableArm, robotCore.robotConfig, copilotGamePad);
+        intakeAndShooterBackUpService = new ArmIntakeAndShootManuallyOperatedBackUpService(robotCore.intake, robotCore.shooter, robotCore.transformableArm, robotCore.robotConfig, copilotGamePad);
         visionAidedPilotChassis = new VisionAidedPilotChassis(robotCore.chassisModule, robotCore.shooter, robotCore.intake, robotCore.transformableArm, robotCore.speakerTarget, robotCore.amplifierTarget, robotCore.noteTarget, copilotGamePad, robotCore.robotConfig, robotCore.red, robotCore.green, robotCore.blue);
         climbService = new ClimbService(copilotGamePad, robotCore.climb, robotCore.robotConfig);
 
@@ -118,7 +120,7 @@ public class RobotShell extends TimedRobot {
     public void testInit() {
         // System.out.println("<-- Robot Shell | test init -->");
         if (robotTest == null)
-            this.robotTest = new DistanceSensorTest();
+            this.robotTest = new GamePadPOVTest();
         robotTest.testStart();
     }
 
@@ -140,7 +142,8 @@ public class RobotShell extends TimedRobot {
     private void startManualStage() {
         final List<RobotServiceBase> services = new ArrayList<>();
 
-        services.add(intakeAndShooterService);
+        // services.add(intakeAndShooterService);
+        services.add(intakeAndShooterBackUpService);
         services.add(visionAidedPilotChassis);
         services.add(climbService);
 

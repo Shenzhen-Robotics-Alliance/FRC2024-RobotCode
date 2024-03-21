@@ -43,36 +43,37 @@ public class IntakeWithDistanceSensor extends Intake {
 
     private double intakeWheelHoldingPosition = 0;
     public double decidedIntakeMotorPower(double dt) {
-        switch (currentStatus) {
+        return switch (currentStatus) {
             case GRABBING -> {
                 if (isNoteInsideIntake())
-                    return updateStatusToHolding();
-                return intakePower;
+                    yield updateStatusToHolding();
+                yield intakePower;
             }
             case HOLDING -> {
                 if (!isNoteInsideIntake()) {
                     System.out.println("<-- Intake | note gone when holding, updating to disabled... -->");
-                    return updateStatusToDisabled();
+                    yield updateStatusToDisabled();
                 }
                 intakeWheelPositionController.startNewTask(new EnhancedPIDController.Task(EnhancedPIDController.Task.TaskType.GO_TO_POSITION, intakeWheelHoldingPosition));
                 final double holdPower = intakeWheelPositionController.getMotorPower(intakeEncoder.getEncoderPosition(), intakeEncoder.getEncoderVelocity(), 0); // dt does not matter
                 EasyShuffleBoard.putNumber("intake", "holding power", holdPower);
-                return holdPower;
+                yield holdPower;
             }
             case LAUNCHING -> {
                 timeSinceSplitOrShootProcessStarted += dt;
                 if (timeSinceSplitOrShootProcessStarted > launchTime)
-                    return updateStatusToDisabled();
-                return launchPower;
+                    yield updateStatusToDisabled();
+                yield launchPower;
             }
             case SPLITTING -> {
                 timeSinceSplitOrShootProcessStarted += dt;
                 if (timeSinceSplitOrShootProcessStarted > splitTime)
-                    return updateStatusToDisabled();
-                return revertPower;
+                    yield updateStatusToDisabled();
+                yield revertPower;
             }
-        }
-        return 0;
+            case SPECIFY_POWER -> super.specifiedPower;
+            case OFF -> 0.0;
+        };
     }
 
     @Override
@@ -117,7 +118,7 @@ public class IntakeWithDistanceSensor extends Intake {
     @Override
     public void onReset() {
         updateConfigs();
-        this.currentStatus = IntakeModuleStatus.YIELD;
+        this.currentStatus = IntakeModuleStatus.OFF;
         intakeMotor.gainOwnerShip(this);
         intakeMotor.setMotorZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE, this);
         intakeAidMotor.gainOwnerShip(this);
