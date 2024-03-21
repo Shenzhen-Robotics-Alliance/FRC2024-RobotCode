@@ -37,12 +37,11 @@
 
     <chassis>
         <wheelGearRatio type="double">8.14</wheelGearRatio>
-<!--        <wheelsPowerConstrain type="double">0.8</wheelsPowerConstrain>-->
-<!--        <wheelsPowerConstrainAtLowSpeedMode>0.5</wheelsPowerConstrainAtLowSpeedMode>-->
-<!--        <rotationalSpeedMaxSacrifice type="double">0.5</rotationalSpeedMaxSacrifice>-->
-        <wheelsPowerConstrain type="double">0.4</wheelsPowerConstrain>
-        <wheelsPowerConstrainAtLowSpeedMode>0.4</wheelsPowerConstrainAtLowSpeedMode>
-        <rotationalSpeedMaxSacrifice type="double">0.5</rotationalSpeedMaxSacrifice>
+<!--        <wheelsPowerConstrain type="double">1</wheelsPowerConstrain>-->
+<!--        <wheelsPowerConstrainAtLowSpeedMode>0.6</wheelsPowerConstrainAtLowSpeedMode>-->
+        <wheelsPowerConstrain type="double">0.5</wheelsPowerConstrain>
+        <wheelsPowerConstrainAtLowSpeedMode>0.5</wheelsPowerConstrainAtLowSpeedMode>
+        <rotationalSpeedMaxSacrifice type="double">0.4</rotationalSpeedMaxSacrifice>
 
         <robotPositionFeedForwardTime type="double">0.05</robotPositionFeedForwardTime>
         <translationalTaskUpdatableRange type="double">0.1</translationalTaskUpdatableRange>

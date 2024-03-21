@@ -77,6 +77,8 @@ public class FiveNotesUpper implements CommandSequenceGenerator {
                 FieldPositions.speakerPosition,
                 shootingTimeOut
         ));
+        commandSegments.add(aimBot.waitForArmToLower());
+
         /* move to fourth */
         commandSegments.add(commandFactory.followSingleCurve(
                 "shoot third move to fourth upper", 2,
