@@ -1,5 +1,5 @@
 # Team 6706 "Golem" - Control Award Submission Form
-This form provides a concise summary of the control system innovations implemented in the 2024 cooperative robot "PHANTOM" Ⅱ, developed in collaboration by Team 6706 "Golem" and Team 5516 "Iron Maple". For a comprehensive understanding of our methodologies and innovations, please refer to the detailed descriptions in our engineering portfolio.
+This form provides a concise summary of the control system innovations implemented in the 2024 cooperative robot "PHANTOM" Ⅱ, developed in collaboration by Team 6706 "Golem" and Team 5516 "Iron Maple".
 
 ### Sensors Used
 The development of our auto-aiming systems was supported by a sophisticated sensor suite, including:
@@ -21,6 +21,19 @@ The development of our auto-aiming systems was supported by a sophisticated sens
 ### Autonomous Program Diagram
 Main AutoStage Diagram
 ![alt text](<six notes auto path.png>)
-Link To Demo Video
 
 ### Video Demos
+<div style="display: flex;">
+    <img src="images/auto intake aim qr.png" alt="Alt Text 2" style="width: 25%; height: 25%">
+    <img src="images/shooter aiming demo qr.png" alt="Alt Text 1" style="width: 25%; height: 25%">
+    <img src="images/auto calibration video qrcode.png" alt="Alt Text 1" style="width: 25%; height: 25%">
+    <img src="images/auto stage demo qr.png" alt="Alt Text 1" style="width: 25%; height: 25%">
+</div>
+<div style="display: flex;">
+    <div style="width: 25%;"><p>Intake Auto-Aim</p></div>
+    <div style="width: 25%;"><p>Shooter Auto-Aim</p></div>
+    <div style="width: 25%;"><p>Camera Self-Calibrating</p></div>
+    <div style="width: 25%;"><p>Auto Stage Testing</p></div>
+</div>
+
+For more details, please come visit us at our PIT! 

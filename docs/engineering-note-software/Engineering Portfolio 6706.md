@@ -3,7 +3,6 @@
 
 Team 5516 **IRON MAPLE** and Team 6706 **Golem**, presents.
 
-***
 
 <p style="font-size:small">grammar & spelling check by: ChatGPT </p>
 
@@ -11,7 +10,7 @@ Team 5516 **IRON MAPLE** and Team 6706 **Golem**, presents.
 This year, our team has formed an alliance with Team 5516 "Iron Maple" in our city.  Together we have designed, built and programmed the Robot "PHANTOM", which is used by Team 5516 in Canadian Pacific Regional.  The Robot we use is "PHANTOM" Ⅱ, the upgraded version of "PHANTOM".  
 <div style="display: flex;">
     <img src="images/machine.png" alt="Alt Text 2" style="width: 50%;">
-    <img src="images/machine.png" alt="Alt Text 1" style="width: 50%;">
+    <img src="images/6706 robot pic.jpg" alt="Alt Text 1" style="width: 50%;">
 </div>
 <div style="display: flex;">
     <div style="width: 50%;"><p>"PHANTOM" Ⅰ</p></div>
@@ -118,7 +117,7 @@ For a more illustrative demonstration, please watch this video.
 <img src="./images/auto intake aim qr.png" alt="Alt Text 2" style="width: 20%; height: 20%">
 
 #### Shooter Automatic Aiming
-After the GamePiece is detected, the robot switches itself to shooting mode. Under this mode, the robot automatically controls its rotation with the help of the camera such that it always faces the speaker.
+With the GamePiece inside, the robot switches itself to shooting mode. Under this mode, the robot automatically controls its rotation with the help of the camera such that it always faces the speaker.
 
 Now, the **Auto-Pilot Button** has a different function: it controls the shooter.  When the button is hold, the robot accelerates its shooter and adjust the angle of the arm to aim the target.  We test the ideal shooter speed as well as arm angle at different distances and store them in a look-up-table.  Knowing the precise distance to target, the system automatically adjusts the shooter and the arm angle, as well as shooter RPM to aim the target.
 
@@ -129,26 +128,38 @@ When the **Auto-Pilot Button** is released, the kicker is triggered. The Note fl
 
 
 #### Automatic Target Approaching
-If this function is enabled, the chassis will drive automatically to a shooting sweet spot once the **Auto-Pilot Button** is pressed under shooting mode.
+When this function is activated, the chassis will automatically navigate to a predetermined shooting sweet spot once the Auto-Pilot Button is pressed while in shooting mode.
 
-[TODO: 配图]
+<div style="display: flex;">
+    <img src="./images/left sweet spots.png" alt="Alt Text 1" style="width: 33%;">
+    <img src="./images/mid sweet spots.png" alt="Alt Text 2" style="width: 33%;">
+    <img src="./images/right sweet spot.png" alt="Alt Text 2" style="width: 33%">
+</div>
 
-The algorithm decides which sweet spot to go depending on which is closest, and a stick on the pilot's controller adjust the distance from target.  With mulitple sweetspots selectable, the robot can shoot even when there is a defense robot
+The algorithm determines which sweet spot to approach based on proximity. Furthermore, a joystick on the pilot's controller allows for adjustments to the distance from the target. With multiple sweet spots selectable, the robot can execute shooting maneuvers even in the presence of a defensive robot.
 
 #### Self-Instructed Five Notes Auto
-The above features, which has significantly enhanced our efficiency during teleop, is also used to improve the accuracy of the robot during autonomous periodic. 
+The aforementioned features have significantly enhanced our efficiency during teleop and have also been utilized to improve the robot's accuracy during the autonomous phase.
 
-By implementing the computer vision technologies, the robot can sense and measure the precise position of the speaker and the note, and does not have to rely entirely on its encoders to navigate. This helped us a lot in developing a stable, rubust and accurate auto. 
-[TODO: 自动阶段视频]
+By incorporating computer vision technologies, the robot can sense and precisely measure the position of specific targets and obstacles, eliminating the sole reliance on its encoders for navigation. This advancement has greatly assisted us in developing a stable, robust, and accurate autonomous operation.
+<img src="./images/auto stage demo qr.png" alt="Alt Text 2" style="width:20%">
+Furthermore, the autonomous mode does not simply follow pre-stored commands; instead, it is self-guided and dynamically adjusts its path in response to changes in the environment. For instance, if a target is missing, the robot will automatically redirect to the next available target. In contrast, a machine without this sensory capability would proceed to execute its task ineffectively, akin to shooting into thin air.
 
 #### Problem We Encountered: Camera Motion Blur / Losing Focus
-When using vision systems to navigate, the most common issue is losing track of targets.  During the match, apriltags may be blocked by other robot, cameras may lose focus temperarily due to motion blur and reflections.  In brief, it is impossible for the target to stay in the camera's view all the time.
+When navigating with vision systems, a prevalent challenge is the loss of target tracking. Throughout a match, targets such as AprilTags may be obscured by other robots, and cameras might temporarily lose focus due to motion blur and reflections. Consequently, it is unrealistic to expect that the target will remain within the camera's view at all times.
 
-So, instead of relying entirely on vision, we have 
+To address this issue, we have integrated odometry with vision. The vision system calculates the precise relative position of the target to the robot, utilizing the known absolute positions of AprilTags on the field. This allows the robot to calibrate its odometry using reliable vision data, a strategy commonly employed in industrial applications.
+
+To streamline the coding process, we developed our own linear algebra library to handle vectors and transformations efficiently.
+https://github.com/CCSC-Robotics-club/FRC2024-RobotCode/tree/main/src/main/java/frc/robot/Utils/MathUtils
+
 
 #### Problem We Encountered: Low Shooting Success Rate When Chassis Moving
-During testing, we found that it is very difficult to shoot when the chassis is moving.  This is because the Note shot from a moving robot has some bias depending on the instantanous velocity of the robot.  
 
-In order to enable our robot to shoot while moving, we have designed a system that automatcially compensates for the deviation due to robot velocity.
+During testing, we discovered that accurately shooting while the chassis is in motion presents a significant challenge. This difficulty arises because the projectile's trajectory exhibits a bias influenced by the robot's instantaneous velocity.
+
+To address this issue and enable our robot to shoot accurately while moving, we have designed a system that automatically compensates for deviations caused by the robot's velocity. This solution enhances the precision of shots taken on the move, ensuring higher performance and reliability during operation.
+
 ![alt text](<auto aim in advance.png>)
-At any time, the robot calculates its distance to target, marked d0. Since we know that the Note flies at about 8m/s when beeing launched, we know that the Note will hit the target after approximately Δt amount of time.  Next, we estimate the robot's position after Δt, using the current instantanous velocity of the robot. Now, we calculate the future target distance and rotation, marked distance1 and rotation1, and use them for auto-aiming.  This way, not only can the robot shoot from where-ever we want, we can also shoot when-ever we want, even when the robot is moving.
+
+At any given moment, the robot calculates its distance to the target, denoted as `d0`. Given that the projectile (referred to as the "Note") is launched at an approximate speed of 8 meters per second, we can determine that it will reach the target after a certain amount of time, `Δt`. Next, we predict the robot's position after `Δt` by using its current instantaneous velocity. We then calculate the projected distance to the target and its rotation angle, denoted as `distance1` and `rotation1`, respectively. These calculations are used for auto-aiming. This method allows the robot not only to shoot from any position but also to shoot at any time, including while the robot is in motion.
