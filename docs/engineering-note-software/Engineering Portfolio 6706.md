@@ -2,7 +2,10 @@
 <img src="images/team logos.jpg" alt="Alt Text 1" style="width: 100%;">
 
 Team 5516 **IRON MAPLE** and Team 6706 **Golem**, presents.
+
 ***
+
+<p style="font-size:small">grammar & spelling check by: ChatGPT </p>
 
 ## Overview
 This year, our team has formed an alliance with Team 5516 "Iron Maple" in our city.  Together we have designed, built and programmed the Robot "PHANTOM", which is used by Team 5516 in Canadian Pacific Regional.  The Robot we use is "PHANTOM" Ⅱ, the upgraded version of "PHANTOM".  
@@ -110,33 +113,38 @@ Upon detecting a GamePiece, signaled by the status light turning blue, the pilot
 Crucially, the robot's approach to the GamePiece is not a direct line. Instead, the navigation system dynamically generates a path using Bezier Curves, ensuring smoother movements and a strategic approach angle. This method guarantees that, regardless of its starting position, the robot always reverses towards the GamePiece, significantly enhancing the feeder's ability to collect the Note effectively. This nuanced approach illustrates our commitment to precision and adaptability in robotic design.
 ![alt text](<images/intake auto aim.png>)
 Once the Gamepiece gets "eaten" by the intake, a Rev-2M-Distance-Sensor senses the existence on the note and stops the intake automatically before the Note goes too far.  This is important becuase the shooter cannot accelerate when the Note is in contact with it.
-<img src="./images/auto intake aim qr.png" alt="Alt Text 2" style="width: 20%; height: 20%">
-For a more illustrative demonstration, please watch this video.
 
+For a more illustrative demonstration, please watch this video.
+<img src="./images/auto intake aim qr.png" alt="Alt Text 2" style="width: 20%; height: 20%">
 
 #### Shooter Automatic Aiming
 After the GamePiece is detected, the robot switches itself to shooting mode. Under this mode, the robot automatically controls its rotation with the help of the camera such that it always faces the speaker.
 
 Now, the **Auto-Pilot Button** has a different function: it controls the shooter.  When the button is hold, the robot accelerates its shooter and adjust the angle of the arm to aim the target.  We test the ideal shooter speed as well as arm angle at different distances and store them in a look-up-table.  Knowing the precise distance to target, the system automatically adjusts the shooter and the arm angle, as well as shooter RPM to aim the target.
-![alt text](<aiming lookup table.png>)
-When the **Auto-Pilot Button** is released, the kicker is triggered. The Note flies to the speaker, marking the end of the shooting process.  The robot returns to intake mode.
 
-[演示视频二维码]
+![alt text](<aiming lookup table.png>)
+
+When the **Auto-Pilot Button** is released, the kicker is triggered. The Note flies to the speaker, marking the end of the shooting process.  The robot returns to intake mode.
+<img src="./images/shooter aiming demo qr.png" alt="Alt Text 2" style="width:20%">
+
 
 #### Automatic Target Approaching
 If this function is enabled, the chassis will drive automatically to a shooting sweet spot once the **Auto-Pilot Button** is pressed under shooting mode.
 
-The algorithm decides which sweet spot to go depending on which is closest, and a stick on the pilot's controller can be used adjust the exact position to shoot.  Which mulitple sweetspots selectable, the robot can shoot even when there is a defense robot
-[TODO: 录制视频]
+[TODO: 配图]
 
-#### Accurate and Stable Six-Notes Auto
-The above features, which has significantly enhanced our efficiency during teleop, is also used to improve the accuracy of the robot during autonomous periodic. By implementing the computer vision technologies, the robot does not have to rely entirely on its encoders to navigate. Now it can sense the speaker and the note.  Proudly, we are one of the few teams on Earth that can achive six notes during auto stage.  And, our successrate is very high thanks to the auto-aiming functions. 
+The algorithm decides which sweet spot to go depending on which is closest, and a stick on the pilot's controller adjust the distance from target.  With mulitple sweetspots selectable, the robot can shoot even when there is a defense robot
+
+#### Self-Instructed Five Notes Auto
+The above features, which has significantly enhanced our efficiency during teleop, is also used to improve the accuracy of the robot during autonomous periodic. 
+
+By implementing the computer vision technologies, the robot can sense and measure the precise position of the speaker and the note, and does not have to rely entirely on its encoders to navigate. This helped us a lot in developing a stable, rubust and accurate auto. 
 [TODO: 自动阶段视频]
 
 #### Problem We Encountered: Camera Motion Blur / Losing Focus
-When using vision navigating methods, the most commonly encountered issue is that the camera sometimes losses track of the target. This might be caused by losing focus, obstacle, motion blur or awkward reflection.  The thing is, it is impossible to wish that the target can stay in the camera's view all the time.
-[TODO: 原理图]
-So, to make our aiming as well as auto-piloting functions more stable, we have designed an algorithm such that 
+When using vision systems to navigate, the most common issue is losing track of targets.  During the match, apriltags may be blocked by other robot, cameras may lose focus temperarily due to motion blur and reflections.  In brief, it is impossible for the target to stay in the camera's view all the time.
+
+So, instead of relying entirely on vision, we have 
 
 #### Problem We Encountered: Low Shooting Success Rate When Chassis Moving
 During testing, we found that it is very difficult to shoot when the chassis is moving.  This is because the Note shot from a moving robot has some bias depending on the instantanous velocity of the robot.  
