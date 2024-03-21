@@ -113,7 +113,7 @@ public class AutoStageVisionAimBot {
                             SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
                             robotCore.shooter.aimingSystem.getRobotFacing(robotCore.shooter.getProjectileSpeed(), robotCore.robotConfig.getConfig("auto", "additionalRotationInAdvanceTime"))), null);
 
-                    if (robotCore.intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && robotCore.chassisModule.isCurrentRotationalTaskFinished() && robotCore.shooter.shooterReady() && robotCore.shooter.targetInRange() && robotCore.transformableArm.transformerInPosition())
+                    if (robotCore.intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && robotCore.chassisModule.isCurrentRotationalTaskFinished() && robotCore.shooter.shooterReady() && robotCore.transformableArm.transformerInPosition())
                         robotCore.intake.startLaunch(null);
                     if (timeSinceTaskStarted.get() > (timeOutMillis - timeBeforeFinishForceFire))
                         robotCore.intake.startLaunch(null);

@@ -138,10 +138,10 @@ public class RobotCore {
                 );
 
                 final Map<Integer, Vector2D> speakerTargetAprilTagReferences = new HashMap<>(), amplifierTargetAprilTagReferences = new HashMap<>(), noteTargetReferences = new HashMap<>();
-                speakerTargetAprilTagReferences.put(4, new Vector2D(new double[] {0, -0.2}));
+                speakerTargetAprilTagReferences.put(4, new Vector2D(new double[] {0, -0.14}));
                 // speakerTargetAprilTagReferences.put(3, new Vector2D(new double[] {-0.5,0}));
                 // amplifierTargetAprilTagReferences.put(5, new Vector2D(new double[] {0, 0}));
-                speakerTargetAprilTagReferences.put(7, new Vector2D(new double[] {0, -0.2}));
+                speakerTargetAprilTagReferences.put(7, new Vector2D(new double[] {0, -0.14}));
                 // speakerTargetAprilTagReferences.put(8, new Vector2D(new double[] {-0.5,0}));
                 // amplifierTargetAprilTagReferences.put(6, new Vector2D(new double[] {0, 0}));
 

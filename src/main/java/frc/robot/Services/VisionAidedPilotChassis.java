@@ -340,7 +340,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
             currentStatus = Status.MANUALLY_DRIVING; // finished or cancelled
     }
 
-    private static final double centerZoneAimHorizontalRange = 1, farShootingSpotDistanceFactor=1.75;
+    private static final double centerZoneAimHorizontalRange = 1.2, farShootingSpotDistanceFactor=1.4;
     private static final int shootFromFarSpotControllerAxis = 2;
     private static final Vector2D shootingSweetSpotMid = new Vector2D(new double[] {0, 2}),
             shootingSweetSpotLeft = new Vector2D(new double[] {-1.2, 1.5}),

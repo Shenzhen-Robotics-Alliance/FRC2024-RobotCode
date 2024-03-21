@@ -37,12 +37,12 @@
 
     <chassis>
         <wheelGearRatio type="double">8.14</wheelGearRatio>
-        <wheelsPowerConstrain type="double">0.8</wheelsPowerConstrain>
-        <wheelsPowerConstrainAtLowSpeedMode>0.5</wheelsPowerConstrainAtLowSpeedMode>
-        <rotationalSpeedMaxSacrifice type="double">0.5</rotationalSpeedMaxSacrifice>
-<!--        <wheelsPowerConstrain type="double">0.4</wheelsPowerConstrain>-->
-<!--        <wheelsPowerConstrainAtLowSpeedMode>0.3</wheelsPowerConstrainAtLowSpeedMode>-->
-<!--        <rotationalSpeedMaxSacrifice type="double">0.4</rotationalSpeedMaxSacrifice>-->
+<!--        <wheelsPowerConstrain type="double">0.8</wheelsPowerConstrain>-->
+<!--        <wheelsPowerConstrainAtLowSpeedMode>0.5</wheelsPowerConstrainAtLowSpeedMode>-->
+<!--        <rotationalSpeedMaxSacrifice type="double">0.5</rotationalSpeedMaxSacrifice>-->
+        <wheelsPowerConstrain type="double">0.4</wheelsPowerConstrain>
+        <wheelsPowerConstrainAtLowSpeedMode>0.3</wheelsPowerConstrainAtLowSpeedMode>
+        <rotationalSpeedMaxSacrifice type="double">0.4</rotationalSpeedMaxSacrifice>
 
         <robotPositionFeedForwardTime type="double">0.05</robotPositionFeedForwardTime>
         <translationalTaskUpdatableRange type="double">0.1</translationalTaskUpdatableRange>
@@ -65,19 +65,19 @@
 
         <!-- shooting lookup table -->
         <targetDistance0>1.6</targetDistance0>
-        <shooterRPM0>3400</shooterRPM0>
-        <armAngle0>19</armAngle0>
+        <shooterRPM0>3800</shooterRPM0>
+        <armAngle0>17</armAngle0>
 
         <targetDistance1>2.1</targetDistance1>
-        <shooterRPM1>3800</shooterRPM1>
-        <armAngle1>11</armAngle1>
+        <shooterRPM1>4000</shooterRPM1>
+        <armAngle1>8</armAngle1>
 
         <targetDistance2>2.6</targetDistance2>
         <shooterRPM2>4600</shooterRPM2>
         <armAngle2>-3</armAngle2>
 
         <targetDistance3>3.1</targetDistance3>
-        <shooterRPM3>5400</shooterRPM3>
+        <shooterRPM3>5600</shooterRPM3>
         <armAngle3>-10</armAngle3>
 
         <targetDistance4>3.6</targetDistance4>
