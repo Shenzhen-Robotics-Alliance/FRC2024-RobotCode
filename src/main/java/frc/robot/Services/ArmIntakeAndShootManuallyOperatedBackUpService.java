@@ -53,17 +53,6 @@ public class ArmIntakeAndShootManuallyOperatedBackUpService extends RobotService
         if (copilotController.getBackButton() || intakeModule.malFunctioning() || transformerModule.malFunctioning()) gainOwnerShipsToUpperStructure();
         if (copilotController.getLeftStickButton() && copilotController.getRightStickButton()) intakeModule.reset();
 
-        /* in case of stuck */
-        shooterModule.setDesiredSpeed(copilotController.getBButton() ? 6000: -6000, this);
-        shooterModule.setShooterMode(copilotController.getYButton() ? Shooter.ShooterMode.SPECIFIED_RPM : Shooter.ShooterMode.DISABLED, this);
-        if (copilotController.getBButton()) {
-            transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SPLIT, this);
-            transformerModule.periodic();
-            if (transformerModule.transformerInPosition())
-                intakeModule.startSplit(this); // in case if the Note is stuck
-            return;
-        }
-
         /* normal ops */
         final double leftStick = -copilotController.getLeftY(), rightStick = -copilotController.getRightY();
         if (copilotController.getRightBumper()) {
@@ -87,6 +76,19 @@ public class ArmIntakeAndShootManuallyOperatedBackUpService extends RobotService
             intakeModule.specifyPower(rightStick * robotConfig.getConfig("intake", "moveNoteUpInsideIntakePower"), this);
         else if (rightStick < -0.05)
             intakeModule.specifyPower(rightStick * robotConfig.getConfig("intake", "moveNoteDownInsideIntakePower"), this);
+
+
+        /* in case of stuck */
+        if (copilotController.getYButton()) {
+            shooterModule.setDesiredSpeed(copilotController.getBButton() ? -6000: 6000, this);
+            shooterModule.setShooterMode(Shooter.ShooterMode.SPECIFIED_RPM, this);
+        }
+        if (copilotController.getBButton()) {
+            transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SPLIT, this);
+            transformerModule.periodic();
+            if (transformerModule.transformerInPosition())
+                intakeModule.startSplit(this); // in case if the Note is stuck
+        }
     }
 
     @Override
