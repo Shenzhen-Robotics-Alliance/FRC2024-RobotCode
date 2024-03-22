@@ -13,8 +13,9 @@ public class IntakeWithDistanceSensor extends Intake {
     private final Encoder intakeEncoder;
     private final DistanceSensor intakeDistanceSensor;
     private final RobotConfigReader robotConfig;
+    private final TransformableArm arm;
 
-    public IntakeWithDistanceSensor(Motor intakeMotor, Motor intakeAidMotor, Encoder intakeEncoder, DistanceSensor intakeDistanceSensor, RobotConfigReader robotConfig) {
+    public IntakeWithDistanceSensor(Motor intakeMotor, Motor intakeAidMotor, Encoder intakeEncoder, DistanceSensor intakeDistanceSensor, TransformableArm arm, RobotConfigReader robotConfig) {
         super();
         this.intakeAidMotor = intakeAidMotor;
         this.intakeMotor = intakeMotor;
@@ -23,6 +24,7 @@ public class IntakeWithDistanceSensor extends Intake {
         super.motors.add(intakeMotor);
         super.motors.add(intakeAidMotor);
         this.robotConfig = robotConfig;
+        this.arm = arm;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class IntakeWithDistanceSensor extends Intake {
         intakeMotor.setPower(decidedIntakeMotorPower(dt), this);
         intakeAidMotor.setPower(switch(currentStatus) {
             case GRABBING -> intakeAidingMotorPower;
-            case SPLITTING -> -intakeAidingMotorPower;
+            case SPLITTING ->-intakeAidingMotorPower;
             default -> 0;
         }, this);
         EasyShuffleBoard.putNumber("intake", "note sensor reading (CM)", intakeDistanceSensor.getDistanceCM());
@@ -70,7 +72,7 @@ public class IntakeWithDistanceSensor extends Intake {
                 timeSinceSplitOrShootProcessStarted += dt;
                 if (timeSinceSplitOrShootProcessStarted > splitTime)
                     yield updateStatusToDisabled();
-                yield revertPower;
+                yield arm.transformerInPosition() ? revertPower : 0;
             }
             case SPECIFY_POWER -> super.specifiedPower;
             case OFF -> 0.0;

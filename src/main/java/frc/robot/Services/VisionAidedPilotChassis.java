@@ -166,7 +166,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
                 if (copilotGamePad.getBButton()) {
                     arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SPLIT, this);
                     arm.periodic();
-                    if (arm.transformerInPosition()) intake.startSplit(this); // in case if the Note is stuck
+                    intake.startSplit(this); // in case if the Note is stuck
                     return;
                 }
 

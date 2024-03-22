@@ -101,6 +101,7 @@ public class FiveNotesMid implements CommandSequenceGenerator {
                 "shoot fourth move to fifth", 2,
                 new Rotation2D(Math.toRadians(180))
         ));
+        commandSegments.add(aimBot.waitForArmToLower());
         commandSegments.add(commandFactory.followSingleCurve(
                 "shoot fourth move to fifth", 3,
                 new Rotation2D(Math.toRadians(180))

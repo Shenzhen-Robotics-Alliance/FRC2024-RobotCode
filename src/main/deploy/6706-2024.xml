@@ -50,7 +50,7 @@
         <timeNeededToFullyAccelerate type="double">0.3</timeNeededToFullyAccelerate>
         <robotSpeedActivateSpeedControl type="double">0.1</robotSpeedActivateSpeedControl>
 
-        <rotationalErrorAsCommandFinished>4</rotationalErrorAsCommandFinished>
+        <rotationalErrorAsCommandFinished>3</rotationalErrorAsCommandFinished>
     </chassis>
     <shooter>
         <shooter1Port>12</shooter1Port>
@@ -59,7 +59,7 @@
         <shooter2Reversed>0</shooter2Reversed>
 
         <preparingForShootRPM>2000</preparingForShootRPM>
-        <projectileSpeed>10</projectileSpeed>
+        <projectileSpeed>16</projectileSpeed>
         <shootingRange>3.6</shootingRange>
 
         <!-- shooting lookup table -->
@@ -69,11 +69,11 @@
 
         <targetDistance1>2.1</targetDistance1>
         <shooterRPM1>4000</shooterRPM1>
-        <armAngle1>8</armAngle1>
+        <armAngle1>6</armAngle1>
 
         <targetDistance2>2.6</targetDistance2>
         <shooterRPM2>4600</shooterRPM2>
-        <armAngle2>-3</armAngle2>
+        <armAngle2>-6</armAngle2>
 
         <targetDistance3>3.1</targetDistance3>
         <shooterRPM3>5600</shooterRPM3>
