@@ -153,6 +153,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
             intake.reset();
         }
 
+        SmartDashboard.putBoolean("Note Inside Intake", intake.isNoteInsideIntake());
+
         switch (currentStatus) {
             case MANUALLY_DRIVING -> {
                 arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
@@ -356,11 +358,18 @@ public class VisionAidedPilotChassis extends PilotChassis {
 
     private Vector2D getSweetSpot(Vector2D relativePositionToSpeaker) {
         final double shootingDistanceFactor = LookUpTable.linearInterpretation(-1, 1, 1, farShootingSpotDistanceFactor, pilotController.getRawAxis(shootFromFarSpotControllerAxis));
-        if (relativePositionToSpeaker.getX() < -centerZoneAimHorizontalRange)
-            return shootingSweetSpotLeft.multiplyBy(shootingDistanceFactor);
-        if (relativePositionToSpeaker.getX() > centerZoneAimHorizontalRange)
-            return shootingSweetSpotRight.multiplyBy(shootingDistanceFactor);
-        return shootingSweetSpotMid.multiplyBy(shootingDistanceFactor);
+        return switch (copilotGamePad.getPOV()) {
+            case 270, 315 -> shootingSweetSpotLeft.multiplyBy(shootingDistanceFactor);
+            case 90, 45 -> shootingSweetSpotRight.multiplyBy(shootingDistanceFactor);
+            case 225, 180, 135 -> shootingSweetSpotMid.multiplyBy(shootingDistanceFactor);
+            default -> {
+                if (relativePositionToSpeaker.getX() < -centerZoneAimHorizontalRange)
+                    yield shootingSweetSpotLeft.multiplyBy(shootingDistanceFactor);
+                if (relativePositionToSpeaker.getX() > centerZoneAimHorizontalRange)
+                    yield shootingSweetSpotRight.multiplyBy(shootingDistanceFactor);
+                yield shootingSweetSpotMid.multiplyBy(shootingDistanceFactor);
+            }
+        };
     }
 
     @Deprecated
