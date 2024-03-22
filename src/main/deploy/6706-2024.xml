@@ -59,21 +59,21 @@
         <shooter2Reversed>0</shooter2Reversed>
 
         <preparingForShootRPM>2000</preparingForShootRPM>
-        <projectileSpeed>16</projectileSpeed>
+        <projectileSpeed>14</projectileSpeed>
         <shootingRange>3.6</shootingRange>
 
         <!-- shooting lookup table -->
         <targetDistance0>1.6</targetDistance0>
-        <shooterRPM0>3800</shooterRPM0>
-        <armAngle0>17</armAngle0>
+        <shooterRPM0>4000</shooterRPM0>
+        <armAngle0>16</armAngle0>
 
         <targetDistance1>2.1</targetDistance1>
-        <shooterRPM1>4000</shooterRPM1>
-        <armAngle1>6</armAngle1>
+        <shooterRPM1>4200</shooterRPM1>
+        <armAngle1>8</armAngle1>
 
         <targetDistance2>2.6</targetDistance2>
         <shooterRPM2>4600</shooterRPM2>
-        <armAngle2>-6</armAngle2>
+        <armAngle2>-4</armAngle2>
 
         <targetDistance3>3.1</targetDistance3>
         <shooterRPM3>5600</shooterRPM3>
@@ -163,8 +163,8 @@
         <errorTolerance>2</errorTolerance>
     </arm>
     <auto>
-        <autoStageMaxAcceleration type="double">6</autoStageMaxAcceleration>
-        <autoStageMaxVelocity type="double">3</autoStageMaxVelocity>
+        <autoStageMaxAcceleration type="double">5</autoStageMaxAcceleration>
+        <autoStageMaxVelocity type="double">2.5</autoStageMaxVelocity>
         <autoStageMaxAngularVelocity type="double">150</autoStageMaxAngularVelocity> <!-- in deg/s -->
         <inAdvanceTime>0.3</inAdvanceTime>
 <!--        <autoStageMaxAcceleration type="double">2</autoStageMaxAcceleration>-->

@@ -48,7 +48,7 @@ public class IntakeWithDistanceSensor extends Intake {
         // System.out.println("<-- intake current status" + this.currentStatus + " -->");
         return switch (currentStatus) {
             case GRABBING -> {
-                if (isNoteInsideIntake())
+                if (intakeDistanceSensor.getDistanceCM(100) <= distanceSensorThreshold)
                     yield updateStatusToHolding();
                 yield intakePower;
             }

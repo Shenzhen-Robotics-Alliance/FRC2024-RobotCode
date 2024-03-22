@@ -16,6 +16,7 @@ import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Drivers.DistanceSensors.LaserCanSensor;
 import frc.robot.Drivers.DistanceSensors.Rev2mDistanceSensorEncapsulation;
 import frc.robot.Drivers.Encoders.CanCoder;
 import frc.robot.Drivers.Encoders.DCAbsolutePositionEncoder;
@@ -138,10 +139,10 @@ public class RobotCore {
                 );
 
                 final Map<Integer, Vector2D> speakerTargetAprilTagReferences = new HashMap<>(), amplifierTargetAprilTagReferences = new HashMap<>(), noteTargetReferences = new HashMap<>();
-                speakerTargetAprilTagReferences.put(4, new Vector2D(new double[] {0, -0.14}));
+                speakerTargetAprilTagReferences.put(4, new Vector2D(new double[] {0, -0.2}));
                 // speakerTargetAprilTagReferences.put(3, new Vector2D(new double[] {-0.5,0}));
                 // amplifierTargetAprilTagReferences.put(5, new Vector2D(new double[] {0, 0}));
-                speakerTargetAprilTagReferences.put(7, new Vector2D(new double[] {0, -0.14}));
+                speakerTargetAprilTagReferences.put(7, new Vector2D(new double[] {0, -0.2}));
                 // speakerTargetAprilTagReferences.put(8, new Vector2D(new double[] {-0.5,0}));
                 // amplifierTargetAprilTagReferences.put(6, new Vector2D(new double[] {0, 0}));
 
@@ -174,7 +175,10 @@ public class RobotCore {
                 final TalonFXMotor intakeMotor = new TalonFXMotor(new TalonFX((int)robotConfig.getConfig("intake/intakeMotorPort")), robotConfig.getConfig("intake/intakeMotorReversed") != 0),
                         intakeAidMotor = new TalonFXMotor(new TalonFX((int)robotConfig.getConfig("intake/intakeAidMotorPort")), robotConfig.getConfig("intake/intakeAidMotorReversed") != 0);
 
-                this.intake = new IntakeWithDistanceSensor(intakeMotor, intakeAidMotor, intakeMotor, new Rev2mDistanceSensorEncapsulation(), transformableArm, robotConfig); modules.add(intake);
+                this.intake = new IntakeWithDistanceSensor(intakeMotor, intakeAidMotor, intakeMotor, 
+                new Rev2mDistanceSensorEncapsulation()
+                // new LaserCanSensor(18)
+                , transformableArm, robotConfig); modules.add(intake);
 
                 this.climb = new Climb(
                         new TalonFXMotor(

@@ -59,10 +59,10 @@ public class ArmIntakeAndShootManuallyOperatedBackUpService extends RobotService
         /* normal ops */
         final double leftStick = -copilotController.getLeftY(), rightStick = -copilotController.getRightY();
         if (copilotController.getRightBumper()) {
+            System.out.println("attempting to start intake...");
             transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.INTAKE, this);
             shooterModule.setShooterMode(Shooter.ShooterMode.DISABLED, this);
-            if (transformerModule.transformerInPosition())
-                intakeModule.startIntake(this);
+            intakeModule.startIntake(this);
         } else if (leftStick > 0.2) {
             transformerModule.setTransformerDesiredPosition(TransformableArm.TransformerPosition.SCORE_AMPLIFIER, this);
             shooterModule.setShooterMode(Shooter.ShooterMode.AMPLIFY, this);
