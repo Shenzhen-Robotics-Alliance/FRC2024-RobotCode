@@ -118,7 +118,7 @@
         <amplifyRPM>3000</amplifyRPM>
         <idleRPM>0</idleRPM>
         <preparingForShootRPM>2000</preparingForShootRPM>
-        <projectileSpeed>10</projectileSpeed>
+        <projectileSpeed>16</projectileSpeed>
         <shootingRange>4</shootingRange>
 
         <!-- shooting lookup table -->
@@ -132,7 +132,7 @@
 
         <targetDistance2>2.1</targetDistance2>
         <shooterRPM2>4600</shooterRPM2>
-        <armAngle2>-2</armAngle2>
+        <armAngle2>-3</armAngle2>
 
         <targetDistance3>2.6</targetDistance3>
         <shooterRPM3>5400</shooterRPM3>
@@ -144,7 +144,7 @@
 
         <targetDistance5>3.6</targetDistance5>
         <shooterRPM5>6000</shooterRPM5>
-        <armAngle5>-20</armAngle5>
+        <armAngle5>-26</armAngle5>
 
         <targetDistance6>4.1</targetDistance6>
         <shooterRPM6>6000</shooterRPM6>
@@ -200,7 +200,7 @@
 
         <inAdvanceTime>0.4</inAdvanceTime>
 
-        <shootingSegmentSpeedFactor>0.4</shootingSegmentSpeedFactor>
+        <shootingSegmentSpeedFactor>0.3</shootingSegmentSpeedFactor>
         <additionalRotationInAdvanceTime>0.3</additionalRotationInAdvanceTime>
     </auto>
 
