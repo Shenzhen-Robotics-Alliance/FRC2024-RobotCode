@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot preloaded lower"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "move to second lower"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot second grab third lower"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot third lower"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "grab fourth lower"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot fourth lower"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

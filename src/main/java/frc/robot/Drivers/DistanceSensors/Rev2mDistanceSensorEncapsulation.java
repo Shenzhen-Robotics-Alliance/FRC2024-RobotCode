@@ -1,17 +1,20 @@
  package frc.robot.Drivers.DistanceSensors;
 
  import com.revrobotics.Rev2mDistanceSensor;
+ import frc.robot.Main;
 
  public class Rev2mDistanceSensorEncapsulation implements DistanceSensor {
-     private static final Rev2mDistanceSensor rev2mDistanceSensorInstance = new Rev2mDistanceSensor(Rev2mDistanceSensor.Port.kOnboard);
+     private static final Rev2mDistanceSensor rev2mDistanceSensorInstance = Main.isSim ? null : new Rev2mDistanceSensor(Rev2mDistanceSensor.Port.kOnboard);
      public Rev2mDistanceSensorEncapsulation() {
+         if (rev2mDistanceSensorInstance == null)
+             return;
          rev2mDistanceSensorInstance.setMeasurementPeriod(0.02);
          setEnabled(true);
      }
      @Override
      public double getDistanceCM() {
          // System.out.println("distance sensor update rate: " + 1/rev2mDistanceSensorInstance.getMeasurementPeriod());
-         if (!rev2mDistanceSensorInstance.isRangeValid()) {
+         if (rev2mDistanceSensorInstance == null || !rev2mDistanceSensorInstance.isRangeValid()) {
              System.out.println("range invalid, raw reading: " + rev2mDistanceSensorInstance.getRange(Rev2mDistanceSensor.Unit.kMillimeters));
              return Double.POSITIVE_INFINITY;
          }
@@ -20,6 +23,7 @@
 
      @Override
      public void setEnabled(boolean enabled) {
+         if (rev2mDistanceSensorInstance == null) return;
          final String start = enabled ? "starting" : "stopping", end = enabled ? "started" : "stopped";
          System.out.println("Rev2m Distance Sensor | " + start + " round robbin...");
          rev2mDistanceSensorInstance.setEnabled(enabled);

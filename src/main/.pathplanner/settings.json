@@ -3,8 +3,9 @@
   "robotLength": 0.99,
   "holonomicMode": true,
   "pathFolders": [
-    "red mid 6 upper",
-    "red mid 6 note"
+    "lower four notes",
+    "red mid 6 note",
+    "red mid 6 upper"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.5,
