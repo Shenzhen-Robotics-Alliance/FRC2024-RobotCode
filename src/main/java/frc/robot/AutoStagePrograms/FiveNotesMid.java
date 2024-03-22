@@ -64,10 +64,12 @@ public class FiveNotesMid implements CommandSequenceGenerator {
 //        ));
 
         /* we grab mid instead */
+        commandSegments.add(commandFactory.faceDirection(new Rotation2D(Math.toRadians(180))));
         commandSegments.add(aimBot.grabNote(FieldPositions.nearNote2, new Rotation2D(Math.toRadians(180)), intakeTimeOut));
 
         /* shoot third */
         commandSegments.add(aimBot.shootWhileMoving(
+                () -> true,
                 SequentialCommandFactory.getBezierCurvesFromPathFile("shoot third grab fourth").get(0),
                 FieldPositions.speakerPosition,
                 shootingTimeOut

@@ -16,7 +16,7 @@
          // System.out.println("distance sensor update rate: " + 1/rev2mDistanceSensorInstance.getMeasurementPeriod());
          if (rev2mDistanceSensorInstance == null || !rev2mDistanceSensorInstance.isRangeValid()) {
              System.out.println("range invalid, raw reading: " + rev2mDistanceSensorInstance.getRange(Rev2mDistanceSensor.Unit.kMillimeters));
-             return Double.POSITIVE_INFINITY;
+             return 0;
          }
          return rev2mDistanceSensorInstance.getRange(Rev2mDistanceSensor.Unit.kMillimeters) / 10.0;
      }
