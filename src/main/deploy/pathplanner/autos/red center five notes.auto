@@ -38,13 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "shoot fifth grab sixth"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "move closer to speaker holding sixth"
+            "pathName": "shoot fifth"
           }
         }
       ]

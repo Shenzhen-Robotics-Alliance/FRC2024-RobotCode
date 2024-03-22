@@ -50,18 +50,21 @@ public class FiveNotesMid implements CommandSequenceGenerator {
                 shootingTimeOut
         ));
 
-        /* move to third */
-        commandSegments.add(commandFactory.followSingleCurve(
-                "shoot second and grab third", 1,
-                new Rotation2D(Math.toRadians(-150))
-        ));
+//        /* move to third */
+//        commandSegments.add(commandFactory.followSingleCurve(
+//                "shoot second and grab third", 1,
+//                new Rotation2D(Math.toRadians(180))
+//        ));
+//
+//        /* grab third */
+//        commandSegments.add(aimBot.grabNote(
+//                FieldPositions.nearNote1,
+//                new Rotation2D(Math.toRadians(180)),
+//                intakeTimeOut
+//        ));
 
-        /* grab third */
-        commandSegments.add(aimBot.grabNote(
-                FieldPositions.nearNote1,
-                new Rotation2D(Math.toRadians(-150)),
-                intakeTimeOut
-        ));
+        /* we grab mid instead */
+        commandSegments.add(aimBot.grabNote(FieldPositions.nearNote2, new Rotation2D(Math.toRadians(180)), intakeTimeOut));
 
         /* shoot third */
         commandSegments.add(aimBot.shootWhileMoving(
@@ -98,31 +101,51 @@ public class FiveNotesMid implements CommandSequenceGenerator {
                 "shoot fourth move to fifth", 2,
                 new Rotation2D(Math.toRadians(180))
         ));
+        commandSegments.add(commandFactory.followSingleCurve(
+                "shoot fourth move to fifth", 3,
+                new Rotation2D(Math.toRadians(180))
+        ));
+        commandSegments.add(commandFactory.followSingleCurve(
+                "shoot fourth move to fifth", 4,
+                new Rotation2D(Math.toRadians(180))
+        ));
         /* grab fifth */
         commandSegments.add(aimBot.grabNote(
-                FieldPositions.nearNote2,
+                FieldPositions.farNoteCenter,
                 new Rotation2D(Math.toRadians(180)),
                 intakeTimeOut
         ));
 
+        /* move to shooting spot */
+        commandSegments.add(commandFactory.followSingleCurve(
+                "shoot fifth", 0,
+                new Rotation2D(Math.toRadians(-170))
+        ));
         /* shoot fifth */
         commandSegments.add(aimBot.shootWhileMoving(
-                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fifth grab sixth").get(0),
+                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fifth").get(1),
                 FieldPositions.speakerPosition,
                 shootingTimeOut
         ));
-        /* move to sixth */
-        commandSegments.add(commandFactory.followSingleCurve(
-                "shoot fifth grab sixth fast", 1,
-                new Rotation2D(Math.toRadians(-120))
-        ));
 
-        /* grab sixth */
-        commandSegments.add(aimBot.grabNote(
-                FieldPositions.farNoteCenter,
-                new Rotation2D(Math.toRadians(-120)),
-                intakeTimeOut
-        ));
+//        /* shoot fifth */
+//        commandSegments.add(aimBot.shootWhileMoving(
+//                SequentialCommandFactory.getBezierCurvesFromPathFile("shoot fifth grab sixth").get(0),
+//                FieldPositions.speakerPosition,
+//                shootingTimeOut
+//        ));
+//        /* move to sixth */
+//        commandSegments.add(commandFactory.followSingleCurve(
+//                "shoot fifth grab sixth fast", 1,
+//                new Rotation2D(Math.toRadians(-120))
+//        ));
+//
+//        /* grab sixth */
+//        commandSegments.add(aimBot.grabNote(
+//                FieldPositions.farNoteCenter,
+//                new Rotation2D(Math.toRadians(-120)),
+//                intakeTimeOut
+//        ));
 
 //        commandSegments.addAll(Arrays.asList(commandFactory.followPathFacing(
 //                "move closer to speaker holding sixth",

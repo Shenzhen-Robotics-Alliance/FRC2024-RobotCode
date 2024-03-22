@@ -37,10 +37,10 @@
 
     <chassis>
         <wheelGearRatio type="double">8.14</wheelGearRatio>
-<!--        <wheelsPowerConstrain type="double">1</wheelsPowerConstrain>-->
-<!--        <wheelsPowerConstrainAtLowSpeedMode>0.6</wheelsPowerConstrainAtLowSpeedMode>-->
-        <wheelsPowerConstrain type="double">0.5</wheelsPowerConstrain>
+        <wheelsPowerConstrain type="double">1</wheelsPowerConstrain>
         <wheelsPowerConstrainAtLowSpeedMode>0.5</wheelsPowerConstrainAtLowSpeedMode>
+<!--        <wheelsPowerConstrain type="double">0.5</wheelsPowerConstrain>-->
+<!--        <wheelsPowerConstrainAtLowSpeedMode>0.5</wheelsPowerConstrainAtLowSpeedMode>-->
         <rotationalSpeedMaxSacrifice type="double">0.4</rotationalSpeedMaxSacrifice>
 
         <robotPositionFeedForwardTime type="double">0.05</robotPositionFeedForwardTime>
@@ -113,13 +113,13 @@
         <armEncoderReversed>0</armEncoderReversed>
 
         <!-- calibrate by DCEncoderCalibration.java, the reading of: absolute position(radian), when arm is placed vertically -->
-        <encoderZeroPositionRadians>1.453</encoderZeroPositionRadians>
+        <encoderZeroPositionRadians>4.544</encoderZeroPositionRadians>
 
-        <position-DEFAULT>101</position-DEFAULT>
-        <position-INTAKE>101</position-INTAKE>
+        <position-DEFAULT>102</position-DEFAULT>
+        <position-INTAKE>102</position-INTAKE>
         <position-SPLIT>80</position-SPLIT>
-        <position-SHOOT_NOTE>70</position-SHOOT_NOTE>
-        <position-SCORE_AMPLIFIER>-6</position-SCORE_AMPLIFIER>
+        <position-SHOOT_NOTE>71</position-SHOOT_NOTE>
+        <position-SCORE_AMPLIFIER>2</position-SCORE_AMPLIFIER>
 
         <!-- software limit -->
         <lowerPositionLimit>-21</lowerPositionLimit>
@@ -163,14 +163,14 @@
         <errorTolerance>2</errorTolerance>
     </arm>
     <auto>
-<!--        <autoStageMaxAcceleration type="double">7</autoStageMaxAcceleration>-->
-<!--        <autoStageMaxVelocity type="double">3.5</autoStageMaxVelocity>-->
-<!--        <autoStageMaxAngularVelocity type="double">180</autoStageMaxAngularVelocity> &lt;!&ndash; in deg/s &ndash;&gt;-->
-<!--        <inAdvanceTime>0.4</inAdvanceTime>-->
-        <autoStageMaxAcceleration type="double">2</autoStageMaxAcceleration>
-        <autoStageMaxVelocity type="double">1</autoStageMaxVelocity>
-        <autoStageMaxAngularVelocity type="double">45</autoStageMaxAngularVelocity> <!-- in deg/s -->
-        <inAdvanceTime>0.1</inAdvanceTime>
+        <autoStageMaxAcceleration type="double">6</autoStageMaxAcceleration>
+        <autoStageMaxVelocity type="double">3</autoStageMaxVelocity>
+        <autoStageMaxAngularVelocity type="double">150</autoStageMaxAngularVelocity> <!-- in deg/s -->
+        <inAdvanceTime>0.3</inAdvanceTime>
+<!--        <autoStageMaxAcceleration type="double">2</autoStageMaxAcceleration>-->
+<!--        <autoStageMaxVelocity type="double">1</autoStageMaxVelocity>-->
+<!--        <autoStageMaxAngularVelocity type="double">45</autoStageMaxAngularVelocity> &lt;!&ndash; in deg/s &ndash;&gt;-->
+<!--        <inAdvanceTime>0.1</inAdvanceTime>-->
     </auto>
 
     <climb>

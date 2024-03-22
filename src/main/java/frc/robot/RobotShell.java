@@ -120,7 +120,7 @@ public class RobotShell extends TimedRobot {
     public void testInit() {
         // System.out.println("<-- Robot Shell | test init -->");
         if (robotTest == null)
-            this.robotTest = new ArmSoftwareLimitTest(robotCore.robotConfig);
+            this.robotTest = new DCEncoderCalibration(robotCore.armEncoder.getRawSensorInstance());
         robotTest.testStart();
     }
 
@@ -179,11 +179,12 @@ public class RobotShell extends TimedRobot {
 
         autoStageChooser.setDefaultOption("Leave Community", new LeaveCommunity());
 
-        autoStageChooser.addOption("Middle Six Notes (Test Route)", new SixNotesMidTestRoute());
+        // autoStageChooser.addOption("Middle Six Notes (Test Route)", new SixNotesMidTestRoute());
         autoStageChooser.addOption("Middle Five Notes (Test Route)", new FiveNotesMidTestRoute());
         autoStageChooser.addOption("Upper Five Notes (Test Route)", new FiveNotesUpperTestRoute());
 
-        autoStageChooser.addOption("Middle Six Notes", new SixNotesMid());
+        // autoStageChooser.addOption("Lower Four Notes", new FourNoteLower());
+        // autoStageChooser.addOption("Middle Six Notes", new SixNotesMid());
         autoStageChooser.addOption("Middle Five Notes", new FiveNotesMid());
         autoStageChooser.addOption("Upper Five Notes", new FiveNotesUpper());
 
