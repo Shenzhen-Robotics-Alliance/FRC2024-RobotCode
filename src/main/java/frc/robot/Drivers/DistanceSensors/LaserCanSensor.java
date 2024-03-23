@@ -24,5 +24,4 @@ public class LaserCanSensor implements DistanceSensor {
     public double getDistanceCM(double defaultValue) {
         return laserCan.getMeasurement() == null ? defaultValue : (laserCan.getMeasurement().distance_mm * 10);
     }
-    
 }
