@@ -329,7 +329,8 @@ public class VisionAidedPilotChassis extends PilotChassis {
             chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
                 shooter.aimingSystem.getRobotFacing(shooter.getProjectileSpeed(), currentVisualTargetLastSeenPosition, rotationInAdvanceTime)), this);
 
-        if (autoTrigger && intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && shooter.shooterReady() && shooter.targetInRange() && arm.transformerInPosition() && chassis.isCurrentRotationalTaskFinished())
+        if (autoTrigger && intake.getCurrentStatus() != Intake.IntakeModuleStatus.LAUNCHING && shooter.shooterReady() && shooter.targetInRange() && arm.transformerInPosition() && chassis.isCurrentRotationalTaskFinished() 
+        && chassis.positionEstimator.getRobotVelocity2D().getMagnitude() < 1)
             intake.startLaunch(this);
         if (!autoTrigger && !pilotController.keyOnHold(translationAutoPilotButton))
             intake.startLaunch(this);
@@ -520,7 +521,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         this.intakeCenterHorizontalBiasFromCamera = 0;
         grabbingNoteDistance = 0.2;
         grabbingPathControlPointDistance = 0.4;
-        chassisSpeedLimitWhenAutoAim = 2.5;
+        chassisSpeedLimitWhenAutoAim = 2;
         shootingSweetSpot = new Vector2D(new double[] {0, 2});
         shootingProcessEndingPointUpdatableRange = 1.4;
         chassisReactionDelay = 0.4;

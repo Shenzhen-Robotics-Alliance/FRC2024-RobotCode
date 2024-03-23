@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.wpi.first.wpilibj.Timer;
+
 public class FiveNotesUpper implements CommandSequenceGenerator {
     @Override
     public List<SequentialCommandSegment> getCommandSegments(RobotCore robotCore) {
@@ -20,6 +22,10 @@ public class FiveNotesUpper implements CommandSequenceGenerator {
         final long shootingTimeOut = 5000, intakeTimeOut = 2000;
 
         commandSegments.add(commandFactory.calibratePositionEstimator());
+
+        final Timer sleepTimer = new Timer();
+        sleepTimer.start();
+        // commandSegments.add(new SequentialCommandSegment(() -> true, () -> null, sleepTimer::reset, () ->{}, ()->{}, () -> sleepTimer.get() > 10, robotCore.positionReader::getRobotRotation2D, robotCore.positionReader::getRobotRotation2D));
 
         /* shoot the preloaded */
         commandSegments.add(aimBot.shootWhileMoving(
