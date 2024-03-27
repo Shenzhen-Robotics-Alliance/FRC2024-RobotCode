@@ -2,7 +2,6 @@ CAM_PORT = 0
 CAMERA_RESOLUTION = (640, 480)
 CAMERA_FRAMERATE = 60
 STREAMING_RESOLUTION = (160, 120)
-STREAMING_FRAMERATE = 24
 FLIP_IMAGE = -1 # 0 for vertical flip, 1 for horizontal flip, -1 for flip both, None for do not flip
 
 '''
@@ -11,20 +10,21 @@ inspection and detection server running together
 import cv2
 import numpy as np
 from time import time, sleep
-import apriltag
-# import pupil_apriltags as apriltag # for windows
+# import apriltag
+import pupil_apriltags as apriltag # for windows
 import threading
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
 from time import time, sleep
 
-cap = cv2.VideoCapture(CAM_PORT, cv2.CAP_V4L2) # camera port 0 for linux
-# cap = cv2.VideoCapture(1) # camera port 0 for windows
+# cap = cv2.VideoCapture(CAM_PORT, cv2.CAP_V4L2) # camera port 0 for linux
+cap = cv2.VideoCapture(CAM_PORT) # camera port 0 for windows
+cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J','P','G'))
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, CAMERA_RESOLUTION[0]) # width
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, CAMERA_RESOLUTION[1]) # height
 cap.set(cv2.CAP_PROP_FPS, CAMERA_FRAMERATE) 
-detector = apriltag.Detector(apriltag.DetectorOptions(families='tag36h11 tag25h9', nthreads=1))
-# detector = apriltag.Detector(families='tag36h11', nthreads=4) # for windows
+# detector = apriltag.Detector(apriltag.DetectorOptions(families='tag36h11', nthreads=1))
+detector = apriltag.Detector(families='tag36h11', nthreads=1) # for windows
 
 server_port = 8888
 
@@ -109,7 +109,8 @@ class StreamingHandler(SimpleHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            with open('/home/ironn-maple/index.html', 'rb') as f:
+            # with open('/home/ironn-maple/index.html', 'rb') as f:
+            with open('./index.html', 'rb') as f:
                 content = f.read()
             self.wfile.write(content)
         elif self.path == '/fps':
@@ -127,21 +128,17 @@ class StreamingHandler(SimpleHTTPRequestHandler):
             self.send_header('Content-type', 'multipart/x-mixed-replace; boundary=frame')
             self.end_headers()
             while running:
-                # while (not new_frame_ready) and running:
-                #     sleep(0.02)
-                sleep(1/STREAMING_FRAMERATE)
-                lock.acquire()
                 try:
+                    lock.acquire()
                     frame_resized = cv2.resize(frame, STREAMING_RESOLUTION)
+                    lock.release()
                     ret, buffer = cv2.imencode('.jpg', frame_resized)
                     frame_bytes = buffer.tobytes()
                     self.send_frame(frame_bytes)
                 except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
                     print("client disconnected")
-                    lock.release()
                     return
                 new_frame_ready = True
-                lock.release()
         elif self.path == '/results':
             self.send_response(200)
             self.send_header('Content-type', 'text/plain')
@@ -179,7 +176,7 @@ print("<-- inspector server started -->")
 try:
     generate_frames()
 except KeyboardInterrupt:
-    lock.release()
+    # lock.release()
     pass
 running = False
 print("shutdown by user")
