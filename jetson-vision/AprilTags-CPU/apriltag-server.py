@@ -22,7 +22,7 @@ cap = cv2.VideoCapture(CAM_PORT) # camera port 0 for windows
 cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J','P','G'))
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, CAMERA_RESOLUTION[0]) # width
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, CAMERA_RESOLUTION[1]) # height
-cap.set(cv2.CAP_PROP_FPS, CAMERA_FRAMERATE) 
+cap.set(cv2.CAP_PROP_FPS, CAMERA_FRAMERATE)
 # detector = apriltag.Detector(apriltag.DetectorOptions(families='tag36h11', nthreads=1))
 detector = apriltag.Detector(families='tag36h11', nthreads=1) # for windows
 
@@ -176,7 +176,7 @@ print("<-- inspector server started -->")
 try:
     generate_frames()
 except KeyboardInterrupt:
-    # lock.release()
+    lock.release()
     pass
 running = False
 print("shutdown by user")
