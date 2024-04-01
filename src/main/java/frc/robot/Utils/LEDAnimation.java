@@ -5,6 +5,22 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 public interface LEDAnimation {
     void play(AddressableLEDBuffer buffer, double t);
 
+    final class Breathe implements LEDAnimation {
+        private final int colorR, colorG, colorB;
+        public Breathe(int colorR, int colorG, int colorB) {
+            this.colorR = colorR;
+            this.colorG = colorG;
+            this.colorB = colorB;
+        }
+
+        @Override
+        public void play(AddressableLEDBuffer buffer, double t) {
+            final double brightness = Math.sin(t * Math.PI);
+            for (int i = 0; i < buffer.getLength(); i++)
+                buffer.setRGB(i, (int) (colorR * brightness), (int) (colorG * brightness), (int) (colorB * brightness));
+        }
+    }
+
     final class ShowColor implements LEDAnimation {
         private final int colorR, colorG, colorB;
         public ShowColor(int colorR, int colorG, int colorB) {
@@ -71,6 +87,28 @@ public interface LEDAnimation {
                 } else if (i > edge) r = g = b = 0;
                 buffer.setRGB(i, r, g, b);
                 buffer.setRGB(buffer.getLength() - i-1, r, g, b);
+            }
+        }
+    }
+
+    final class Rainbow implements LEDAnimation {
+        @Override
+        public void play(AddressableLEDBuffer buffer, double t) {
+            final int firstPixelHue = (int) (t * 180),
+                    v = (int) (32 + 96 * Math.sin(Math.PI*t));
+            for (var i = 0; i < buffer.getLength(); i++)
+                buffer.setHSV(i, (firstPixelHue + (i * 180 / buffer.getLength())) % 180, 255, v);
+        }
+    }
+
+    final class PoliceLight implements LEDAnimation {
+
+        @Override
+        public void play(AddressableLEDBuffer buffer, double t) {
+            for (int i = 0; i < buffer.getLength() / 2; i++) {
+                final int blink = t > 0.5? 255 : 0;
+                buffer.setRGB(i, t > 0.5? 255 : 0, 0, 0);
+                buffer.setRGB(buffer.getLength() - i-1, 0, 0,  t < 0.5? 255 : 0);
             }
         }
     }

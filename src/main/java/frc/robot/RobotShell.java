@@ -51,7 +51,7 @@ public class RobotShell extends TimedRobot {
         autoProgramRunner = new AutoProgramRunner(robotCore.chassisModule, robotCore.robotConfig);
         intakeAndShooterService = new TransformableIntakeAndShooterService(robotCore.intake, robotCore.shooter, robotCore.transformableArm, robotCore.robotConfig, copilotGamePad);
         intakeAndShooterBackUpService = new ArmIntakeAndShootManuallyOperatedBackUpService(robotCore.intake, robotCore.shooter, robotCore.transformableArm, robotCore.robotConfig, copilotGamePad);
-        visionAidedPilotChassis = new VisionAidedPilotChassis(robotCore.chassisModule, robotCore.shooter, robotCore.intake, robotCore.transformableArm, robotCore.speakerTarget, robotCore.amplifierTarget, robotCore.noteTarget, copilotGamePad, robotCore.robotConfig, robotCore.red, robotCore.green, robotCore.blue);
+        visionAidedPilotChassis = new VisionAidedPilotChassis(robotCore.chassisModule, robotCore.shooter, robotCore.intake, robotCore.transformableArm, robotCore.speakerTarget, robotCore.amplifierTarget, robotCore.noteTarget, copilotGamePad, robotCore.robotConfig, robotCore.statusLight);
         climbService = new ClimbService(copilotGamePad, robotCore.climb, robotCore.robotConfig);
 
         addAutoStagePrograms();

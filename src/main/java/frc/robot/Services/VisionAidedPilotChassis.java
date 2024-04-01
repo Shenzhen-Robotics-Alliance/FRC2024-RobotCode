@@ -11,6 +11,7 @@ import frc.robot.Modules.UpperStructure.Shooter;
 import frc.robot.Modules.UpperStructure.TransformableArm;
 import frc.robot.Utils.ComputerVisionUtils.AprilTagReferredTarget;
 import frc.robot.Utils.EasyShuffleBoard;
+import frc.robot.Utils.LEDAnimation;
 import frc.robot.Utils.MathUtils.*;
 import frc.robot.Utils.RobotConfigReader;
 
@@ -19,6 +20,16 @@ import frc.robot.Utils.RobotConfigReader;
  * a sendable chooser on smartdashboard will choose whether this service, or the more basic TransformableIntakeAndShooterService controls the three modules: shooter, transformer and intake
  * */
 public class VisionAidedPilotChassis extends PilotChassis {
+    // TODO: led animation for other parts of the program
+    private static final LEDAnimation
+            enabled = new LEDAnimation.Rainbow(),
+            seeingNote = new LEDAnimation.ShowColor(0, 200, 255),
+            proceedingIntake = new LEDAnimation.Slide(0, 200, 255),
+            holdingNote = new LEDAnimation.ShowColor(0, 255, 0),
+            seeingTarget = new LEDAnimation.Slide(0, 255, 0),
+            approachingToTarget = new LEDAnimation.Charging(230, 255, 0),
+            shooterReady = new LEDAnimation.ShowColor(230, 255, 0);
+
     public enum VisionTargetClass {
         SPEAKER,
         AMPLIFIER
@@ -56,7 +67,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
     private final TransformableArm arm;
     private final AprilTagReferredTarget speakerTarget, amplifierTarget, noteTarget;
     private final XboxController copilotGamePad;
-    private final LEDStatusLights red, green, blue;
+    private final LEDStatusLights ledStatusLights;
 
 
     /**
@@ -67,7 +78,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
      * @param copilotGamePad
      * @param robotConfig
      */
-    public VisionAidedPilotChassis(SwerveBasedChassis chassis, Shooter shooter, Intake intake, TransformableArm arm, AprilTagReferredTarget speakerTarget, AprilTagReferredTarget amplifierTarget, AprilTagReferredTarget noteTarget, XboxController copilotGamePad, RobotConfigReader robotConfig, LEDStatusLights red, LEDStatusLights green, LEDStatusLights blue) {
+    public VisionAidedPilotChassis(SwerveBasedChassis chassis, Shooter shooter, Intake intake, TransformableArm arm, AprilTagReferredTarget speakerTarget, AprilTagReferredTarget amplifierTarget, AprilTagReferredTarget noteTarget, XboxController copilotGamePad, RobotConfigReader robotConfig, LEDStatusLights ledStatusLights) {
         super(chassis, robotConfig);
         this.shooter = shooter;
         this.intake = intake;
@@ -77,9 +88,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         this.speakerTarget = speakerTarget;
         this.amplifierTarget = amplifierTarget;
         this.copilotGamePad = copilotGamePad;
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
+        this.ledStatusLights = ledStatusLights;
     }
 
 
@@ -108,7 +117,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         arm.reset();
         shooter.reset();
 
-        red.gainOwnerShip(this); green.gainOwnerShip(this);  blue.gainOwnerShip(this);
+        ledStatusLights.gainOwnerShip(this);
     }
 
 
@@ -157,6 +166,13 @@ public class VisionAidedPilotChassis extends PilotChassis {
 
         switch (currentStatus) {
             case MANUALLY_DRIVING -> {
+                if (intake.isNoteInsideIntake() && speakerTarget.isVisible(500))
+                    ledStatusLights.setAnimation(seeingTarget, 2, this);
+                else if (!intake.isNoteInsideIntake() && noteTarget.isVisible(500))
+                    ledStatusLights.setAnimation(seeingNote, 2, this);
+                else
+                    ledStatusLights.setAnimation(enabled, 0.6, this);
+
                 arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
                 intake.turnOffIntake(this);
 
@@ -242,23 +258,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
             EasyShuffleBoard.putNumber("auto-aim", "aiming system relative pos (x)", speakerPosition.getX());
             EasyShuffleBoard.putNumber("auto-aim", "aiming system relative pos (y)", speakerPosition.getY());
         }
-
-        red.setCurrentStatus(arm.malFunctioning() ?
-                LEDStatusLights.LEDStatus.BLINK :
-                (intake.malFunctioning() ? LEDStatusLights.LEDStatus.ON : LEDStatusLights.LEDStatus.OFF),
-                this);
-
-        blue.setCurrentStatus(intake.isNoteInsideIntake() ?
-                        LEDStatusLights.LEDStatus.ON :
-                        (noteTarget.isVisible(500) ? LEDStatusLights.LEDStatus.BLINK : LEDStatusLights.LEDStatus.OFF),
-                this);
-
-        green.setCurrentStatus(switch (currentStatus) {
-            case MANUALLY_DRIVING, SEARCHING_FOR_SHOOT_TARGET, SEARCHING_FOR_NOTE, GRABBING_NOTE -> LEDStatusLights.LEDStatus.OFF;
-            case REACHING_TO_SHOOT_TARGET ->
-                    (shooter.shooterReady() && shooter.targetInRange() && arm.transformerInPosition() && chassis.isCurrentRotationalTaskFinished()) ? LEDStatusLights.LEDStatus.ON :
-                    (speakerTarget.isVisible(500) ? LEDStatusLights.LEDStatus.BLINK : LEDStatusLights.LEDStatus.OFF);
-        }, this);
     }
 
     private void startIntakeWheels() {

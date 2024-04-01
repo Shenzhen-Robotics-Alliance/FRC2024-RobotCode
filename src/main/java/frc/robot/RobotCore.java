@@ -5,18 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
-import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.CANcoder;
 
 import edu.wpi.first.net.PortForwarder;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Drivers.DistanceSensors.LaserCanSensor;
 import frc.robot.Drivers.DistanceSensors.Rev2mDistanceSensorEncapsulation;
 import frc.robot.Drivers.Encoders.CanCoder;
 import frc.robot.Drivers.Encoders.DCAbsolutePositionEncoder;
@@ -25,7 +20,6 @@ import frc.robot.Drivers.IMUs.SimpleGyro;
 import frc.robot.Drivers.Motors.Motor;
 import frc.robot.Drivers.Motors.MotorsSet;
 import frc.robot.Drivers.Motors.TalonFXMotor;
-import frc.robot.Drivers.Motors.VictorSPXMotor;
 import frc.robot.Drivers.Visions.FixedAnglePositionTrackingCamera;
 import frc.robot.Drivers.Visions.JetsonDetectionAppClient;
 import frc.robot.Drivers.Visions.TargetFieldPositionTracker;
@@ -65,7 +59,7 @@ public class RobotCore {
         public final Shooter shooter;
         public final Climb climb;
         public final AprilTagReferredTarget speakerTarget, amplifierTarget, noteTarget;
-        public final LEDStatusLights red, green, blue;
+        public final LEDStatusLights statusLight;
 
         private final List<String> configsToTune = new ArrayList<>(1);
         private final List<RobotModuleBase> modules;
@@ -190,9 +184,8 @@ public class RobotCore {
                         robotConfig
                 ); modules.add(climb);
 
-                this.red = new LEDStatusLights(0); modules.add(red);
-                this.green = new LEDStatusLights(1); modules.add(green);
-                this.blue = new LEDStatusLights(2); modules.add(blue);
+
+                this.statusLight = new LEDStatusLights(new AddressableLED(1), new AddressableLEDBuffer(155)); modules.add(statusLight);
         }
 
         private SwerveWheel createSwerveWheel(String name, int id, Vector2D wheelInstallationPosition) {

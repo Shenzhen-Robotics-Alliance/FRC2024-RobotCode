@@ -8,7 +8,9 @@ import frc.robot.Utils.LEDAnimation;
 public class AddressableLEDTest implements SimpleRobotTest {
     private final AddressableLED led = new AddressableLED(1);
     private final AddressableLEDBuffer buffer = new AddressableLEDBuffer(155);
-    private final LEDAnimation animation = new LEDAnimation.Slide(0, 200, 255);
+    private final LEDAnimation animation =
+            new LEDAnimation.PoliceLight();
+//            new LEDAnimation.Slide(0, 200, 255);
     private final Timer timer = new Timer();
     @Override
     public void testStart() {
@@ -20,7 +22,7 @@ public class AddressableLEDTest implements SimpleRobotTest {
 
     @Override
     public void testPeriodic() {
-        animation.play(buffer, timer.get() % 1);
+        animation.play(buffer, (timer.get() * 6) % 1);
         led.setData(buffer);
     }
 
