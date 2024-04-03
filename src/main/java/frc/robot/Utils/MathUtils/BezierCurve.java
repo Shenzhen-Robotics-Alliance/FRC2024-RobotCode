@@ -103,15 +103,4 @@ public class BezierCurve {
             length += getVelocityWithLERP(t).getMagnitude() / samples;
         return length;
     }
-
-    public List<BezierCurve> loadPathFromPathPlanner(String pathFileName) {
-        return loadPathFromPathPlanner(pathFileName, false);
-    }
-
-    public List<BezierCurve> loadPathFromPathPlanner(String pathFileName, boolean flipped) {
-        final PathPlannerPath path = PathPlannerPath.fromPathFile(pathFileName);
-        final List<BezierCurve> curves = new ArrayList<>();
-        // path.getPathPoses() // TODO do a robot simulation and see how this works
-        return curves;
-    }
 }
