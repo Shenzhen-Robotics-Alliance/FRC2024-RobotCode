@@ -8,7 +8,7 @@
     "red mid 6 upper"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 3.0,
+  "defaultMaxVel": 4.0,
   "defaultMaxAccel": 6.0,
   "defaultMaxAngVel": 180.0,
   "defaultMaxAngAccel": 720.0,
