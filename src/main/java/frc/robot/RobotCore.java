@@ -8,6 +8,8 @@ import java.util.Map;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.CANcoder;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -33,6 +35,7 @@ import frc.robot.Services.RobotServiceBase;
 import frc.robot.Utils.*;
 import frc.robot.Utils.ComputerVisionUtils.AprilTagReferredTarget;
 import frc.robot.Utils.ComputerVisionUtils.FixedAngleCameraProfile;
+import frc.robot.Utils.ComputerVisionUtils.PhantomClient;
 import frc.robot.Utils.MathUtils.Rotation2D;
 import frc.robot.Utils.MathUtils.Vector2D;
 import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
@@ -353,6 +356,7 @@ public class RobotCore {
 
 
                 printChassisDebugMessagesToDashboard();
+                testPhantomVision();
 
 
                 robotConfig.updateTuningConfigsFromDashboard();
@@ -360,6 +364,18 @@ public class RobotCore {
                 /* monitor the program's performance */
                 SmartDashboard.putNumber("robot main thread delay", System.currentTimeMillis()-t);
                 t = System.currentTimeMillis();
+        }
+
+        public PhantomClient phantomClient = new PhantomClient("onbot-jetson");
+        public void testPhantomVision() {
+                phantomClient.update(new Pose2d(
+                        5, // positionReader.getRobotPosition2D().getX(),
+                        5, //positionReader.getRobotPosition2D().getY(),
+                        new Rotation2d(positionReader.getRobotRotation2D().getRadian() + Math.PI)
+                ));
+
+                EasyShuffleBoard.putNumber("phantom vision", "position x", phantomClient.getRobotPose().getX());
+                EasyShuffleBoard.putNumber("phantom vision", "position y", phantomClient.getRobotPose().getY());
         }
 
         public void updateModules() {
