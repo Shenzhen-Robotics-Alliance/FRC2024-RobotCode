@@ -188,7 +188,8 @@ public class RobotCore {
                 ); modules.add(climb);
 
 
-                this.statusLight = new LEDStatusLights(new AddressableLED(1), new AddressableLEDBuffer(155)); modules.add(statusLight);
+                this.statusLight = new LEDStatusLights(null, new AddressableLEDBuffer(155)); modules.add(statusLight);
+                // this.statusLight = null;
         }
 
         private SwerveWheel createSwerveWheel(String name, int id, Vector2D wheelInstallationPosition) {

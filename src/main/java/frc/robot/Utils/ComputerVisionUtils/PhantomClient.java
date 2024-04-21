@@ -13,7 +13,7 @@ public class PhantomClient {
     public PhantomClient(String server) {
         networkTableInstance = NetworkTableInstance.create();
         networkTableInstance.setServer(server);
-        networkTableInstance.flush();
+        networkTableInstance.startClient3("robot");
         this.robot_odometer_x_entry = networkTableInstance.getTable("Vision").getEntry("robot_odometer_x");
         this.robot_odometer_y_entry = networkTableInstance.getTable("Vision").getEntry("robot_odometer_y");
         this.robot_rotation_entry = networkTableInstance.getTable("Vision").getEntry("robot_rotation");
@@ -34,6 +34,8 @@ public class PhantomClient {
         networkTableInstance.flush();
         if (!networkTableInstance.isConnected())
             System.out.println("<-- waiting for vision to start, using odometry for now ... -->");
+        else
+            System.out.println("<-- pulling results from server -->");
         return new Pose2d(
                 robot_position_x.getDouble(previousPosition.getX()),
                 robot_position_y.getDouble(previousPosition.getY()),

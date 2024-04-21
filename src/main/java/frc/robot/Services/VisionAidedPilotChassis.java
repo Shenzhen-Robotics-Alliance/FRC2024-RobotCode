@@ -11,7 +11,7 @@ import frc.robot.Modules.UpperStructure.Shooter;
 import frc.robot.Modules.UpperStructure.TransformableArm;
 import frc.robot.Utils.ComputerVisionUtils.AprilTagReferredTarget;
 import frc.robot.Utils.EasyShuffleBoard;
-import frc.robot.Utils.LEDAnimation;
+import frc.robot.Utils.LEDAnimations;
 import frc.robot.Utils.MathUtils.*;
 import frc.robot.Utils.RobotConfigReader;
 
@@ -21,14 +21,14 @@ import frc.robot.Utils.RobotConfigReader;
  * */
 public class VisionAidedPilotChassis extends PilotChassis {
     // TODO: led animation for other parts of the program
-    private static final LEDAnimation
-            enabled = new LEDAnimation.Rainbow(),
-            seeingNote = new LEDAnimation.ShowColor(0, 200, 255),
-            proceedingIntake = new LEDAnimation.Slide(0, 200, 255),
-            holdingNote = new LEDAnimation.ShowColor(0, 255, 0),
-            seeingTarget = new LEDAnimation.Slide(0, 255, 0),
-            approachingToTarget = new LEDAnimation.Charging(230, 255, 0),
-            shooterReady = new LEDAnimation.ShowColor(230, 255, 0);
+    private static final LEDAnimations.LEDAnimation
+            enabled = new LEDAnimations.LEDAnimation.Rainbow(),
+            seeingNote = new LEDAnimations.LEDAnimation.ShowColor(0, 200, 255),
+            proceedingIntake = new LEDAnimations.LEDAnimation.Slide(0, 200, 255),
+            holdingNote = new LEDAnimations.LEDAnimation.ShowColor(0, 255, 0),
+            seeingTarget = new LEDAnimations.LEDAnimation.Slide(0, 255, 0),
+            approachingToTarget = new LEDAnimations.LEDAnimation.Charging(230, 255, 0),
+            shooterReady = new LEDAnimations.LEDAnimation.ShowColor(230, 255, 0);
 
     public enum VisionTargetClass {
         SPEAKER,
