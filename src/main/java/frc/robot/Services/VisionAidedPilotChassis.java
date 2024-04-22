@@ -11,25 +11,17 @@ import frc.robot.Modules.UpperStructure.Shooter;
 import frc.robot.Modules.UpperStructure.TransformableArm;
 import frc.robot.Utils.ComputerVisionUtils.AprilTagReferredTarget;
 import frc.robot.Utils.EasyShuffleBoard;
-import frc.robot.Utils.LEDAnimations;
+import frc.robot.Utils.LEDAnimation;
 import frc.robot.Utils.MathUtils.*;
 import frc.robot.Utils.RobotConfigReader;
+
+import static frc.robot.Utils.LEDAnimation.*;
 
 /**
  * based on the pilot chassis, we add auto-aiming, shoot and intake functions in this service
  * a sendable chooser on smartdashboard will choose whether this service, or the more basic TransformableIntakeAndShooterService controls the three modules: shooter, transformer and intake
  * */
 public class VisionAidedPilotChassis extends PilotChassis {
-    // TODO: led animation for other parts of the program
-    private static final LEDAnimations.LEDAnimation
-            enabled = new LEDAnimations.LEDAnimation.Rainbow(),
-            seeingNote = new LEDAnimations.LEDAnimation.ShowColor(0, 200, 255),
-            proceedingIntake = new LEDAnimations.LEDAnimation.Slide(0, 200, 255),
-            holdingNote = new LEDAnimations.LEDAnimation.ShowColor(0, 255, 0),
-            seeingTarget = new LEDAnimations.LEDAnimation.Slide(0, 255, 0),
-            approachingToTarget = new LEDAnimations.LEDAnimation.Charging(230, 255, 0),
-            shooterReady = new LEDAnimations.LEDAnimation.ShowColor(230, 255, 0);
-
     public enum VisionTargetClass {
         SPEAKER,
         AMPLIFIER
@@ -166,13 +158,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
 
         switch (currentStatus) {
             case MANUALLY_DRIVING -> {
-                if (intake.isNoteInsideIntake() && speakerTarget.isVisible(500))
-                    ledStatusLights.setAnimation(seeingTarget, 2, this);
-                else if (!intake.isNoteInsideIntake() && noteTarget.isVisible(500))
-                    ledStatusLights.setAnimation(seeingNote, 2, this);
-                else
-                    ledStatusLights.setAnimation(enabled, 0.6, this);
-
                 arm.setTransformerDesiredPosition(TransformableArm.TransformerPosition.DEFAULT, this);
                 intake.turnOffIntake(this);
 
@@ -198,7 +183,6 @@ public class VisionAidedPilotChassis extends PilotChassis {
             case SEARCHING_FOR_SHOOT_TARGET -> {
                 putLastShootingInfoToDashboard();
                 updateChassisPositionWhenTaskStarted();
-
                 shooter.setShooterMode(
                         switch (currentAimingTargetClass) {
                             case SPEAKER -> Shooter.ShooterMode.SHOOT;
@@ -251,6 +235,10 @@ public class VisionAidedPilotChassis extends PilotChassis {
             }
             case GRABBING_NOTE -> proceedGrabNoteProcess(translationAutoPilotButton);
         }
+
+        ledStatusLights.setAnimation(getCurrentAnimation(), this);
+        if (pilotController.keyOnPress(translationAutoPilotButton))
+            ledStatusLights.resetCurrentAnimation(this);
 //        System.out.println("<-- VAPC | current status: " + currentStatus + "-->");
 
         final Vector2D speakerPosition = shooter.aimingSystem.getRelativePositionToTarget(shooter.getProjectileSpeed());
@@ -258,6 +246,23 @@ public class VisionAidedPilotChassis extends PilotChassis {
             EasyShuffleBoard.putNumber("auto-aim", "aiming system relative pos (x)", speakerPosition.getX());
             EasyShuffleBoard.putNumber("auto-aim", "aiming system relative pos (y)", speakerPosition.getY());
         }
+    }
+
+    private LEDAnimation getCurrentAnimation() {
+        if (arm.malFunctioning()) return armEncoderFailure;
+        if (intake.malFunctioning()) return intakeSensorFailure;
+        return switch (currentStatus) {
+            case MANUALLY_DRIVING ->
+                    intake.isNoteInsideIntake() ?
+                            (speakerTarget.isVisible(500) ? seeingSpeaker : holdingNote)
+                            : (noteTarget.isVisible(500) ? seeingNote : enabled);
+            case SEARCHING_FOR_SHOOT_TARGET -> searchingSpeaker;
+            case REACHING_TO_SHOOT_TARGET ->
+                    shooter.shooterReady() && shooter.targetInRange() && arm.transformerInPosition() && chassis.isCurrentRotationalTaskFinished() ?
+                            shooterReady : new PreparingToShoot(this.currentVisionTaskETA);
+            case SEARCHING_FOR_NOTE -> searchingNote;
+            case GRABBING_NOTE -> proceedingIntake;
+        };
     }
 
     private void startIntakeWheels() {
@@ -302,6 +307,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
         final double length = getPathToSpeakerTarget().getLength(10);
         currentVisionTaskETA = length / chassisSpeedLimitWhenAutoAim;
         timeTaskStartedMillis = System.currentTimeMillis();
+        ledStatusLights.resetCurrentAnimation(this);
     }
 
     private static final SpeedCurves.SpeedCurve autoApproachSpeedCurve = SpeedCurves.easeInOut;
@@ -458,8 +464,10 @@ public class VisionAidedPilotChassis extends PilotChassis {
         chassis.setRotationalTask(new SwerveBasedChassis.ChassisTaskRotation(SwerveBasedChassis.ChassisTaskRotation.TaskType.FACE_DIRECTION,
                 currentIntakeTaskFacing), this);
 
-        if (!pilotController.keyOnHold(translationAutoPilotButton) || intake.isNoteInsideIntake())
+        if (!pilotController.keyOnHold(translationAutoPilotButton) || intake.isNoteInsideIntake()) {
+            ledStatusLights.resetCurrentAnimation(this);
             currentStatus = Status.MANUALLY_DRIVING;
+        }
     }
 
     private BezierCurve getPathToNoteTarget() {

@@ -2,7 +2,7 @@ package frc.robot.Modules.UpperStructure;
 
 import edu.wpi.first.wpilibj.*;
 import frc.robot.Modules.RobotModuleBase;
-import frc.robot.Utils.LEDAnimations;
+import frc.robot.Utils.LEDAnimation;
 import frc.robot.Utils.RobotModuleOperatorMarker;
 
 public class LEDStatusLights extends RobotModuleBase {
@@ -10,7 +10,7 @@ public class LEDStatusLights extends RobotModuleBase {
     final AddressableLED led;
     final AddressableLEDBuffer buffer;
 
-    LEDAnimations.LEDAnimation animation;
+    LEDAnimation animation;
     double hz;
     public LEDStatusLights(AddressableLED led, AddressableLEDBuffer buffer) {
         super("LED-Status-Lights");
@@ -29,7 +29,7 @@ public class LEDStatusLights extends RobotModuleBase {
     @Override
     protected void periodic(double dt) {
         System.out.println("<-- led: playing animation : " + animation);
-        final double t_scaled = (t.get() * hz) % 1;
+        final double t_scaled = t.get();
 
         animation.play(buffer, t_scaled);
         if (led != null)
@@ -44,21 +44,23 @@ public class LEDStatusLights extends RobotModuleBase {
 
     @Override
     protected void onEnable() {
-        animation = new LEDAnimations.LEDAnimation.Rainbow();
+        animation = LEDAnimation.enabled;
         hz = 0.6;
     }
 
     @Override
     protected void onDisable() {
         // TODO make it update even when disabled
-        animation = new LEDAnimations.LEDAnimation.Breathe(0, 200, 255);
-        hz = 0.4;
+        animation = LEDAnimation.disabled;
     }
 
-    public void setAnimation(LEDAnimations.LEDAnimation animation, double hz, RobotModuleOperatorMarker operator) {
+    public void setAnimation(LEDAnimation animation, RobotModuleOperatorMarker operator) {
         if (!isOwner(operator)) return;
         this.animation = animation;
-        this.hz = hz;
+    }
+
+    public void resetCurrentAnimation(RobotModuleOperatorMarker operatorMarker) {
+        t.reset();
     }
 
     public AddressableLED getLed() {
