@@ -41,7 +41,7 @@ public class RobotShell extends TimedRobot {
     @Override
     public void robotInit() {
         // System.out.println("<-- Robot Shell | robot init -->");
-        robotCore = new RobotCore("fasterChassis");
+        robotCore = new RobotCore("5516-2024");
     }
 
     /** called once when the driver station first connects to the robot */

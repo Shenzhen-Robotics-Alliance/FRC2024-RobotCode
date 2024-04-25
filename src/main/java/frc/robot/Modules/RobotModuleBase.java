@@ -23,6 +23,8 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
     /** the name of the module */
     public final String moduleName;
 
+    private final boolean updateDuringDisabled;
+
     /** if the current module is enabled */
     private boolean enabled = true;
 
@@ -38,9 +40,14 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
      * public RobotModule(HashMap<String, RobotModule> dependenciesModules,
      * dependency object 1, dependency object 2, ...)
      */
-    protected RobotModuleBase(String moduleName) {
+    protected RobotModuleBase(String moduleName, boolean updateDuringDisabled) {
         this.moduleName = moduleName;
+        this.updateDuringDisabled = updateDuringDisabled;
         previousTimeMillis = System.currentTimeMillis();
+    }
+
+    protected RobotModuleBase(String moduleName) {
+        this(moduleName, false);
     }
 
     public abstract void init();
@@ -53,7 +60,7 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
         if (!enabled) {
             for (Motor motor:motors)
                 motor.disableMotor(getMarker());
-            return;
+            if (!updateDuringDisabled) return;
         }
         long newTimeMillis = System.currentTimeMillis();
         if (newTimeMillis == previousTimeMillis) {

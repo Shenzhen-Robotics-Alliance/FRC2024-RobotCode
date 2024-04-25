@@ -13,7 +13,7 @@ public class LEDStatusLights extends RobotModuleBase {
     LEDAnimation animation;
     double hz;
     public LEDStatusLights(AddressableLED led, AddressableLEDBuffer buffer) {
-        super("LED-Status-Lights");
+        super("LED-Status-Lights", true);
         this.led = led;
         this.buffer = buffer;
 
@@ -29,9 +29,8 @@ public class LEDStatusLights extends RobotModuleBase {
     @Override
     protected void periodic(double dt) {
         System.out.println("<-- led: playing animation : " + animation);
-        final double t_scaled = t.get();
 
-        animation.play(buffer, t_scaled);
+        animation.play(buffer, t.get());
         if (led != null)
             led.setData(buffer);
     }
@@ -39,6 +38,8 @@ public class LEDStatusLights extends RobotModuleBase {
     @Override
     public void onReset() {
         t.start();
+        if (led!=null)
+            led.start();
         onDisable();
     }
 

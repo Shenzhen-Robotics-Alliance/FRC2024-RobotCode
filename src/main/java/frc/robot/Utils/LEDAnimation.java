@@ -19,7 +19,7 @@ public interface LEDAnimation {
         @Override
         public void play(AddressableLEDBuffer buffer, double t) {
             t *= hz;
-            final double brightness = Math.sin(t * Math.PI);
+            final double brightness = 0.5 + 0.5 * Math.sin(t * Math.PI);
             for (int i = 0; i < buffer.getLength(); i++)
                 buffer.setRGB(i, (int) (colorR * brightness), (int) (colorG * brightness), (int) (colorB * brightness));
         }
@@ -131,7 +131,7 @@ public interface LEDAnimation {
         public void play(AddressableLEDBuffer buffer, double t) {
             t*= hz;
             final int firstPixelHue = (int) (t * 180),
-                    v = (int) (32 + 96 * Math.sin(Math.PI*t));
+                    v = 128;
             for(var i = 0; i < buffer.getLength()/2; i++) {
                 final int colorH = (firstPixelHue + (i * 180 / buffer.getLength())) % 180;
                 buffer.setHSV(buffer.getLength()/2 + i, colorH, 255, v);
@@ -160,7 +160,7 @@ public interface LEDAnimation {
     final class PreparingToShoot extends ChargingDualColor {
 
         public PreparingToShoot(double ETA) {
-            super(0, 255, 0,
+            super(0, 0, 0,
                     230, 255, 0,
                     ETA
             );

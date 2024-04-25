@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drivers.DistanceSensors.Rev2mDistanceSensorEncapsulation;
@@ -187,7 +188,7 @@ public class RobotCore {
                 ); modules.add(climb);
 
 
-                this.statusLight = new LEDStatusLights(null, new AddressableLEDBuffer(155)); modules.add(statusLight);
+                this.statusLight = new LEDStatusLights(new AddressableLED(0), new AddressableLEDBuffer(155)); modules.add(statusLight);
                 // this.statusLight = null;
         }
 
