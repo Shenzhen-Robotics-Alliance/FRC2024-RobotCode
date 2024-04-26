@@ -57,11 +57,8 @@ public abstract class RobotModuleBase extends RobotModuleOperatorMarker {
 
     public void periodic() {
         // System.out.println("<-- base periodic of " + moduleName + ", enabled: " + enabled + "-->");
-        if (!enabled) {
-            for (Motor motor:motors)
-                motor.disableMotor(getMarker());
-            if (!updateDuringDisabled) return;
-        }
+        if (!enabled && !updateDuringDisabled)
+            return;
         long newTimeMillis = System.currentTimeMillis();
         if (newTimeMillis == previousTimeMillis) {
             /* in case of dt=0 */

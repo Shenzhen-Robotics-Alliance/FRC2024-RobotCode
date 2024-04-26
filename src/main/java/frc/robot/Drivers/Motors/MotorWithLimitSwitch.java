@@ -13,11 +13,11 @@ public class MotorWithLimitSwitch implements Motor {
             while (!destroyed) {
                 if (positiveDirectionLimitSwitch != null && positiveDirectionLimitSwitch.limitReached() && originalMotor.getCurrentPower() > 0) {
                     originalMotor.disableMotor(null);
-                    System.out.println("positive limit reached");
+                    // System.out.println("positive limit reached");
                 }
                 if (negativeDirectionLimitSwitch != null && negativeDirectionLimitSwitch.limitReached() && originalMotor.getCurrentPower() < 0) {
                     originalMotor.disableMotor(null);
-                    System.out.println("negative limit reached");
+                    // System.out.println("negative limit reached");
                 }
                 try {
                     Thread.sleep(20);
@@ -38,11 +38,11 @@ public class MotorWithLimitSwitch implements Motor {
     @Override
     public void setPower(double power, RobotModuleBase operatorModule) {
         if (positiveDirectionLimitSwitch != null && positiveDirectionLimitSwitch.limitReached() && power > 0) {
-            System.out.println("positive limit reached");
+            // System.out.println("positive limit reached");
             return;
         }
         if (negativeDirectionLimitSwitch != null && negativeDirectionLimitSwitch.limitReached() && power < 0) {
-            System.out.println("negative limit reached");
+            // System.out.println("negative limit reached");
             return;
         }
         originalMotor.setPower(power, operatorModule);

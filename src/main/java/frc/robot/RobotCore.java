@@ -13,7 +13,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -49,7 +48,7 @@ import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
  * note that services are not included in this field
  * */
 public class RobotCore {
-        private static final long printTimeIfTimeMillisExceeds = 2, timeOut = 50;
+        private static final long printTimeIfTimeMillisExceeds = 20;
 
         public RobotConfigReader robotConfig;
         public final SwerveWheel frontLeftWheel, backLeftWheel, frontRightWheel, backRightWheel;
@@ -73,8 +72,6 @@ public class RobotCore {
         protected boolean wasEnabled;
         private Vector2D chassisCurrentPositionForCameraCalculation = new Vector2D();
         private double chassisCurrentRotationForCameraCalculation = 0;
-
-        private final ExecutorService systemExecutor = Executors.newSingleThreadExecutor();
 
         /**
          * creates a robot core
@@ -240,17 +237,15 @@ public class RobotCore {
         public void initializeRobot() {
                 System.out.println("<-- Robot | initializing robot... -->");
                 /* initialize the modules and services */
-                for (RobotModuleBase module:modules)
+                for (RobotModuleBase module:modules) {
                         module.init();
+                        module.disable();
+                }
 
                 /* start the config tuning */
                 addConfigsToTune();
                 for (String config:configsToTune)
                         robotConfig.startTuningConfig(config);
-
-                /* add port forwarding */
-                PortForwarder.add(5800, aprilTagDetectionAppClient.jetsonIP, aprilTagDetectionAppClient.port);
-                PortForwarder.add(5801, noteDetectionAppClient.jetsonIP, noteDetectionAppClient.port);
 
                 System.out.println("<-- Robot | robot initialized -->");
         }
@@ -360,14 +355,7 @@ public class RobotCore {
                 updateModules();
 
                 printChassisDebugMessagesToDashboard();
-                try {
-                        long dt = System.currentTimeMillis();
-                        TimeUtils.executeWithTimeOut(systemExecutor, this::testPhantomVision, timeOut);
-                        if (System.currentTimeMillis()-dt > printTimeIfTimeMillisExceeds)
-                                System.out.println("phantom client update took longer than expected, time: " + (System.currentTimeMillis() - dt));
-                } catch (TimeoutException e) {
-                        System.out.println("<-- WARNING! Time-Out while updating phantom client, skipping... -->");
-                }
+                testPhantomVision();
 
 
                 robotConfig.updateTuningConfigsFromDashboard();
@@ -379,6 +367,7 @@ public class RobotCore {
 
         public PhantomClient phantomClient = new PhantomClient("onbot-jetson");
         public void testPhantomVision() {
+                long dt = System.currentTimeMillis();
                 phantomClient.update(new Pose2d(
                         5, // positionReader.getRobotPosition2D().getX(),
                         5, //positionReader.getRobotPosition2D().getY(),
@@ -387,30 +376,27 @@ public class RobotCore {
 
                 EasyShuffleBoard.putNumber("phantom vision", "position x", phantomClient.getRobotPose().getX());
                 EasyShuffleBoard.putNumber("phantom vision", "position y", phantomClient.getRobotPose().getY());
+
+                if (System.currentTimeMillis()-dt > printTimeIfTimeMillisExceeds)
+                        System.out.println("phantom client update took longer than expected, time: " + (System.currentTimeMillis() - dt));
         }
 
         public void updateServices() {
-                for (RobotServiceBase service: services)
-                        try {
-                                long dt = System.currentTimeMillis();
-                                TimeUtils.executeWithTimeOut(systemExecutor, service::periodic, timeOut);
-                                if (System.currentTimeMillis()-dt > printTimeIfTimeMillisExceeds)
-                                        System.out.println("update service " + service.serviceName + " took longer than expected, time: " + (System.currentTimeMillis() - dt));
-                        } catch (TimeoutException e) {
-                                System.out.println("<-- WARNING! Time-Out while updating service: " + service.serviceName + ", skipping... -->");
-                        }
+                for (RobotServiceBase service : services) {
+                        long dt = System.currentTimeMillis();
+                        service.periodic();
+                        if (System.currentTimeMillis() - dt > printTimeIfTimeMillisExceeds)
+                                System.out.println("update service " + service.serviceName + " took longer than expected, time: " + (System.currentTimeMillis() - dt));
+                }
         }
 
         public void updateModules() {
-                for (RobotModuleBase module:modules)
-                        try {
-                                long dt = System.currentTimeMillis();
-                                TimeUtils.executeWithTimeOut(systemExecutor, module::periodic, timeOut);
-                                if (System.currentTimeMillis()-dt > printTimeIfTimeMillisExceeds)
-                                        System.out.println("update module " + module.moduleName + " took longer than expected, time: " + (System.currentTimeMillis() - dt));
-                        } catch (TimeoutException e) {
-                                System.out.println("<-- WARNING! Time-Out while updating service: " + module.moduleName + ", skipping... ->");
-                        }
+                for (RobotModuleBase module:modules) {
+                        long dt = System.currentTimeMillis();
+                        module.periodic();
+                        if (System.currentTimeMillis() - dt > printTimeIfTimeMillisExceeds)
+                                System.out.println("update module " + module.moduleName + " took longer than expected, time: " + (System.currentTimeMillis() - dt));
+                }
         }
 
         private void printChassisDebugMessagesToDashboard() {

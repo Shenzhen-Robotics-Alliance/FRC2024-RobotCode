@@ -32,10 +32,10 @@ public class PhantomClient {
 
     public Pose2d getRobotPose() {
         networkTableInstance.flush();
-        if (!networkTableInstance.isConnected())
-            System.out.println("<-- waiting for vision to start, using odometry for now ... -->");
-        else
-            System.out.println("<-- pulling results from server -->");
+//        if (!networkTableInstance.isConnected())
+//            System.out.println("<-- waiting for vision to start, using odometry for now ... -->");
+//        else
+//            System.out.println("<-- pulling results from server -->");
         return new Pose2d(
                 robot_position_x.getDouble(previousPosition.getX()),
                 robot_position_y.getDouble(previousPosition.getY()),
