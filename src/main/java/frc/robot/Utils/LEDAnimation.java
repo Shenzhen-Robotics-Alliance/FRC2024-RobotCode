@@ -1,6 +1,8 @@
 package frc.robot.Utils;
 
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import frc.robot.Utils.MathUtils.LookUpTable;
+import frc.robot.Utils.MathUtils.StatisticsUtils;
 
 public interface LEDAnimation {
     void play(AddressableLEDBuffer buffer, double t);
@@ -40,7 +42,20 @@ public interface LEDAnimation {
         }
     }
 
-    final class Slide implements LEDAnimation {
+    final class SlideBackAndForth extends Slide {
+        private final double hz1;
+        public SlideBackAndForth(int colorR, int colorG, int colorB, double hz, double slideLength) {
+            super(colorR, colorG, colorB, 1, slideLength);
+            this.hz1 = hz;
+        }
+
+        @Override
+        public void play(AddressableLEDBuffer buffer, double t) {
+            super.play(buffer, 0.5 + 0.5 * Math.sin(t * hz1));
+        }
+    }
+
+    class Slide implements LEDAnimation {
         private final int colorR, colorG, colorB;
         private final double hz, slideLength;
         public Slide(int colorR, int colorG, int colorB, double hz, double slideLength) {
@@ -53,15 +68,16 @@ public interface LEDAnimation {
 
         @Override
         public void play(AddressableLEDBuffer buffer, double t) {
-            t *= 2 * hz;
-            final int
-                    lowerEdge = t < 1 ?
-                    (int) ((2*t-1) * buffer.getLength() / 2)
-                    :(int) ((1-2*(t-1)) * buffer.getLength() / 2),
-                    upperEdge = lowerEdge + (int)(slideLength * buffer.getLength() / 2);
+            t *= hz;
+            t %= 1;
+            final double
+                    lowerEdge = LookUpTable.linearInterpretation(0, -slideLength, 1, 1, t),
+                    upperEdge = lowerEdge + slideLength;
+            EasyShuffleBoard.putNumber("led", "lowerEdge", lowerEdge);
+            EasyShuffleBoard.putNumber("led", "upperEdge", upperEdge);
             for (int i = 0; i < buffer.getLength() / 2; i++) {
                 int r = colorR, g = colorG, b = colorB;
-                if (i > upperEdge || i < lowerEdge) r = g = b = 30;
+                if (i > upperEdge * buffer.getLength() || i < lowerEdge * buffer.getLength()) r = g = b = 0;
                 buffer.setRGB(buffer.getLength() / 2 + i, r, g, b);
                 buffer.setRGB(buffer.getLength() / 2 - i-1, r, g, b);
             }
@@ -170,7 +186,7 @@ public interface LEDAnimation {
     LEDAnimation
             /* light-blue */
             disabled = new LEDAnimation.Breathe(0,200, 255, 0.5),
-            enabled = new LEDAnimation.Slide(0,200, 255, 1, 0.8),
+            enabled = new LEDAnimation.SlideBackAndForth(0,200, 255, 1, 0.8),
             /* purple */
             seeingNote = new LEDAnimation.ShowColor(255, 0, 255),
             searchingNote = new LEDAnimation.Breathe(255, 0, 255, 2),

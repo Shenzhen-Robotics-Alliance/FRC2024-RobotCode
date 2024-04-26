@@ -249,6 +249,7 @@ public class VisionAidedPilotChassis extends PilotChassis {
     }
 
     private LEDAnimation getCurrentAnimation() {
+        if (true) return enabled;
         if (arm.malFunctioning()) return armEncoderFailure;
         if (intake.malFunctioning()) return intakeSensorFailure;
         return switch (currentStatus) {

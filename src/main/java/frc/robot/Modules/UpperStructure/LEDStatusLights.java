@@ -38,9 +38,10 @@ public class LEDStatusLights extends RobotModuleBase {
     @Override
     public void onReset() {
         t.start();
+        t.reset();
         if (led!=null)
             led.start();
-        onDisable();
+        animation = LEDAnimation.disabled;
     }
 
     @Override
@@ -51,8 +52,7 @@ public class LEDStatusLights extends RobotModuleBase {
 
     @Override
     protected void onDisable() {
-        // TODO make it update even when disabled
-        animation = LEDAnimation.disabled;
+        onReset();
     }
 
     public void setAnimation(LEDAnimation animation, RobotModuleOperatorMarker operator) {
