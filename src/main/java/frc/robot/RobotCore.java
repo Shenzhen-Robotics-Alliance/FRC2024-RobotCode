@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -46,7 +49,7 @@ import frc.robot.Utils.MechanismControllers.EncoderMotorMechanism;
  * note that services are not included in this field
  * */
 public class RobotCore {
-        private static final long printTimeIfTimeMillisExceeds = 2;
+        private static final long printTimeIfTimeMillisExceeds = 2, timeOut = 50;
 
         public RobotConfigReader robotConfig;
         public final SwerveWheel frontLeftWheel, backLeftWheel, frontRightWheel, backRightWheel;
@@ -70,6 +73,9 @@ public class RobotCore {
         protected boolean wasEnabled;
         private Vector2D chassisCurrentPositionForCameraCalculation = new Vector2D();
         private double chassisCurrentRotationForCameraCalculation = 0;
+
+        private final ExecutorService systemExecutor = Executors.newSingleThreadExecutor();
+
         /**
          * creates a robot core
          * creates the instances of all the modules, but do not call init functions yet
@@ -350,14 +356,18 @@ public class RobotCore {
                 updateAprilTagCamera();
                 updateNoteCamera();
 
-                for (RobotServiceBase service: services)
-                        service.periodic();
+                updateServices();
                 updateModules();
 
-
-
                 printChassisDebugMessagesToDashboard();
-                testPhantomVision();
+                try {
+                        long dt = System.currentTimeMillis();
+                        TimeUtils.executeWithTimeOut(systemExecutor, this::testPhantomVision, timeOut);
+                        if (System.currentTimeMillis()-dt > printTimeIfTimeMillisExceeds)
+                                System.out.println("phantom client update took longer than expected, time: " + (System.currentTimeMillis() - dt));
+                } catch (TimeoutException e) {
+                        System.out.println("<-- WARNING! Time-Out while updating phantom client, skipping... -->");
+                }
 
 
                 robotConfig.updateTuningConfigsFromDashboard();
@@ -379,9 +389,28 @@ public class RobotCore {
                 EasyShuffleBoard.putNumber("phantom vision", "position y", phantomClient.getRobotPose().getY());
         }
 
+        public void updateServices() {
+                for (RobotServiceBase service: services)
+                        try {
+                                long dt = System.currentTimeMillis();
+                                TimeUtils.executeWithTimeOut(systemExecutor, service::periodic, timeOut);
+                                if (System.currentTimeMillis()-dt > printTimeIfTimeMillisExceeds)
+                                        System.out.println("update service " + service.serviceName + " took longer than expected, time: " + (System.currentTimeMillis() - dt));
+                        } catch (TimeoutException e) {
+                                System.out.println("<-- WARNING! Time-Out while updating service: " + service.serviceName + ", skipping... -->");
+                        }
+        }
+
         public void updateModules() {
                 for (RobotModuleBase module:modules)
-                        module.periodic();
+                        try {
+                                long dt = System.currentTimeMillis();
+                                TimeUtils.executeWithTimeOut(systemExecutor, module::periodic, timeOut);
+                                if (System.currentTimeMillis()-dt > printTimeIfTimeMillisExceeds)
+                                        System.out.println("update module " + module.moduleName + " took longer than expected, time: " + (System.currentTimeMillis() - dt));
+                        } catch (TimeoutException e) {
+                                System.out.println("<-- WARNING! Time-Out while updating service: " + module.moduleName + ", skipping... ->");
+                        }
         }
 
         private void printChassisDebugMessagesToDashboard() {

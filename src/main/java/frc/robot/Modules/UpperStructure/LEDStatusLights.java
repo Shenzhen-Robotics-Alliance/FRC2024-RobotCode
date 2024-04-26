@@ -28,8 +28,6 @@ public class LEDStatusLights extends RobotModuleBase {
 
     @Override
     protected void periodic(double dt) {
-        System.out.println("<-- led: playing animation : " + animation);
-
         animation.play(buffer, t.get());
         if (led != null)
             led.setData(buffer);
