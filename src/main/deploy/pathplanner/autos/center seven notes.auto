@@ -20,13 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "shoot second"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "grab third"
+            "pathName": "shoot secondgrab third"
           }
         },
         {
@@ -44,7 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "grab fifth"
+            "pathName": "shoot second grab third"
           }
         },
         {
