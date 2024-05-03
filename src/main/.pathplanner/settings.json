@@ -3,14 +3,13 @@
   "robotLength": 0.99,
   "holonomicMode": true,
   "pathFolders": [
-    "lower four notes",
-    "red mid 6 note",
-    "red mid 6 upper"
+    "speedy auto",
+    "center seven notes"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 5.0,
+  "defaultMaxVel": 4.2,
   "defaultMaxAccel": 6.0,
-  "defaultMaxAngVel": 180.0,
-  "defaultMaxAngAccel": 720.0,
-  "maxModuleSpeed": 5.4
+  "defaultMaxAngVel": 90.0,
+  "defaultMaxAngAccel": 180.0,
+  "maxModuleSpeed": 4.5
 }
