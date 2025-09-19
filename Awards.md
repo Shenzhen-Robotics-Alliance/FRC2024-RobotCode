@@ -10,7 +10,7 @@ The Dean's List Award for FIRST Robotics Competition (FRC) is a prestigious reco
 
 ![](https://github.com/Shenzhen-Robotics-Alliance/2024_Iron_Maple_5516_FRC_Canadian_Pacific_Foto/blob/main/firstBatch/competition/P1030072-%E5%B7%B2%E5%A2%9E%E5%BC%BA-NR.png?raw=true)
 
-## Innovation in Control Award (Iowa)
+## Innovation in Control Award to Team 6706 (Iowa)
 
 The Innovation in Control Award celebrates an innovative control system or application of control components—electrical, mechanical, or software—to provide unique machine functions.
 
